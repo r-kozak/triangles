@@ -42,7 +42,8 @@ public class HomeController {
 		giveDailyBonus(currUserId); // начисление ежедневного бонуса
 		giveCreditDeposit(currUserId); // начисление кредита/депозита
 		levyOnProperty(currUserId); // сбор средств с имущества, где есть кассир
-
+		takeSalary(currUserId); //выдача зп работникам
+	
 		// output balance
 		NumberFormat formatter = NumberFormat.getInstance(new Locale("ru"));
 		String balance = formatter.format(Long.valueOf(transactRepository.getUserBalance(currUserId)));
@@ -51,14 +52,26 @@ public class HomeController {
 		return "home";
 	}
 
+	private void takeSalary(int currUserId) {
+		// TODO Auto-generated method stub
+		
+		// выдача зарплаты кассирам, продавцам
+	}
+	
 	private void levyOnProperty(int currUserId) {
 		// TODO Auto-generated method stub
-
+		
+		// для каждого коммерческого имущества юзера
+		// если у имущества есть кассир - тогда собираем прибыль
 	}
 
 	private void giveCreditDeposit(int currUserId) {
 		// TODO Auto-generated method stub
-
+		
+		// начисляется каждые 30 дней - для этого
+		// 1. получить последнюю дату начисления кредита/депозита
+		// 2. если дата >= 30 дней - циклом начислить К/Д (колво итераций = количество дней / 30)
+		// * подумать над ставками
 	}
 
 	@RequestMapping(value = "/property", method = RequestMethod.GET)
