@@ -18,7 +18,7 @@ public class UserRepository {
 	public EntityManager em;
 
 	public void addUser(User user) {
-		em.merge(user);
+		em.persist(user);
 	}
 
 	public List<User> getAllUsers() {

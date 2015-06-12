@@ -19,7 +19,7 @@ public class TransactionRepository {
 	public EntityManager em;
 
 	public void addTransaction(Transaction transaction) {
-		em.merge(transaction);
+		em.persist(transaction);
 	}
 
 	/**

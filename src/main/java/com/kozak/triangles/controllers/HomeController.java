@@ -38,7 +38,7 @@ public class HomeController {
 	String homeGET(User user, Model model) {
 
 		int currUserId = userRepository.getCurrentUserId(user.getLogin());
-		checkFirstTime(currUserId); // проверка, первый ли вход в игру
+		checkFirstTime(currUserId); // проверка, первый ли вход в игру (вообще)
 		giveDailyBonus(currUserId); // начисление ежедневного бонуса
 		giveCreditDeposit(currUserId); // начисление кредита/депозита
 		levyOnProperty(currUserId); // сбор средств с имущества, где есть кассир
@@ -142,8 +142,9 @@ public class HomeController {
 			if (thisDayNumber >= 5) {
 				thisDayNumber = 0;
 			}
+			thisDayNumber += 1;
 
-			int bonusSum = getBonusSum(thisDayNumber++);
+			int bonusSum = getBonusSum(thisDayNumber);
 			Date now = new Date();
 
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -154,7 +155,6 @@ public class HomeController {
 			Transaction t = new Transaction(description, now, bonusSum, TransferType.PROFIT, currUserId, oldBalance
 					+ bonusSum, ArticleCashFlow.DAILY_BONUS);
 			transactRepository.addTransaction(t);
-
 		}
 	}
 
