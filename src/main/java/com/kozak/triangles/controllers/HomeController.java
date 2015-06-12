@@ -42,7 +42,7 @@ public class HomeController {
 		giveDailyBonus(currUserId); // начисление ежедневного бонуса
 		giveCreditDeposit(currUserId); // начисление кредита/депозита
 		levyOnProperty(currUserId); // сбор средств с имущества, где есть кассир
-		takeSalary(currUserId); //выдача зп работникам
+		salaryPayment(currUserId); //выдача зп работникам
 	
 		// output balance
 		NumberFormat formatter = NumberFormat.getInstance(new Locale("ru"));
@@ -52,7 +52,7 @@ public class HomeController {
 		return "home";
 	}
 
-	private void takeSalary(int currUserId) {
+	private void salaryPayment(int currUserId) {
 		// TODO Auto-generated method stub
 		
 		// выдача зарплаты кассирам, продавцам
