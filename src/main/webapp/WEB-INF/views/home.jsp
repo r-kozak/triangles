@@ -4,42 +4,16 @@
 <html>
 <head>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/buttons.css" type="text/css" />
 <title>Home</title>
 </head>
-
-<style>
-.content {
-	border: 2px solid;
-	border-color: darkturquoise;
-	border-bottom: none;
-	width: 900px;
-}
-
-.wrapperNav {
-	margin-top: 160px;
-	margin-left: 170px;
-	width: 550px;
-	height: 550px;
-}
-
-.wrapperNav > div {
-	border-top-left-radius: 5px;
-	border-bottom-left-radius: 5px;
-	border-left: 5px solid;
-	border-left-color: darkturquoise;
-	width: 220px;
-	height: 220px;
-	background: silver;
-	display: inline-block;
-	margin: 25px 25px 25px 25px;
-}
-</style>
-
 <body>
 	<div class="header">
 		<a href="${pageContext.request.contextPath}/home"><img src="${pageContext.request.contextPath}/resources/logo.png"
 			align="middle"></a>
-		<div class="headerNav"><a href="${pageContext.request.contextPath}/exit">exit</a></div>
+ 		<div class="headerNav">
+			<a href="${pageContext.request.contextPath}/exit"><p class="button small bGray"><span>exit</span></p></a></div>
+		</div>
 	</div>
 	<div class="status">
 		<div class="dominant">Dominant: 0&#9813;</div>
@@ -48,25 +22,12 @@
 
 	<div class="content">
 		<div class="wrapperNav">
-			<div class="d1">
-				<a href="${pageContext.request.contextPath}/property"><img
-					src="${pageContext.request.contextPath}/resources/property.png" align="middle"></a>
-			</div>
-			<div class="d2">
-				<a href="${pageContext.request.contextPath}/bank"><img src="${pageContext.request.contextPath}/resources/bank.png"
-					align="middle"></a>
-			</div>
-			<div class="d3">
-				<a href="${pageContext.request.contextPath}/relations"><img
-					src="${pageContext.request.contextPath}/resources/relations.png" align="middle"></a>
-			</div>
-			<div class="d4">
-				<a href="${pageContext.request.contextPath}/entertainment"><img
-					src="${pageContext.request.contextPath}/resources/entertainment.png" align="middle"></a>
-			</div>
-		</div>
-		
-		<div class="wrapperNav">
+			<h1 align="center">Разделы</h1>
+					
+			<a href="${pageContext.request.contextPath}/property"><p class="button menu bGreen"><span>Управление имуществом</span></p></a>
+			<a href="${pageContext.request.contextPath}/issues"><p class="button menu bRed"><span>Деньги и персонал</span></p></a>
+			<a href="${pageContext.request.contextPath}/relations"><p class="button menu bYellow"><span>Взаимо- отношения</span></p></a>
+			<a href="${pageContext.request.contextPath}/entertainment"><p class="button menu bPurple"><span>Прогулка по городу</span></p></a>
 		</div>
 	</div>
 </body>

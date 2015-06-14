@@ -23,114 +23,114 @@ import com.kozak.triangles.enums.TransferType;
 @Entity(name = "Transac")
 @Table(name = "Transac")
 public class Transaction {
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
-	@Column(name = "description", length = 100)
-	private String description;
+    @Column(name = "description", length = 100)
+    private String description;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "transactDate")
-	private Date transactDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "transactDate")
+    private Date transactDate;
 
-	@Column(name = "sum")
-	private int sum;
+    @Column(name = "sum")
+    private long sum;
 
-	// тип движения - приход или расход
-	@Column(name = "transferType")
-	private TransferType transferType;
+    // тип движения - приход или расход
+    @Column(name = "transferType")
+    private TransferType transferType;
 
-	// чьи деньги
-	@Column(name = "user_id")
-	private int userId;
+    // чьи деньги
+    @Column(name = "user_id")
+    private int userId;
 
-	// остаток на конец
-	@Column(name = "balance")
-	private int balance;
+    // остаток на конец
+    @Column(name = "balance")
+    private long balance;
 
-	// статья движения денежных средств
-	@Column(name = "article_cash_flow")
-	private ArticleCashFlow articleCashFlow;
+    // статья движения денежных средств
+    @Column(name = "article_cash_flow")
+    private ArticleCashFlow articleCashFlow;
 
-	// ///////////////////////////// constructors
-	public Transaction() {
-	}
+    // ///////////////////////////// constructors
+    public Transaction() {
+    }
 
-	public Transaction(String description, Date transactDate, int sum, TransferType transferType, int userId,
-			int balance, ArticleCashFlow articleCashFlow) {
-		this.description = description;
-		this.transactDate = transactDate;
-		this.sum = sum;
-		this.transferType = transferType;
-		this.userId = userId;
-		this.balance = balance;
-		this.articleCashFlow = articleCashFlow;
-	}
+    public Transaction(String description, Date transactDate, long sum, TransferType transferType, int userId,
+            long balance, ArticleCashFlow articleCashFlow) {
+        this.description = description;
+        this.transactDate = transactDate;
+        this.sum = sum;
+        this.transferType = transferType;
+        this.userId = userId;
+        this.balance = balance;
+        this.articleCashFlow = articleCashFlow;
+    }
 
-	// ///////////////////////////// getters and setters
-	public Integer getId() {
-		return id;
-	}
+    // ///////////////////////////// getters and setters
+    public Integer getId() {
+        return id;
+    }
 
-	public int getBalance() {
-		return balance;
-	}
+    public long getBalance() {
+        return balance;
+    }
 
-	public void setBalance(int balance) {
-		this.balance = balance;
-	}
+    public void setBalance(long balance) {
+        this.balance = balance;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Date getTransactDate() {
-		return transactDate;
-	}
+    public Date getTransactDate() {
+        return transactDate;
+    }
 
-	public void setTransactDate(Date transactDate) {
-		this.transactDate = transactDate;
-	}
+    public void setTransactDate(Date transactDate) {
+        this.transactDate = transactDate;
+    }
 
-	public int getSum() {
-		return sum;
-	}
+    public long getSum() {
+        return sum;
+    }
 
-	public void setSum(int sum) {
-		this.sum = sum;
-	}
+    public void setSum(long sum) {
+        this.sum = sum;
+    }
 
-	public TransferType getTransferType() {
-		return transferType;
-	}
+    public TransferType getTransferType() {
+        return transferType;
+    }
 
-	public void setTransferType(TransferType transferType) {
-		this.transferType = transferType;
-	}
+    public void setTransferType(TransferType transferType) {
+        this.transferType = transferType;
+    }
 
-	public int getUserId() {
-		return userId;
-	}
+    public int getUserId() {
+        return userId;
+    }
 
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-	public ArticleCashFlow getArticleCashFlow() {
-		return articleCashFlow;
-	}
+    public ArticleCashFlow getArticleCashFlow() {
+        return articleCashFlow;
+    }
 
-	public void setArticleCashFlow(ArticleCashFlow articleCashFlow) {
-		this.articleCashFlow = articleCashFlow;
-	}
+    public void setArticleCashFlow(ArticleCashFlow articleCashFlow) {
+        this.articleCashFlow = articleCashFlow;
+    }
 }

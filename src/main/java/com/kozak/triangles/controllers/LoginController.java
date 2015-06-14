@@ -21,42 +21,42 @@ import com.kozak.triangles.validators.LoginValidator;
 @Controller
 public class LoginController {
 
-	private LoginValidator loginValidator;
-	private UserRepository userRepository;
+    private LoginValidator loginValidator;
+    private UserRepository userRepository;
 
-	@Autowired
-	public LoginController(LoginValidator loginValidator, UserRepository userRepository) {
-		this.loginValidator = loginValidator;
-		this.userRepository = userRepository;
-	}
+    @Autowired
+    public LoginController(LoginValidator loginValidator, UserRepository userRepository) {
+        this.loginValidator = loginValidator;
+        this.userRepository = userRepository;
+    }
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Model model) {
-		if (!model.containsAttribute("user")) // если регистрировались, то сессия не пустая и в модели юзер есть
-			model.addAttribute("user", new User()); // иначе - добавим юзера в модель (ну и в сессию попадет автоматом)
-		return "index";
-	}
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String home(Model model) {
+        if (!model.containsAttribute("user")) // если регистрировались, то сессия не пустая и в модели юзер есть
+            model.addAttribute("user", new User()); // иначе - добавим юзера в модель (ну и в сессию попадет автоматом)
+        return "index";
+    }
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ModelAndView login(@ModelAttribute("user") User user, BindingResult bindResult) {
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ModelAndView login(@ModelAttribute("user") User user, BindingResult bindResult) {
 
-		ModelAndView mAndView = new ModelAndView();
+        ModelAndView mAndView = new ModelAndView();
 
-		List<User> allUsers = userRepository.getAllUsers();
-		loginValidator.validate(user, bindResult, allUsers);
-		if (bindResult.hasErrors()) {
-			mAndView.setViewName("index");
-			return mAndView;
-		}
+        List<User> allUsers = userRepository.getAllUsers();
+        loginValidator.validate(user, bindResult, allUsers);
+        if (bindResult.hasErrors()) {
+            mAndView.setViewName("index");
+            return mAndView;
+        }
 
-		RedirectView rv = new RedirectView("home");
-		mAndView.setView(rv);
-		return mAndView;
-	}
+        RedirectView rv = new RedirectView("home");
+        mAndView.setView(rv);
+        return mAndView;
+    }
 
-	@RequestMapping(value = "/exit", method = RequestMethod.GET)
-	public String exit(Model model) {
-		model.addAttribute("user", new User());
-		return "index";
-	}
+    @RequestMapping(value = "/exit", method = RequestMethod.GET)
+    public String exit(Model model) {
+        model.addAttribute("user", new User());
+        return "redirect:/";
+    }
 }

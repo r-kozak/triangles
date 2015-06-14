@@ -27,6 +27,7 @@ body {
 }
 
 .headerNav {
+	margin-top: 3px;
 	float: right;
 }
 
@@ -57,4 +58,25 @@ body {
 
 .balance {
 	float: right;
+}
+
+.content {
+	border: 2px solid;
+	border-color: darkturquoise;
+	border-bottom: none;
+	width: 900px;
+}
+
+
+.wrapperNav {
+	margin-top: 155px;
+	margin-left: 155px;
+	width: 550px;
+	height: 550px;
+}
+
+.wrapperNav > a > p {
+	display: inline-block;
+	margin-left: 40px;
+	margin-top: 40px;
 }
