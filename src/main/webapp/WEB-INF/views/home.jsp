@@ -17,7 +17,7 @@
 	</div>
 	<div class="status">
 		<div class="dominant">Dominant: 0&#9813;</div>
-		<div class="balance">Balance: ${balance}&tridot;</div>
+		<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Balance: ${balance}&tridot;</a></div>
 	</div>
 
 	<div class="content">

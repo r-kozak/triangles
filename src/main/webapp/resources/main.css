@@ -52,6 +52,11 @@ body {
 	position: fixed;
 }
 
+.status a {
+	text-decoration: none;
+	color: azure;
+}
+
 .dominant {
 	display: inline;
 }
@@ -79,4 +84,8 @@ body {
 	display: inline-block;
 	margin-left: 40px;
 	margin-top: 40px;
+}
+
+.tranBlock {
+	margin-top: 110px;
 }

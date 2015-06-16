@@ -1,11 +1,9 @@
 package com.kozak.triangles.controllers;
 
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +20,7 @@ import com.kozak.triangles.interfaces.Rates;
 import com.kozak.triangles.repositories.TransactionRepository;
 import com.kozak.triangles.repositories.UserRepository;
 import com.kozak.triangles.utils.DateUtils;
+import com.kozak.triangles.utils.ModelCreator;
 
 @SessionAttributes("user")
 @Controller
@@ -41,6 +40,8 @@ public class HomeController {
             return "redirect:/";
         }
         int currUserId = userRepository.getCurrentUserId(user.getLogin());
+        user.setId(currUserId);
+
         checkFirstTime(currUserId); // проверка, первый ли вход в игру (вообще)
         giveDailyBonus(currUserId); // начисление ежедневного бонуса
         giveCreditDeposit(currUserId); // начисление кредита/депозита
@@ -48,10 +49,7 @@ public class HomeController {
         levyOnProperty(currUserId); // сбор средств с имущества, где есть кассир
         salaryPayment(currUserId); // выдача зп работникам
 
-        // output balance
-        NumberFormat formatter = NumberFormat.getInstance(new Locale("ru"));
-        String balance = formatter.format(Long.valueOf(transactRepository.getUserBalance(currUserId)));
-        model.addAttribute("balance", balance);
+        model = ModelCreator.addBalance(model, transactRepository.getUserBalance(currUserId));
 
         return "home";
     }
