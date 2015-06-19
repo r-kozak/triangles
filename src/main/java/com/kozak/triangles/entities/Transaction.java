@@ -35,8 +35,8 @@ public class Transaction {
     @Column(name = "transactDate")
     private Date transactDate;
 
-    @Column(name = "sum")
-    private long sum;
+    @Column(name = "summa")
+    private long summa;
 
     // тип движения - приход или расход
     @Column(name = "transferType")
@@ -62,7 +62,7 @@ public class Transaction {
             long balance, ArticleCashFlow articleCashFlow) {
         this.description = description;
         this.transactDate = transactDate;
-        this.sum = sum;
+        this.summa = sum;
         this.transferType = transferType;
         this.userId = userId;
         this.balance = balance;
@@ -103,11 +103,11 @@ public class Transaction {
     }
 
     public long getSum() {
-        return sum;
+        return summa;
     }
 
     public void setSum(long sum) {
-        this.sum = sum;
+        this.summa = sum;
     }
 
     public TransferType getTransferType() {

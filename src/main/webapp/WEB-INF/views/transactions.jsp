@@ -74,7 +74,7 @@
 					</c:forEach>
 				</c:if>
 			</table>
-			<c:set var="balance" value="120000" />
+			${tagNav}
 		</div>
 	</div>
 </body>

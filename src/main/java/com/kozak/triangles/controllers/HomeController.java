@@ -35,7 +35,7 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
-    String homeGET(User user, Model model) {
+    String homeGET(User user, Model model) throws InterruptedException {
         if (user == null) {
             return "redirect:/";
         }
@@ -66,8 +66,10 @@ public class HomeController {
     /**
      * проверка, первый ли раз вошли в игру. если первый - добавляем начальные транзакции пользователю
      * 
+     * @throws InterruptedException
+     * 
      */
-    private void checkFirstTime(int currUserId) {
+    private void checkFirstTime(int currUserId) throws InterruptedException {
         // get user transactions
         List<Transaction> userTransactions = transactRepository.getAllUserTransactions(currUserId);
 
@@ -83,11 +85,14 @@ public class HomeController {
             transactRepository.addTransaction(firstT);
 
             // transaction for CREDIT_DEPOSIT
+            yest.add(Calendar.SECOND, 1);
             firstT = new Transaction("Начальный кредит/депозит", yest.getTime(), 0, TransferType.PROFIT, currUserId,
                     17000, ArticleCashFlow.CREDIT_DEPOSIT);
             transactRepository.addTransaction(firstT);
+            Thread.sleep(1000);
 
             // transaction for LEVY_ON_PROPERTY
+            yest.add(Calendar.SECOND, 1);
             firstT = new Transaction("Начальный сбор с имущества", yest.getTime(), 0, TransferType.PROFIT, currUserId,
                     17000, ArticleCashFlow.LEVY_ON_PROPERTY);
             transactRepository.addTransaction(firstT);
