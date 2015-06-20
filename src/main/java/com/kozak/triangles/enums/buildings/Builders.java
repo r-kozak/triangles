@@ -7,6 +7,6 @@ package com.kozak.triangles.enums.buildings;
  * 
  * @author Roman: 12 июня 2015 г. 22:36:39
  */
-public enum BuildersType {
+public enum Builders {
 	GASTARBEITER, UKRAINIAN_BUILDER, GERMANY_BUILDER
 }

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.kozak.triangles.enums.buildings.TradeBuindingTypes;
+import com.kozak.triangles.enums.buildings.TradeBuindings;
 
 /**
  * Рынок недвижимости
@@ -37,7 +37,7 @@ public class RealEstateMarket {
 
     @Column(name = "building_type")
     @Enumerated(EnumType.STRING)
-    private TradeBuindingTypes tradeBuildingType;
+    private TradeBuindings tradeBuildingType;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "appear_date")
@@ -50,7 +50,7 @@ public class RealEstateMarket {
     @Column(name = "valid")
     private boolean valid;
 
-    public RealEstateMarket(TradeBuindingTypes tradeBuildingType, Date appearDate, Date lossDate, boolean valid) {
+    public RealEstateMarket(TradeBuindings tradeBuildingType, Date appearDate, Date lossDate, boolean valid) {
         this.tradeBuildingType = tradeBuildingType;
         this.appearDate = appearDate;
         this.lossDate = lossDate;
@@ -68,11 +68,11 @@ public class RealEstateMarket {
         this.id = id;
     }
 
-    public TradeBuindingTypes getBuildingType() {
+    public TradeBuindings getBuildingType() {
         return tradeBuildingType;
     }
 
-    public void setBuildingType(TradeBuindingTypes tradeBuildingType) {
+    public void setBuildingType(TradeBuindings tradeBuildingType) {
         this.tradeBuildingType = tradeBuildingType;
     }
 
