@@ -5,6 +5,6 @@ package com.kozak.triangles.enums.buildings;
  * 
  * @author Roman: 20 июня 2015 г. 11:22:47
  */
-public enum Buildings {
+public enum BuildingsT {
     TRADING, PRODUCTION, PRIVATE
 }

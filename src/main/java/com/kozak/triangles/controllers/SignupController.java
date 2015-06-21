@@ -16,17 +16,17 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.kozak.triangles.entities.User;
-import com.kozak.triangles.repositories.UserRepository;
+import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.validators.SignupValidator;
 
 @SessionAttributes("user")
 @Controller
 public class SignupController {
 	private SignupValidator signupValidator;
-	private UserRepository userRepository;
+	private UserRep userRepository;
 
 	@Autowired
-	public SignupController(SignupValidator signupValidator, UserRepository userRepository) {
+	public SignupController(SignupValidator signupValidator, UserRep userRepository) {
 		this.signupValidator = signupValidator;
 		this.userRepository = userRepository;
 	}

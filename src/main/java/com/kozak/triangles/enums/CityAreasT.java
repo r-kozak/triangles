@@ -9,6 +9,6 @@ package com.kozak.triangles.enums;
  * 
  * @author Roman: 11 июня 2015 г. 21:35:23
  */
-public enum CityAreas {
+public enum CityAreasT {
 	GHETTO, OUTSKIRTS, CHINATOWN, CENTER
 }

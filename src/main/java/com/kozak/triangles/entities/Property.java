@@ -13,10 +13,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.CityAreasT;
 
 /**
  * Имущество
+ * 
+ * конкретный экземпляр имущества, которым кто-то владеет
  * 
  * cityArea - район города, где находится здание
  * level - уровень здания, влияет на прибыль
@@ -26,6 +28,7 @@ import com.kozak.triangles.enums.CityAreas;
  * initialCost - начальная стоимость или цена покупки
  * selling price - остаточная стоимость (цена продажи) на текущий момент
  * valid - если false - не приносит прибыль, не начисляется износ
+ * userId - владелец имущества
  * 
  * @author Roman: 12 июня 2015 г. 20:22:47
  */
@@ -38,9 +41,12 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Column(name = "user_id")
+    private int userId;
+
     @Column(name = "cityArea")
     @Enumerated(EnumType.STRING)
-    private CityAreas cityArea;
+    private CityAreasT cityArea;
 
     @Column(name = "level")
     private int level;
@@ -66,15 +72,21 @@ public class Property {
 
     // //////////////////////////////////////////////
 
-    public Property(CityAreas cityArea, int level, int depreciationPercent, boolean valid, int cash) {
+    public Property() {
+    }
+
+    public Property(Integer id, int userId, CityAreasT cityArea, int level, int depreciationPercent, boolean valid,
+            int cash, Date purchaseDate, int initialCost, long sellingPrice) {
+        this.id = id;
+        this.userId = userId;
         this.cityArea = cityArea;
         this.level = level;
         this.depreciationPercent = depreciationPercent;
         this.valid = valid;
         this.cash = cash;
-    }
-
-    public Property() {
+        this.purchaseDate = purchaseDate;
+        this.initialCost = initialCost;
+        this.sellingPrice = sellingPrice;
     }
 
     public Integer getId() {
@@ -85,11 +97,19 @@ public class Property {
         this.id = id;
     }
 
-    public CityAreas getCityArea() {
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public CityAreasT getCityArea() {
         return cityArea;
     }
 
-    public void setCityArea(CityAreas cityArea) {
+    public void setCityArea(CityAreasT cityArea) {
         this.cityArea = cityArea;
     }
 

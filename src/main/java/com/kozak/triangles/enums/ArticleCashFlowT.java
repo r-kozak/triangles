@@ -6,6 +6,6 @@ package com.kozak.triangles.enums;
  * @author Roman: 07 июня 2015 г. 7:21:25
  */
 
-public enum ArticleCashFlow {
+public enum ArticleCashFlowT {
 	DAILY_BONUS, CREDIT_DEPOSIT, LEVY_ON_PROPERTY
 }

@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entities.User;
-import com.kozak.triangles.repositories.TransactionRepository;
-import com.kozak.triangles.repositories.UserRepository;
+import com.kozak.triangles.repositories.TransactionRep;
+import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.utils.ModelCreator;
 
 @SessionAttributes("user")
 @Controller
 public class PropertyController {
-    private UserRepository userRepository;
-    private TransactionRepository transactRepository;
+    private UserRep userRepository;
+    private TransactionRep transactRepository;
 
     @Autowired
-    public PropertyController(UserRepository userRepository, TransactionRepository transactRepository) {
+    public PropertyController(UserRep userRepository, TransactionRep transactRepository) {
         this.userRepository = userRepository;
         this.transactRepository = transactRepository;
     }

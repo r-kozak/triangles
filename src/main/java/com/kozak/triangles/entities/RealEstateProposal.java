@@ -13,23 +13,24 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.kozak.triangles.enums.buildings.TradeBuindings;
+import com.kozak.triangles.enums.buildings.CommBuildingsT;
 
 /**
- * Рынок недвижимости
+ * Предложения на рынке недвижимости
  * 
- * tradeBuildingType - тип торгового здания (Киоск, Маркет, ...)
+ * экземпляр этой сущности - это предложение на рынке имущества
+ * 
+ * commBuildingType - тип коммерческого здания здания (Киоск, Маркет, ...)
  * appearDate - дата появления на рынке
  * lossDate - дата ухода с рынка
+ * purchasePrice - цена покупки
  * valid - предложение еще действительно
- * 
- * 
  * 
  * @author Roman: 12 июня 2015 г. 22:25:55
  */
 @Entity
-@Table(name = "r_e_market")
-public class RealEstateMarket {
+@Table(name = "re_proposal")
+public class RealEstateProposal {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +38,7 @@ public class RealEstateMarket {
 
     @Column(name = "building_type")
     @Enumerated(EnumType.STRING)
-    private TradeBuindings tradeBuildingType;
+    private CommBuildingsT commBuildingType;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "appear_date")
@@ -47,17 +48,20 @@ public class RealEstateMarket {
     @Column(name = "loss_date")
     private Date lossDate;
 
-    @Column(name = "valid")
-    private boolean valid;
+    @Column(name = "purchase_price")
+    private long purchasePrice;
 
-    public RealEstateMarket(TradeBuindings tradeBuildingType, Date appearDate, Date lossDate, boolean valid) {
-        this.tradeBuildingType = tradeBuildingType;
+    @Column(name = "valid")
+    private boolean valid = true;
+
+    public RealEstateProposal(CommBuildingsT commBuildingType, Date appearDate, Date lossDate, long purchasePrice) {
+        this.commBuildingType = commBuildingType;
         this.appearDate = appearDate;
         this.lossDate = lossDate;
-        this.valid = valid;
+        this.purchasePrice = purchasePrice;
     }
 
-    public RealEstateMarket() {
+    public RealEstateProposal() {
     }
 
     public Integer getId() {
@@ -68,12 +72,12 @@ public class RealEstateMarket {
         this.id = id;
     }
 
-    public TradeBuindings getBuildingType() {
-        return tradeBuildingType;
+    public CommBuildingsT getCommBuildingType() {
+        return commBuildingType;
     }
 
-    public void setBuildingType(TradeBuindings tradeBuildingType) {
-        this.tradeBuildingType = tradeBuildingType;
+    public void setCommBuildingType(CommBuildingsT commBuildingType) {
+        this.commBuildingType = commBuildingType;
     }
 
     public Date getAppearDate() {
@@ -90,6 +94,14 @@ public class RealEstateMarket {
 
     public void setLossDate(Date lossDate) {
         this.lossDate = lossDate;
+    }
+
+    public long getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(long purchasePrice) {
+        this.purchasePrice = purchasePrice;
     }
 
     public boolean isValid() {

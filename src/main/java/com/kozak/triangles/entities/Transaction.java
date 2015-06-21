@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,11 +13,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.TransferType;
+import com.kozak.triangles.enums.ArticleCashFlowT;
+import com.kozak.triangles.enums.TransferT;
 
 /**
  * Транзакция. Отображает действия, которые приводят к изменению денежного баланса персонажа.
+ * 
+ * Экземпляр этой сущности - одна конкретная операция с деньгами
  * 
  * @author Roman
  */
@@ -40,7 +44,8 @@ public class Transaction {
 
     // тип движения - приход или расход
     @Column(name = "transferType")
-    private TransferType transferType;
+    @Enumerated(EnumType.STRING)
+    private TransferT transferType;
 
     // чьи деньги
     @Column(name = "user_id")
@@ -52,14 +57,15 @@ public class Transaction {
 
     // статья движения денежных средств
     @Column(name = "article_cash_flow")
-    private ArticleCashFlow articleCashFlow;
+    @Enumerated(EnumType.STRING)
+    private ArticleCashFlowT articleCashFlow;
 
     // ///////////////////////////// constructors
     public Transaction() {
     }
 
-    public Transaction(String description, Date transactDate, long sum, TransferType transferType, int userId,
-            long balance, ArticleCashFlow articleCashFlow) {
+    public Transaction(String description, Date transactDate, long sum, TransferT transferType, int userId,
+            long balance, ArticleCashFlowT articleCashFlow) {
         this.description = description;
         this.transactDate = transactDate;
         this.summa = sum;
@@ -110,11 +116,11 @@ public class Transaction {
         this.summa = sum;
     }
 
-    public TransferType getTransferType() {
+    public TransferT getTransferType() {
         return transferType;
     }
 
-    public void setTransferType(TransferType transferType) {
+    public void setTransferType(TransferT transferType) {
         this.transferType = transferType;
     }
 
@@ -126,11 +132,11 @@ public class Transaction {
         this.userId = userId;
     }
 
-    public ArticleCashFlow getArticleCashFlow() {
+    public ArticleCashFlowT getArticleCashFlow() {
         return articleCashFlow;
     }
 
-    public void setArticleCashFlow(ArticleCashFlow articleCashFlow) {
+    public void setArticleCashFlow(ArticleCashFlowT articleCashFlow) {
         this.articleCashFlow = articleCashFlow;
     }
 }

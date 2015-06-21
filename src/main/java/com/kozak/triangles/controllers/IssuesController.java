@@ -13,19 +13,19 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.interfaces.Consts;
-import com.kozak.triangles.repositories.TransactionRepository;
-import com.kozak.triangles.repositories.UserRepository;
+import com.kozak.triangles.repositories.TransactionRep;
+import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.utils.ModelCreator;
 import com.kozak.triangles.utils.TagCreator;
 
 @SessionAttributes("user")
 @Controller
 public class IssuesController {
-    private UserRepository userRep;
-    private TransactionRepository trRep;
+    private UserRep userRep;
+    private TransactionRep trRep;
 
     @Autowired
-    public IssuesController(UserRepository userRepository, TransactionRepository transactRepository) {
+    public IssuesController(UserRep userRepository, TransactionRep transactRepository) {
         this.userRep = userRepository;
         this.trRep = transactRepository;
     }

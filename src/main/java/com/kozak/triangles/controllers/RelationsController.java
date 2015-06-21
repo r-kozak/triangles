@@ -6,17 +6,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.kozak.triangles.repositories.TransactionRepository;
-import com.kozak.triangles.repositories.UserRepository;
+import com.kozak.triangles.repositories.TransactionRep;
+import com.kozak.triangles.repositories.UserRep;
 
 @SessionAttributes("user")
 @Controller
 public class RelationsController {
-    private UserRepository userRepository;
-    private TransactionRepository transactRepository;
+    private UserRep userRepository;
+    private TransactionRep transactRepository;
 
     @Autowired
-    public RelationsController(UserRepository userRepository, TransactionRepository transactRepository) {
+    public RelationsController(UserRep userRepository, TransactionRep transactRepository) {
         this.userRepository = userRepository;
         this.transactRepository = transactRepository;
     }

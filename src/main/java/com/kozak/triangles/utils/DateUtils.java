@@ -1,5 +1,8 @@
 package com.kozak.triangles.utils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -351,6 +354,23 @@ public class DateUtils {
         Date d1 = c1.getTime();
         Date d2 = c2.getTime();
         return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    public static Date stringToDate(String strDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        try {
+            return sdf.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String dateToString(Date date) {
+        DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        String result = df.format(date);
+
+        return result;
     }
 
 }

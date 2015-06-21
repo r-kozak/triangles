@@ -1,6 +1,7 @@
 package com.kozak.triangles.controllers;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -12,26 +13,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.kozak.triangles.entities.CommBuildData;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
-import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.TransferType;
-import com.kozak.triangles.interfaces.Rates;
-import com.kozak.triangles.repositories.TransactionRepository;
-import com.kozak.triangles.repositories.UserRepository;
+import com.kozak.triangles.enums.ArticleCashFlowT;
+import com.kozak.triangles.enums.TransferT;
+import com.kozak.triangles.enums.buildings.CommBuildingsT;
+import com.kozak.triangles.interfaces.Consts;
+import com.kozak.triangles.repositories.BuildingDataRep;
+import com.kozak.triangles.repositories.TransactionRep;
+import com.kozak.triangles.repositories.UserRep;
+import com.kozak.triangles.repositories.VmapRep;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.ModelCreator;
+import com.kozak.triangles.utils.ProposalGenerator;
 
 @SessionAttributes("user")
 @Controller
 public class HomeController {
-    private UserRepository userRepository;
-    private TransactionRepository transactRepository;
+    private UserRep userRep;
+    private TransactionRep transactRep;
+    private BuildingDataRep buiDataRep;
+    private VmapRep vmRep;
 
     @Autowired
-    public HomeController(UserRepository userRepository, TransactionRepository transactRepository) {
-        this.userRepository = userRepository;
-        this.transactRepository = transactRepository;
+    public HomeController(UserRep userRep, TransactionRep transactRep, BuildingDataRep buiDataRep, VmapRep vmRep) {
+        this.userRep = userRep;
+        this.transactRep = transactRep;
+        this.buiDataRep = buiDataRep;
+        this.vmRep = vmRep;
     }
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
@@ -39,28 +49,82 @@ public class HomeController {
         if (user == null) {
             return "redirect:/";
         }
-        int currUserId = userRepository.getCurrentUserId(user.getLogin());
+        User currUser = userRep.getCurrentUserByLogin(user.getLogin());
+        // set currUser lastEnter
+        currUser.setLastEnter(new Date());
+        userRep.updateUser(currUser);
+
+        int currUserId = currUser.getId();
         user.setId(currUserId);
 
+        buildDataInit(); // инициализируем данные по строениям для каждого типа
         checkFirstTime(currUserId); // проверка, первый ли вход в игру (вообще)
         giveDailyBonus(currUserId); // начисление ежедневного бонуса
         giveCreditDeposit(currUserId); // начисление кредита/депозита
-        addProposalREMarket(); // добавляет предложение на глобальный рынок недвижимости
+        manageREMarketProposals(); // очистить-добавить предложения на глобальный рынок недвижимости
         levyOnProperty(currUserId); // сбор средств с имущества, где есть кассир
         salaryPayment(currUserId); // выдача зп работникам
 
-        model = ModelCreator.addBalance(model, transactRepository.getUserBalance(currUserId));
+        model = ModelCreator.addBalance(model, transactRep.getUserBalance(currUserId));
 
         return "home";
     }
 
-    private void addProposalREMarket() {
-        // TODO Auto-generated method stub
+    /**
+     * Первоначальное добавление данных о каждом типе имущества в БД.
+     * Нужно для дальнейшего получения данных и генерации предложений на рынке
+     * 
+     * После добавления нового типа (CommBuildingsT) необходимо его добавить и здесь
+     */
+    private void buildDataInit() {
+        // init STALL
+        CommBuildingsT TYPE = CommBuildingsT.STALL;
+        if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
+            CommBuildData data = new CommBuildData(3, 6, 4500, 5500, TYPE, 1, 1, 2);
+            buiDataRep.addCommBuildingData(data);
+        }
 
-        // рынок глобальный
-        // количество предложений зависит от количества активных! пользователей
-        // активный пользователь тот - который заходил последние 2 недели
+        // init VILLAGE_SHOP
+        TYPE = CommBuildingsT.VILLAGE_SHOP;
+        if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
+            CommBuildData data = new CommBuildData(2, 10, 10000, 15000, TYPE, 2, 2, 3);
+            buiDataRep.addCommBuildingData(data);
+        }
+
+        // init STATIONER_SHOP
+        TYPE = CommBuildingsT.STATIONER_SHOP;
+        if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
+            CommBuildData data = new CommBuildData(5, 12, 17000, 30000, TYPE, 3, 1, 4);
+            buiDataRep.addCommBuildingData(data);
+        }
+    }
+
+    /**
+     * Управляет предложениями на рынке недвижимости
+     * 
+     * очищает рынок от устаревших предложений, а затем
+     * генерирует и добавляет новые предложения на рынок недвижимости
+     */
+    private void manageREMarketProposals() {
+        clearREMarket(); // очищает рынок от устаревших предложений
+
+        int activeUsers = userRep.countActiveUsers();
+        boolean marketEmpty = buiDataRep.getREProposalsList().isEmpty();
+        // пришла след. дата генерации предложений
+        boolean dateCome = (new Date().after(vmRep.nextProposeGen()));
+
+        if (marketEmpty || dateCome) {
+            ArrayList<CommBuildData> data = (ArrayList<CommBuildData>) buiDataRep.getCommBuildDataList();
+            ProposalGenerator pg = new ProposalGenerator();
+            pg.generateProposalsREMarket(activeUsers, data);
+        }
         // на одного пользователя каждые 2-14 дней появляется по имуществу
+    }
+
+    private void clearREMarket() {
+        // TODO Auto-generated method stub
+        // очистить рынок от устаревшего
+        // сгенерить новую nextDate
     }
 
     /**
@@ -71,31 +135,31 @@ public class HomeController {
      */
     private void checkFirstTime(int currUserId) throws InterruptedException {
         // get user transactions
-        List<Transaction> userTransactions = transactRepository.getAllUserTransactions(currUserId);
+        List<Transaction> userTransactions = transactRep.getAllUserTransactions(currUserId);
 
-        // if it's a first time in game
+        // if it's a first time in game - add start transactions for user
         if (userTransactions.isEmpty()) {
             Calendar yest = Calendar.getInstance();
             yest.setTime(new Date());
             yest.add(Calendar.DATE, -1);
 
             // transaction for DAILY_BONUS
-            Transaction firstT = new Transaction("Начальный капитал", yest.getTime(), 17000, TransferType.PROFIT,
-                    currUserId, 17000, ArticleCashFlow.DAILY_BONUS);
-            transactRepository.addTransaction(firstT);
+            Transaction firstT = new Transaction("Начальный капитал", yest.getTime(), 17000, TransferT.PROFIT,
+                    currUserId, 17000, ArticleCashFlowT.DAILY_BONUS);
+            transactRep.addTransaction(firstT);
 
             // transaction for CREDIT_DEPOSIT
             yest.add(Calendar.SECOND, 1);
-            firstT = new Transaction("Начальный кредит/депозит", yest.getTime(), 0, TransferType.PROFIT, currUserId,
-                    17000, ArticleCashFlow.CREDIT_DEPOSIT);
-            transactRepository.addTransaction(firstT);
+            firstT = new Transaction("Начальный кредит/депозит", yest.getTime(), 0, TransferT.PROFIT, currUserId,
+                    17000, ArticleCashFlowT.CREDIT_DEPOSIT);
+            transactRep.addTransaction(firstT);
             Thread.sleep(1000);
 
             // transaction for LEVY_ON_PROPERTY
             yest.add(Calendar.SECOND, 1);
-            firstT = new Transaction("Начальный сбор с имущества", yest.getTime(), 0, TransferType.PROFIT, currUserId,
-                    17000, ArticleCashFlow.LEVY_ON_PROPERTY);
-            transactRepository.addTransaction(firstT);
+            firstT = new Transaction("Начальный сбор с имущества", yest.getTime(), 0, TransferT.PROFIT, currUserId,
+                    17000, ArticleCashFlowT.LEVY_ON_PROPERTY);
+            transactRep.addTransaction(firstT);
         }
     }
 
@@ -106,8 +170,8 @@ public class HomeController {
      */
     private void giveDailyBonus(int currUserId) {
         // get user transactions
-        List<Transaction> userTransactions = transactRepository.getUserTransactionsByType(currUserId,
-                ArticleCashFlow.DAILY_BONUS);
+        List<Transaction> userTransactions = transactRep.getUserTransactionsByType(currUserId,
+                ArticleCashFlowT.DAILY_BONUS);
         Date lastTransactionDate = userTransactions.get(userTransactions.size() - 1).getTransactDate();
 
         Calendar today = Calendar.getInstance();
@@ -147,21 +211,21 @@ public class HomeController {
 
             String description = "Ежедневный бонус за: " + formattedDate;
             long oldBalance = userTransactions.get(userTransactions.size() - 1).getBalance();
-            Transaction t = new Transaction(description, now, bonusSum, TransferType.PROFIT, currUserId, oldBalance
-                    + bonusSum, ArticleCashFlow.DAILY_BONUS);
-            transactRepository.addTransaction(t);
+            Transaction t = new Transaction(description, now, bonusSum, TransferT.PROFIT, currUserId, oldBalance
+                    + bonusSum, ArticleCashFlowT.DAILY_BONUS);
+            transactRep.addTransaction(t);
         }
     }
 
     /**
-     * начисление кредита/депозита начисляется каждый месяц ставки описаны в интерфейсе Rates
+     * начисление кредита/депозита начисляется каждый месяц ставки описаны в интерфейсе Consts
      * 
      * @param currUserId
      */
     private void giveCreditDeposit(int currUserId) {
         // get user transactions
-        List<Transaction> userTransactions = transactRepository.getUserTransactionsByType(currUserId,
-                ArticleCashFlow.CREDIT_DEPOSIT);
+        List<Transaction> userTransactions = transactRep.getUserTransactionsByType(currUserId,
+                ArticleCashFlowT.CREDIT_DEPOSIT);
 
         Date lastTransactionDate = userTransactions.get(userTransactions.size() - 1).getTransactDate();
 
@@ -169,9 +233,9 @@ public class HomeController {
         if (daysBetween > 0) {
             int countI = daysBetween / 30;
             for (int i = 0; i < countI; i++) {
-                long userBalance = Long.parseLong(transactRepository.getUserBalance(currUserId));
-                double rate = (userBalance > 0 ? Rates.DEPOSIT_RATE : Rates.CREDIT_RATE);
-                TransferType transferType = (userBalance > 0 ? TransferType.PROFIT : TransferType.SPEND);
+                long userBalance = Long.parseLong(transactRep.getUserBalance(currUserId));
+                double rate = (userBalance > 0 ? Consts.DEPOSIT_RATE : Consts.CREDIT_RATE);
+                TransferT transferType = (userBalance > 0 ? TransferT.PROFIT : TransferT.SPEND);
                 long sum = (long) (userBalance * rate);
                 long newBalance = userBalance + sum;
 
@@ -195,8 +259,8 @@ public class HomeController {
                 description = String.format(description, dateFrom, dateFrom, dateFrom, dateTo, dateTo, dateTo);
 
                 Transaction cdTr = new Transaction(description, new Date(), sum, transferType, currUserId, newBalance,
-                        ArticleCashFlow.CREDIT_DEPOSIT);
-                transactRepository.addTransaction(cdTr);
+                        ArticleCashFlowT.CREDIT_DEPOSIT);
+                transactRep.addTransaction(cdTr);
             }
         }
     }
@@ -223,15 +287,15 @@ public class HomeController {
     private int getBonusSum(int i) {
         switch (i) {
         case 1:
-            return Rates.FIRST_DAY;
+            return Consts.FIRST_DAY;
         case 2:
-            return Rates.SECOND_DAY;
+            return Consts.SECOND_DAY;
         case 3:
-            return Rates.THIRD_DAY;
+            return Consts.THIRD_DAY;
         case 4:
-            return Rates.FOURTH_DAY;
+            return Consts.FOURTH_DAY;
         case 5:
-            return Rates.FIFTH_DAY;
+            return Consts.FIFTH_DAY;
         default:
             return 0;
         }

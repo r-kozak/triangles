@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.kozak.triangles.entities.User;
-import com.kozak.triangles.repositories.UserRepository;
+import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.validators.LoginValidator;
 
 @SessionAttributes("user")
@@ -22,10 +22,10 @@ import com.kozak.triangles.validators.LoginValidator;
 public class LoginController {
 
     private LoginValidator loginValidator;
-    private UserRepository userRepository;
+    private UserRep userRepository;
 
     @Autowired
-    public LoginController(LoginValidator loginValidator, UserRepository userRepository) {
+    public LoginController(LoginValidator loginValidator, UserRep userRepository) {
         this.loginValidator = loginValidator;
         this.userRepository = userRepository;
     }
