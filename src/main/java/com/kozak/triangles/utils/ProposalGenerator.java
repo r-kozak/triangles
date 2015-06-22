@@ -3,11 +3,12 @@ package com.kozak.triangles.utils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.kozak.triangles.entities.CommBuildData;
 import com.kozak.triangles.entities.RealEstateProposal;
+import com.kozak.triangles.interfaces.Consts;
 
 /**
  * генератор предложений на рынке имущества (RealEstateProposal)
@@ -22,7 +23,7 @@ public class ProposalGenerator {
      * 
      * @param usersCount
      */
-    public List<RealEstateProposal> generateProposalsREMarket(int usersCount, ArrayList<CommBuildData> data) {
+    public ArrayList<RealEstateProposal> generateProposalsREMarket(int usersCount, Map<String, CommBuildData> data) {
         ArrayList<RealEstateProposal> result = new ArrayList<RealEstateProposal>();
 
         // коэф. колво имуществ на одного пользователя
@@ -35,11 +36,11 @@ public class ProposalGenerator {
             // бросок кости
             int rd = diceRoll();
             if (rd == 7) {
-                bd = data.get(0); // build data - get STALL
+                bd = data.get("STALL"); // build data - get STALL
             } else if (rd == 6) {
-                bd = data.get(1); // build data - get VILLAGE_SHOP
+                bd = data.get("VILLAGE_SHOP"); // build data - get VILLAGE_SHOP
             } else if (rd == 5) {
-                bd = data.get(2); // build data - get STATIONER_SHOP
+                bd = data.get("STATIONER_SHOP"); // build data - get STATIONER_SHOP
             }
             if (bd != null) {
                 RealEstateProposal propos = generateProposal(bd);
@@ -85,7 +86,6 @@ public class ProposalGenerator {
         long b = generateRandNum(1, 6);
 
         return (int) (a + b);
-
     }
 
     /**
@@ -106,4 +106,17 @@ public class ProposalGenerator {
         return propos;
     }
 
+    /**
+     * генерирует следующую дату для генерации предложений на рынке недвижимости
+     * 
+     * @return возвращает следующую дату в виде строки для последующей вставки в Vmap модель и обновления модели
+     */
+    public String generateNEXT_RE_PROPOSE() {
+        int countToAdd = (int) generateRandNum(Consts.FREQ_RE_PROP_MIN, Consts.FREQ_RE_PROP_MAX);
+
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.DATE, countToAdd);
+
+        return DateUtils.dateToString(now.getTime());
+    }
 }

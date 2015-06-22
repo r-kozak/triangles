@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ public class UserRep {
     }
 
     public User getCurrentUserByLogin(String userLogin) {
-        String hql = "Select from User as user where login = :userLogin";
+        String hql = "from User as user where login = :userLogin";
         Query query = em.createQuery(hql).setParameter("userLogin", userLogin);
         return (User) query.getSingleResult();
     }
@@ -42,10 +43,10 @@ public class UserRep {
         String hql = "select count(*) FROM User as u where u.lastEnter >= :twoWeeksAgo";
 
         Calendar twa = Calendar.getInstance();
-        twa.add(Calendar.DATE, 14);
+        twa.add(Calendar.DATE, -14);
 
         Query query = em.createQuery(hql)
-                .setParameter("twoWeeksAgo", twa);
+                .setParameter("twoWeeksAgo", twa, TemporalType.DATE);
 
         return Integer.valueOf(query.getSingleResult().toString());
     }

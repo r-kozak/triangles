@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * 
  * @author Roman: 21 июня 2015 г. 13:11:47
  */
-@Entity
+@Entity(name = "vmap")
 @Table(name = "vmap")
 public class Vmap {
     @Id

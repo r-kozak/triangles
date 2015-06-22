@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entities.CommBuildData;
+import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
+import com.kozak.triangles.entities.Vmap;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
@@ -81,23 +84,21 @@ public class HomeController {
         // init STALL
         CommBuildingsT TYPE = CommBuildingsT.STALL;
         if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
-            CommBuildData data = new CommBuildData(3, 6, 4500, 5500, TYPE, 1, 1, 2);
+            data = new CommBuildData(3, 6, 4500, 5500, TYPE, 1, 1, 2);
+            buiDataRep.addCommBuildingData(data);
         }
 
         // init VILLAGE_SHOP
         TYPE = CommBuildingsT.VILLAGE_SHOP;
         if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
-            CommBuildData data = new CommBuildData(2, 10, 10000, 15000, TYPE, 2, 2, 3);
+            data = new CommBuildData(2, 10, 10000, 15000, TYPE, 2, 2, 3);
+            buiDataRep.addCommBuildingData(data);
         }
 
         // init STATIONER_SHOP
         TYPE = CommBuildingsT.STATIONER_SHOP;
         if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
-            CommBuildData data = new CommBuildData(5, 12, 17000, 30000, TYPE, 3, 1, 4);
-        }
-        
-        // add data to DB
-        if (data != null) {
+            data = new CommBuildData(5, 12, 17000, 30000, TYPE, 3, 1, 4);
             buiDataRep.addCommBuildingData(data);
         }
     }
@@ -106,28 +107,64 @@ public class HomeController {
      * Управляет предложениями на рынке недвижимости
      * 
      * очищает рынок от устаревших предложений, а затем
-     * генерирует и добавляет новые предложения на рынок недвижимости
+     * генерирует и добавляет новые предложения на рынок недвижимости,
+     * генерирует след. дату генерации предложений
      */
     private void manageREMarketProposals() {
         clearREMarket(); // очищает рынок от устаревших предложений
 
         int activeUsers = userRep.countActiveUsers();
         boolean marketEmpty = buiDataRep.getREProposalsList().isEmpty();
-        // пришла след. дата генерации предложений
-        boolean dateCome = (new Date().after(vmRep.nextProposeGen()));
+
+        Vmap vm = vmRep.getNextProposeGen(); // получаем экземпляр константы
+        Date nrep = DateUtils.stringToDate(vm.getValue()); // берем из нее значение даты
+        boolean dateCome = (new Date().after(nrep)); // пришла след. дата генерации предложений
 
         if (marketEmpty || dateCome) {
+            // генерируем предложения
+            HashMap<String, CommBuildData> mapData = new HashMap<String, CommBuildData>();
+
             ArrayList<CommBuildData> data = (ArrayList<CommBuildData>) buiDataRep.getCommBuildDataList();
+            for (CommBuildData d : data) {
+                mapData.put(d.getBuildType().name(), d);
+            }
+
             ProposalGenerator pg = new ProposalGenerator();
-            pg.generateProposalsREMarket(activeUsers, data);
+            ArrayList<RealEstateProposal> result = pg.generateProposalsREMarket(activeUsers, mapData);
+            for (RealEstateProposal prop : result) {
+                buiDataRep.addREproposal(prop);
+            }
         }
-        // на одного пользователя каждые 2-14 дней появляется по имуществу
+
+        // если пришла дата след. генерации, значит нужно генерить новую
+        if (dateCome) {
+            generateNewNextDate(vm); // генерация новой даты NextREproposal (константа с Vmap)
+        }
     }
 
+    /**
+     * генерирует новый экземпляр даты следующей генерации предложений
+     * 
+     * @param oldValue
+     *            старый экземпляр константы для обновления
+     */
+    private void generateNewNextDate(Vmap oldValue) {
+        ProposalGenerator pg = new ProposalGenerator();
+        String newDate = pg.generateNEXT_RE_PROPOSE();
+
+        oldValue.setValue(newDate);
+        vmRep.updateVmapRow(oldValue);
+    }
+
+    /**
+     * очищает рынок недвижимости от не актуальных предложений (lossDate которых меньше текущей)
+     */
     private void clearREMarket() {
-        // TODO Auto-generated method stub
-        // очистить рынок от устаревшего
-        // сгенерить новую nextDate
+        List<RealEstateProposal> outdated = buiDataRep.getOutdatedProposals();
+        for (RealEstateProposal rep : outdated) {
+            rep.setValid(false);
+            buiDataRep.updateREproposal(rep);
+        }
     }
 
     /**

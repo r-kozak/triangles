@@ -28,7 +28,7 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
  * 
  * @author Roman: 12 июня 2015 г. 22:25:55
  */
-@Entity
+@Entity(name = "re_proposal")
 @Table(name = "re_proposal")
 public class RealEstateProposal {
     @Id

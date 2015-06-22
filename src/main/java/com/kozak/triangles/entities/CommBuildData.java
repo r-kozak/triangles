@@ -35,7 +35,7 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
  * @author Roman: 20 июня 2015 г. 12:13:58
  */
 
-@Entity
+@Entity(name = "CommBuildData")
 @Table(name = "CommBuildData")
 public class CommBuildData {
     @Id
@@ -108,6 +108,9 @@ public class CommBuildData {
 
         this.buildType = buildType;
         this.buildTime = buildTime;
+
+        this.remTermMin = remTermMin;
+        this.remTermMax = remTermMax;
     }
 
     public Integer getId() {
@@ -182,14 +185,6 @@ public class CommBuildData {
         this.cashCapacity = cashCapacity;
     }
 
-    public CommBuildingsT getBuildType() {
-        return buildType;
-    }
-
-    public void setBuildType(CommBuildingsT buildType) {
-        this.buildType = buildType;
-    }
-
     public int getBuildTime() {
         return buildTime;
     }
@@ -212,6 +207,14 @@ public class CommBuildData {
 
     public void setRemTermMax(int remTermMax) {
         this.remTermMax = remTermMax;
+    }
+
+    public CommBuildingsT getBuildType() {
+        return buildType;
+    }
+
+    public void setBuildType(CommBuildingsT buildType) {
+        this.buildType = buildType;
     }
 
 }

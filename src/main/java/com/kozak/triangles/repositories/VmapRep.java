@@ -3,6 +3,7 @@ package com.kozak.triangles.repositories;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -22,31 +23,41 @@ public class VmapRep {
     /**
      * @return дата следующей генерации предложений на рынке имущества
      */
-    public Date nextProposeGen() {
-        String hql = "select from vmap as vmap where vmap.name = :name";
+    public Vmap getNextProposeGen() {
+        String hql = "from vmap as vmap where vmap.name = :name";
         Query query = em.createQuery(hql)
                 .setParameter("name", Consts.NEXT_RE_PROPOSE);
 
-        Date result = (Date) query.getSingleResult();
-        if (result == null) {
+        Vmap result = null;
+        try {
+            result = (Vmap) query.getSingleResult();
+        } catch (NoResultException e) {
             result = initNextProposeGen();
         }
         return result;
     }
 
     /**
-     * создает константу со следю датой генерации имущества,
-     * если та не существует
+     * создает строку с константой след. даты генерации имущества,
+     * !!! если та не существует !!!
      */
-    private Date initNextProposeGen() {
-        Date date = new Date();
+    private Vmap initNextProposeGen() {
+        String newValue = DateUtils.dateToString(new Date());
 
         Vmap vm = new Vmap();
         vm.setName(Consts.NEXT_RE_PROPOSE);
-        vm.setValue(DateUtils.dateToString(date));
+        vm.setValue(newValue);
 
         em.persist(vm);
 
-        return date;
+        return vm;
     }
+
+    /**
+     * обновляет любую константу с Vmap
+     */
+    public void updateVmapRow(Vmap vm) {
+        em.merge(vm);
+    }
+
 }
