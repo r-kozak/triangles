@@ -77,24 +77,27 @@ public class HomeController {
      * После добавления нового типа (CommBuildingsT) необходимо его добавить и здесь
      */
     private void buildDataInit() {
+        CommBuildData data = null;
         // init STALL
         CommBuildingsT TYPE = CommBuildingsT.STALL;
         if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
             CommBuildData data = new CommBuildData(3, 6, 4500, 5500, TYPE, 1, 1, 2);
-            buiDataRep.addCommBuildingData(data);
         }
 
         // init VILLAGE_SHOP
         TYPE = CommBuildingsT.VILLAGE_SHOP;
         if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
             CommBuildData data = new CommBuildData(2, 10, 10000, 15000, TYPE, 2, 2, 3);
-            buiDataRep.addCommBuildingData(data);
         }
 
         // init STATIONER_SHOP
         TYPE = CommBuildingsT.STATIONER_SHOP;
         if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
             CommBuildData data = new CommBuildData(5, 12, 17000, 30000, TYPE, 3, 1, 4);
+        }
+        
+        // add data to DB
+        if (data != null) {
             buiDataRep.addCommBuildingData(data);
         }
     }
