@@ -102,4 +102,24 @@ public class BuildingDataRep {
         em.merge(prop);
     }
 
+    /**
+     * 
+     * @param id
+     *            id предложения
+     * @return предложение с указанным id
+     */
+    public RealEstateProposal getREProposalById(int id) {
+        String hql = "from re_proposal as rep where rep.id = :id ";
+        Query query = em.createQuery(hql)
+                .setParameter("id", id);
+
+        RealEstateProposal result = null;
+        try {
+            result = (RealEstateProposal) query.getSingleResult();
+        } catch (NoResultException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }
