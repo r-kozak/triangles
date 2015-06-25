@@ -20,7 +20,7 @@ public interface Consts {
     int FIFTH_DAY = 1000;
 
     // количество транзакций на страницу
-    int TRANS_ON_PAGE = 1;
+    int TRANS_ON_PAGE = 12;
 
     // частота появления предложений на рынке недвижимости - мин, макс (ДНЕЙ)
     int FREQ_RE_PROP_MIN = 1;
@@ -28,4 +28,10 @@ public interface Consts {
 
     // название поля с датой следующего предложения на рынке недвижимости
     String NEXT_RE_PROPOSE = "NEXT_RE_PROPOSE_DATE";
+
+    // ставки процентов районов города
+    int CENTER_P = 30;
+    int CHINA_P = 15;
+    int OUTSKIRTS_P = 5;
+    int GHETTO_P = 0;
 }

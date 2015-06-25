@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 
 /**
@@ -24,6 +25,7 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
  * appearDate - дата появления на рынке
  * lossDate - дата ухода с рынка
  * purchasePrice - цена покупки
+ * cityArea - район здания
  * valid - предложение еще действительно
  * 
  * @author Roman: 12 июня 2015 г. 22:25:55
@@ -51,14 +53,20 @@ public class RealEstateProposal {
     @Column(name = "purchase_price")
     private long purchasePrice;
 
+    @Column(name = "cityArea")
+    @Enumerated(EnumType.STRING)
+    private CityAreasT cityArea;
+
     @Column(name = "valid")
     private boolean valid = true;
 
-    public RealEstateProposal(CommBuildingsT commBuildingType, Date appearDate, Date lossDate, long purchasePrice) {
+    public RealEstateProposal(CommBuildingsT commBuildingType, Date appearDate, Date lossDate, long purchasePrice,
+            CityAreasT cityArea) {
         this.commBuildingType = commBuildingType;
         this.appearDate = appearDate;
         this.lossDate = lossDate;
         this.purchasePrice = purchasePrice;
+        this.cityArea = cityArea;
     }
 
     public RealEstateProposal() {
@@ -102,6 +110,14 @@ public class RealEstateProposal {
 
     public void setPurchasePrice(long purchasePrice) {
         this.purchasePrice = purchasePrice;
+    }
+
+    public CityAreasT getCityArea() {
+        return cityArea;
+    }
+
+    public void setCityArea(CityAreasT cityArea) {
+        this.cityArea = cityArea;
     }
 
     public boolean isValid() {

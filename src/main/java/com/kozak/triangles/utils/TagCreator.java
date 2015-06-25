@@ -1,6 +1,5 @@
 package com.kozak.triangles.utils;
 
-
 /**
  * Created by Roman on 07.04.2015 19:42.
  */
@@ -47,26 +46,26 @@ public class TagCreator {
             }
         }
 
-        String result = sb.toString();
-        if (result.isEmpty()) {
-            return result;
-        } else {
-            result = result.replace(" -  ... ", " ... ");
-            return result.substring(0, result.length() - 3);
-        }
+        return sb.toString();
     }
 
     private static StringBuilder generateTagNav(StringBuilder sb, String navPref, int currPage, int i) {
+        sb.append("<li>");
+
         sb.append("<a href=\"");
         sb.append(navPref + "&page=");
         sb.append(i);
-        sb.append("\">");
-        if (i == currPage)
-            sb.append("<b class=\"currentPage\">" + i + "</b>");
-        else
-            sb.append(i);
-        sb.append("</a> - ");
+        sb.append("\"");
+        if (i == currPage) {
+            sb.append(" class=\"whitesquareactive\"");
+        } else {
+            sb.append(" class=\"whitesquare\"");
+        }
+        sb.append(">");
+        sb.append(i);
+        sb.append("</a>");
 
+        sb.append("</li>");
         return sb;
     }
 }

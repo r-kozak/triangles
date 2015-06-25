@@ -8,6 +8,7 @@ import java.util.Random;
 
 import com.kozak.triangles.entities.CommBuildData;
 import com.kozak.triangles.entities.RealEstateProposal;
+import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.interfaces.Consts;
 
 /**
@@ -35,13 +36,19 @@ public class ProposalGenerator {
 
             // бросок кости
             int rd = diceRoll();
-            if (rd == 7) {
+
+            switch (rd) {
+            case 7:
                 bd = data.get("STALL"); // build data - get STALL
-            } else if (rd == 6) {
+                break;
+            case 6:
                 bd = data.get("VILLAGE_SHOP"); // build data - get VILLAGE_SHOP
-            } else if (rd == 5) {
+                break;
+            case 5:
                 bd = data.get("STATIONER_SHOP"); // build data - get STATIONER_SHOP
+                break;
             }
+
             if (bd != null) {
                 RealEstateProposal propos = generateProposal(bd);
                 result.add(propos);
@@ -96,13 +103,43 @@ public class ProposalGenerator {
      * @return
      */
     private RealEstateProposal generateProposal(CommBuildData bd) {
+        // generate lossDate
         Calendar lossDate = Calendar.getInstance();
         lossDate.add(Calendar.DATE, (int) generateRandNum(bd.getRemTermMin(), bd.getRemTermMax()));
 
         long price = generateRandNum(bd.getPurchasePriceMin(), bd.getPurchasePriceMax());
 
+        // генерируем район города и увеличиваем цену в зависимости от района
+        // бросок кости
+        int rd = diceRoll();
+        CityAreasT area = null;
+
+        switch (rd) {
+        case 2:
+        case 12:
+            area = CityAreasT.CENTER;
+            price += price * Consts.CENTER_P / 100;
+            break;
+        case 3:
+        case 4:
+        case 11:
+            area = CityAreasT.CHINATOWN;
+            price += price * Consts.CHINA_P / 100;
+            break;
+        case 5:
+        case 9:
+        case 10:
+            area = CityAreasT.OUTSKIRTS;
+            price += price * Consts.OUTSKIRTS_P / 100;
+            break;
+        default:
+            area = CityAreasT.GHETTO;
+            price += price * Consts.GHETTO_P / 100;
+            break;
+        }
+
         RealEstateProposal propos = new RealEstateProposal(bd.getBuildType(), new Date(), lossDate.getTime(),
-                price);
+                price, area);
         return propos;
     }
 

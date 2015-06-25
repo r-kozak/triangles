@@ -1,6 +1,5 @@
 package com.kozak.triangles.controllers;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -244,14 +243,9 @@ public class HomeController {
             thisDayNumber += 1;
 
             int bonusSum = getBonusSum(thisDayNumber);
-            Date now = new Date();
-
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-            String formattedDate = formatter.format(now);
-
-            String description = "Ежедневный бонус за: " + formattedDate;
+            String description = "Ежедневный бонус (день " + thisDayNumber + "-й)";
             long oldBalance = userTransactions.get(userTransactions.size() - 1).getBalance();
-            Transaction t = new Transaction(description, now, bonusSum, TransferT.PROFIT, currUserId, oldBalance
+            Transaction t = new Transaction(description, new Date(), bonusSum, TransferT.PROFIT, currUserId, oldBalance
                     + bonusSum, ArticleCashFlowT.DAILY_BONUS);
             transactRep.addTransaction(t);
         }

@@ -2,7 +2,7 @@
 
 /* CSS Document */
 p.button {
-	display: inline-block;
+/*  	display: inline-block; */
 	text-align: center;
 	cursor: pointer;
 }
@@ -18,7 +18,7 @@ p.a, p.button:active {
 }
 
 p.button span {
-	display: block;
+	display: inline-block;
 }
 
 /* Colors */

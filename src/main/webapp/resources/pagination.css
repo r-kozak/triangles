@@ -1,0 +1,88 @@
+
+/*** Постраничная навигация базовый стиль ***/
+.pagination{
+width:100%;
+float:center;
+text-align:right;
+margin-top: 20px;
+}
+
+.pagination ul{
+width:100%;
+float:right;
+padding:0px;
+margin:0 3;
+}
+
+.pagination ul li{
+float:center;
+display:inline-block;
+list-style:none;
+margin:3px 3px;
+font-family: Arial, Helvetica, sans-serif;
+font-size:8pt;
+}
+
+.pagination ul li a, .pagination ul li a:visited{
+display:block;
+padding:5px 10px;
+text-decoration:none;
+}
+
+.pagination ul li a:hover{
+display:block;
+padding:5px 10px;
+text-decoration:none;
+}
+
+/***** Белый *****/
+.pagination ul li a:link.whitesquare, .pagination ul li a:visited.whitesquare{
+border:1px solid #CCCCCC;
+background: #e0e0e0;
+background: -moz-linear-gradient(top, #fff, #e0e0e0);
+background: -ms-linear-gradient(top, #fff, #e0e0e0);
+background: -webkit-gradient(linear,left top, left bottom, from(#fff), to(#e0e0e0));
+background: -o-linear-gradient(top, #fff, #e0e0e0);
+filter: progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#ffffff', EndColorStr='#e0e0e0', GradientType=0);
+color:#666666;
+text-shadow:none !important;
+}
+
+.pagination ul li a:hover.whitesquare{
+border:1px solid #999;
+background: #fff;
+background: -moz-linear-gradient(top, #fff, #999);
+background: -ms-linear-gradient(top, #fff, #999);
+background: -webkit-gradient(linear,left top, left bottom, from(#fff), to(#c6c1c1));
+background: -o-linear-gradient(top, #fff, #999);
+filter: progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#ffffff', EndColorStr='#999999', GradientType=0);
+color:#666666;
+text-shadow:none !important;
+}
+
+.pagination ul li a:link.whitesquareactive, .pagination ul li a:visited.whitesquareactive{
+border:1px solid #999;
+background: #fff;
+background: -moz-linear-gradient(top, orange, orange);
+background: -ms-linear-gradient(top, orange, orange);
+background: -webkit-gradient(linear,left top, left bottom, from(orange), to(orange));
+background: -o-linear-gradient(top, orange, orange);
+filter: progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#ffffff', EndColorStr='#999999', GradientType=0);
+color:white;
+text-shadow:none !important;
+/*запрет перехода по ссылке*/
+pointer-events: none;
+cursor: default;
+}
+
+.pagination ul li a:hover.whitesquareactive{
+border:1px solid #CCCCCC;
+background: #e0e0e0;
+background: -moz-linear-gradient(top, orange, orange);
+background: -ms-linear-gradient(top, orange, orange);
+background: -webkit-gradient(linear,left top, left bottom, from(orange), to(orange));
+background: -o-linear-gradient(top, orange, orange);
+filter: progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#ffffff', EndColorStr='#e0e0e0', GradientType=0);
+color:white;
+text-shadow:none !important;
+}

@@ -20,57 +20,63 @@
 	</div>
 	<div class="status">
 		<div class="dominant">Dominant: 0&#9813;</div>
-		<div class="balance">Balance: ${balance}&tridot;</div>
+		<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Balance: ${balance}&tridot;</a></div>
 	</div>
 
 	<div class="content">
 		<div class="tranBlock">
-		<h1 align="center">Транзакции</h1>
+		<h1 align="center">Рынок недвижимости</h1>
 			<table class="beaTable">
 				<tr>
-					<td>Дата</td>
-					<td>Статья затрат</td>
-					<td>Описание</td>
-					<td>Прих./Расх.</td>
-					<td>Сумма</td>
-					<td>Баланс</td>
+					<td>Тип</td>
+					<td>Район города</td>
+					<td>Размещение</td>
+					<td>Конец размещения</td>
+					<td>Цена</td>
+					<td>Купить</td>
 				</tr>
 
-				<c:if test="${!empty transacs}">
-					<c:forEach items="${transacs}" var="transac">
+				<c:if test="${!empty proposals}">
+					<c:forEach items="${proposals}" var="prop">
 						<tr>
-							<td><fmt:formatDate value="${transac.transactDate}" pattern="dd-MM-yyyy HH:mm:ss" /></td>
-							
 							<c:choose>
-								<c:when test="${transac.articleCashFlow == 'DAILY_BONUS'}">
-									<td>Ежедневный бонус</td>
+								<c:when test="${prop.commBuildingType == 'STALL'}">
+									<td>Киоск</td>
 								</c:when>
-								<c:when test="${transac.articleCashFlow == 'CREDIT_DEPOSIT'}">
-									<td>Кредит/депозит</td>
+								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
+									<td>Сельский магазин</td>
 								</c:when>
-								<c:when test="${transac.articleCashFlow == 'LEVY_ON_PROPERTY'}">
-									<td>Сбор с имущества</td>
+								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
+									<td>Магазин канцтоваров</td>
 								</c:when>
 								<c:otherwise>
 									<td>${transac.articleCashFlow}</td>
 								</c:otherwise>
 							</c:choose>
 							
-							<td>${transac.description}</td>
-							
 							<c:choose>
-								<c:when test="${transac.transferType == 'PROFIT'}">
-									<td>Прибыль</td>
+								<c:when test="${prop.cityArea == 'GHETTO'}">
+									<td>Гетто</td>
 								</c:when>
-								<c:when test="${transac.transferType == 'SPEND'}">
-									<td>Расход</td>
+								<c:when test="${prop.cityArea == 'OUTSKIRTS'}">
+									<td>Окраина</td>
+								</c:when>
+								<c:when test="${prop.cityArea == 'CHINATOWN'}">
+									<td>Чайнатаун</td>
+								</c:when>
+								<c:when test="${prop.cityArea == 'CENTER'}">
+									<td>Центр</td>
 								</c:when>
 								<c:otherwise>
-									<td>${transac.transferType}</td>
+									<td>${transac.cityArea}</td>
 								</c:otherwise>
 							</c:choose>
-							<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${transac.sum}"/></td>
-							<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${transac.balance}"/></td>
+							
+							<td><fmt:formatDate value="${prop.appearDate}" pattern="dd-MM-yyyy HH:mm:ss" /></td>
+							<td><fmt:formatDate value="${prop.lossDate}" pattern="dd-MM-yyyy HH:mm:ss" /></td>							
+							
+							<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.purchasePrice}"/></td>
+							<td align="center"><a href="${pageContext.request.contextPath}/property/buy/${prop.id}"><p class="button small bRed"><span>BUY</span></p></a></td>
 						</tr>
 					</c:forEach>
 				</c:if>

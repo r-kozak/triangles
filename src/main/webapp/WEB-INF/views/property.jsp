@@ -17,14 +17,14 @@
 		</div>
 	<div class="status">
 		<div class="dominant">Dominant: 0&#9813;</div>
-		<div class="balance">Balance: ${balance}&tridot;</div>
+		<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Balance: ${balance}&tridot;</a></div>
 	</div>
 
 	<div class="content">
 		<div class="wrapperNav">
 			<h1 align="center">Управление имуществом</h1>
 			
-			<a href="${pageContext.request.contextPath}/r-e-market"><p class="button menu bRed"><span>Рынок недвижим.</span></p></a>
+			<a href="${pageContext.request.contextPath}/property/r-e-market"><p class="button menu bRed"><span>Рынок недвижим.</span></p></a>
 			<a href="${pageContext.request.contextPath}/m-p-market"><p class="button menu bPurple"><span>Рынок транспорта</span></p></a>
 			<a href="${pageContext.request.contextPath}/private-pr"><p class="button menu bGreen"><span>Мое личное имущество</span></p></a>
 			<a href="${pageContext.request.contextPath}/commerc-pr"><p class="button menu bYellow"><span>Мое коммерческое</span></p></a>
