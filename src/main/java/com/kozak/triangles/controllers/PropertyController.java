@@ -54,18 +54,21 @@ public class PropertyController {
             // TODO посчитать (ост. стоим. всего имущества / 2)
             long ostStoimost = 0;
 
-            if (userMoney <= 0) {
+            //хватает денег
+            if (userMoney >= prop.getPurchasePrice()) {
+                // TODO покупка состоялась
+            } else if (userMoney + ostStoimost >= prop.getPurchasePrice()) { //войдем в минуса
+                // TODO спросить о кредите
+            } else if (userMoney <= 0) { 
                 model.addAttribute("errorMsg",
                         "Ваш баланс равен или меньше нуля. Покупка невозможна. Продайте что-нибудь или заработайте денег.");
-                return "error";
-            } else if (userMoney >= prop.getPurchasePrice()) {
-                // TODO покупка состоялась
-            } else if (userMoney + ostStoimost >= prop.getPurchasePrice()) {
-                // TODO спросить о кредите
             } else if (userMoney + ostStoimost < prop.getPurchasePrice()) {
                 // TODO нала и ост стоим ваш имущ / 2 не хватает для залога кредита
+                model.addAttribute("errorMsg",
+                        "Ваша <a href"${pageContext.request.contextPath}/help">состоятельность</a> не позволяет вам купить это имущество. Купить что-нибудь другое.");
             }
-        }
+        return "error";
+    }
 
         return null;
     }
