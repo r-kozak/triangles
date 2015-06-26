@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.repositories.BuildingDataRep;
+import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
-import com.kozak.triangles.utils.ModelCreator;
+import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @RequestMapping(value = "/property")
@@ -21,29 +22,31 @@ import com.kozak.triangles.utils.ModelCreator;
 public class PropertyController {
     private TransactionRep trRep;
     private BuildingDataRep buiDataRep;
+    private PropertyRep prRep;
 
     @Autowired
-    public PropertyController(TransactionRep trRep, BuildingDataRep buiDataRep) {
+    public PropertyController(TransactionRep trRep, BuildingDataRep buiDataRep, PropertyRep prRep) {
         this.trRep = trRep;
         this.buiDataRep = buiDataRep;
+        this.prRep = prRep;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     String propertyGET(@ModelAttribute("user") User user, Model model) {
-        model = ModelCreator.addBalance(model, trRep.getUserBalance(user.getId()));
+        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
         return "property";
     }
 
     @RequestMapping(value = "/r-e-market", method = RequestMethod.GET)
     String realEstMarket(@ModelAttribute("user") User user, Model model) {
-        model = ModelCreator.addBalance(model, trRep.getUserBalance(user.getId()));
+        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
         model.addAttribute("proposals", buiDataRep.getREProposalsList());
         return "remarket";
     }
 
-    @RequestMapping(value = "/buy/{id}", method = RequestMethod.GET)
-    String buyProperty(@PathVariable int id, User user, Model model) {
-        RealEstateProposal prop = buiDataRep.getREProposalById(id);
+    @RequestMapping(value = "/buy/{prId}", method = RequestMethod.GET)
+    String buyProperty(@PathVariable int prId, User user, Model model) {
+        RealEstateProposal prop = buiDataRep.getREProposalById(prId);
 
         if (prop == null || !prop.isValid()) {
             model.addAttribute("errorMsg",
@@ -51,24 +54,35 @@ public class PropertyController {
             return "error";
         } else {
             Long userMoney = Long.parseLong(trRep.getUserBalance(user.getId()));
-            // TODO посчитать (ост. стоим. всего имущества / 2)
-            long ostStoimost = 0;
+            // (ост. стоим. всего имущества / 2)
+            long sellSum = prRep.getSellingSumAllPropByUser(user.getId()) / 2;
 
-            //хватает денег
+            // TODO решить с валидностью предложения при начале покупки. и в конце, если покупка отменена
+            prop.setValid(false);
+
+            // хватает денег
             if (userMoney >= prop.getPurchasePrice()) {
-                // TODO покупка состоялась
-            } else if (userMoney + ostStoimost >= prop.getPurchasePrice()) { //войдем в минуса
+                model.addAttribute("title", "Покупка за наличные");
+                model.addAttribute("percent", Util.getAreaPercent(prop.getCityArea()));
+                model.addAttribute("prop", prop);
+                model.addAttribute("data", buiDataRep.getCommBuildDataByType(prop.getCommBuildingType()));
+                return "apply_buy";
+            } else if (userMoney + sellSum >= prop.getPurchasePrice()) { // войдем в минуса
                 // TODO спросить о кредите
-            } else if (userMoney <= 0) { 
+            } else if (userMoney <= 0) {
                 model.addAttribute("errorMsg",
                         "Ваш баланс равен или меньше нуля. Покупка невозможна. Продайте что-нибудь или заработайте денег.");
-            } else if (userMoney + ostStoimost < prop.getPurchasePrice()) {
-                // TODO нала и ост стоим ваш имущ / 2 не хватает для залога кредита
-                model.addAttribute("errorMsg",
-                        "Ваша <a href"${pageContext.request.contextPath}/help">состоятельность</a> не позволяет вам купить это имущество. Купить что-нибудь другое.");
+            } else if (userMoney + sellSum < prop.getPurchasePrice()) {
+                model.addAttribute("errorMsg", "Ваша "
+                        + "<a href\"${pageContext.request.contextPath}/help\">состоятельность</a> "
+                        + "не позволяет вам купить это имущество. Купить что-нибудь другое.");
             }
-        return "error";
+            return "error";
+        }
     }
+
+    @RequestMapping(value = "/buy/{prId}", method = RequestMethod.POST)
+    String applyBuy(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action, User user, Model model) {
 
         return null;
     }

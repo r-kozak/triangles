@@ -5,10 +5,13 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Insert title here</title>
+	<title>error</title>
 </head>
 <style>
 	body {
+		width: 100%;
+		display: -webkit-box;
+		-webkit-box-pack: center;
 		background: #ffc5c5;
 	}
 	
@@ -34,7 +37,7 @@
 
 <body>
 	<div class="errorBlock">
-		<p>{errorMsg}</p>
+		<p>${errorMsg}</p>
 		<br>
 		<a href="${pageContext.request.contextPath}/property/r-e-market">В течение 10 сек. вас перенаправит туда, откуда вы пришли, но можно и быстрее... (для этого ткнуть сюда)</a>
 		<script language="JavaScript" type="text/javascript">

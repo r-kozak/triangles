@@ -68,7 +68,7 @@
 									<td>Центр</td>
 								</c:when>
 								<c:otherwise>
-									<td>${transac.cityArea}</td>
+									<td>${prop.cityArea}</td>
 								</c:otherwise>
 							</c:choose>
 							

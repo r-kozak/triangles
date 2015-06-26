@@ -27,7 +27,7 @@ import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.repositories.VmapRep;
 import com.kozak.triangles.utils.DateUtils;
-import com.kozak.triangles.utils.ModelCreator;
+import com.kozak.triangles.utils.Util;
 import com.kozak.triangles.utils.ProposalGenerator;
 
 @SessionAttributes("user")
@@ -67,7 +67,7 @@ public class HomeController {
         levyOnProperty(currUserId); // сбор средств с имущества, где есть кассир
         salaryPayment(currUserId); // выдача зп работникам
 
-        model = ModelCreator.addBalance(model, transactRep.getUserBalance(currUserId));
+        model = Util.addBalanceToModel(model, transactRep.getUserBalance(currUserId));
 
         return "home";
     }

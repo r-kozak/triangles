@@ -15,7 +15,7 @@ import com.kozak.triangles.entities.User;
 import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
-import com.kozak.triangles.utils.ModelCreator;
+import com.kozak.triangles.utils.Util;
 import com.kozak.triangles.utils.TagCreator;
 
 @SessionAttributes("user")
@@ -49,7 +49,7 @@ public class IssuesController {
                 + ((transCount % Consts.TRANS_ON_PAGE != 0) ? 1 : 0);
         List transacs = trRep.transList(page, user.getId());
 
-        model = ModelCreator.addBalance(model, trRep.getUserBalance(user.getId()));
+        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
         model.addAttribute("transacs", transacs);
         model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, contextPath + "/transactions?", page));
 

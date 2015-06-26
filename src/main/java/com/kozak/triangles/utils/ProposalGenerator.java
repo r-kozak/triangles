@@ -118,25 +118,22 @@ public class ProposalGenerator {
         case 2:
         case 12:
             area = CityAreasT.CENTER;
-            price += price * Consts.CENTER_P / 100;
             break;
         case 3:
         case 4:
         case 11:
             area = CityAreasT.CHINATOWN;
-            price += price * Consts.CHINA_P / 100;
             break;
         case 5:
         case 9:
         case 10:
             area = CityAreasT.OUTSKIRTS;
-            price += price * Consts.OUTSKIRTS_P / 100;
             break;
         default:
             area = CityAreasT.GHETTO;
-            price += price * Consts.GHETTO_P / 100;
             break;
         }
+        price += price * Util.getAreaPercent(area) / 100;
 
         RealEstateProposal propos = new RealEstateProposal(bd.getBuildType(), new Date(), lossDate.getTime(),
                 price, area);
