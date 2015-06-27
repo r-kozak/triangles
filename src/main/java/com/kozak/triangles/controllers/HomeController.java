@@ -27,21 +27,21 @@ import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.repositories.VmapRep;
 import com.kozak.triangles.utils.DateUtils;
-import com.kozak.triangles.utils.Util;
 import com.kozak.triangles.utils.ProposalGenerator;
+import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @Controller
 public class HomeController {
     private UserRep userRep;
-    private TransactionRep transactRep;
+    private TransactionRep trRep;
     private BuildingDataRep buiDataRep;
     private VmapRep vmRep;
 
     @Autowired
-    public HomeController(UserRep userRep, TransactionRep transactRep, BuildingDataRep buiDataRep, VmapRep vmRep) {
+    public HomeController(UserRep userRep, TransactionRep trRep, BuildingDataRep buiDataRep, VmapRep vmRep) {
         this.userRep = userRep;
-        this.transactRep = transactRep;
+        this.trRep = trRep;
         this.buiDataRep = buiDataRep;
         this.vmRep = vmRep;
     }
@@ -67,7 +67,7 @@ public class HomeController {
         levyOnProperty(currUserId); // сбор средств с имущества, где есть кассир
         salaryPayment(currUserId); // выдача зп работникам
 
-        model = Util.addBalanceToModel(model, transactRep.getUserBalance(currUserId));
+        model = Util.addBalanceToModel(model, trRep.getUserBalance(currUserId));
 
         return "home";
     }
@@ -115,7 +115,7 @@ public class HomeController {
         int activeUsers = userRep.countActiveUsers();
         boolean marketEmpty = buiDataRep.getREProposalsList().isEmpty();
 
-        Vmap vm = vmRep.getNextProposeGen(); // получаем экземпляр константы
+        Vmap vm = vmRep.getNextProposeGen(); // получаем экземпляр константы (след. даты генерации предложений)
         Date nrep = DateUtils.stringToDate(vm.getValue()); // берем из нее значение даты
         boolean dateCome = (new Date().after(nrep)); // пришла след. дата генерации предложений
 
@@ -174,7 +174,7 @@ public class HomeController {
      */
     private void checkFirstTime(int currUserId) throws InterruptedException {
         // get user transactions
-        List<Transaction> userTransactions = transactRep.getAllUserTransactions(currUserId);
+        List<Transaction> userTransactions = trRep.getAllUserTransactions(currUserId);
 
         // if it's a first time in game - add start transactions for user
         if (userTransactions.isEmpty()) {
@@ -185,20 +185,20 @@ public class HomeController {
             // transaction for DAILY_BONUS
             Transaction firstT = new Transaction("Начальный капитал", yest.getTime(), 17000, TransferT.PROFIT,
                     currUserId, 17000, ArticleCashFlowT.DAILY_BONUS);
-            transactRep.addTransaction(firstT);
+            trRep.addTransaction(firstT);
 
             // transaction for CREDIT_DEPOSIT
             yest.add(Calendar.SECOND, 1);
             firstT = new Transaction("Начальный кредит/депозит", yest.getTime(), 0, TransferT.PROFIT, currUserId,
                     17000, ArticleCashFlowT.CREDIT_DEPOSIT);
-            transactRep.addTransaction(firstT);
+            trRep.addTransaction(firstT);
             Thread.sleep(1000);
 
             // transaction for LEVY_ON_PROPERTY
             yest.add(Calendar.SECOND, 1);
             firstT = new Transaction("Начальный сбор с имущества", yest.getTime(), 0, TransferT.PROFIT, currUserId,
                     17000, ArticleCashFlowT.LEVY_ON_PROPERTY);
-            transactRep.addTransaction(firstT);
+            trRep.addTransaction(firstT);
         }
     }
 
@@ -209,7 +209,7 @@ public class HomeController {
      */
     private void giveDailyBonus(int currUserId) {
         // get user transactions
-        List<Transaction> userTransactions = transactRep.getUserTransactionsByType(currUserId,
+        List<Transaction> userTransactions = trRep.getUserTransactionsByType(currUserId,
                 ArticleCashFlowT.DAILY_BONUS);
         Date lastTransactionDate = userTransactions.get(userTransactions.size() - 1).getTransactDate();
 
@@ -247,7 +247,7 @@ public class HomeController {
             long oldBalance = userTransactions.get(userTransactions.size() - 1).getBalance();
             Transaction t = new Transaction(description, new Date(), bonusSum, TransferT.PROFIT, currUserId, oldBalance
                     + bonusSum, ArticleCashFlowT.DAILY_BONUS);
-            transactRep.addTransaction(t);
+            trRep.addTransaction(t);
         }
     }
 
@@ -258,7 +258,7 @@ public class HomeController {
      */
     private void giveCreditDeposit(int currUserId) {
         // get user transactions
-        List<Transaction> userTransactions = transactRep.getUserTransactionsByType(currUserId,
+        List<Transaction> userTransactions = trRep.getUserTransactionsByType(currUserId,
                 ArticleCashFlowT.CREDIT_DEPOSIT);
 
         Date lastTransactionDate = userTransactions.get(userTransactions.size() - 1).getTransactDate();
@@ -267,7 +267,7 @@ public class HomeController {
         if (daysBetween > 0) {
             int countI = daysBetween / 30;
             for (int i = 0; i < countI; i++) {
-                long userBalance = Long.parseLong(transactRep.getUserBalance(currUserId));
+                long userBalance = Long.parseLong(trRep.getUserBalance(currUserId));
                 double rate = (userBalance > 0 ? Consts.DEPOSIT_RATE : Consts.CREDIT_RATE);
                 TransferT transferType = (userBalance > 0 ? TransferT.PROFIT : TransferT.SPEND);
                 long sum = (long) (userBalance * rate);
@@ -294,7 +294,7 @@ public class HomeController {
 
                 Transaction cdTr = new Transaction(description, new Date(), sum, transferType, currUserId, newBalance,
                         ArticleCashFlowT.CREDIT_DEPOSIT);
-                transactRep.addTransaction(cdTr);
+                trRep.addTransaction(cdTr);
             }
         }
     }

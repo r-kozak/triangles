@@ -8,6 +8,7 @@ body {
 	width: 100%;
 	display: -webkit-box;
 	-webkit-box-pack: center;
+	background: rgb(227, 227, 227) url(bg.png) repeat;
 }
 
 /* header */
@@ -70,6 +71,7 @@ body {
 	border-color: darkturquoise;
 	border-bottom: none;
 	width: 900px;
+	background: white;
 }
 
 

@@ -7,6 +7,8 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kozak.triangles.entities.Property;
+
 /**
  * репозиторий имущества пользователя
  * 
@@ -34,5 +36,12 @@ public class PropertyRep {
             return 0;
         }
         return result;
+    }
+
+    /**
+     * добавляет новое имущество пользователя
+     */
+    public void addProperty(Property prop) {
+        em.persist(prop);
     }
 }

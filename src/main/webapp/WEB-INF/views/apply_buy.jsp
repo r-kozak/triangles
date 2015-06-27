@@ -36,7 +36,7 @@ body {
 .buyBlock {
 	min-height: 200px;
 	width: 600px;
-	margin-top: 250px;
+	margin-top: 180px;
 	background: rgba(217, 253, 227, 0.71);
 	border: 20px solid;
 	border-color: rgb(194, 255, 215);
@@ -59,6 +59,14 @@ body {
 	font-size: 16px;
 	color: #002b9f;
 	font-weight: normal;
+	width: auto;
+	height: 30px;
+}
+
+.buyBlock td.credit {
+	font-size: 16px;
+	color: red;
+	font-weight: bold;
 	width: auto;
 	height: 30px;
 }
@@ -153,7 +161,7 @@ body {
 
 <body>
 	<div class="buyBlock">
-		<form:form name="fo" action="${prop.id}" modelAttribute="params" commandName="prop" method="post">
+		<form:form name="confirm" action="${prop.id}" modelAttribute="params" commandName="prop" method="post">
 		<div class="titl">${title}</div>
 
 		<table rules="rows" cellspacing=10>
@@ -210,6 +218,19 @@ body {
 				<td>Срок полезного использования (нед.):</td>
 				<td class="info" colspan="4">${data.usefulLife}</td>
 			</tr>
+			<tr>
+				<td>Баланс после покупки:</td>
+				<c:choose>
+					<c:when test="${bap >= 0}">
+						<td class="info" colspan="4"><fmt:formatNumber type="number" maxFractionDigits="3"
+						value="${bap}"/>&tridot;</td>
+					</c:when>
+					<c:otherwise>
+						<td class="credit" colspan="4"><fmt:formatNumber type="number" maxFractionDigits="3"
+						value="${bap}"/>&tridot;</td>
+					</c:otherwise>
+				</c:choose>
+			</tr>
 		</table>
 
 		<br />
@@ -217,9 +238,9 @@ body {
 			<input type="hidden" name="action" id="action">
 			
 				<input id="ButtonCodePreview" type="button" name="yesno" value="Отмена" class="CancelButton"
-					onclick="document.fo.action.value='1'; document.fo.submit();" /> 
+					onclick="document.confirm.action.value='cancel'; document.confirm.submit();" /> 
 				<input id="ButtonCodePreview" type="button" name="yesno" value="Купить" class="ApplyButton" 
-					onclick="document.fo.action.value='2'; document.fo.submit();"/>
+					onclick="document.confirm.action.value='confirm'; document.confirm.submit();"/>
 			</div>
 		</form:form>
 	</div>

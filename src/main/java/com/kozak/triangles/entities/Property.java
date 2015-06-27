@@ -65,7 +65,7 @@ public class Property {
     private Date purchaseDate;
 
     @Column(name = "initial_cost")
-    int initialCost;
+    long initialCost;
 
     @Column(name = "selling_price")
     long sellingPrice;
@@ -75,18 +75,17 @@ public class Property {
     public Property() {
     }
 
-    public Property(Integer id, int userId, CityAreasT cityArea, int level, int depreciationPercent, boolean valid,
-            int cash, Date purchaseDate, int initialCost, long sellingPrice) {
-        this.id = id;
+    public Property(int userId, CityAreasT cityArea, Date purchaseDate, long initialCost) {
+        this.level = 1;
+        this.depreciationPercent = 0;
+        this.valid = true;
+        this.cash = 0;
+
         this.userId = userId;
         this.cityArea = cityArea;
-        this.level = level;
-        this.depreciationPercent = depreciationPercent;
-        this.valid = valid;
-        this.cash = cash;
         this.purchaseDate = purchaseDate;
         this.initialCost = initialCost;
-        this.sellingPrice = sellingPrice;
+        this.sellingPrice = initialCost;
     }
 
     public Integer getId() {
@@ -153,11 +152,11 @@ public class Property {
         this.purchaseDate = purchaseDate;
     }
 
-    public int getInitialCost() {
+    public long getInitialCost() {
         return initialCost;
     }
 
-    public void setInitialCost(int initialCost) {
+    public void setInitialCost(long initialCost) {
         this.initialCost = initialCost;
     }
 
