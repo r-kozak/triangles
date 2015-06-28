@@ -4,7 +4,7 @@
 <html>
 <head>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main.css" type="text/css"/>
-	<title>Index</title>
+	<title>Triangles</title>
     
     <style>        
         .loginForm {

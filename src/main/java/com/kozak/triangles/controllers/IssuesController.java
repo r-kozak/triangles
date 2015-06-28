@@ -15,8 +15,8 @@ import com.kozak.triangles.entities.User;
 import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
-import com.kozak.triangles.utils.Util;
 import com.kozak.triangles.utils.TagCreator;
+import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @Controller
@@ -38,15 +38,11 @@ public class IssuesController {
     @RequestMapping(value = "/transactions", method = RequestMethod.GET)
     String transactionsGET(Model model, User user, HttpServletRequest request) {
         String contextPath = request.getContextPath();
-
-        Integer page = 1;
-        if (request.getParameterValues("page") != null) {
-            page = Integer.parseInt(request.getParameterValues("page")[0]);
-        }
+        Integer page = Util.getPageNumber(request);
 
         Long transCount = trRep.allTrCount(user.getId());
-        int lastPageNumber = (int) (transCount / Consts.TRANS_ON_PAGE)
-                + ((transCount % Consts.TRANS_ON_PAGE != 0) ? 1 : 0);
+        int lastPageNumber = (int) (transCount / Consts.ROWS_ON_PAGE)
+                + ((transCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
         List transacs = trRep.transList(page, user.getId());
 
         model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));

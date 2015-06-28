@@ -108,11 +108,10 @@ p.button span {
 	font-size: 11px;
 	height: 24px;
 	border-radius: 12px;
-	margin: 10px;
 }
 
 .small span {
-	margin: 5px 10px 6px 10px;
+	margin: 4px 10px 6px 10px;
 }
 
 .dot {

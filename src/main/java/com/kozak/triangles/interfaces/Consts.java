@@ -20,7 +20,7 @@ public interface Consts {
     int FIFTH_DAY = 1000;
 
     // количество транзакций на страницу
-    int TRANS_ON_PAGE = 12;
+    int ROWS_ON_PAGE = 12;
 
     // частота появления предложений на рынке недвижимости - мин, макс (ДНЕЙ)
     int FREQ_RE_PROP_MIN = 1;

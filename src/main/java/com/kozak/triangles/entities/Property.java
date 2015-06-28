@@ -13,7 +13,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.kozak.triangles.enums.CityAreasT;
+import com.kozak.triangles.enums.buildings.CommBuildingsT;
 
 /**
  * Имущество
@@ -24,11 +27,14 @@ import com.kozak.triangles.enums.CityAreasT;
  * level - уровень здания, влияет на прибыль
  * depreciationPercent - процент износа или амортизации, возрастает каждый месяц, при достижении 100 - valid = false
  * cash - количество денег в кассе
+ * cashLevel - уровень кассы
+ * cashCapacity - текущая вместимость кассы
  * purchaseDate - дата покупки
  * initialCost - начальная стоимость или цена покупки
  * selling price - остаточная стоимость (цена продажи) на текущий момент
  * valid - если false - не приносит прибыль, не начисляется износ
  * userId - владелец имущества
+ * name - наименование, может меняться пользователем
  * 
  * @author Roman: 12 июня 2015 г. 20:22:47
  */
@@ -36,6 +42,7 @@ import com.kozak.triangles.enums.CityAreasT;
 @Entity
 @Table(name = "Property")
 public class Property {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -60,27 +67,46 @@ public class Property {
     @Column(name = "cash")
     private int cash;
 
+    @Column(name = "cash_level")
+    private int cashLevel;
+
+    @Column(name = "cash_capacity")
+    private long cashCapacity;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "purchase_date")
     private Date purchaseDate;
 
     @Column(name = "initial_cost")
-    long initialCost;
+    private long initialCost;
 
     @Column(name = "selling_price")
-    long sellingPrice;
+    private long sellingPrice;
+
+    @Column(name = "name")
+    @Length(min = 3, max = 20, message = "Длина наименования может быть 3-20 символов!")
+    private String name;
+
+    @Column(name = "build_type")
+    @Enumerated(EnumType.STRING)
+    private CommBuildingsT commBuildingType;
 
     // //////////////////////////////////////////////
 
     public Property() {
     }
 
-    public Property(int userId, CityAreasT cityArea, Date purchaseDate, long initialCost) {
-        this.level = 1;
+    public Property(CommBuildData data, int userId, CityAreasT cityArea, Date purchaseDate,
+            long initialCost) {
+        this.level = 0;
         this.depreciationPercent = 0;
         this.valid = true;
         this.cash = 0;
+        this.cashLevel = 0;
+        this.name = "no_name";
 
+        this.cashCapacity = data.getCashCapacity().get(0);
+        this.commBuildingType = data.getCommBuildType();
         this.userId = userId;
         this.cityArea = cityArea;
         this.purchaseDate = purchaseDate;
@@ -166,6 +192,38 @@ public class Property {
 
     public void setSellingPrice(long sellingPrice) {
         this.sellingPrice = sellingPrice;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public CommBuildingsT getCommBuildingType() {
+        return commBuildingType;
+    }
+
+    public void setCommBuildingType(CommBuildingsT commBuildingType) {
+        this.commBuildingType = commBuildingType;
+    }
+
+    public int getCashLevel() {
+        return cashLevel;
+    }
+
+    public void setCashLevel(int cashLevel) {
+        this.cashLevel = cashLevel;
+    }
+
+    public long getCashCapacity() {
+        return cashCapacity;
+    }
+
+    public void setCashCapacity(long cashCapacity) {
+        this.cashCapacity = cashCapacity;
     }
 
 }

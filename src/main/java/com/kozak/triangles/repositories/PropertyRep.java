@@ -1,5 +1,7 @@
 package com.kozak.triangles.repositories;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Property;
+import com.kozak.triangles.interfaces.Consts;
 
 /**
  * репозиторий имущества пользователя
@@ -27,7 +30,7 @@ public class PropertyRep {
      *            id пользователя, данные которого нужно получить
      */
     public long getSellingSumAllPropByUser(int userId) {
-        String hql = "select sum(sellingPrice) from Property as pr where pr.userId = :userId";
+        String hql = "SELECT sum(sellingPrice) FROM Property as pr WHERE pr.userId = :userId";
         Query query = em.createQuery(hql)
                 .setParameter("userId", userId);
 
@@ -43,5 +46,36 @@ public class PropertyRep {
      */
     public void addProperty(Property prop) {
         em.persist(prop);
+    }
+
+    /**
+     * нужно для пагинации
+     * 
+     * @param userId
+     * 
+     * @return количество имущества пользователя
+     */
+    public Long allPrCount(int userId) {
+        String hql = "SELECT count(*) FROM Property as pr WHERE pr.userId = :userId";
+        Query query = em.createQuery(hql)
+                .setParameter("userId", userId);
+
+        return Long.valueOf(query.getSingleResult().toString());
+    }
+
+    /**
+     * 
+     * @return список имущества пользователя
+     */
+    public List getPropertyList(int page, int userId) {
+        String hql = "FROM Property as pr WHERE pr.userId = :userId ORDER BY pr.cash";
+        Query query = em.createQuery(hql)
+                .setParameter("userId", userId);
+
+        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+        query.setFirstResult(firstResult);
+        query.setMaxResults(Consts.ROWS_ON_PAGE);
+
+        return query.getResultList();
     }
 }

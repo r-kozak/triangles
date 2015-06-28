@@ -1,6 +1,5 @@
 package com.kozak.triangles.repositories;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.CommBuildData;
-import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 
 /**
@@ -32,7 +30,7 @@ public class BuildingDataRep {
     }
 
     public CommBuildData getCommBuildDataByType(CommBuildingsT type) {
-        String hql = "from CommBuildData as cbd where cbd.buildType = :type";
+        String hql = "from CommBuildData as cbd where cbd.commBuildType = :type";
 
         Query query = em.createQuery(hql)
                 .setParameter("type", type);
@@ -48,68 +46,9 @@ public class BuildingDataRep {
      * @return список с типами зданий и их данными
      */
     public List<?> getCommBuildDataList() {
-        String hql = "from CommBuildData as cbd ORDER BY cbd.buildType";
+        String hql = "from CommBuildData as cbd ORDER BY cbd.commBuildType";
         Query query = em.createQuery(hql);
 
         return query.getResultList();
     }
-
-    // //////////// RealEstateProposal
-
-    /**
-     * 
-     * @return список с валидными предложениями на рынке недвижимости
-     */
-    public List getREProposalsList() {
-        String hql = "from re_proposal as rep where rep.valid = :valid ORDER BY rep.commBuildingType";
-        Query query = em.createQuery(hql)
-                .setParameter("valid", true);
-
-        return query.getResultList();
-    }
-
-    /**
-     * устаревшими считаются все валидные предложения, lossDate (дата ухода) которых меньше текущей
-     * 
-     * @return список с устаревшими предложениями на рынке недвижимости
-     */
-    public List getOutdatedProposals() {
-        String hql = "from re_proposal as rep where rep.valid = :valid and rep.lossDate < :now ";
-        Query query = em.createQuery(hql)
-                .setParameter("valid", true)
-                .setParameter("now", new Date());
-
-        return query.getResultList();
-    }
-
-    /**
-     * Добавляет объект предложения недвижимости
-     * 
-     * @param prop
-     *            RealEstateProposal, которое нужно добавить
-     */
-    public void addREproposal(RealEstateProposal prop) {
-        em.persist(prop);
-    }
-
-    /**
-     * Обновляет объект предложения недвижимости
-     * 
-     * @param prop
-     *            - RealEstateProposal, которое нужно обновить
-     */
-    public void updateREproposal(RealEstateProposal prop) {
-        em.merge(prop);
-    }
-
-    /**
-     * 
-     * @param id
-     *            id предложения
-     * @return предложение с указанным id
-     */
-    public RealEstateProposal getREProposalById(int id) {
-        return em.find(RealEstateProposal.class, id);
-    }
-
 }

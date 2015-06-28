@@ -135,7 +135,7 @@ public class ProposalGenerator {
         }
         price += price * Util.getAreaPercent(area) / 100;
 
-        RealEstateProposal propos = new RealEstateProposal(bd.getBuildType(), new Date(), lossDate.getTime(),
+        RealEstateProposal propos = new RealEstateProposal(bd.getCommBuildType(), new Date(), lossDate.getTime(),
                 price, area);
         return propos;
     }

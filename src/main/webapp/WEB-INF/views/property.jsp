@@ -5,7 +5,7 @@
 <head>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/buttons.css" type="text/css" />
-<title>Home</title>
+<title>Имущество</title>
 </head>
 
 <body>
@@ -25,9 +25,9 @@
 			<h1 align="center">Управление имуществом</h1>
 			
 			<a href="${pageContext.request.contextPath}/property/r-e-market"><p class="button menu bRed"><span>Рынок недвижим.</span></p></a>
-			<a href="${pageContext.request.contextPath}/m-p-market"><p class="button menu bPurple"><span>Рынок транспорта</span></p></a>
-			<a href="${pageContext.request.contextPath}/private-pr"><p class="button menu bGreen"><span>Мое личное имущество</span></p></a>
-			<a href="${pageContext.request.contextPath}/commerc-pr"><p class="button menu bYellow"><span>Мое коммерческое</span></p></a>
+			<a href="${pageContext.request.contextPath}/property/m-p-market"><p class="button menu bPurple"><span>Рынок транспорта</span></p></a>
+			<a href="${pageContext.request.contextPath}/property/private-pr"><p class="button menu bGreen"><span>Мое личное имущество</span></p></a>
+			<a href="${pageContext.request.contextPath}/property/commerc-pr"><p class="button menu bYellow"><span>Мое коммерческое</span></p></a>
 		</div>
 	</div>
 </body>

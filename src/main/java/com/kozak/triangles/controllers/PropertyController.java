@@ -1,6 +1,7 @@
 package com.kozak.triangles.controllers;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,31 +17,33 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import com.kozak.triangles.entities.CommBuildData;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
+import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.repositories.BuildingDataRep;
 import com.kozak.triangles.repositories.PropertyRep;
+import com.kozak.triangles.repositories.ReProposalRep;
 import com.kozak.triangles.repositories.TransactionRep;
+import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @RequestMapping(value = "/property")
 @Controller
 public class PropertyController {
-    private TransactionRep trRep;
-    private BuildingDataRep buiDataRep;
-    private PropertyRep prRep;
-
     @Autowired
-    public PropertyController(TransactionRep trRep, BuildingDataRep buiDataRep, PropertyRep prRep) {
-        this.trRep = trRep;
-        this.buiDataRep = buiDataRep;
-        this.prRep = prRep;
-    }
+    private TransactionRep trRep;
+    @Autowired
+    private BuildingDataRep buiDataRep;
+    @Autowired
+    private PropertyRep prRep;
+    @Autowired
+    private ReProposalRep rePrRep;
 
     /**
      * меню по недвижимости
@@ -56,12 +59,22 @@ public class PropertyController {
      * 
      * @param request
      *            для получения параметров редиректа (для отображ. поздравления о покупке)
-     * @return
      */
     @RequestMapping(value = "/r-e-market", method = RequestMethod.GET)
     String realEstMarket(@ModelAttribute("user") User user, Model model, HttpServletRequest request) {
+        String contextPath = request.getContextPath();
+        int page = Util.getPageNumber(request);
+
+        // //
+        Long propCount = rePrRep.allPrCount();
+        int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE)
+                + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+        List proposals = rePrRep.getREProposalsList(page);
+        // //
+
         model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
-        model.addAttribute("proposals", buiDataRep.getREProposalsList());
+        model.addAttribute("proposals", proposals);
+        model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, contextPath + "/property/r-e-market?", page));
 
         Map<String, Object> map = (Map<String, Object>) RequestContextUtils.getInputFlashMap(request);
         if (map != null) {
@@ -79,7 +92,7 @@ public class PropertyController {
      */
     @RequestMapping(value = "/buy/{prId}", method = RequestMethod.GET)
     String buyProperty(@PathVariable int prId, User user, Model model) {
-        RealEstateProposal prop = buiDataRep.getREProposalById(prId);
+        RealEstateProposal prop = rePrRep.getREProposalById(prId);
 
         if (prop == null || !prop.isValid()) { // уже кто-то купил
             model.addAttribute("errorMsg",
@@ -129,7 +142,7 @@ public class PropertyController {
 
         // пользователь подтвердил покупку
         if (action.equals("confirm")) {
-            RealEstateProposal prop = buiDataRep.getREProposalById(prId);
+            RealEstateProposal prop = rePrRep.getREProposalById(prId);
 
             if (prop == null || !prop.isValid()) {
                 model.addAttribute("errorMsg",
@@ -156,13 +169,15 @@ public class PropertyController {
 
                     trRep.addTransaction(t);
 
+                    // экзэмпляр данных про тот тип, который мы покупаем
+                    CommBuildData data = buiDataRep.getCommBuildDataByType(prop.getCommBuildingType());
                     // добавить новое имущество пользователю
-                    Property newProp = new Property(userId, prop.getCityArea(), purchDate, price);
+                    Property newProp = new Property(data, userId, prop.getCityArea(), purchDate, price);
                     prRep.addProperty(newProp);
 
                     // предложение на рынке теперь не валидное
                     prop.setValid(false);
-                    buiDataRep.updateREproposal(prop);
+                    rePrRep.updateREproposal(prop);
 
                     ra.addFlashAttribute("popup", true); // будем отображать поздравление о покупке
                 } else if (userMoney <= 0) {
@@ -177,5 +192,27 @@ public class PropertyController {
             }
         }
         return "redirect:/property/r-e-market";
+    }
+
+    /**
+     * переход на страницу коммерческой недвижимости пользователя
+     * 
+     */
+    @RequestMapping(value = "/commerc-pr", method = RequestMethod.GET)
+    String userProperty(@ModelAttribute("user") User user, Model model, HttpServletRequest request) {
+        String contextPath = request.getContextPath();
+        int page = Util.getPageNumber(request);
+        int userId = user.getId();
+
+        Long propCount = prRep.allPrCount(userId);
+        int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE)
+                + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+        List comProps = prRep.getPropertyList(page, userId);
+
+        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+        model.addAttribute("comProps", comProps);
+        model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, contextPath + "/property/commerc-pr?", page));
+
+        return "commerc_pr";
     }
 }

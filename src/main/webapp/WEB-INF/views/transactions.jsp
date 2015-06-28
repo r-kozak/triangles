@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/buttons.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/beaTable.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/pagination.css" type="text/css" />
-<title>Home</title>
+<title>Транзакции</title>
 </head>
 <body>
 	<div class="header">
@@ -60,7 +60,7 @@
 							
 							<c:choose>
 								<c:when test="${transac.transferType == 'PROFIT'}">
-									<td>Прибыль</td>
+									<td>Приход</td>
 								</c:when>
 								<c:when test="${transac.transferType == 'SPEND'}">
 									<td>Расход</td>

@@ -7,7 +7,7 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Подтверждение покупки</title>
 </head>
 <style>
 * {
@@ -178,7 +178,7 @@ body {
 						<td class="info" colspan="4">Магазин канцтоваров</td>
 					</c:when>
 					<c:otherwise>
-						<td class="info" colspan="4">${transac.articleCashFlow}</td>
+						<td class="info" colspan="4">${prop.commBuildingType}</td>
 					</c:otherwise>
 				</c:choose>
 			</tr>

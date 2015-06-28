@@ -87,9 +87,9 @@ public class TransactionRep {
         String hql = "from Transac as tr where tr.userId = :userId order by transactDate DESC";
         Query query = em.createQuery(hql).setParameter("userId", userId);
 
-        int firstResult = (page - 1) * Consts.TRANS_ON_PAGE;
+        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
         query.setFirstResult(firstResult);
-        query.setMaxResults(Consts.TRANS_ON_PAGE);
+        query.setMaxResults(Consts.ROWS_ON_PAGE);
 
         return query.getResultList();
     }

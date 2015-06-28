@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.kozak.triangles.enums.buildings.BuildingsT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 
 /**
@@ -25,7 +26,8 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
  * paybackPeriod - период окупаемости {min, max}, недель
  * purchasePrice - цена покупки {min, max}
  * buildTime - время постройки (при скорости 100%), недель
- * buildType - тип строения (киоск, магазин)
+ * commBuildType - тип строения (киоск, магазин)
+ * buildType - супер-тип строения (торговое, производственное...)
  * remTerm - срок, сколько предложение будет находиться на рынке (мин, макс), в днях
  * 
  ********
@@ -74,9 +76,13 @@ public class CommBuildData {
     @Column(name = "cash_capacity")
     ArrayList<Long> cashCapacity;
 
-    @Column(name = "building_type")
+    @Column(name = "comm_build_type")
     @Enumerated(EnumType.STRING)
-    CommBuildingsT buildType;
+    CommBuildingsT commBuildType;
+
+    @Column(name = "build_type")
+    @Enumerated(EnumType.STRING)
+    BuildingsT buildType;
 
     @Column(name = "build_time")
     int buildTime;
@@ -85,7 +91,7 @@ public class CommBuildData {
     }
 
     public CommBuildData(int paybackPeriodMin, int paybackPeriodMax, long purchasePriceMin, long purchasePriceMax,
-            CommBuildingsT buildType, int buildTime, int remTermMin, int remTermMax) {
+            CommBuildingsT commBuildType, BuildingsT buildType, int buildTime, int remTermMin, int remTermMax) {
 
         this.paybackPeriodMin = paybackPeriodMin;
         this.paybackPeriodMax = paybackPeriodMax;
@@ -106,7 +112,9 @@ public class CommBuildData {
 
         this.cashCapacity = cashList;
 
+        this.commBuildType = commBuildType;
         this.buildType = buildType;
+
         this.buildTime = buildTime;
 
         this.remTermMin = remTermMin;
@@ -209,11 +217,19 @@ public class CommBuildData {
         this.remTermMax = remTermMax;
     }
 
-    public CommBuildingsT getBuildType() {
+    public CommBuildingsT getCommBuildType() {
+        return commBuildType;
+    }
+
+    public void setCommBuildType(CommBuildingsT commBuildType) {
+        this.commBuildType = commBuildType;
+    }
+
+    public BuildingsT getBuildType() {
         return buildType;
     }
 
-    public void setBuildType(CommBuildingsT buildType) {
+    public void setBuildType(BuildingsT buildType) {
         this.buildType = buildType;
     }
 

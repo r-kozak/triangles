@@ -5,7 +5,7 @@
 <head>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main.css" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Relations</title>
+<title>Взаимоотношения</title>
 </head>
 <body>
 	<div class="header">

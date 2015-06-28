@@ -27,6 +27,9 @@ body {
 	padding-top: 8px;
 }
 
+.header p.button.small {
+	margin: 10;
+}
 .headerNav {
 	margin-top: 3px;
 	float: right;

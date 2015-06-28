@@ -10,22 +10,22 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/pagination.css" type="text/css" />
 
 <script src="${pageContext.request.contextPath}/resources/jquery-2.1.4.js"></script>
-<title>Home</title>
+<title>Рынок недвижимости</title>
 </head>
 
 <style>
 #popup {
-	width: 600px;
-	height: 155px;
-	background: rgb(252, 241, 255);
-	position: absolute;
-	display: none;
-	font-size: 52;
-	text-align: center;
-	color: #af2c6e;
-	font-family: 'Arial Black', Gadget, sans-serif;
-	border: 1px double #cbcbcb;
-	z-index: 200;
+  width: 600px;
+  height: 155px;
+  background: rgb(112, 0, 178);
+  position: absolute;
+  display: none;
+  font-size: 48;
+  text-align: center;
+  color: #FFFFFF;
+  font-family: 'Arial Black', Gadget, sans-serif;
+  border: 4px dashed #D8D8D8;
+  z-index: 200;
 }
 
 #wrap {
@@ -73,7 +73,7 @@
 					<td>Район города</td>
 					<td>Размещение</td>
 					<td>Конец размещения</td>
-					<td>Цена</td>
+					<td>Цена, &tridot;</td>
 					<td>Купить</td>
 				</tr>
 
@@ -91,7 +91,7 @@
 									<td>Магазин канцтоваров</td>
 								</c:when>
 								<c:otherwise>
-									<td>${transac.articleCashFlow}</td>
+									<td>${prop.commBuildingType}</td>
 								</c:otherwise>
 							</c:choose>
 

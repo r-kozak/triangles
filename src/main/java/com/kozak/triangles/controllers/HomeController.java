@@ -20,9 +20,11 @@ import com.kozak.triangles.entities.User;
 import com.kozak.triangles.entities.Vmap;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
+import com.kozak.triangles.enums.buildings.BuildingsT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.repositories.BuildingDataRep;
+import com.kozak.triangles.repositories.ReProposalRep;
 import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.repositories.VmapRep;
@@ -33,18 +35,16 @@ import com.kozak.triangles.utils.Util;
 @SessionAttributes("user")
 @Controller
 public class HomeController {
-    private UserRep userRep;
-    private TransactionRep trRep;
-    private BuildingDataRep buiDataRep;
-    private VmapRep vmRep;
-
     @Autowired
-    public HomeController(UserRep userRep, TransactionRep trRep, BuildingDataRep buiDataRep, VmapRep vmRep) {
-        this.userRep = userRep;
-        this.trRep = trRep;
-        this.buiDataRep = buiDataRep;
-        this.vmRep = vmRep;
-    }
+    private UserRep userRep;
+    @Autowired
+    private TransactionRep trRep;
+    @Autowired
+    private BuildingDataRep buiDataRep;
+    @Autowired
+    private VmapRep vmRep;
+    @Autowired
+    private ReProposalRep rePrRep;
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     String homeGET(User user, Model model) throws InterruptedException {
@@ -80,24 +80,26 @@ public class HomeController {
      */
     private void buildDataInit() {
         CommBuildData data = null;
+        BuildingsT superTYPE = BuildingsT.TRADING;
+
         // init STALL
         CommBuildingsT TYPE = CommBuildingsT.STALL;
         if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
-            data = new CommBuildData(3, 6, 4500, 5500, TYPE, 1, 1, 2);
+            data = new CommBuildData(3, 6, 4500, 5500, TYPE, superTYPE, 1, 1, 2);
             buiDataRep.addCommBuildingData(data);
         }
 
         // init VILLAGE_SHOP
         TYPE = CommBuildingsT.VILLAGE_SHOP;
         if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
-            data = new CommBuildData(2, 10, 10000, 15000, TYPE, 2, 2, 3);
+            data = new CommBuildData(2, 10, 10000, 15000, TYPE, superTYPE, 2, 2, 3);
             buiDataRep.addCommBuildingData(data);
         }
 
         // init STATIONER_SHOP
         TYPE = CommBuildingsT.STATIONER_SHOP;
         if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
-            data = new CommBuildData(5, 12, 17000, 30000, TYPE, 3, 1, 4);
+            data = new CommBuildData(5, 12, 17000, 30000, TYPE, superTYPE, 3, 1, 4);
             buiDataRep.addCommBuildingData(data);
         }
     }
@@ -113,7 +115,7 @@ public class HomeController {
         clearREMarket(); // очищает рынок от устаревших предложений
 
         int activeUsers = userRep.countActiveUsers();
-        boolean marketEmpty = buiDataRep.getREProposalsList().isEmpty();
+        boolean marketEmpty = rePrRep.getREProposalsList(1).isEmpty();
 
         Vmap vm = vmRep.getNextProposeGen(); // получаем экземпляр константы (след. даты генерации предложений)
         Date nrep = DateUtils.stringToDate(vm.getValue()); // берем из нее значение даты
@@ -131,7 +133,7 @@ public class HomeController {
             ProposalGenerator pg = new ProposalGenerator();
             ArrayList<RealEstateProposal> result = pg.generateProposalsREMarket(activeUsers, mapData);
             for (RealEstateProposal prop : result) {
-                buiDataRep.addREproposal(prop);
+                rePrRep.addREproposal(prop);
             }
         }
 
@@ -159,10 +161,10 @@ public class HomeController {
      * очищает рынок недвижимости от не актуальных предложений (lossDate которых меньше текущей)
      */
     private void clearREMarket() {
-        List<RealEstateProposal> outdated = buiDataRep.getOutdatedProposals();
+        List<RealEstateProposal> outdated = rePrRep.getOutdatedProposals();
         for (RealEstateProposal rep : outdated) {
             rep.setValid(false);
-            buiDataRep.updateREproposal(rep);
+            rePrRep.updateREproposal(rep);
         }
     }
 
@@ -230,7 +232,6 @@ public class HomeController {
 
                 today.add(Calendar.DATE, -1);
 
-                System.out.println(DateUtils.isSameDay(lastDate, today));
                 if (DateUtils.isSameDay(lastDate, today)) {
                     thisDayNumber++;
                 } else {
@@ -244,7 +245,7 @@ public class HomeController {
 
             int bonusSum = getBonusSum(thisDayNumber);
             String description = "Ежедневный бонус (день " + thisDayNumber + "-й)";
-            long oldBalance = userTransactions.get(userTransactions.size() - 1).getBalance();
+            long oldBalance = Long.parseLong(trRep.getUserBalance(currUserId));
             Transaction t = new Transaction(description, new Date(), bonusSum, TransferT.PROFIT, currUserId, oldBalance
                     + bonusSum, ArticleCashFlowT.DAILY_BONUS);
             trRep.addTransaction(t);
@@ -352,5 +353,4 @@ public class HomeController {
         }
         return countLastRows;
     }
-
 }
