@@ -215,4 +215,49 @@ public class PropertyController {
 
         return "commerc_pr";
     }
+
+    /**
+     * получение страницы с конкретным экземпляром имущества
+     */
+    @RequestMapping(value = "/{prId}", method = RequestMethod.GET)
+    String specificPropertyPage(@ModelAttribute("prId") int prId, User user, Model model) {
+        int userId = user.getId();
+        // получить конкретное имущество текущего пользоватетя
+        Property prop = prRep.getSpecificProperty(userId, prId);
+        // если получили null - значит это не имущество пользователя
+        if (prop == null) {
+            return "redirect:/commerc-pr";
+        }
+
+        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+        model.addAttribute("prop", prop);
+        // добавим вид деятельности
+        model.addAttribute("type", buiDataRep.getCommBuildDataByType(prop.getCommBuildingType()).getBuildType());
+
+        return "specific_pr";
+    }
+
+    /**
+     * операции с имуществом
+     */
+    @RequestMapping(value = "operations/{prId}", method = RequestMethod.POST)
+    String changeName(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
+            @ModelAttribute("newName") String newName, User user,
+            Model model, HttpServletRequest request) {
+
+        int userId = user.getId();
+        // получить конкретное имущество текущего пользоватетя
+        Property prop = prRep.getSpecificProperty(userId, prId);
+        // если получили null - значит это не имущество пользователя
+        if (prop == null) {
+            return "redirect:/commerc-pr";
+        }
+
+        if (action.equals("change_name")) {
+            prop.setName(newName);
+            prRep.updateProperty(prop);
+        }
+        return "redirect:/property/" + prId;
+    }
+
 }

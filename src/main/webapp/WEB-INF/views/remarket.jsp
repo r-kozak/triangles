@@ -8,8 +8,10 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/buttons.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/beaTable.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/pagination.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/simpleTip.css" type="text/css" />
 
 <script src="${pageContext.request.contextPath}/resources/jquery-2.1.4.js"></script>
+
 <title>Рынок недвижимости</title>
 </head>
 
@@ -117,10 +119,8 @@
 							<td><fmt:formatDate value="${prop.lossDate}" pattern="dd-MM-yyyy HH:mm:ss" /></td>
 
 							<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.purchasePrice}" /></td>
-							<td align="center"><a href="${pageContext.request.contextPath}/property/buy/${prop.id}"><p
-										class="button small bRed">
-										<span>BUY</span>
-									</p></a></td>
+							<td><a class="support-hover" href="${pageContext.request.contextPath}/property/buy/${prop.id}">
+								<p class="button small bRed"><span>BUY</span></p><span class="tip">Купить</span></a></td>
 						</tr>
 					</c:forEach>
 				</c:if>

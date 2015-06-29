@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/buttons.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/beaTable.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/pagination.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/simpleTip.css" type="text/css" />
 
 <script src="${pageContext.request.contextPath}/resources/jquery-2.1.4.js"></script>
 <title>Коммерческое имущество</title>
@@ -67,17 +68,15 @@
 								</c:otherwise>
 							</c:choose>
 
-							<td>${prop.name}</td>
+							<td><a href = "${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
 							<td>${prop.level}</td>
 							<td>${prop.sellingPrice}</td>
 							<td>${prop.depreciationPercent}<progress max="100" value="${prop.depreciationPercent}"></td>
 							<td>${prop.cash} / ${prop.cashCapacity}<progress max="${prop.cashCapacity}" value="${prop.cash}"></td>
 							
 							
-							<td align="center"><a href="${pageContext.request.contextPath}/property/get-cash/${prop.id}"><p
-										class="button small bRed">
-										<span>Собрать</span>
-									</p></a></td>
+							<td align="center"><a href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
+							<p class="button small bRed"><span>&#10004;</span></p><span class="tip">Собрать</span></a></td>
 						</tr>
 					</c:forEach>
 				</c:if>

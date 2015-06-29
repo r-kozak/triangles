@@ -21,6 +21,7 @@ body {
 	height: 50px;
 	background: darkturquoise;
 	color: whitesmoke;
+	z-index: 20;
 }
 
 .header img {
@@ -54,6 +55,7 @@ body {
 	color: azure;
 	font-size: 20px;
 	position: fixed;
+	z-index: 20;
 }
 
 .status a {

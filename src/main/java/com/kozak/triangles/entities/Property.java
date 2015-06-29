@@ -84,7 +84,7 @@ public class Property {
     private long sellingPrice;
 
     @Column(name = "name")
-    @Length(min = 3, max = 20, message = "Длина наименования может быть 3-20 символов!")
+    @Length(min = 3, max = 25, message = "Длина наименования может быть 3-25 символов!")
     private String name;
 
     @Column(name = "build_type")

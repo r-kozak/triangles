@@ -78,4 +78,25 @@ public class PropertyRep {
 
         return query.getResultList();
     }
+
+    /**
+     * @param userId
+     *            пользователь
+     * @param id
+     *            id имущества
+     * @return конкретное имущество конкретного пользователя
+     */
+    public Property getSpecificProperty(int userId, int id) {
+        String hql = "FROM Property as pr WHERE pr.userId = :userId and pr.id = :id";
+        Query query = em.createQuery(hql)
+                .setParameter("userId", userId)
+                .setParameter("id", id);
+        Property result = (Property) query.getSingleResult();
+
+        return result;
+    }
+
+    public void updateProperty(Property prop) {
+        em.merge(prop);
+    }
 }
