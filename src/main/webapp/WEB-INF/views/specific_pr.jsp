@@ -94,10 +94,7 @@ window.onload = function(){
 			<a href="${pageContext.request.contextPath}/transactions">Balance: ${balance}&tridot;</a>
 		</div>
 	</div>
-	
-<%-- ${pageContext.request.contextPath}/property/name/${prop.id} --%>
-
-				
+					
 	<!-- Задний прозрачный фон-->
 	<div id="wrap"></div>
 

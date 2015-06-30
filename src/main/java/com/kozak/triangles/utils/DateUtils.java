@@ -25,14 +25,14 @@ public class DateUtils {
      *             if either date is <code>null</code>
      */
     public static boolean isSameDay(Date date1, Date date2) {
-        if (date1 == null || date2 == null) {
-            throw new IllegalArgumentException("The dates must not be null");
-        }
-        Calendar cal1 = Calendar.getInstance();
-        cal1.setTime(date1);
-        Calendar cal2 = Calendar.getInstance();
-        cal2.setTime(date2);
-        return isSameDay(cal1, cal2);
+	if (date1 == null || date2 == null) {
+	    throw new IllegalArgumentException("The dates must not be null");
+	}
+	Calendar cal1 = Calendar.getInstance();
+	cal1.setTime(date1);
+	Calendar cal2 = Calendar.getInstance();
+	cal2.setTime(date2);
+	return isSameDay(cal1, cal2);
     }
 
     /**
@@ -49,11 +49,11 @@ public class DateUtils {
      *             if either calendar is <code>null</code>
      */
     public static boolean isSameDay(Calendar cal1, Calendar cal2) {
-        if (cal1 == null || cal2 == null) {
-            throw new IllegalArgumentException("The dates must not be null");
-        }
-        return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1
-                .get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
+	if (cal1 == null || cal2 == null) {
+	    throw new IllegalArgumentException("The dates must not be null");
+	}
+	return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1
+		.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
     }
 
     /**
@@ -68,7 +68,7 @@ public class DateUtils {
      *             if the date is <code>null</code>
      */
     public static boolean isToday(Date date) {
-        return isSameDay(date, Calendar.getInstance().getTime());
+	return isSameDay(date, Calendar.getInstance().getTime());
     }
 
     /**
@@ -83,7 +83,7 @@ public class DateUtils {
      *             if the calendar is <code>null</code>
      */
     public static boolean isToday(Calendar cal) {
-        return isSameDay(cal, Calendar.getInstance());
+	return isSameDay(cal, Calendar.getInstance());
     }
 
     /**
@@ -100,14 +100,14 @@ public class DateUtils {
      *             if the date is <code>null</code>
      */
     public static boolean isBeforeDay(Date date1, Date date2) {
-        if (date1 == null || date2 == null) {
-            throw new IllegalArgumentException("The dates must not be null");
-        }
-        Calendar cal1 = Calendar.getInstance();
-        cal1.setTime(date1);
-        Calendar cal2 = Calendar.getInstance();
-        cal2.setTime(date2);
-        return isBeforeDay(cal1, cal2);
+	if (date1 == null || date2 == null) {
+	    throw new IllegalArgumentException("The dates must not be null");
+	}
+	Calendar cal1 = Calendar.getInstance();
+	cal1.setTime(date1);
+	Calendar cal2 = Calendar.getInstance();
+	cal2.setTime(date2);
+	return isBeforeDay(cal1, cal2);
     }
 
     /**
@@ -124,18 +124,18 @@ public class DateUtils {
      *             if either of the calendars are <code>null</code>
      */
     public static boolean isBeforeDay(Calendar cal1, Calendar cal2) {
-        if (cal1 == null || cal2 == null) {
-            throw new IllegalArgumentException("The dates must not be null");
-        }
-        if (cal1.get(Calendar.ERA) < cal2.get(Calendar.ERA))
-            return true;
-        if (cal1.get(Calendar.ERA) > cal2.get(Calendar.ERA))
-            return false;
-        if (cal1.get(Calendar.YEAR) < cal2.get(Calendar.YEAR))
-            return true;
-        if (cal1.get(Calendar.YEAR) > cal2.get(Calendar.YEAR))
-            return false;
-        return cal1.get(Calendar.DAY_OF_YEAR) < cal2.get(Calendar.DAY_OF_YEAR);
+	if (cal1 == null || cal2 == null) {
+	    throw new IllegalArgumentException("The dates must not be null");
+	}
+	if (cal1.get(Calendar.ERA) < cal2.get(Calendar.ERA))
+	    return true;
+	if (cal1.get(Calendar.ERA) > cal2.get(Calendar.ERA))
+	    return false;
+	if (cal1.get(Calendar.YEAR) < cal2.get(Calendar.YEAR))
+	    return true;
+	if (cal1.get(Calendar.YEAR) > cal2.get(Calendar.YEAR))
+	    return false;
+	return cal1.get(Calendar.DAY_OF_YEAR) < cal2.get(Calendar.DAY_OF_YEAR);
     }
 
     /**
@@ -152,14 +152,14 @@ public class DateUtils {
      *             if the date is <code>null</code>
      */
     public static boolean isAfterDay(Date date1, Date date2) {
-        if (date1 == null || date2 == null) {
-            throw new IllegalArgumentException("The dates must not be null");
-        }
-        Calendar cal1 = Calendar.getInstance();
-        cal1.setTime(date1);
-        Calendar cal2 = Calendar.getInstance();
-        cal2.setTime(date2);
-        return isAfterDay(cal1, cal2);
+	if (date1 == null || date2 == null) {
+	    throw new IllegalArgumentException("The dates must not be null");
+	}
+	Calendar cal1 = Calendar.getInstance();
+	cal1.setTime(date1);
+	Calendar cal2 = Calendar.getInstance();
+	cal2.setTime(date2);
+	return isAfterDay(cal1, cal2);
     }
 
     /**
@@ -176,18 +176,18 @@ public class DateUtils {
      *             if either of the calendars are <code>null</code>
      */
     public static boolean isAfterDay(Calendar cal1, Calendar cal2) {
-        if (cal1 == null || cal2 == null) {
-            throw new IllegalArgumentException("The dates must not be null");
-        }
-        if (cal1.get(Calendar.ERA) < cal2.get(Calendar.ERA))
-            return false;
-        if (cal1.get(Calendar.ERA) > cal2.get(Calendar.ERA))
-            return true;
-        if (cal1.get(Calendar.YEAR) < cal2.get(Calendar.YEAR))
-            return false;
-        if (cal1.get(Calendar.YEAR) > cal2.get(Calendar.YEAR))
-            return true;
-        return cal1.get(Calendar.DAY_OF_YEAR) > cal2.get(Calendar.DAY_OF_YEAR);
+	if (cal1 == null || cal2 == null) {
+	    throw new IllegalArgumentException("The dates must not be null");
+	}
+	if (cal1.get(Calendar.ERA) < cal2.get(Calendar.ERA))
+	    return false;
+	if (cal1.get(Calendar.ERA) > cal2.get(Calendar.ERA))
+	    return true;
+	if (cal1.get(Calendar.YEAR) < cal2.get(Calendar.YEAR))
+	    return false;
+	if (cal1.get(Calendar.YEAR) > cal2.get(Calendar.YEAR))
+	    return true;
+	return cal1.get(Calendar.DAY_OF_YEAR) > cal2.get(Calendar.DAY_OF_YEAR);
     }
 
     /**
@@ -204,12 +204,12 @@ public class DateUtils {
      *             if the date is <code>null</code>
      */
     public static boolean isWithinDaysFuture(Date date, int days) {
-        if (date == null) {
-            throw new IllegalArgumentException("The date must not be null");
-        }
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return isWithinDaysFuture(cal, days);
+	if (date == null) {
+	    throw new IllegalArgumentException("The date must not be null");
+	}
+	Calendar cal = Calendar.getInstance();
+	cal.setTime(date);
+	return isWithinDaysFuture(cal, days);
     }
 
     /**
@@ -226,32 +226,32 @@ public class DateUtils {
      *             if the calendar is <code>null</code>
      */
     public static boolean isWithinDaysFuture(Calendar cal, int days) {
-        if (cal == null) {
-            throw new IllegalArgumentException("The date must not be null");
-        }
-        Calendar today = Calendar.getInstance();
-        Calendar future = Calendar.getInstance();
-        future.add(Calendar.DAY_OF_YEAR, days);
-        return (isAfterDay(cal, today) && !isAfterDay(cal, future));
+	if (cal == null) {
+	    throw new IllegalArgumentException("The date must not be null");
+	}
+	Calendar today = Calendar.getInstance();
+	Calendar future = Calendar.getInstance();
+	future.add(Calendar.DAY_OF_YEAR, days);
+	return (isAfterDay(cal, today) && !isAfterDay(cal, future));
     }
 
     /** Returns the given date with the time set to the start of the day. */
     public static Date getStart(Date date) {
-        return clearTime(date);
+	return clearTime(date);
     }
 
     /** Returns the given date with the time values cleared. */
     public static Date clearTime(Date date) {
-        if (date == null) {
-            return null;
-        }
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-        return c.getTime();
+	if (date == null) {
+	    return null;
+	}
+	Calendar c = Calendar.getInstance();
+	c.setTime(date);
+	c.set(Calendar.HOUR_OF_DAY, 0);
+	c.set(Calendar.MINUTE, 0);
+	c.set(Calendar.SECOND, 0);
+	c.set(Calendar.MILLISECOND, 0);
+	return c.getTime();
     }
 
     /**
@@ -268,64 +268,64 @@ public class DateUtils {
      *         greater than zero.
      */
     public static boolean hasTime(Date date) {
-        if (date == null) {
-            return false;
-        }
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        if (c.get(Calendar.HOUR_OF_DAY) > 0) {
-            return true;
-        }
-        if (c.get(Calendar.MINUTE) > 0) {
-            return true;
-        }
-        if (c.get(Calendar.SECOND) > 0) {
-            return true;
-        }
-        if (c.get(Calendar.MILLISECOND) > 0) {
-            return true;
-        }
-        return false;
+	if (date == null) {
+	    return false;
+	}
+	Calendar c = Calendar.getInstance();
+	c.setTime(date);
+	if (c.get(Calendar.HOUR_OF_DAY) > 0) {
+	    return true;
+	}
+	if (c.get(Calendar.MINUTE) > 0) {
+	    return true;
+	}
+	if (c.get(Calendar.SECOND) > 0) {
+	    return true;
+	}
+	if (c.get(Calendar.MILLISECOND) > 0) {
+	    return true;
+	}
+	return false;
     }
 
     /** Returns the given date with time set to the end of the day */
     public static Date getEnd(Date date) {
-        if (date == null) {
-            return null;
-        }
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.set(Calendar.HOUR_OF_DAY, 23);
-        c.set(Calendar.MINUTE, 59);
-        c.set(Calendar.SECOND, 59);
-        c.set(Calendar.MILLISECOND, 999);
-        return c.getTime();
+	if (date == null) {
+	    return null;
+	}
+	Calendar c = Calendar.getInstance();
+	c.setTime(date);
+	c.set(Calendar.HOUR_OF_DAY, 23);
+	c.set(Calendar.MINUTE, 59);
+	c.set(Calendar.SECOND, 59);
+	c.set(Calendar.MILLISECOND, 999);
+	return c.getTime();
     }
 
     /**
      * Returns the maximum of two dates. A null date is treated as being less than any non-null date.
      */
     public static Date max(Date d1, Date d2) {
-        if (d1 == null && d2 == null)
-            return null;
-        if (d1 == null)
-            return d2;
-        if (d2 == null)
-            return d1;
-        return (d1.after(d2)) ? d1 : d2;
+	if (d1 == null && d2 == null)
+	    return null;
+	if (d1 == null)
+	    return d2;
+	if (d2 == null)
+	    return d1;
+	return (d1.after(d2)) ? d1 : d2;
     }
 
     /**
      * Returns the minimum of two dates. A null date is treated as being greater than any non-null date.
      */
     public static Date min(Date d1, Date d2) {
-        if (d1 == null && d2 == null)
-            return null;
-        if (d1 == null)
-            return d2;
-        if (d2 == null)
-            return d1;
-        return (d1.before(d2)) ? d1 : d2;
+	if (d1 == null && d2 == null)
+	    return null;
+	if (d1 == null)
+	    return d2;
+	if (d2 == null)
+	    return d1;
+	return (d1.before(d2)) ? d1 : d2;
     }
 
     // ///////////////////////////////////// my methods
@@ -339,7 +339,7 @@ public class DateUtils {
      * @return the difference between two Dates
      */
     public static int daysBetween(Date d1, Date d2) {
-        return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+	return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
     }
 
     /**
@@ -351,26 +351,49 @@ public class DateUtils {
      * @return the difference between two Calendar Instances
      */
     public static int daysBetween(Calendar c1, Calendar c2) {
-        Date d1 = c1.getTime();
-        Date d2 = c2.getTime();
-        return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+	Date d1 = c1.getTime();
+	Date d2 = c2.getTime();
+	return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
     }
 
     public static Date stringToDate(String strDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        try {
-            return sdf.parse(strDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+	try {
+	    return sdf.parse(strDate);
+	} catch (ParseException e) {
+	    e.printStackTrace();
+	    return null;
+	}
     }
 
     public static String dateToString(Date date) {
-        DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        String result = df.format(date);
+	DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+	String result = df.format(date);
 
-        return result;
+	return result;
+    }
+
+    /**
+     * 
+     * @param d1
+     *            - Date - first date
+     * @param d2
+     *            - Date - second date
+     * @return the difference between two Dates
+     */
+    public static int hoursBetween(Date d1, Date d2) {
+	return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60));
+    }
+
+    /**
+     * 
+     * @return now + 24 hours
+     */
+    public static Date getTomorrow() {
+	Calendar tomorrow = Calendar.getInstance();
+	tomorrow.add(Calendar.DATE, 1);
+
+	return tomorrow.getTime();
     }
 
 }
