@@ -75,9 +75,32 @@ window.onload = function(){
 	z-index:100;
 }
 
-.ins {
-	font-size: 5;
+#menu {
+  height: 468;
+  margin: 176 10 0 -160;
+  background: rgba(150, 251, 255, 0.25);
+  padding: 0 5 0 5;
+  border: 1px solid rgba(168, 168, 168, 0.21)
 }
+
+#elMenu > a {
+  height: 45;
+  width: 180;
+  display: block;
+  border: 3px solid rgb(255, 229, 50);
+  background: rgb(153, 153, 153);
+  margin: 12 0 5 0;
+  padding: 10;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  font-size: 16;
+}
+
+#elMenu > a:hover {
+	border: 2px solid rgb(76, 255, 139);
+}
+
 </style>
 
 
@@ -101,6 +124,18 @@ window.onload = function(){
 	<!-- Задний прозрачный фон-->
 	<div id="wrap"></div>
 
+	<div id="menu">
+		<div id="elMenu">
+			<a href="${pageContext.request.contextPath}/property">Упр. имуществом</a>
+		</div>
+		<div id="elMenu">
+			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
+		</div>
+		<div id="elMenu">
+			<a href="${pageContext.request.contextPath}/property/commerc-pr">На коммерческое</a>
+		</div>
+	</div>
+	
 	<div class="content">
 		<div class="tranBlock">
 			<form:form name="property" action="operations/${prop.id}" commandName="prop" method="post">
@@ -180,43 +215,42 @@ window.onload = function(){
 					<tr>
 						<td>Процент износа</td>
 						<td>
-							<table class="test">
-								<tr>
-									<td class = "ins">
-										<c:choose>
-											<c:when test="${prop.depreciationPercent > 75}">
-												${prop.depreciationPercent}
-											</c:when>
-											<c:when test="${prop.depreciationPercent > 50}">
-												${prop.depreciationPercent}
-											</c:when>
-											<c:otherwise>
-												${prop.depreciationPercent}
-											</c:otherwise>
-										</c:choose>
-									</td>
-								</tr>
-								<tr>
-									<td class = "ins">
-										<progress max="100" value="${prop.depreciationPercent}">
-									</td>
-								</tr>	
-							</table>
+							<div>
+								<c:choose>
+									<c:when test="${prop.depreciationPercent > 75}">
+										${prop.depreciationPercent} / 100
+									</c:when>
+									<c:when test="${prop.depreciationPercent > 50}">
+										${prop.depreciationPercent} / 100
+									</c:when>
+									<c:otherwise>
+										${prop.depreciationPercent} / 100
+									</c:otherwise>
+								</c:choose>
+							</div>
+							<progress max="100" value="${prop.depreciationPercent}">
 						</td>
 						<td><a class="support-hover" href="${pageContext.request.contextPath}/property/repair/${prop.id}">
-							<p class="button small bBlue"><span>Р</span></p><span class="tip">Ремонт</span></a></td>
+							<p class="button small bGreen"><span>Р</span></p><span class="tip">Ремонт</span></a>
+						</td>
 					</tr>
 					<tr>
 						<td>Уровень</td>
 						<td>${prop.level}</td>
 						<td><a class="support-hover" href="${pageContext.request.contextPath}/property/level-up/${prop.id}">
-							<p class="button small bBlue"><span>▲</span></p><span class="tip">Поднять</span></a></td>
+							<p class="button small bPurple"><span>▲</span></p><span class="tip">Поднять</span></a></td>
 					</tr>
 					<tr>
 						<td>Деньги в кассе</td>
-						<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cash}"/></td>
+						<td>
+							<div>
+								<fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cash}"/> / 
+								<fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cashCapacity}"/>
+							</div>
+							<progress max="${prop.cashCapacity}" value="${prop.cash}">
+						</td>
 						<td><a class="support-hover" href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
-							<p class="button small bBlue"><span>&#10004;</span></p><span class="tip">Собрать</span></a></td>
+							<p class="button small bRed"><span>&#10004;</span></p><span class="tip">Собрать</span></a></td>
 					</tr>
 					<tr>
 						<td>Уровень кассы</td>
@@ -228,7 +262,7 @@ window.onload = function(){
 						<td>Стоимость продажи</td>
 						<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
 						<td><a class="support-hover" href="${pageContext.request.contextPath}/property/sell/${prop.id}">
-							<p class="button small bRed"><span>&tridot;</span></p><span class="tip">Продать</span></a></td>
+							<p class="button small bGray"><span>&tridot;</span></p><span class="tip">Продать</span></a></td>
 					</tr>
 				</table>
 			</form:form>
