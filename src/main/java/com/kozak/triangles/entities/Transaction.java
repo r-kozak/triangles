@@ -29,7 +29,7 @@ import com.kozak.triangles.enums.TransferT;
 public class Transaction {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "description", length = 100)
@@ -65,78 +65,78 @@ public class Transaction {
     }
 
     public Transaction(String description, Date transactDate, long sum, TransferT transferType, int userId,
-            long balance, ArticleCashFlowT articleCashFlow) {
-        this.description = description;
-        this.transactDate = transactDate;
-        this.summa = sum;
-        this.transferType = transferType;
-        this.userId = userId;
-        this.balance = balance;
-        this.articleCashFlow = articleCashFlow;
+	    long balance, ArticleCashFlowT articleCashFlow) {
+	this.description = description;
+	this.transactDate = transactDate;
+	this.summa = sum;
+	this.transferType = transferType;
+	this.userId = userId;
+	this.balance = balance;
+	this.articleCashFlow = articleCashFlow;
     }
 
     // ///////////////////////////// getters and setters
     public Integer getId() {
-        return id;
+	return id;
     }
 
     public long getBalance() {
-        return balance;
+	return balance;
     }
 
     public void setBalance(long balance) {
-        this.balance = balance;
+	this.balance = balance;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+	this.id = id;
     }
 
     public String getDescription() {
-        return description;
+	return description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+	this.description = description;
     }
 
     public Date getTransactDate() {
-        return transactDate;
+	return transactDate;
     }
 
     public void setTransactDate(Date transactDate) {
-        this.transactDate = transactDate;
+	this.transactDate = transactDate;
     }
 
     public long getSum() {
-        return summa;
+	return summa;
     }
 
     public void setSum(long sum) {
-        this.summa = sum;
+	this.summa = sum;
     }
 
     public TransferT getTransferType() {
-        return transferType;
+	return transferType;
     }
 
     public void setTransferType(TransferT transferType) {
-        this.transferType = transferType;
+	this.transferType = transferType;
     }
 
     public int getUserId() {
-        return userId;
+	return userId;
     }
 
     public void setUserId(int userId) {
-        this.userId = userId;
+	this.userId = userId;
     }
 
     public ArticleCashFlowT getArticleCashFlow() {
-        return articleCashFlow;
+	return articleCashFlow;
     }
 
     public void setArticleCashFlow(ArticleCashFlowT articleCashFlow) {
-        this.articleCashFlow = articleCashFlow;
+	this.articleCashFlow = articleCashFlow;
     }
 }
