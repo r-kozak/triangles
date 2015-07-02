@@ -27,6 +27,7 @@ public class UserRep {
         em.merge(user);
     }
 
+    @SuppressWarnings("unchecked")
     public List<User> getAllUsers() {
         String hql = "from User";
         Query query = em.createQuery(hql);
@@ -45,8 +46,7 @@ public class UserRep {
         Calendar twa = Calendar.getInstance();
         twa.add(Calendar.DATE, -14);
 
-        Query query = em.createQuery(hql)
-                .setParameter("twoWeeksAgo", twa, TemporalType.DATE);
+        Query query = em.createQuery(hql).setParameter("twoWeeksAgo", twa, TemporalType.DATE);
 
         return Integer.valueOf(query.getSingleResult().toString());
     }

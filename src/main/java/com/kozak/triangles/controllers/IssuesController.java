@@ -11,24 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.repositories.TransactionRep;
-import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @Controller
 public class IssuesController {
-    private UserRep userRep;
-    private TransactionRep trRep;
-
     @Autowired
-    public IssuesController(UserRep userRepository, TransactionRep transactRepository) {
-        this.userRep = userRepository;
-        this.trRep = transactRepository;
-    }
+    private TransactionRep trRep;
 
     @RequestMapping(value = "/issues", method = RequestMethod.GET)
     String propertyGET() {
@@ -43,7 +37,7 @@ public class IssuesController {
         Long transCount = trRep.allTrCount(user.getId());
         int lastPageNumber = (int) (transCount / Consts.ROWS_ON_PAGE)
                 + ((transCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
-        List transacs = trRep.transList(page, user.getId());
+        List<Transaction> transacs = trRep.transList(page, user.getId());
 
         model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
         model.addAttribute("transacs", transacs);

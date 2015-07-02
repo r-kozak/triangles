@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -21,12 +20,8 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
  * 
  * экземпляр этой сущности - это предложение на рынке имущества
  * 
- * commBuildingType - тип коммерческого здания здания (Киоск, Маркет, ...)
- * appearDate - дата появления на рынке
- * lossDate - дата ухода с рынка
- * purchasePrice - цена покупки
- * cityArea - район здания
- * valid - предложение еще действительно
+ * commBuildingType - тип коммерческого здания здания (Киоск, Маркет, ...) appearDate - дата появления на рынке lossDate
+ * - дата ухода с рынка purchasePrice - цена покупки cityArea - район здания valid - предложение еще действительно
  * 
  * @author Roman: 12 июня 2015 г. 22:25:55
  */
@@ -35,7 +30,7 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
 public class RealEstateProposal {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Integer id;
 
     @Column(name = "building_type")

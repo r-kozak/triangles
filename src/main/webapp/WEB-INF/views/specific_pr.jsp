@@ -74,6 +74,10 @@ window.onload = function(){
 	overflow: auto;
 	z-index:100;
 }
+
+.ins {
+	font-size: 5;
+}
 </style>
 
 
@@ -86,7 +90,6 @@ window.onload = function(){
 					<span>exit</span>
 				</p></a>
 		</div>
-	</div>
 	</div>
 	<div class="status">
 		<div class="dominant">Dominant: 0&#9813;</div>
@@ -176,17 +179,30 @@ window.onload = function(){
 					</tr>
 					<tr>
 						<td>Процент износа</td>
-						<c:choose>
-							<c:when test="${prop.depreciationPercent > 75}">
-								<td>${prop.depreciationPercent}</td>
-							</c:when>
-							<c:when test="${prop.depreciationPercent > 50}">
-								<td>${prop.depreciationPercent}</td>
-							</c:when>
-							<c:otherwise>
-								<td>${prop.depreciationPercent}</td>
-							</c:otherwise>
-						</c:choose>
+						<td>
+							<table class="test">
+								<tr>
+									<td class = "ins">
+										<c:choose>
+											<c:when test="${prop.depreciationPercent > 75}">
+												${prop.depreciationPercent}
+											</c:when>
+											<c:when test="${prop.depreciationPercent > 50}">
+												${prop.depreciationPercent}
+											</c:when>
+											<c:otherwise>
+												${prop.depreciationPercent}
+											</c:otherwise>
+										</c:choose>
+									</td>
+								</tr>
+								<tr>
+									<td class = "ins">
+										<progress max="100" value="${prop.depreciationPercent}">
+									</td>
+								</tr>	
+							</table>
+						</td>
 						<td><a class="support-hover" href="${pageContext.request.contextPath}/property/repair/${prop.id}">
 							<p class="button small bBlue"><span>Р</span></p><span class="tip">Ремонт</span></a></td>
 					</tr>

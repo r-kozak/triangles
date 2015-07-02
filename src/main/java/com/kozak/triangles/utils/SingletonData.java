@@ -17,14 +17,15 @@ public class SingletonData {
      * @return карту с ключами -
      */
     public static HashMap<String, CommBuildData> getCommBuildData(BuildingDataRep rep) {
-	if (commBDMap == null) {
-	    commBDMap = new HashMap<String, CommBuildData>();
+        if (commBDMap == null) {
+            commBDMap = new HashMap<String, CommBuildData>();
 
-	    ArrayList<CommBuildData> data = (ArrayList<CommBuildData>) rep.getCommBuildDataList();
-	    for (CommBuildData d : data) {
-		commBDMap.put(d.getCommBuildType().name(), d);
-	    }
-	}
-	return commBDMap;
+            @SuppressWarnings("unchecked")
+            ArrayList<CommBuildData> data = (ArrayList<CommBuildData>) rep.getCommBuildDataList();
+            for (CommBuildData d : data) {
+                commBDMap.put(d.getCommBuildType().name(), d);
+            }
+        }
+        return commBDMap;
     }
 }
