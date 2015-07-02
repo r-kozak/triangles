@@ -15,7 +15,23 @@
 </head>
 
 <style>
-
+.noProp {
+  margin: 100;
+  color: rgb(7, 115, 106);
+  text-align: center;
+  font-size: 50;
+  border: 2px solid rgb(186, 16, 16);
+  padding: 20 20 30 20;
+}
+.noProp a {
+  margin: 50 200 0 200;
+  color: rgb(146, 20, 160);
+  border: 3px solid;
+  padding: 5 20 5 20;
+  text-decoration: none;
+  font-size: 25;
+  display: block;
+}
 </style>
 
 <body>
@@ -39,18 +55,23 @@
 	<div class="content">
 		<div class="tranBlock">
 			<h1 align="center">Коммерческое имущество</h1>
-			<table class="beaTable">
-				<tr>
-					<td>Тип</td>
-					<td>Наименование</td>
-					<td>Уровень</td>
-					<td>Цена продажи, &tridot;</td>
-					<td>Износ, %</td>
-					<td>Касса, &tridot;</td>
-					<td>Собрать доход</td>
-				</tr>
+			<c:if test="${empty comProps}">
+				<div class = "noProp">У вас нет имущества. Его можно купить на рынке. <a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a></div>
+			</c:if>
+			
+			<c:if test="${!empty comProps}">
+				<table class="beaTable">
+					<tr>
+						<td>Тип</td>
+						<td>Наименование</td>
+						<td>Уровень</td>
+						<td>Цена продажи, &tridot;</td>
+						<td>Износ, %</td>
+						<td>Касса, &tridot;</td>
+						<td>Собрать доход</td>
+					</tr>
 
-				<c:if test="${!empty comProps}">
+
 					<c:forEach items="${comProps}" var="prop">
 						<tr>
 							<c:choose>
@@ -68,19 +89,25 @@
 								</c:otherwise>
 							</c:choose>
 
-							<td><a href = "${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
+							<td><a href="${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
 							<td>${prop.level}</td>
 							<td>${prop.sellingPrice}</td>
-							<td>${prop.depreciationPercent}<progress max="100" value="${prop.depreciationPercent}"></td>
-							<td>${prop.cash} / ${prop.cashCapacity}<progress max="${prop.cashCapacity}" value="${prop.cash}"></td>
-							
-							
-							<td align="center"><a href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
-							<p class="button small bRed"><span>&#10004;</span></p><span class="tip">Собрать</span></a></td>
+							<td>${prop.depreciationPercent}<progress max="100"
+									value="${prop.depreciationPercent}"></td>
+							<td>${prop.cash}/${prop.cashCapacity}<progress
+									max="${prop.cashCapacity}" value="${prop.cash}"></td>
+
+
+							<td align="center"><a
+								href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
+									<p class="button small bRed">
+										<span>&#10004;</span>
+									</p> <span class="tip">Собрать</span>
+							</a></td>
 						</tr>
 					</c:forEach>
-				</c:if>
-			</table>
+				</table>
+			</c:if>
 
 			<div class="pagination">
 				<ul>${tagNav}</ul>

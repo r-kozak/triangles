@@ -28,7 +28,8 @@ public class ReProposalRep {
      * 
      * @return список с валидными предложениями на рынке недвижимости
      */
-    public List getREProposalsList(int page) {
+    @SuppressWarnings("unchecked")
+    public List<RealEstateProposal> getREProposalsList(int page) {
         String hql = "from re_proposal as rep where rep.valid = true ORDER BY rep.commBuildingType";
         Query query = em.createQuery(hql);
 
@@ -44,10 +45,10 @@ public class ReProposalRep {
      * 
      * @return список с устаревшими предложениями на рынке недвижимости
      */
-    public List getOutdatedProposals() {
+    @SuppressWarnings("unchecked")
+    public List<RealEstateProposal> getOutdatedProposals() {
         String hql = "from re_proposal as rep where rep.valid = true and rep.lossDate < :now ";
-        Query query = em.createQuery(hql)
-                .setParameter("now", new Date());
+        Query query = em.createQuery(hql).setParameter("now", new Date());
 
         return query.getResultList();
     }

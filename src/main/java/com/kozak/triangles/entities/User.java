@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -20,7 +21,8 @@ import org.hibernate.validator.constraints.Length;
 public class User {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "generatorName")
+    @TableGenerator(name = "generatorName", allocationSize = 1)
     private Integer id;
 
     @Column(name = "login", length = 20)
@@ -38,6 +40,16 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "last_enter")
     private Date lastEnter;
+
+    // дата последнего бонуса
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_bonus")
+    private Date lastBonus;
+
+    // номер дня, за который был бонус
+    @Column(name = "day_number")
+    private int dayNumber;
+
     // /////////////////
 
     @Transient
@@ -100,5 +112,21 @@ public class User {
 
     public void setLastEnter(Date lastEnter) {
         this.lastEnter = lastEnter;
+    }
+
+    public int getDayNumber() {
+        return dayNumber;
+    }
+
+    public void setDayNumber(int dayNumber) {
+        this.dayNumber = dayNumber;
+    }
+
+    public Date getLastBonus() {
+        return lastBonus;
+    }
+
+    public void setLastBonus(Date lastBonus) {
+        this.lastBonus = lastBonus;
     }
 }

@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -20,19 +19,14 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
  * 
  * экземпляр сущности - данные какого-либо конкретного вида имущества (киоск, магазин...)
  * 
- * usefulLife - срок полезного использования, в 2 раза больше периода окупаемости
- * profit - прибыль в день {min, max}
- * cashCapacity - вместимость кассы на разных уровнях, {на ур 0, на ур 1, ...}
- * paybackPeriod - период окупаемости {min, max}, недель
- * purchasePrice - цена покупки {min, max}
- * buildTime - время постройки (при скорости 100%), недель
- * commBuildType - тип строения (киоск, магазин)
- * buildType - супер-тип строения (торговое, производственное...)
- * remTerm - срок, сколько предложение будет находиться на рынке (мин, макс), в днях
+ * usefulLife - срок полезного использования, в 2 раза больше периода окупаемости profit - прибыль в день {min, max}
+ * cashCapacity - вместимость кассы на разных уровнях, {на ур 0, на ур 1, ...} paybackPeriod - период окупаемости {min,
+ * max}, недель purchasePrice - цена покупки {min, max} buildTime - время постройки (при скорости 100%), недель
+ * commBuildType - тип строения (киоск, магазин) buildType - супер-тип строения (торговое, производственное...) remTerm
+ * - срок, сколько предложение будет находиться на рынке (мин, макс), в днях
  * 
  ********
- * ПОСЛЕ ДОБАВЛЕНИЯ НОВОГО ТИПА ПРОИНИТИТЬ ЕГО В:
- * com.kozak.triangles.controllers.HomeController.buildDataInit()
+ * ПОСЛЕ ДОБАВЛЕНИЯ НОВОГО ТИПА ПРОИНИТИТЬ ЕГО В: com.kozak.triangles.controllers.HomeController.buildDataInit()
  * 
  * @author Roman: 20 июня 2015 г. 12:13:58
  */
@@ -42,7 +36,7 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
 public class CommBuildData {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Integer id;
 
     @Column(name = "payback_period_min")
