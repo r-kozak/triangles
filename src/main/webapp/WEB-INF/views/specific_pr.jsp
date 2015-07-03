@@ -78,27 +78,27 @@ window.onload = function(){
 #menu {
   height: 468;
   margin: 176 10 0 -160;
-  background: rgba(150, 251, 255, 0.25);
+  background: rgba(150, 251, 255, 0);
   padding: 0 5 0 5;
-  border: 1px solid rgba(168, 168, 168, 0.21)
+  border: 1px solid rgba(168, 168, 168, 0.7);
+  padding-top: 5;
 }
 
 #elMenu > a {
   height: 45;
   width: 180;
   display: block;
-  border: 3px solid rgb(255, 229, 50);
-  background: rgb(153, 153, 153);
-  margin: 12 0 5 0;
-  padding: 10;
-  text-align: center;
+  background: rgba(176, 255, 249, 0.33);
+  margin: 0 0 5 0;
+  padding: 10 0 10 5;
   text-decoration: none;
-  color: white;
+  color: black;
   font-size: 16;
 }
 
 #elMenu > a:hover {
-	border: 2px solid rgb(76, 255, 139);
+	border: 2px solid rgb(94, 255, 249);
+	font-weight: bold;
 }
 
 </style>
@@ -132,7 +132,7 @@ window.onload = function(){
 			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
 		</div>
 		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property/commerc-pr">На коммерческое</a>
+			<a href="${pageContext.request.contextPath}/property/commerc-pr">Моё коммерческое</a>
 		</div>
 	</div>
 	
@@ -249,8 +249,8 @@ window.onload = function(){
 							</div>
 							<progress max="${prop.cashCapacity}" value="${prop.cash}">
 						</td>
-						<td><a class="support-hover" href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
-							<p class="button small bRed"><span>&#10004;</span></p><span class="tip">Собрать</span></a></td>
+						<td><a class="support-hover"><p onclick="document.property.action.value='get_cash'; document.property.submit();" 
+							class="button small bRed"><span>&#10004;</span></p><span class="tip">Собрать</span></a></td>
 					</tr>
 					<tr>
 						<td>Уровень кассы</td>

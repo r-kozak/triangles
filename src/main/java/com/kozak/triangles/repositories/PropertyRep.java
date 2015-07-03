@@ -29,11 +29,11 @@ public class PropertyRep {
      * добавляет новое имущество пользователя
      */
     public void addProperty(Property prop) {
-        em.persist(prop);
+	em.persist(prop);
     }
 
     public void updateProperty(Property prop) {
-        em.merge(prop);
+	em.merge(prop);
     }
 
     /**
@@ -43,14 +43,14 @@ public class PropertyRep {
      *            id пользователя, данные которого нужно получить
      */
     public long getSellingSumAllPropByUser(int userId) {
-        String hql = "SELECT sum(sellingPrice) FROM Property as pr WHERE pr.userId = :userId";
-        Query query = em.createQuery(hql).setParameter("userId", userId);
+	String hql = "SELECT sum(sellingPrice) FROM Property as pr WHERE pr.userId = :userId";
+	Query query = em.createQuery(hql).setParameter("userId", userId);
 
-        Long result = (Long) query.getSingleResult();
-        if (result == null) {
-            return 0;
-        }
-        return result;
+	Long result = (Long) query.getSingleResult();
+	if (result == null) {
+	    return 0;
+	}
+	return result;
     }
 
     /**
@@ -61,10 +61,10 @@ public class PropertyRep {
      * @return количество имущества пользователя
      */
     public Long allPrCount(int userId) {
-        String hql = "SELECT count(*) FROM Property as pr WHERE pr.userId = :userId";
-        Query query = em.createQuery(hql).setParameter("userId", userId);
+	String hql = "SELECT count(*) FROM Property as pr WHERE pr.userId = :userId";
+	Query query = em.createQuery(hql).setParameter("userId", userId);
 
-        return Long.valueOf(query.getSingleResult().toString());
+	return Long.valueOf(query.getSingleResult().toString());
     }
 
     /**
@@ -73,14 +73,14 @@ public class PropertyRep {
      */
     @SuppressWarnings("unchecked")
     public List<Property> getPropertyList(int page, int userId) {
-        String hql = "FROM Property as pr WHERE pr.userId = :userId ORDER BY pr.cash";
-        Query query = em.createQuery(hql).setParameter("userId", userId);
+	String hql = "FROM Property as pr WHERE pr.userId = :userId ORDER BY pr.cash";
+	Query query = em.createQuery(hql).setParameter("userId", userId);
 
-        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
-        query.setFirstResult(firstResult);
-        query.setMaxResults(Consts.ROWS_ON_PAGE);
+	int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+	query.setFirstResult(firstResult);
+	query.setMaxResults(Consts.ROWS_ON_PAGE);
 
-        return query.getResultList();
+	return query.getResultList();
     }
 
     /**
@@ -91,25 +91,27 @@ public class PropertyRep {
      * @return конкретное имущество конкретного пользователя
      */
     public Property getSpecificProperty(int userId, int id) {
-        String hql = "FROM Property as pr WHERE pr.userId = :userId and pr.id = :id";
-        Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("id", id);
-        Property result = (Property) query.getSingleResult();
+	String hql = "FROM Property as pr WHERE pr.userId = :userId and pr.id = :id";
+	Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("id", id);
+	Property result = (Property) query.getSingleResult();
 
-        return result;
+	return result;
     }
 
     /**
      * 
-     * @return список имущества валидного имущества пользователя, nextProfit которого <= тек. даты
+     * @return список валидного имущества пользователя, nextProfit которого <= тек. даты
      */
     @SuppressWarnings("unchecked")
-    public List<Property> getPropertyListForProfit(int userId) {
-        String hql = "FROM Property as pr WHERE valid = true and pr.userId = :userId and "
-                + "pr.nextProfit <= :currDate";
+    public List<Property> getPropertyListForProfit(int userId, boolean isProfit) {
+	// это начисление прибыли или износа
+	String field = (isProfit) ? "nextProfit" : "nextDepreciation";
+	String hql = "FROM Property as pr WHERE valid = true and pr.userId = :userId and "
+		+ "pr." + field + " <= :currDate";
 
-        Query query = em.createQuery(hql).setParameter("userId", userId)
-                .setParameter("currDate", new Date(), TemporalType.TIMESTAMP);
+	Query query = em.createQuery(hql).setParameter("userId", userId)
+		.setParameter("currDate", new Date(), TemporalType.TIMESTAMP);
 
-        return query.getResultList();
+	return query.getResultList();
     }
 }

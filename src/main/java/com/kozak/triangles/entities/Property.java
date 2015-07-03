@@ -23,12 +23,17 @@ import com.kozak.triangles.utils.DateUtils;
  * 
  * конкретный экземпляр имущества, которым кто-то владеет
  * 
- * cityArea - район города, где находится здание level - уровень здания, влияет на прибыль depreciationPercent - процент
- * износа или амортизации, возрастает каждый месяц, при достижении 100 - valid = false cash - количество денег в кассе
- * cashLevel - уровень кассы cashCapacity - текущая вместимость кассы purchaseDate - дата покупки initialCost -
- * начальная стоимость или цена покупки selling price - остаточная стоимость (цена продажи) на текущий момент valid -
- * если false - не приносит прибыль, не начисляется износ userId - владелец имущества name - наименование, может
- * меняться пользователем
+ * cityArea - район города, где находится здание level - уровень здания, влияет на прибыль
+ * depreciationPercent - процент износа или амортизации, возрастает каждый месяц, при достижении 100 - valid = false
+ * cash - количество денег в кассе
+ * cashLevel - уровень кассы cashCapacity - текущая вместимость кассы
+ * purchaseDate - дата покупки
+ * initialCost - начальная стоимость или цена покупки
+ * selling price - остаточная стоимость (цена продажи) на текущий момент
+ * valid - если false - не приносит прибыль, не начисляется износ
+ * userId - владелец имущества name - наименование, может меняться пользователем
+ * nextProfit - дата следующего начисления прибыли
+ * nextDepreciation - следующее начисление амортизации
  * 
  * @author Roman: 12 июня 2015 г. 20:22:47
  */
@@ -53,7 +58,7 @@ public class Property {
     private int level;
 
     @Column(name = "depreciation_percent")
-    private int depreciationPercent;
+    private double depreciationPercent;
 
     @Column(name = "valid")
     private boolean valid;
@@ -89,146 +94,159 @@ public class Property {
     @Column(name = "next_profit")
     private Date nextProfit;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "next_depr")
+    private Date nextDepreciation;
+
     // //////////////////////////////////////////////
 
     public Property() {
     }
 
     public Property(CommBuildData data, int userId, CityAreasT cityArea, Date purchaseDate, long initialCost) {
-        this.level = 0;
-        this.depreciationPercent = 0;
-        this.valid = true;
-        this.cash = 0;
-        this.cashLevel = 0;
-        this.name = "no_name";
-        this.nextProfit = DateUtils.getTomorrow();
+	this.level = 0;
+	this.depreciationPercent = 0;
+	this.valid = true;
+	this.cash = 0;
+	this.cashLevel = 0;
+	this.name = "no_name";
+	this.nextProfit = DateUtils.getNowPlusDay(1);
+	this.nextDepreciation = DateUtils.getNowPlusDay(7); // + 7 days
 
-        this.cashCapacity = data.getCashCapacity().get(0);
-        this.commBuildingType = data.getCommBuildType();
-        this.userId = userId;
-        this.cityArea = cityArea;
-        this.purchaseDate = purchaseDate;
-        this.initialCost = initialCost;
-        this.sellingPrice = initialCost;
+	this.cashCapacity = data.getCashCapacity().get(0);
+	this.commBuildingType = data.getCommBuildType();
+	this.userId = userId;
+	this.cityArea = cityArea;
+	this.purchaseDate = purchaseDate;
+	this.initialCost = initialCost;
+	this.sellingPrice = initialCost;
     }
 
     public Integer getId() {
-        return id;
+	return id;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+	this.id = id;
     }
 
     public int getUserId() {
-        return userId;
+	return userId;
     }
 
     public void setUserId(int userId) {
-        this.userId = userId;
+	this.userId = userId;
     }
 
     public CityAreasT getCityArea() {
-        return cityArea;
+	return cityArea;
     }
 
     public void setCityArea(CityAreasT cityArea) {
-        this.cityArea = cityArea;
+	this.cityArea = cityArea;
     }
 
     public int getLevel() {
-        return level;
+	return level;
     }
 
     public void setLevel(int level) {
-        this.level = level;
+	this.level = level;
     }
 
-    public int getDepreciationPercent() {
-        return depreciationPercent;
+    public double getDepreciationPercent() {
+	return depreciationPercent;
     }
 
-    public void setDepreciationPercent(int depreciationPercent) {
-        this.depreciationPercent = depreciationPercent;
+    public void setDepreciationPercent(double depreciationPercent) {
+	this.depreciationPercent = depreciationPercent;
     }
 
     public boolean isValid() {
-        return valid;
+	return valid;
     }
 
     public void setValid(boolean valid) {
-        this.valid = valid;
+	this.valid = valid;
     }
 
     public long getCash() {
-        return cash;
+	return cash;
     }
 
     public void setCash(long cash) {
-        this.cash = cash;
+	this.cash = cash;
     }
 
     public Date getPurchaseDate() {
-        return purchaseDate;
+	return purchaseDate;
     }
 
     public void setPurchaseDate(Date purchaseDate) {
-        this.purchaseDate = purchaseDate;
+	this.purchaseDate = purchaseDate;
     }
 
     public long getInitialCost() {
-        return initialCost;
+	return initialCost;
     }
 
     public void setInitialCost(long initialCost) {
-        this.initialCost = initialCost;
+	this.initialCost = initialCost;
     }
 
     public long getSellingPrice() {
-        return sellingPrice;
+	return sellingPrice;
     }
 
     public void setSellingPrice(long sellingPrice) {
-        this.sellingPrice = sellingPrice;
+	this.sellingPrice = sellingPrice;
     }
 
     public String getName() {
-        return name;
+	return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+	this.name = name;
     }
 
     public CommBuildingsT getCommBuildingType() {
-        return commBuildingType;
+	return commBuildingType;
     }
 
     public void setCommBuildingType(CommBuildingsT commBuildingType) {
-        this.commBuildingType = commBuildingType;
+	this.commBuildingType = commBuildingType;
     }
 
     public int getCashLevel() {
-        return cashLevel;
+	return cashLevel;
     }
 
     public void setCashLevel(int cashLevel) {
-        this.cashLevel = cashLevel;
+	this.cashLevel = cashLevel;
     }
 
     public long getCashCapacity() {
-        return cashCapacity;
+	return cashCapacity;
     }
 
     public void setCashCapacity(long cashCapacity) {
-        this.cashCapacity = cashCapacity;
+	this.cashCapacity = cashCapacity;
     }
 
     public Date getNextProfit() {
-        return nextProfit;
+	return nextProfit;
     }
 
     public void setNextProfit(Date nextProfit) {
-        this.nextProfit = nextProfit;
+	this.nextProfit = nextProfit;
+    }
+
+    public Date getNextDepreciation() {
+	return nextDepreciation;
+    }
+
+    public void setNextDepreciation(Date nextDepreciation) {
+	this.nextDepreciation = nextDepreciation;
     }
 }

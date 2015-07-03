@@ -91,10 +91,10 @@
 
 							<td><a href="${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
 							<td>${prop.level}</td>
-							<td>${prop.sellingPrice}</td>
+							<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
 							<td>${prop.depreciationPercent}<progress max="100"
 									value="${prop.depreciationPercent}"></td>
-							<td>${prop.cash}/${prop.cashCapacity}<progress
+							<td>${prop.cash} / ${prop.cashCapacity}<progress
 									max="${prop.cashCapacity}" value="${prop.cash}"></td>
 
 

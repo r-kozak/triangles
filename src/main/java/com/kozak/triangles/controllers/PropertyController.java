@@ -238,7 +238,7 @@ public class PropertyController {
      * операции с имуществом
      */
     @RequestMapping(value = "operations/{prId}", method = RequestMethod.POST)
-    String changeName(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
+    String propertyOperations(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
 	    @ModelAttribute("newName") String newName, User user, Model model, HttpServletRequest request,
 	    RedirectAttributes ra) {
 
@@ -256,8 +256,56 @@ public class PropertyController {
 	} else if (action.equals("repair")) {
 	    // TODO отремонтировать, снять деньги; если данное имущество НЕ valid на момент ремонта - установить
 	    // nextProfit = tomorrow
+	} else if (action.equals("get_cash")) {
+	    getCashFromProperty(prop);
 	}
 	return "redirect:/property/" + prId;
     }
 
+    /**
+     * запрос на изьятие денег с кассы имущества
+     */
+    @RequestMapping(value = "get-cash/{prId}", method = RequestMethod.POST)
+    String getCash(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
+	    @ModelAttribute("newName") String newName, User user, Model model, HttpServletRequest request,
+	    RedirectAttributes ra) {
+
+	int userId = user.getId();
+	// получить конкретное имущество текущего пользоватетя
+	Property prop = prRep.getSpecificProperty(userId, prId);
+	// если получили null - значит это не имущество пользователя
+	if (prop == null) {
+	    return "redirect:/commerc-pr";
+	}
+
+	// изымаем деньги
+	getCashFromProperty(prop);
+
+	return "redirect:/property/" + prId;
+    }
+
+    /**
+     * делает изымание денег с кассы имущества.
+     * записывает транзакцию, обновляет имущество.
+     * 
+     * @param prop
+     *            экземпляр имущество
+     */
+    private void getCashFromProperty(Property prop) {
+	if (prop.getCash() > 0) {
+	    int uId = prop.getUserId();
+
+	    String desc = "Сбор с имущества: " + prop.getName();
+	    Long cash = prop.getCash();
+	    Long oldBalance = Long.parseLong(trRep.getUserBalance(uId));
+
+	    Transaction t = new Transaction(desc, new Date(), cash, TransferT.PROFIT, uId, oldBalance + cash,
+		    ArticleCashFlowT.LEVY_ON_PROPERTY);
+
+	    trRep.addTransaction(t);
+
+	    prop.setCash(0);
+	    prRep.updateProperty(prop);
+	}
+    }
 }
