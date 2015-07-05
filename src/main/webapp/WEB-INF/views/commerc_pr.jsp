@@ -11,28 +11,9 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/simpleTip.css" type="text/css" />
 
 <script src="${pageContext.request.contextPath}/resources/jquery-2.1.4.js"></script>
+<script src="${pageContext.request.contextPath}/resources/change_balance.js"></script>
 <title>Коммерческое имущество</title>
 </head>
-
-<style>
-.noProp {
-  margin: 100;
-  color: rgb(7, 115, 106);
-  text-align: center;
-  font-size: 50;
-  border: 2px solid rgb(186, 16, 16);
-  padding: 20 20 30 20;
-}
-.noProp a {
-  margin: 50 200 0 200;
-  color: rgb(146, 20, 160);
-  border: 3px solid;
-  padding: 5 20 5 20;
-  text-decoration: none;
-  font-size: 25;
-  display: block;
-}
-</style>
 
 <body>
 	<div class="header">
@@ -48,7 +29,7 @@
 	<div class="status">
 		<div class="dominant">Dominant: 0&#9813;</div>
 		<div class="balance">
-			<a href="${pageContext.request.contextPath}/syso">Balance: ${balance}&tridot;</a>
+			<a href="${pageContext.request.contextPath}/transactions">Balance: ${balance}&tridot;</a>
 		</div>
 	</div>
 	
@@ -56,7 +37,7 @@
 		<div class="tranBlock">
 			<h1 align="center">Коммерческое имущество</h1>
 			<c:if test="${empty comProps}">
-				<div class = "noProp">У вас нет имущества. Его можно купить на рынке. <a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a></div>
+				<div class = "noData">У вас нет имущества. Его можно купить на рынке. <a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a></div>
 			</c:if>
 			
 			<c:if test="${!empty comProps}">
@@ -113,6 +94,16 @@
 				<ul>${tagNav}</ul>
 			</div>
 		</div>
+	</div>
+	<div id="balChan">
+		<c:choose>
+			<c:when test="${changeBal.length() > 0}">
+				${changeBal}&tridot;
+				<script>
+					popUp("<c:out value='${changeBal}'/>", "#balChan");
+				</script>
+			</c:when>
+		</c:choose>
 	</div>
 </body>
 </html>

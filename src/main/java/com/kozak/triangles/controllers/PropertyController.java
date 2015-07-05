@@ -210,6 +210,12 @@ public class PropertyController {
 	model.addAttribute("comProps", comProps);
 	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, contextPath + "/property/commerc-pr?", page));
 
+	// если собирали наличку с кассы - для информационного popup окна
+	String cash = (String) model.asMap().getOrDefault("changeBal", "");
+	if (!cash.isEmpty()) {
+	    model.addAttribute("changeBal", cash);
+	}
+
 	return "commerc_pr";
     }
 
@@ -231,6 +237,12 @@ public class PropertyController {
 	// добавим вид деятельности
 	model.addAttribute("type", buiDataRep.getCommBuildDataByType(prop.getCommBuildingType()).getBuildType());
 
+	// если собирали наличку с кассы - для информационного popup окна
+	String cash = (String) model.asMap().getOrDefault("changeBal", "");
+	if (!cash.isEmpty()) {
+	    model.addAttribute("changeBal", cash);
+	}
+
 	return "specific_pr";
     }
 
@@ -247,7 +259,7 @@ public class PropertyController {
 	Property prop = prRep.getSpecificProperty(userId, prId);
 	// если получили null - значит это не имущество пользователя
 	if (prop == null) {
-	    return "redirect:/commerc-pr";
+	    return "redirect:/property/commerc-pr";
 	}
 
 	if (action.equals("change_name")) {
@@ -257,7 +269,10 @@ public class PropertyController {
 	    // TODO отремонтировать, снять деньги; если данное имущество НЕ valid на момент ремонта - установить
 	    // nextProfit = tomorrow
 	} else if (action.equals("get_cash")) {
-	    getCashFromProperty(prop);
+	    long cash = getCashFromProperty(prop); // сколько налички собрали
+	    if (cash > 0) {
+		ra.addFlashAttribute("changeBal", "+" + cash); // передаем параметр
+	    }
 	}
 	return "redirect:/property/" + prId;
     }
@@ -265,7 +280,7 @@ public class PropertyController {
     /**
      * запрос на изьятие денег с кассы имущества
      */
-    @RequestMapping(value = "get-cash/{prId}", method = RequestMethod.POST)
+    @RequestMapping(value = "get-cash/{prId}", method = RequestMethod.GET)
     String getCash(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
 	    @ModelAttribute("newName") String newName, User user, Model model, HttpServletRequest request,
 	    RedirectAttributes ra) {
@@ -275,13 +290,16 @@ public class PropertyController {
 	Property prop = prRep.getSpecificProperty(userId, prId);
 	// если получили null - значит это не имущество пользователя
 	if (prop == null) {
-	    return "redirect:/commerc-pr";
+	    return "redirect:/property/commerc-pr";
 	}
 
 	// изымаем деньги
-	getCashFromProperty(prop);
+	long cash = getCashFromProperty(prop); // сколько налички собрали
+	if (cash > 0) {
+	    ra.addFlashAttribute("changeBal", "+" + cash); // передаем параметр
+	}
 
-	return "redirect:/property/" + prId;
+	return "redirect:/property/commerc-pr";
     }
 
     /**
@@ -291,7 +309,7 @@ public class PropertyController {
      * @param prop
      *            экземпляр имущество
      */
-    private void getCashFromProperty(Property prop) {
+    private long getCashFromProperty(Property prop) {
 	if (prop.getCash() > 0) {
 	    int uId = prop.getUserId();
 
@@ -306,6 +324,9 @@ public class PropertyController {
 
 	    prop.setCash(0);
 	    prRep.updateProperty(prop);
+
+	    return cash;
 	}
+	return 0;
     }
 }

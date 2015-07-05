@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/simpleTip.css" type="text/css" />
 
 <script src="${pageContext.request.contextPath}/resources/jquery-2.1.4.js"></script>
+<script src="${pageContext.request.contextPath}/resources/change_balance.js"></script>
 
 <title>${prop.name}</title>
 </head>
@@ -100,7 +101,6 @@ window.onload = function(){
 	border: 2px solid rgb(94, 255, 249);
 	font-weight: bold;
 }
-
 </style>
 
 
@@ -267,6 +267,16 @@ window.onload = function(){
 				</table>
 			</form:form>
 		</div>
+	</div>
+	<div id="balChan">
+		<c:choose>
+			<c:when test="${changeBal.length() > 0}">
+				${changeBal}&tridot;
+				<script>
+					popUp("<c:out value='${changeBal}'/>", "#balChan");
+				</script>
+			</c:when>
+		</c:choose>
 	</div>
 </body>
 </html>

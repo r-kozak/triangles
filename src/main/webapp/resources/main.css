@@ -31,6 +31,7 @@ body {
 .header p.button.small {
 	margin: 10;
 }
+
 .headerNav {
 	margin-top: 3px;
 	float: right;
@@ -44,7 +45,6 @@ body {
 .errors td {
 	text-align: center;
 }
-
 
 /* status */
 .status {
@@ -79,7 +79,6 @@ body {
 	background: white;
 }
 
-
 .wrapperNav {
 	margin-top: 155px;
 	margin-left: 155px;
@@ -87,7 +86,7 @@ body {
 	height: 550px;
 }
 
-.wrapperNav > a > p {
+.wrapperNav>a>p {
 	display: inline-block;
 	margin-left: 40px;
 	margin-top: 40px;
@@ -95,4 +94,36 @@ body {
 
 .tranBlock {
 	margin-top: 110px;
+}
+
+#balChan {
+	left: 0;
+	background: transparent;
+	position: absolute;
+	opacity: 0;
+	font-size: 20;
+	text-align: center;
+	color: red;
+	font-style: italic;
+	font-weight: bold;
+	z-index: 200;
+	display: inline-block;
+}
+
+.noData {
+  margin: 100;
+  color: rgb(7, 115, 106);
+  text-align: center;
+  font-size: 50;
+  border: 2px solid rgb(186, 16, 16);
+  padding: 20 20 30 20;
+}
+.noData a {
+  margin: 50 200 0 200;
+  color: rgb(146, 20, 160);
+  border: 3px solid;
+  padding: 5 20 5 20;
+  text-decoration: none;
+  font-size: 25;
+  display: block;
 }
