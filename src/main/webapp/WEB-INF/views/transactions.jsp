@@ -4,10 +4,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/buttons.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/beaTable.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/pagination.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/buttons.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/beaTable.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/pagination.css" type="text/css" />
 <title>Транзакции</title>
 </head>
 <body>
@@ -50,6 +50,9 @@
 								</c:when>
 								<c:when test="${transac.articleCashFlow == 'LEVY_ON_PROPERTY'}">
 									<td>Сбор с имущества</td>
+								</c:when>
+								<c:when test="${transac.articleCashFlow == 'BUY_PROPERTY'}">
+									<td>Покупка имущества</td>
 								</c:when>
 								<c:otherwise>
 									<td>${transac.articleCashFlow}</td>

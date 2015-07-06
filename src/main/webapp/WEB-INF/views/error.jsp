@@ -39,12 +39,12 @@
 	<div class="errorBlock">
 		<p>${errorMsg}</p>
 		<br>
-		<a href="${pageContext.request.contextPath}/property/r-e-market">В течение 10 сек. вас перенаправит туда, откуда вы пришли, но можно и быстрее... (для этого ткнуть сюда)</a>
+		<a href="${pageContext.request.contextPath}/property/r-e-market">В течение 5 сек. вас перенаправит туда, откуда вы пришли, но можно и быстрее...</a>
 		<script language="JavaScript" type="text/javascript">
 			function toREmarket() {
 				location = "${pageContext.request.contextPath}/property/r-e-market";
 			}
-			setTimeout('toREmarket()', 10000);
+			setTimeout('toREmarket()', 5000);
 		</script>
 	</div>
 </body>

@@ -4,20 +4,20 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html>
 <head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/buttons.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/beaTable.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/pagination.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/simpleTip.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/buttons.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/beaTable.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/pagination.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/simpleTip.css" type="text/css" />
 
-<script src="${pageContext.request.contextPath}/resources/jquery-2.1.4.js"></script>
-<script src="${pageContext.request.contextPath}/resources/change_balance.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/jquery-2.1.4.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/change_balance.js"></script>
 <title>Коммерческое имущество</title>
 </head>
 
 <body>
 	<div class="header">
-		<a href="${pageContext.request.contextPath}/home"><img src="${pageContext.request.contextPath}/resources/logo.png"
+		<a href="${pageContext.request.contextPath}/home"><img src="${pageContext.request.contextPath}/resources/img/logo.png"
 			align="middle"></a>
 		<div class="headerNav">
 			<a href="${pageContext.request.contextPath}/exit"><p class="button small bGray">
@@ -78,13 +78,15 @@
 							<td>${prop.cash} / ${prop.cashCapacity}<progress
 									max="${prop.cashCapacity}" value="${prop.cash}"></td>
 
-
-							<td align="center"><a
-								href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
-									<p class="button small bRed">
-										<span>&#10004;</span>
-									</p> <span class="tip">Собрать</span>
-							</a></td>
+							<td align="center">
+								<c:if test="${prop.cash > 0}">
+									<a href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
+											<p class="button small bRed">
+												<span>&#10004;</span>
+											</p> <span class="tip">Собрать</span>
+									</a>
+								</c:if>
+							</td>
 						</tr>
 					</c:forEach>
 				</table>

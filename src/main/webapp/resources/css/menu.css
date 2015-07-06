@@ -1,0 +1,22 @@
+
+#menu {
+  height: 468;
+  margin: 176 0 0 -160;
+  background: rgba(150, 251, 255, 0);
+}
+
+#elMenu > a {
+  height: 45;
+  width: 195;
+  display: block;
+  background: rgba(176, 255, 249, 0.33);
+  padding: 10 0 10 5;
+  text-decoration: none;
+  color: black;
+  font-size: 16;
+}
+
+#elMenu > a:hover {
+	border-left: 3px solid rgb(94, 255, 249);
+	font-weight: bold;
+}

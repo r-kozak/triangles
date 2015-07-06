@@ -4,13 +4,14 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html>
 <head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/buttons.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/beaTable.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/simpleTip.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/buttons.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/beaTable.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/simpleTip.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/menu.css" type="text/css" />
 
-<script src="${pageContext.request.contextPath}/resources/jquery-2.1.4.js"></script>
-<script src="${pageContext.request.contextPath}/resources/change_balance.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/jquery-2.1.4.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/change_balance.js"></script>
 
 <title>${prop.name}</title>
 </head>
@@ -74,32 +75,6 @@ window.onload = function(){
 	background-color: rgba(1, 1, 1, 0.725);
 	overflow: auto;
 	z-index:100;
-}
-
-#menu {
-  height: 468;
-  margin: 176 10 0 -160;
-  background: rgba(150, 251, 255, 0);
-  padding: 0 5 0 5;
-  border: 1px solid rgba(168, 168, 168, 0.7);
-  padding-top: 5;
-}
-
-#elMenu > a {
-  height: 45;
-  width: 180;
-  display: block;
-  background: rgba(176, 255, 249, 0.33);
-  margin: 0 0 5 0;
-  padding: 10 0 10 5;
-  text-decoration: none;
-  color: black;
-  font-size: 16;
-}
-
-#elMenu > a:hover {
-	border: 2px solid rgb(94, 255, 249);
-	font-weight: bold;
 }
 </style>
 
@@ -249,8 +224,12 @@ window.onload = function(){
 							</div>
 							<progress max="${prop.cashCapacity}" value="${prop.cash}">
 						</td>
-						<td><a class="support-hover"><p onclick="document.property.action.value='get_cash'; document.property.submit();" 
-							class="button small bRed"><span>&#10004;</span></p><span class="tip">Собрать</span></a></td>
+						<td>
+							<c:if test="${prop.cash > 0}">
+								<a class="support-hover"><p onclick="document.property.action.value='get_cash'; document.property.submit();" 
+								class="button small bRed"><span>&#10004;</span></p><span class="tip">Собрать</span></a>
+							</c:if>
+						</td>
 					</tr>
 					<tr>
 						<td>Уровень кассы</td>
@@ -269,14 +248,12 @@ window.onload = function(){
 		</div>
 	</div>
 	<div id="balChan">
-		<c:choose>
-			<c:when test="${changeBal.length() > 0}">
-				${changeBal}&tridot;
-				<script>
-					popUp("<c:out value='${changeBal}'/>", "#balChan");
-				</script>
-			</c:when>
-		</c:choose>
+		<c:if test="${changeBal.length() > 0}">
+			${changeBal}&tridot;
+			<script>
+				popUp("<c:out value='${changeBal}'/>", "#balChan");
+			</script>
+		</c:if>
 	</div>
 </body>
 </html>

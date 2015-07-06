@@ -138,9 +138,9 @@
 						</c:choose>
 
 						<td><fmt:formatDate value="${prop.appearDate}"
-								pattern="dd-MM-yyyy HH:mm:ss" /></td>
+								pattern="dd-MM-yyyy HH:mm" /></td>
 						<td><fmt:formatDate value="${prop.lossDate}"
-								pattern="dd-MM-yyyy HH:mm:ss" /></td>
+								pattern="dd-MM-yyyy HH:mm" /></td>
 
 						<td><fmt:formatNumber type="number" maxFractionDigits="3"
 								value="${prop.purchasePrice}" /></td>

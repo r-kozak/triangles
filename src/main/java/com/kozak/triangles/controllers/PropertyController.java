@@ -119,7 +119,7 @@ public class PropertyController {
 			"Ваш баланс равен или меньше нуля. Покупка невозможна. Продайте что-нибудь или заработайте денег.");
 	    } else if (userMoney + sellSum < prop.getPurchasePrice()) { // низкая состоятельность
 		model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
-			+ "Ваш максимум = " + (userMoney + sellSum) + "&tridot;");
+			+ "Ваш максимум = " + Util.moneyFormat(userMoney + sellSum) + "&tridot;");
 	    }
 	    return "error";
 	}
@@ -184,7 +184,7 @@ public class PropertyController {
 		    return "error";
 		} else if (userMoney + sellSum < prop.getPurchasePrice()) {
 		    model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
-			    + "Ваш максимум = " + (userMoney + sellSum) + "&tridot;");
+			    + "Ваш максимум = " + Util.moneyFormat(userMoney + sellSum) + "&tridot;");
 		    return "error";
 		}
 	    }
