@@ -1,28 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<html>
-<head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/buttons.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/beaTable.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/pagination.css" type="text/css" />
-<title>Транзакции</title>
-</head>
-<body>
-	<div class="header">
-		<a href="${pageContext.request.contextPath}/home"><img src="${pageContext.request.contextPath}/resources/logo.png"
-			align="middle"></a>
- 		<div class="headerNav">
-			<a href="${pageContext.request.contextPath}/exit"><p class="button small bGray"><span>exit</span></p></a></div>
-		</div>
-	</div>
-	<div class="status">
-		<div class="dominant">Dominant: 0&#9813;</div>
-		<div class="balance">Balance: ${balance}&tridot;</div>
-	</div>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+<title>Транзакции</title>
+<t:template>
 	<div class="content">
 		<div class="tranBlock">
 		<h1 align="center">Транзакции</h1>
@@ -35,7 +18,7 @@
 					<td>Сумма</td>
 					<td>Баланс</td>
 				</tr>
-
+	
 				<c:if test="${!empty transacs}">
 					<c:forEach items="${transacs}" var="transac">
 						<tr>
@@ -78,12 +61,10 @@
 					</c:forEach>
 				</c:if>
 			</table>
-
+	
 			<div class="pagination">
 				<ul>${tagNav}</ul>
 			</div>
-
 		</div>
 	</div>
-</body>
-</html>
+</t:template>

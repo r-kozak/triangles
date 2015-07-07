@@ -1,83 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<html>
-<head>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/main.css"
-	type="text/css" />
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/buttons.css"
-	type="text/css" />
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/beaTable.css"
-	type="text/css" />
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/pagination.css"
-	type="text/css" />
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/simpleTip.css"
-	type="text/css" />
 
-<script
-	src="${pageContext.request.contextPath}/resources/jquery-2.1.4.js"></script>
-
-<title>Рынок недвижимости</title>
-</head>
-
-<style>
-#popup {
-	width: 600px;
-	height: 155px;
-	background: rgb(112, 0, 178);
-	position: absolute;
-	display: none;
-	font-size: 48;
-	text-align: center;
-	color: #FFFFFF;
-	font-family: 'Arial Black', Gadget, sans-serif;
-	border: 4px dashed #D8D8D8;
-	z-index: 200;
-}
-
-#wrap {
-	display: none;
-	opacity: 0.8;
-	position: fixed;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	padding: 16px;
-	background-color: rgba(1, 1, 1, 0.725);
-	z-index: 100;
-	overflow: auto;
-}
-</style>
-
-<body>
-	<div class="header">
-		<a href="${pageContext.request.contextPath}/home"><img
-			src="${pageContext.request.contextPath}/resources/logo.png"
-			align="middle"></a>
-		<div class="headerNav">
-			<a href="${pageContext.request.contextPath}/exit"><p
-					class="button small bGray">
-					<span>exit</span>
-				</p></a>
-		</div>
-	</div>
-	</div>
-	<div class="status">
-		<div class="dominant">Dominant: 0&#9813;</div>
-		<div class="balance">
-			<a href="${pageContext.request.contextPath}/transactions">Balance:
-				${balance}&tridot;</a>
-		</div>
-	</div>
-
+<title>Рыное недвижимости</title>
+<t:template>
 	<!-- Задний прозрачный фон-->
 	<div onclick="show('none')" id="wrap"></div>
 
@@ -187,5 +115,4 @@
 			</c:when>
 		</c:choose>
 	</div>
-</body>
-</html>
+</t:template>

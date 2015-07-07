@@ -1,101 +1,29 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<html>
-<head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/buttons.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/beaTable.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/simpleTip.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/menu.css" type="text/css" />
-
-<script src="${pageContext.request.contextPath}/resources/js/jquery-2.1.4.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/change_balance.js"></script>
 
 <title>${prop.name}</title>
-</head>
-
-
 <script>
-window.onload = function(){ 
-    document.getElementById('hider').onclick = function() {
-      	document.getElementById('but1').style.display = 'inline-block';
-      	document.getElementById('NewNameInput').style.display = 'inline-block';
-    	document.getElementById('wrap').style.display = 'block';
-    	document.getElementById('name').style.opacity = '0';
-    }
-    
-    document.getElementById('wrap').onclick = function() {
-    	document.getElementById('wrap').style.display = 'none';
-      	document.getElementById('but1').style.display = 'none';
-      	document.getElementById('NewNameInput').style.display = 'none';
-    	document.getElementById('name').style.opacity = '1';
-    }
-};
+	window.onload = function(){ 
+	    document.getElementById('hider').onclick = function() {
+	      	document.getElementById('but1').style.display = 'inline-block';
+	      	document.getElementById('NewNameInput').style.display = 'inline-block';
+	    	document.getElementById('wrap').style.display = 'block';
+	    	document.getElementById('name').style.opacity = '0';
+	    }
+	    
+	    document.getElementById('wrap').onclick = function() {
+	    	document.getElementById('wrap').style.display = 'none';
+	      	document.getElementById('but1').style.display = 'none';
+	      	document.getElementById('NewNameInput').style.display = 'none';
+	    	document.getElementById('name').style.opacity = '1';
+	    }
+	};
 </script>
 
-<style>
-#NewNameInput{
-	 margin: 6 310;
-	 display:none;
-	 border-width:3px;
-	 border-style:dotted;
-	 border-color:#cacaca;
-	 -webkit-border-radius: 10px;
-	 -moz-border-radius: 10px;
-	 border-radius: 10px;
-	 font-size:15px;
-	 font-family:arial;
-	 color:#7a3403;
-	 padding-left:4px;
-	 width:230px;
-	 height:35px;
-	 background:#ffffff;
-	 z-index:201;
-	 position: absolute;
-}
-
-#but1 {
-	margin: 12 550;
-	display: none;
-	z-index:200;
-	position: absolute;
-}
-
-#wrap {
-	display: none;
-	opacity: 0.8;
-	position: fixed;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	padding: 16px;
-	background-color: rgba(1, 1, 1, 0.725);
-	overflow: auto;
-	z-index:100;
-}
-</style>
-
-
-<body>
-	<div class="header">
-		<a href="${pageContext.request.contextPath}/home"><img src="${pageContext.request.contextPath}/resources/logo.png"
-			align="middle"></a>
-		<div class="headerNav">
-			<a href="${pageContext.request.contextPath}/exit"><p class="button small bGray">
-					<span>exit</span>
-				</p></a>
-		</div>
-	</div>
-	<div class="status">
-		<div class="dominant">Dominant: 0&#9813;</div>
-		<div class="balance">
-			<a href="${pageContext.request.contextPath}/transactions">Balance: ${balance}&tridot;</a>
-		</div>
-	</div>
-					
+<t:template>
 	<!-- Задний прозрачный фон-->
 	<div id="wrap"></div>
 
@@ -255,5 +183,4 @@ window.onload = function(){
 			</script>
 		</c:if>
 	</div>
-</body>
-</html>
+</t:template>

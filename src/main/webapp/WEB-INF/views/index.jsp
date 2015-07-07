@@ -3,7 +3,7 @@
 <%@ page session="false" %>
 <html>
 <head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/main.css" type="text/css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css" type="text/css"/>
 	<title>Triangles</title>
     
     <style>        
@@ -44,7 +44,7 @@
 </head>
 <body>
     <div class="header">
-        <a href="${pageContext.request.contextPath}/"><img src="${pageContext.request.contextPath}/resources/logo.png" align="middle"></a>
+        <a href="${pageContext.request.contextPath}/"><img src="${pageContext.request.contextPath}/resources/img/logo.png" align="middle"></a>
     </div>
     
 	<form:form class="loginForm" action="${pageContext.request.contextPath}/login" modelAttribute="user" method="post">

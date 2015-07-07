@@ -1,0 +1,26 @@
+#NewNameInput{
+	 margin: 6 310;
+	 display:none;
+	 border-width:3px;
+	 border-style:dotted;
+	 border-color:#cacaca;
+	 -webkit-border-radius: 10px;
+	 -moz-border-radius: 10px;
+	 border-radius: 10px;
+	 font-size:15px;
+	 font-family:arial;
+	 color:#7a3403;
+	 padding-left:4px;
+	 width:230px;
+	 height:35px;
+	 background:#ffffff;
+	 z-index:201;
+	 position: absolute;
+}
+
+#but1 {
+	margin: 12 550;
+	display: none;
+	z-index:200;
+	position: absolute;
+}
