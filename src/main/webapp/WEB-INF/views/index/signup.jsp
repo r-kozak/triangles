@@ -6,31 +6,8 @@
 
 <head>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css" type="text/css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/login-sign.css" type="text/css">
 	<title>SignUp</title>
-    
-    <style>
-        .signupForm {
-            margin-top: 200px;
-            width: 300px;
-            height: 165px;
-            padding: 2px;
-        }
-            
-        input {
-            padding: 12px;
-            width: 294px;
-            margin-bottom: 5px;
-        }
-        
-        .subm {
-            border: darkturquoise solid 2px;
-            background: none;
-            font-size: 20;
-            color: darkturquoise;
-            padding: 9px;
-            cursor: pointer;
-        }
-    </style>
 </head>
 
 <body>
@@ -38,7 +15,7 @@
         <a href="${pageContext.request.contextPath}/"><img src="${pageContext.request.contextPath}/resources/img/logo.png" align="middle"></a>
     </div>
     
-<form:form class="signupForm" action="signup" commandName="user" method="post">
+<form:form class="lsForm" action="signup" commandName="user" method="post">
     <form:input path="login" type="text" placeholder="Username" required="true" autofocus="true"/> 
     <form:input path="email" type="text" placeholder="E-mail" required="true" /> 
     <form:input path="password" type="password" placeholder="Password" required="true" /> 

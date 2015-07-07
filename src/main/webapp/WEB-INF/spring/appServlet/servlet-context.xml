@@ -32,6 +32,4 @@
 			<beans:bean class="com.kozak.triangles.interceptors.AccessInterceptor" />
 		</interceptor>
 	</interceptors>
-
-	<!-- ((?!index|login|signup).) -->
 </beans:beans>

@@ -69,14 +69,23 @@ public class HomeController {
 	giveDailyBonus(currUser); // начисление ежедневного бонуса
 	giveCreditDeposit(currUserId); // начисление кредита/депозита
 	manageREMarketProposals(); // очистить-добавить предложения на глобальный рынок недвижимости
-	profitCalculation(currUserId); // начисление прибыли по имуществу пользователя
+	Util.profitCalculation(currUserId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
 	propertyDepreciation(currUserId); // начисление амортизации
 	levyOnProperty(currUserId); // сбор средств с имущества, где есть кассир
 	salaryPayment(currUserId); // выдача зп работникам
 
 	model = Util.addBalanceToModel(model, trRep.getUserBalance(currUserId));
 
-	return "home";
+	return "index/home";
+    }
+
+    /**
+     * wiki
+     */
+    @RequestMapping(value = "/wiki", method = RequestMethod.GET)
+    String wiki(User user, Model model) {
+	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	return "wiki";
     }
 
     /**
@@ -136,54 +145,6 @@ public class HomeController {
 	    p.setSellingPrice(p.getSellingPrice() - deprSum);
 	    p.setDepreciationPercent(p.getDepreciationPercent() + deprPerc);
 	    prRep.updateProperty(p);
-	}
-    }
-
-    /**
-     * начисление прибыли по каждому имуществу пользователя
-     * 
-     * @param userId
-     */
-    private void profitCalculation(int userId) {
-	// получить данные всех коммерческих строений
-	HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
-
-	// получить всё валидное имущество, nextProfit которого < тек. даты
-	ArrayList<Property> properties = (ArrayList<Property>) prRep.getPropertyListForProfit(userId, true);
-	// генератор
-	ProposalGenerator pg = new ProposalGenerator();
-
-	// для каждого имущества
-	for (Property p : properties) {
-	    CommBuildData data = mapData.get(p.getCommBuildingType().toString());
-
-	    long cashCap = p.getCashCapacity(); // получить вместимость кассы
-	    long cash = p.getCash(); // получить тек. значение кассы
-
-	    // получить минимальную и максимальную прибыль
-	    int pMin = data.getProfitMin();
-	    int pMax = data.getProfitMax();
-
-	    // расчитать, за сколько дней нужно насчитать прибыль
-	    Date d1 = p.getNextProfit();
-	    Date d2 = new Date();
-	    int calcC = DateUtils.daysBetween(d1, d2) + 1; // количество начислений
-
-	    for (int i = 0; i < calcC; i++) {
-		// згенерить и приплюсовать к кассе значение прибыли !!! учитывая район !!!
-		long gen = pg.generateRandNum(pMin, pMax);
-		gen += gen * Util.getAreaPercent(p.getCityArea()) / 100;
-		cash += gen;
-	    }
-	    // если в кассе больше, чем вместимость - сделать, как вместимость
-	    if (cash > cashCap)
-		cash = cashCap;
-
-	    // установить значение кассы и дату nextProfit
-	    p.setCash(cash);
-	    p.setNextProfit(DateUtils.getNowPlusDay(1));
-
-	    prRep.updateProperty(p);// обновить имущество
 	}
     }
 

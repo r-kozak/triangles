@@ -202,6 +202,8 @@ public class PropertyController {
 	int page = Util.getPageNumber(request);
 	int userId = user.getId();
 
+	Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
+
 	Long propCount = prRep.allPrCount(userId);
 	int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 	List<Property> comProps = prRep.getPropertyList(page, userId);
@@ -225,6 +227,8 @@ public class PropertyController {
     @RequestMapping(value = "/{prId}", method = RequestMethod.GET)
     String specificPropertyPage(@ModelAttribute("prId") int prId, User user, Model model) {
 	int userId = user.getId();
+	Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
+
 	// получить конкретное имущество текущего пользоватетя
 	Property prop = prRep.getSpecificProperty(userId, prId);
 	// если получили null - значит это не имущество пользователя

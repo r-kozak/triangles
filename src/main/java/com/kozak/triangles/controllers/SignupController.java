@@ -22,37 +22,37 @@ import com.kozak.triangles.validators.SignupValidator;
 @SessionAttributes("user")
 @Controller
 public class SignupController {
-	private SignupValidator signupValidator;
-	private UserRep userRepository;
+    private SignupValidator signupValidator;
+    private UserRep userRepository;
 
-	@Autowired
-	public SignupController(SignupValidator signupValidator, UserRep userRepository) {
-		this.signupValidator = signupValidator;
-		this.userRepository = userRepository;
+    @Autowired
+    public SignupController(SignupValidator signupValidator, UserRep userRepository) {
+	this.signupValidator = signupValidator;
+	this.userRepository = userRepository;
+    }
+
+    @RequestMapping(value = "/signup", method = RequestMethod.GET)
+    public String signup(Model model) {
+	model.addAttribute("user", new User());
+	return "index/signup";
+    }
+
+    @RequestMapping(value = "/signup", method = RequestMethod.POST)
+    public ModelAndView toHome(@Valid @ModelAttribute("user") User user, BindingResult bindResult) {
+
+	ModelAndView mAndView = new ModelAndView();
+
+	List<User> allUsers = userRepository.getAllUsers();
+	signupValidator.validate(user, bindResult, allUsers);
+	if (bindResult.hasErrors()) {
+	    mAndView.setViewName("index/signup");
+	    return mAndView;
 	}
+	userRepository.addUser(user);
 
-	@RequestMapping(value = "/signup", method = RequestMethod.GET)
-	public String signup(Model model) {
-		model.addAttribute("user", new User());
-		return "signup";
-	}
-
-	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public ModelAndView toHome(@Valid @ModelAttribute("user") User user, BindingResult bindResult) {
-
-		ModelAndView mAndView = new ModelAndView();
-
-		List<User> allUsers = userRepository.getAllUsers();
-		signupValidator.validate(user, bindResult, allUsers);
-		if (bindResult.hasErrors()) {
-			mAndView.setViewName("signup");
-			return mAndView;
-		}
-		userRepository.addUser(user);
-
-		mAndView.addObject("user", user);
-		RedirectView rv = new RedirectView("");
-		mAndView.setView(rv);
-		return mAndView;
-	}
+	mAndView.addObject("user", user);
+	RedirectView rv = new RedirectView("");
+	mAndView.setView(rv);
+	return mAndView;
+    }
 }

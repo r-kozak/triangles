@@ -7,7 +7,7 @@
 <title>Рыное недвижимости</title>
 <t:template>
 	<!-- Задний прозрачный фон-->
-	<div onclick="show('none')" id="wrap"></div>
+	<div id="wrap"></div>
 
 	<div class="content">
 		<div class="tranBlock">

@@ -54,9 +54,7 @@
 							<td align="center">
 								<c:if test="${prop.cash > 0}">
 									<a href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
-											<p class="button small bRed">
-												<span>&#10004;</span>
-											</p> <span class="tip">Собрать</span>
+											<p class="button small bRed"><span>&#10004;</span></p> <span class="tip">Собрать</span>
 									</a>
 								</c:if>
 							</td>

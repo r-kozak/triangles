@@ -22,7 +22,6 @@
 	    }
 	};
 </script>
-
 <t:template>
 	<!-- Задний прозрачный фон-->
 	<div id="wrap"></div>
@@ -152,11 +151,25 @@
 							</div>
 							<progress max="${prop.cashCapacity}" value="${prop.cash}">
 						</td>
-						<td>
-							<c:if test="${prop.cash > 0}">
-								<a class="support-hover"><p onclick="document.property.action.value='get_cash'; document.property.submit();" 
-								class="button small bRed"><span>&#10004;</span></p><span class="tip">Собрать</span></a>
-							</c:if>
+						<td width="200">
+							<c:choose>
+    							<c:when test="${prop.cash > 0}">
+									<a class="support-hover"><p onclick="document.property.action.value='get_cash'; document.property.submit();" 
+									class="button small bRed"><span>&#10004;</span></p><span class="tip">Собрать</span></a>
+								</c:when>    
+    							<c:otherwise>
+    							через...
+    								<script>
+										$(function() {
+											var austDay = new Date(parseInt("<c:out value='${prop.nextProfit.time}'/>"));
+											$('#defaultCountdown').countdown({
+												until : austDay
+											});
+										});
+									</script>
+									<div id="defaultCountdown"></div>
+							    </c:otherwise>
+							</c:choose>
 						</td>
 					</tr>
 					<tr>

@@ -1,6 +1,6 @@
 * {
 	margin: 0;
-	padding: 0;
+/* 	padding: 0; */
 	-webkit-box-sizing: border-box;
 }
 
@@ -28,13 +28,24 @@ body {
 	padding-top: 8px;
 }
 
-.header p.button.small {
-	margin: 10;
+.headerNav {
+  margin: -3 1 0 0;
+  float: right;
+  display: inline-flex;
 }
 
-.headerNav {
-	margin-top: 3px;
-	float: right;
+.headerNav a {
+  text-decoration: none;
+  color: white;
+  font-size: 90%;
+  padding: 20 10 15 10;
+}
+.headerNav a:hover {
+  border-left: 1px solid;
+  border-right: 1px solid;
+}
+.logo {
+	display: inline-block;
 }
 
 .errors {

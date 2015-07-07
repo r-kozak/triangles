@@ -26,37 +26,37 @@ public class LoginController {
 
     @Autowired
     public LoginController(LoginValidator loginValidator, UserRep userRepository) {
-        this.loginValidator = loginValidator;
-        this.userRepository = userRepository;
+	this.loginValidator = loginValidator;
+	this.userRepository = userRepository;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String home(Model model) {
-        if (!model.containsAttribute("user")) // если регистрировались, то сессия не пустая и в модели юзер есть
-            model.addAttribute("user", new User()); // иначе - добавим юзера в модель (ну и в сессию попадет автоматом)
-        return "index";
+	if (!model.containsAttribute("user")) // если регистрировались, то сессия не пустая и в модели юзер есть
+	    model.addAttribute("user", new User()); // иначе - добавим юзера в модель (ну и в сессию попадет автоматом)
+	return "index/index";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ModelAndView login(@ModelAttribute("user") User user, BindingResult bindResult) {
 
-        ModelAndView mAndView = new ModelAndView();
+	ModelAndView mAndView = new ModelAndView();
 
-        List<User> allUsers = userRepository.getAllUsers();
-        loginValidator.validate(user, bindResult, allUsers);
-        if (bindResult.hasErrors()) {
-            mAndView.setViewName("index");
-            return mAndView;
-        }
+	List<User> allUsers = userRepository.getAllUsers();
+	loginValidator.validate(user, bindResult, allUsers);
+	if (bindResult.hasErrors()) {
+	    mAndView.setViewName("index/index");
+	    return mAndView;
+	}
 
-        RedirectView rv = new RedirectView("home");
-        mAndView.setView(rv);
-        return mAndView;
+	RedirectView rv = new RedirectView("home");
+	mAndView.setView(rv);
+	return mAndView;
     }
 
     @RequestMapping(value = "/exit", method = RequestMethod.GET)
     public String exit(Model model) {
-        model.addAttribute("user", new User());
-        return "redirect:/";
+	model.addAttribute("user", new User());
+	return "redirect:/";
     }
 }
