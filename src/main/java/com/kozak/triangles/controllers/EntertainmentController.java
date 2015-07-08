@@ -1,5 +1,7 @@
 package com.kozak.triangles.controllers;
 
+import java.util.Calendar;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,11 @@ public class EntertainmentController {
 
     @RequestMapping(value = "/entertainment", method = RequestMethod.GET)
     String entertainmentGET(Model model) {
-	return "entertainment";
+	Calendar to = Calendar.getInstance();
+	to.add(Calendar.SECOND, 3);
+	model.addAttribute("to", to.getTimeInMillis());
+
+	return "timer";
+	// return "entertainment";
     }
 }

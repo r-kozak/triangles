@@ -34,4 +34,11 @@ public interface Consts {
     int CHINA_P = 15;
     int OUTSKIRTS_P = 5;
     int GHETTO_P = 0;
+
+    // коэфициенты вместимости кассы
+    double CASH_CAP_L1 = 1.1;
+    double CASH_CAP_L2 = 1.3;
+    double CASH_CAP_L3 = 1.6;
+    double CASH_CAP_L4 = 2.0;
+    double CASH_CAP_L5 = 2.5;
 }

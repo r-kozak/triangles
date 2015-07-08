@@ -6,6 +6,17 @@
 
 <title>Транзакции</title>
 <t:template>
+	<div id="menu">
+		<div id="elMenu">
+			<a href="${pageContext.request.contextPath}/property">Упр. имуществом</a>
+		</div>
+		<div id="elMenu">
+			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
+		</div>
+		<div id="elMenu">
+			<a href="${pageContext.request.contextPath}/property/commerc-pr">Моё коммерческое</a>
+		</div>
+	</div>
 	<div class="content">
 		<div class="tranBlock">
 		<h1 align="center">Транзакции</h1>

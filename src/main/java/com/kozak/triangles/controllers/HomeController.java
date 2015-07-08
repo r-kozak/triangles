@@ -85,6 +85,16 @@ public class HomeController {
     @RequestMapping(value = "/wiki", method = RequestMethod.GET)
     String wiki(User user, Model model) {
 	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	// данные имущества
+	model.addAttribute("commBuData", buiDataRep.getCommBuildDataList());
+
+	// коэфициенты вместимости кассы
+	model.addAttribute("ccl1", Consts.CASH_CAP_L1);
+	model.addAttribute("ccl2", Consts.CASH_CAP_L2);
+	model.addAttribute("ccl3", Consts.CASH_CAP_L3);
+	model.addAttribute("ccl4", Consts.CASH_CAP_L4);
+	model.addAttribute("ccl5", Consts.CASH_CAP_L5);
+
 	return "wiki";
     }
 
@@ -161,21 +171,21 @@ public class HomeController {
 	// init STALL
 	CommBuildingsT TYPE = CommBuildingsT.STALL;
 	if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
-	    data = new CommBuildData(3, 6, 4500, 5500, TYPE, superTYPE, 1, 1, 2);
+	    data = new CommBuildData(3, 6, 4500, 5500, TYPE, superTYPE, 4, 1, 2);
 	    buiDataRep.addCommBuildingData(data);
 	}
 
 	// init VILLAGE_SHOP
 	TYPE = CommBuildingsT.VILLAGE_SHOP;
 	if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
-	    data = new CommBuildData(2, 10, 10000, 15000, TYPE, superTYPE, 2, 2, 3);
+	    data = new CommBuildData(2, 10, 10000, 15000, TYPE, superTYPE, 6, 2, 3);
 	    buiDataRep.addCommBuildingData(data);
 	}
 
 	// init STATIONER_SHOP
 	TYPE = CommBuildingsT.STATIONER_SHOP;
 	if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
-	    data = new CommBuildData(5, 12, 17000, 30000, TYPE, superTYPE, 3, 1, 4);
+	    data = new CommBuildData(5, 12, 17000, 30000, TYPE, superTYPE, 7, 1, 4);
 	    buiDataRep.addCommBuildingData(data);
 	}
     }

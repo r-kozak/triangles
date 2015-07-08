@@ -24,7 +24,7 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
  * cashCapacity - вместимость кассы на разных уровнях, {на ур 0, на ур 1, ...}
  * paybackPeriod - период окупаемости {min, max}, недель
  * purchasePrice - цена покупки {min, max}
- * buildTime - время постройки (при скорости 100%), недель
+ * buildTime - время постройки (при скорости 100%), дней
  * commBuildType - тип строения (киоск, магазин)
  * buildType - супер-тип строения (торговое, производственное...)
  * remTerm - срок, сколько предложение будет находиться на рынке (мин, макс), в днях
@@ -103,10 +103,11 @@ public class CommBuildData {
 
 	ArrayList<Long> cashList = new ArrayList<Long>(5);
 	cashList.add((long) profitMax);
-	cashList.add((long) profitMax * 2);
-	cashList.add((long) profitMax * 3);
-	cashList.add((long) profitMax * 4);
-	cashList.add((long) profitMax * 5);
+	cashList.add((long) (profitMax * 1.1));
+	cashList.add((long) (profitMax * 1.3));
+	cashList.add((long) (profitMax * 1.6));
+	cashList.add((long) (profitMax * 2.0));
+	cashList.add((long) (profitMax * 2.5));
 
 	this.cashCapacity = cashList;
 

@@ -6,6 +6,14 @@
 
 <title>Коммерческое имущество</title>
 <t:template>
+	<div id="menu">
+		<div id="elMenu">
+			<a href="${pageContext.request.contextPath}/property">Упр. имуществом</a>
+		</div>
+		<div id="elMenu">
+			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
+		</div>
+	</div>
 	<div class="content">
 		<div class="tranBlock">
 			<h1 align="center">Коммерческое имущество</h1>
