@@ -13,7 +13,6 @@ body {
 
 /* header */
 .header {
-	border: 1px solid;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -41,8 +40,7 @@ body {
   padding: 20 10 15 10;
 }
 .headerNav a:hover {
-  border-left: 1px solid;
-  border-right: 1px solid;
+	background: rgb(0, 188, 190);
 }
 .logo {
 	display: inline-block;
@@ -67,6 +65,7 @@ body {
 	font-size: 20px;
 	position: fixed;
 	z-index: 20;
+	border: 1px solid;
 }
 
 .status a {

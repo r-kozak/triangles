@@ -22,7 +22,7 @@
 <style>
 </style>
 <body>
-	<div class="header">
+	<div id="header" class="header">
 		<div class="logo">
 			<a href="${pageContext.request.contextPath}/home"><img src="${pageContext.request.contextPath}/resources/img/logo.png" align="middle"></a>
 		</div>
@@ -31,7 +31,7 @@
 			<a href="${pageContext.request.contextPath}/exit">exit</a>
 		</div>
 	</div>
-	<div class="status">
+	<div id="status" class="status">
 		<div class="dominant">Dominant: 0&#9813;</div>
 		<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Balance: ${balance}&tridot;</a></div>
 	</div>	

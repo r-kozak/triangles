@@ -94,6 +94,8 @@ public class HomeController {
 	model.addAttribute("ccl3", Consts.CASH_CAP_L3);
 	model.addAttribute("ccl4", Consts.CASH_CAP_L4);
 	model.addAttribute("ccl5", Consts.CASH_CAP_L5);
+	model.addAttribute("frp_min", Consts.FREQ_RE_PROP_MIN);
+	model.addAttribute("frp_max", Consts.FREQ_RE_PROP_MAX);
 
 	return "wiki";
     }

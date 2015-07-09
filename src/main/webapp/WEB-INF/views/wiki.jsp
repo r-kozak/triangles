@@ -42,32 +42,35 @@
 }
 .fs2 {
 	font-size: 22;
-	text-indent: 1em;
 }
 .fs3 {
 	font-size: 17;
-	text-indent: 1.5em;
 }
 
-.fixed_button a {
-	position: fixed;
-	bottom: 50px;
-	height: 8;
-	right: 50px;
-	z-index: 999;
-	color: #FF9147;
-	border: 2px dotted;
-	padding: 10 18 30 18;
-	text-decoration: none;
-	font-size: 100%;
-	background: transparent;
-	border-radius: 50%;
+#up {
+width:55;
+height:55;
+position:fixed;
+bottom:50px;
+right:20px;
+border-radius:30px; 
+display:none;
+cursor: pointer;
 }
-
-.fixed_button:hover a {
-	color: #FF6900;
-	border: 4px dotted;
-	font-weight: bold;
+#down {
+width:55;
+height:55;
+position:fixed;
+bottom:50px;
+right:20px;
+border-radius:30px;
+display:none;
+cursor: pointer;
+}
+.pPageScroll {
+color:red;
+font:bold 12pt 'Comic Sans MS';
+text-align:center;
 }
 
 .text {
@@ -91,21 +94,86 @@ h1 {
 	margin-bottom: 50;
 	border-bottom: 2px solid lightgrey;
 }
-p { 
-    text-indent: 1.5em; /* Отступ первой строки */
-    text-align: justify; /* Выравнивание по ширине */
- 	margin-top: 10px;   
-   }
+ p {  
+     text-indent: 1.5em; /* Отступ первой строки */ 
+     text-align: justify; /* Выравнивание по ширине */ 
+ 	margin-top: 10px;    
+} 
+#header {
+	display:none;
+}
+#status {
+	display:none;
+}
 
 </style>
 
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript">
+	//при скроле убирает верхнюю панель
+	window.onscroll = function() {
+	  var scrolled = window.pageYOffset || document.documentElement.scrollTop;
+	  if (scrolled > 100) {
+		  $('#header').slideUp(700);
+		  $('#status').slideUp(700);
+	  } else if (scrolled <= 100) {
+		  $('#header').slideDown(700);
+		  $('#status').slideDown(700);
+	  }
+	  if (scrolled > screen.height && b) {
+		  $('#up').show();
+		  $('#down').hide();
+	  } else if (scrolled == 0) {
+		  $('#up').hide();
+		  b = true;
+	  }
+	};
+	
+	//скролл для того, чтобы показать хедер при входе на страницу
+	window.onload = function() {
+		var scrolled = window.pageYOffset || document.documentElement.scrollTop;
+		//если мы не перезагружаем, а входим, тогда показать хедер
+		if (scrolled == 0) {
+			$('#header').slideDown(700);
+		    $('#status').slideDown(700);
+		}
+	};
+	
+	//функции вверх-вниз
+	var a = 0; //для запоминания позиции курсора
+	var b = true;
+	
+	$(document).ready(function(){
+	//Обработка нажатия на кнопку "Вверх"
+	$('#up').click(function(){
+		//Необходимо прокрутить в начало страницы
+		a = $(document).scrollTop();
+		var curPos=$(document).scrollTop();
+		var scrollTime=curPos/1.73;
+		$('body,html').animate({'scrollTop':0},scrollTime);
+		$('#up').hide();
+		$('#down').show();
+		b = false;
+	});
+
+	//Обработка нажатия на кнопку "Вниз"
+	$('#down').click(function(){
+		//Необходимо прокрутить в конец страницы
+		var curPos=$(document).scrollTop();
+		var height=$('body').height();
+		var scrollTime=(height-curPos)/1.73;
+		$('body,html').animate({'scrollTop':a},scrollTime);
+		$('#down').hide();
+		$('#up').show();
+	});
+	});
+</script>
 <t:template>
 	<div class="content">
 		<div class="wrapper">
 		<h1 align="center">wiki</h1>
-			<div class="fixed_button">
-				<a href="">↑</a>
-			</div>
+			<div id="up"><a class="pPageScroll"><img width=50 src="${pageContext.request.contextPath}/resources/img/up_arrow.png"></a></div>
+			<div id="down"><a class="pPageScroll"><img width=50 src="${pageContext.request.contextPath}/resources/img/down_arrow.png"></a></div>
 
 			<div id="contents">
 				<div id="contents_title">Содержание</div>
@@ -127,6 +195,7 @@ p {
 							<ul>
 								<li><a href="#pr.ma.bu">Покупка</a></li>
 								<li><a href="#pr.ma.se">Продажа</a></li>
+								<li><a href="#pr.ma.ca">Районы города</a></li>
 							</ul>
 						<li><a href="#pr.bu">Стройка</a></li>
 							<ul>
@@ -161,7 +230,7 @@ p {
 					<li>Наименование (можно и нужно менять)</li>
 					<li>Уровень (влияет на прибыль)</li>
 					<li>Район города (влияет на прибыль)</li>
-					<li>Активность (при износе 100% - становится не активным)</li>
+					<li>Активность (при износе 100% - становится не активным, не приносит прибыль)</li>
 					<li>Износ (насчитывается каждую неделю)</li>
 					<li>Деньги в кассе</li>
 					<li>Уровень кассы (влияет на вместимость)</li>
@@ -229,6 +298,50 @@ p {
 						</ul>
 					</c:forEach>
 				</c:if>
+			</div>
+			
+			<div id="pr.co" class="sp_point fs2">Порядок начислений</div>
+			<div class="text">
+				<p>Ниже пойдет речь о начислениях, связанных с имуществом.</p>
+
+			<div id="pr.co.pr" class="sp_point fs3">Прибыль</div>
+				<p>Прибыль начисляется каждые 24 часа по любому активному коммерческому имуществу. Активным считается то, износ которого < 100%.</p>
+				<p>На прибыль влияет уровень здания. Коэфициенты по уровням и влиянию на прибыль такие же, как и по <a href="#pr.ch">вместимости кассы</a>.</p>
+				<p>Прибыль начисляется в кассу имущества. Если касса полностью забита, деньги пропадают.</p>
+				<p>Если для конкретного имущества нанят кассир (можно нанимать не для каждого вида имущества), тогда он сам собирает прибыль и за переполнение кассы беспокоится не нужно.</p>
+			
+			<div id="pr.co.de" class="sp_point fs3">Износ</div>
+				<p>Износ начисляется каждую неделю. При полном износе конкретный экземпляр имущества становится не активным и не приносит прибыли</p>
+				<p>Также, износ прямо влияет на цену продажи имущества</p>
+				<p>Процент начисления износа зависит от <b>основного</b> и <b>дополнительного процента</b>. Основной процент =  (100 / срок полезного использования).</p>
+				<p>Дополнительный процент = (1-30% от основного). Расчитывается рандомно. Он может как добавляться, так и отниматься от основного.</p>
+				<p><b>Итого:</b></p>
+				<p>Общий процент = основной +/- дополнительный.</p>
+			</div>
+			
+			<div id="pr.ma" class="sp_point fs2">Рынок имущества</div>
+			<div class="text">
+				<p>Рынок имущества является глобальным в игре. Это значит, что если один игрок купил какое-либо имущество, то 
+				другому игроку оно уже не будет показываться</p>
+				<p>Частота появления имущества на рынке равняется от <b> ${frp_min} до ${frp_max} </b> дней.
+				<p>Предложения генерируются либо тогда, когда пришло время, либо тогда, когда рынок пустой.
+				<p>Количество предложений зависит от:
+				<p>1) количества активных пользователей (тех, которые входили последний раз не больше двух недель назад);
+				<p>2) коэфициента количества имуществ на одного пользователя <b> (1-4) </b>
+				<p>Вид имущества, который появится, тоже зависит от рандома. Но одни виды приоритетней за другие.
+				<p>Если имущество никто не купил, через некоторое время оно пропадает. Срок пребывания на рынке для каждого вида имущества 
+				  разный, указан в <a href="#pr.ch">характеристиках</a>.
+				<p>Цена на имущество также указана в характеристиках, но может меняться в зависимости от <a href="#pr.ma.ca">района города</a>.
+				
+				
+				<div id="pr.ma.bu" class="sp_point fs3">Покупка</div>
+				<p>Есть несколько вариантов покупки имущества. Это либо покупка за наличные, либо покупка в кредит. 
+				<p>Купить за наличные можно лишь в том случае, если <b>количество денег >= цена имущества</b>.
+				  При покупке за наличные происходит обычное снятие денежных средств с баланса.
+				<p>Покупка в кредит осуществляется только тогда, когда позволяет <a href="#ba.so">состоятельность</a> пользователя. 
+				  При этом будет задан вопрос о том, согласен ли пользователь оформить покупку в кредит.
+				<p>Если не хватает денег или низкая состоятельность для покупки конкретного имущества - будет показана страница ошибок и 
+				  максимальная сумма, которая доступна для покупки имущества.
 			</div>
 		</div>
 </t:template>
