@@ -16,4 +16,7 @@ function popUp(a, bloc) {
 		"top" : "-=20px",
 		"opacity" : "0"
 	}, 700);
+	$(bloc).css({
+		"z-index" : "18"
+	});
 };

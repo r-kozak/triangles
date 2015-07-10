@@ -87,15 +87,34 @@ public class HomeController {
 	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
 	// данные имущества
 	model.addAttribute("commBuData", buiDataRep.getCommBuildDataList());
-
 	// коэфициенты вместимости кассы
 	model.addAttribute("ccl1", Consts.CASH_CAP_L1);
 	model.addAttribute("ccl2", Consts.CASH_CAP_L2);
 	model.addAttribute("ccl3", Consts.CASH_CAP_L3);
 	model.addAttribute("ccl4", Consts.CASH_CAP_L4);
 	model.addAttribute("ccl5", Consts.CASH_CAP_L5);
+	// мин и макс частота генерации предложений на рынке
 	model.addAttribute("frp_min", Consts.FREQ_RE_PROP_MIN);
 	model.addAttribute("frp_max", Consts.FREQ_RE_PROP_MAX);
+	// районы города
+	model.addAttribute("gp", Consts.GHETTO_P);
+	model.addAttribute("op", Consts.OUTSKIRTS_P);
+	model.addAttribute("chp", Consts.CHINA_P);
+	model.addAttribute("cep", Consts.CENTER_P);
+	// проценты типов строителей
+	model.addAttribute("gabu", Consts.GASTARBEITER_B);
+	model.addAttribute("uabu", Consts.UKRAINIAN_B);
+	model.addAttribute("gebu", Consts.GERMANY_B);
+	// цены и сроки лицензий на строительство
+	model.addAttribute("prc2", Consts.LI_PR_2);
+	model.addAttribute("prc3", Consts.LI_PR_3);
+	model.addAttribute("prc4", Consts.LI_PR_4);
+	model.addAttribute("literm2", Consts.LI_TERM_2);
+	model.addAttribute("literm3", Consts.LI_TERM_3);
+	model.addAttribute("literm4", Consts.LI_TERM_4);
+	// ставки кредита и депозита
+	model.addAttribute("cr_rate", Consts.CREDIT_RATE);
+	model.addAttribute("dep_rate", Consts.DEPOSIT_RATE);
 
 	return "wiki";
     }

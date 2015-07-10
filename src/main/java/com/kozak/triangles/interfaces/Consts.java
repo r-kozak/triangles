@@ -41,4 +41,19 @@ public interface Consts {
     double CASH_CAP_L3 = 1.6;
     double CASH_CAP_L4 = 2.0;
     double CASH_CAP_L5 = 2.5;
+
+    // проценты типов строителей
+    int GASTARBEITER_B = 50;
+    int UKRAINIAN_B = 100;
+    int GERMANY_B = 150;
+
+    // цены лицензий на строительство
+    int LI_PR_2 = 16000;
+    int LI_PR_3 = 20000;
+    int LI_PR_4 = 24000;
+
+    // сроки действия лицензий на строительство, недель
+    int LI_TERM_2 = 8;
+    int LI_TERM_3 = 4;
+    int LI_TERM_4 = 2;
 }
