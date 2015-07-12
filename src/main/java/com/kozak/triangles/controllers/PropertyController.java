@@ -66,7 +66,7 @@ public class PropertyController {
 	int page = Util.getPageNumber(request);
 
 	// //
-	Long propCount = rePrRep.allPrCount();
+	Long propCount = rePrRep.allPrCount(false);
 	int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 	List<RealEstateProposal> proposals = rePrRep.getREProposalsList(page);
 	// //
@@ -204,7 +204,7 @@ public class PropertyController {
 
 	Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
 
-	Long propCount = prRep.allPrCount(userId);
+	Long propCount = prRep.allPrCount(userId, false, false);
 	int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 	List<Property> comProps = prRep.getPropertyList(page, userId);
 
@@ -267,8 +267,10 @@ public class PropertyController {
 	}
 
 	if (action.equals("change_name")) {
-	    prop.setName(newName);
-	    prRep.updateProperty(prop);
+	    if (newName.length() > 0) {
+		prop.setName(newName);
+		prRep.updateProperty(prop);
+	    }
 	} else if (action.equals("repair")) {
 	    // TODO отремонтировать, снять деньги; если данное имущество НЕ valid на момент ремонта - установить
 	    // nextProfit = tomorrow

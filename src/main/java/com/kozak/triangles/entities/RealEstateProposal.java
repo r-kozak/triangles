@@ -20,8 +20,12 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
  * 
  * экземпляр этой сущности - это предложение на рынке имущества
  * 
- * commBuildingType - тип коммерческого здания здания (Киоск, Маркет, ...) appearDate - дата появления на рынке lossDate
- * - дата ухода с рынка purchasePrice - цена покупки cityArea - район здания valid - предложение еще действительно
+ * commBuildingType - тип коммерческого здания здания (Киоск, Маркет, ...)
+ * appearDate - дата появления на рынке
+ * lossDate - дата ухода с рынка
+ * purchasePrice - цена покупки
+ * cityArea - район здания
+ * valid - предложение еще действительно
  * 
  * @author Roman: 12 июня 2015 г. 22:25:55
  */
@@ -56,70 +60,70 @@ public class RealEstateProposal {
     private boolean valid = true;
 
     public RealEstateProposal(CommBuildingsT commBuildingType, Date appearDate, Date lossDate, long purchasePrice,
-            CityAreasT cityArea) {
-        this.commBuildingType = commBuildingType;
-        this.appearDate = appearDate;
-        this.lossDate = lossDate;
-        this.purchasePrice = purchasePrice;
-        this.cityArea = cityArea;
+	    CityAreasT cityArea) {
+	this.commBuildingType = commBuildingType;
+	this.appearDate = appearDate;
+	this.lossDate = lossDate;
+	this.purchasePrice = purchasePrice;
+	this.cityArea = cityArea;
     }
 
     public RealEstateProposal() {
     }
 
     public Integer getId() {
-        return id;
+	return id;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+	this.id = id;
     }
 
     public CommBuildingsT getCommBuildingType() {
-        return commBuildingType;
+	return commBuildingType;
     }
 
     public void setCommBuildingType(CommBuildingsT commBuildingType) {
-        this.commBuildingType = commBuildingType;
+	this.commBuildingType = commBuildingType;
     }
 
     public Date getAppearDate() {
-        return appearDate;
+	return appearDate;
     }
 
     public void setAppearDate(Date appearDate) {
-        this.appearDate = appearDate;
+	this.appearDate = appearDate;
     }
 
     public Date getLossDate() {
-        return lossDate;
+	return lossDate;
     }
 
     public void setLossDate(Date lossDate) {
-        this.lossDate = lossDate;
+	this.lossDate = lossDate;
     }
 
     public long getPurchasePrice() {
-        return purchasePrice;
+	return purchasePrice;
     }
 
     public void setPurchasePrice(long purchasePrice) {
-        this.purchasePrice = purchasePrice;
+	this.purchasePrice = purchasePrice;
     }
 
     public CityAreasT getCityArea() {
-        return cityArea;
+	return cityArea;
     }
 
     public void setCityArea(CityAreasT cityArea) {
-        this.cityArea = cityArea;
+	this.cityArea = cityArea;
     }
 
     public boolean isValid() {
-        return valid;
+	return valid;
     }
 
     public void setValid(boolean valid) {
-        this.valid = valid;
+	this.valid = valid;
     }
 }

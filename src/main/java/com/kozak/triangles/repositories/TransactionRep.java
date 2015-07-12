@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlowT;
+import com.kozak.triangles.enums.TransferT;
 import com.kozak.triangles.interfaces.Consts;
 
 @Repository
@@ -20,11 +21,11 @@ public class TransactionRep {
     public EntityManager em;
 
     public void addTransaction(Transaction transaction) {
-        em.persist(transaction);
+	em.persist(transaction);
     }
 
     public void updateTransaction(Transaction transaction) {
-        em.merge(transaction);
+	em.merge(transaction);
     }
 
     /**
@@ -34,17 +35,29 @@ public class TransactionRep {
      */
     @SuppressWarnings("unchecked")
     public List<Transaction> getUserTransactionsByType(int userId, ArticleCashFlowT acf) {
-        String hql = "from Transac as tr where tr.userId = :userId and tr.articleCashFlow = :acf ORDER BY id";
-        Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("acf", acf);
-        return query.getResultList();
+	String hql = "from Transac as tr where tr.userId = :userId and tr.articleCashFlow = :acf ORDER BY id";
+	Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("acf", acf);
+	return query.getResultList();
+    }
+
+    public long getSumByAcf(int userId, ArticleCashFlowT acf) {
+	String hql = "SELECT sum(summa) from Transac as tr where tr.userId = :userId and tr.articleCashFlow = :acf";
+	Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("acf", acf);
+	return Long.valueOf(query.getSingleResult().toString());
+    }
+
+    public long getSumByTransfType(int userId, TransferT transfT) {
+	String hql = "SELECT sum(summa) from Transac as tr where tr.userId = :userId and tr.transferType = :trt";
+	Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("trt", transfT);
+	return Long.valueOf(query.getSingleResult().toString());
     }
 
     public String getUserBalance(int userId) {
-        Query query = em.createQuery(
-                "Select balance from Transac as tr where tr.userId = :userId order by transactDate DESC").setParameter(
-                "userId", userId);
-        query.setMaxResults(1);
-        return query.getSingleResult().toString();
+	Query query = em.createQuery(
+		"Select balance from Transac as tr where tr.userId = :userId order by transactDate DESC").setParameter(
+		"userId", userId);
+	query.setMaxResults(1);
+	return query.getSingleResult().toString();
     }
 
     /**
@@ -54,10 +67,10 @@ public class TransactionRep {
      * @return
      */
     public Long allTrCount(int userId) {
-        String hql = "select count(*) FROM Transac as tr where tr.userId = :userId";
-        Query query = em.createQuery(hql).setParameter("userId", userId);
+	String hql = "select count(id) FROM Transac as tr where tr.userId = :userId";
+	Query query = em.createQuery(hql).setParameter("userId", userId);
 
-        return Long.valueOf(query.getSingleResult().toString());
+	return Long.valueOf(query.getSingleResult().toString());
     }
 
     /**
@@ -70,13 +83,13 @@ public class TransactionRep {
      */
     @SuppressWarnings("unchecked")
     public List<Transaction> transList(int page, int userId) {
-        String hql = "from Transac as tr where tr.userId = :userId order by id DESC";
-        Query query = em.createQuery(hql).setParameter("userId", userId);
+	String hql = "from Transac as tr where tr.userId = :userId order by id DESC";
+	Query query = em.createQuery(hql).setParameter("userId", userId);
 
-        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
-        query.setFirstResult(firstResult);
-        query.setMaxResults(Consts.ROWS_ON_PAGE);
+	int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+	query.setFirstResult(firstResult);
+	query.setMaxResults(Consts.ROWS_ON_PAGE);
 
-        return query.getResultList();
+	return query.getResultList();
     }
 }

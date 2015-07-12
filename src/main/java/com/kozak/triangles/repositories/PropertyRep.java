@@ -57,13 +57,15 @@ public class PropertyRep {
      * нужно для пагинации
      * 
      * @param userId
-     * 
+     * @param ready
+     *            - подсчет готовых к сбору дохода (касса > 0)
      * @return количество имущества пользователя
      */
-    public Long allPrCount(int userId) {
-	String hql = "SELECT count(*) FROM Property as pr WHERE pr.userId = :userId";
-	Query query = em.createQuery(hql).setParameter("userId", userId);
+    public Long allPrCount(int userId, boolean ready, boolean needRepair) {
+	String hql = "SELECT count(id) FROM Property as pr WHERE pr.userId = :userId"
+		+ (ready ? " and pr.cash > 0" : "") + (needRepair ? " and pr.depreciationPercent > 0" : "");
 
+	Query query = em.createQuery(hql).setParameter("userId", userId);
 	return Long.valueOf(query.getSingleResult().toString());
     }
 
@@ -113,5 +115,17 @@ public class PropertyRep {
 		.setParameter("currDate", new Date(), TemporalType.TIMESTAMP);
 
 	return query.getResultList();
+    }
+
+    /**
+     * получает дату самого ближайшей прибыли с имущества
+     * 
+     * @param userId
+     * @return дату прибыли
+     */
+    public Date getMinNextProfit(int userId) {
+	String hql = "SELECT min(nextProfit) FROM Property as pr WHERE pr.userId = :userId";
+	Query query = em.createQuery(hql).setParameter("userId", userId);
+	return (Date) query.getSingleResult();
     }
 }

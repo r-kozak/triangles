@@ -1,0 +1,91 @@
+#content {
+	width: 900;
+	height: auto;
+	border: 1px solid;
+}
+
+#home_block {
+	width: 100%;
+	height: auto;
+	margin-top: 73px;
+	background: rgb(128, 128, 128);
+	padding: 1 0 1 0;
+}
+
+#control_panel {
+	margin: 12 5 5 5;
+	width: 99%;
+	height: auto;
+	text-align: center;
+	background: white;
+	padding: 12 0 12 0;
+	color: teal;
+}
+
+#control {
+	margin: 8 5 5 5;
+	width: 282;
+	height: 138;
+	border: 1px dotted;
+	display: inline-block;
+	background: rgb(255, 249, 240);
+	text-align: left;
+	vertical-align: bottom;
+}
+
+#control>p {
+	margin: 5 0 0 10;
+}
+
+#statistic_wrap {
+	height: auto;
+	margin: 12 5 5 5;
+	padding: 12 0 12 0;
+	background: white;
+	text-align: center;
+	color: teal;
+}
+
+.statistic {
+	width: 400;
+	height: 500;
+	display: inline-block;
+	margin-top: 10;
+	text-align: left;
+	vertical-align: bottom;
+	border: 1px dotted;
+}
+
+.pr {
+	background: rgb(218, 255, 218);
+	margin-right: 18;
+}
+
+.sp {
+	background: rgb(255, 229, 229);
+}
+
+#block_title {
+	font-size: 18;
+	text-align: center;
+	border-bottom: 1px dotted;
+}
+
+#block_title>a>img {
+	margin-top: -3;
+	margin-left: -100%;
+}
+
+.tableTd2 {
+	text-align: right;
+}
+
+#home_block table {
+	width: 97%;
+	color: darkgoldenrod;
+	margin: 7 0 0 5;
+}
+
+#home_block td {
+	border-bottom: 1px dashed lightgray;
+}

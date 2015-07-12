@@ -74,7 +74,22 @@ public class HomeController {
 	levyOnProperty(currUserId); // сбор средств с имущества, где есть кассир
 	salaryPayment(currUserId); // выдача зп работникам
 
+	// статистика
 	model = Util.addBalanceToModel(model, trRep.getUserBalance(currUserId));
+	model.addAttribute("rePrCo", rePrRep.allPrCount(false)); // колво предложений на рынке имущества
+	model.addAttribute("newRePrCo", rePrRep.allPrCount(true)); // новых предложений на рын.имущ.
+	model.addAttribute("ready", prRep.allPrCount(currUserId, true, false)); // колво готовых к сбору дохода
+	model.addAttribute("nextProfit", prRep.getMinNextProfit(currUserId)); // дата следующей прибыли
+	model.addAttribute("needRepair", prRep.allPrCount(currUserId, false, true)); // скольким имуществам нужен ремонт
+
+	model.addAttribute("profitSum", trRep.getSumByTransfType(currUserId, TransferT.PROFIT)); // прибыль всего
+	model.addAttribute("profitFromProp", trRep.getSumByAcf(currUserId, ArticleCashFlowT.LEVY_ON_PROPERTY));
+	model.addAttribute("profitDB", trRep.getSumByAcf(currUserId, ArticleCashFlowT.DAILY_BONUS));
+	model.addAttribute("profitDep", trRep.getSumByAcf(currUserId, ArticleCashFlowT.DEPOSIT));
+
+	model.addAttribute("spendSum", trRep.getSumByTransfType(currUserId, TransferT.SPEND)); // расход всего
+	model.addAttribute("spendCr", trRep.getSumByAcf(currUserId, ArticleCashFlowT.CREDIT));
+	model.addAttribute("spendBuyPr", trRep.getSumByAcf(currUserId, ArticleCashFlowT.BUY_PROPERTY));
 
 	return "index/home";
     }
@@ -294,9 +309,14 @@ public class HomeController {
 		    17000, ArticleCashFlowT.DAILY_BONUS);
 	    trRep.addTransaction(firstT);
 
-	    // transaction for CREDIT_DEPOSIT
+	    // transaction for DEPOSIT
 	    firstT = new Transaction("Начальный кредит/депозит", yest, 0, TransferT.PROFIT, user.getId(), 17000,
-		    ArticleCashFlowT.CREDIT_DEPOSIT);
+		    ArticleCashFlowT.DEPOSIT);
+	    trRep.addTransaction(firstT);
+
+	    // transaction for CREDIT
+	    firstT = new Transaction("Начальный кредит/депозит", yest, 0, TransferT.SPEND, user.getId(), 17000,
+		    ArticleCashFlowT.CREDIT);
 	    trRep.addTransaction(firstT);
 
 	    // transaction for LEVY_ON_PROPERTY
@@ -346,11 +366,17 @@ public class HomeController {
      * @param currUserId
      */
     private void giveCreditDeposit(int currUserId) {
-	// get user transactions
-	List<Transaction> userTransactions = trRep.getUserTransactionsByType(currUserId,
-		ArticleCashFlowT.CREDIT_DEPOSIT);
+	// получение транзакций пользователя для получения последней даты начисления
+	List<Transaction> userTransactionsCr = trRep.getUserTransactionsByType(currUserId,
+		ArticleCashFlowT.CREDIT);
+	List<Transaction> userTransactionsDep = trRep.getUserTransactionsByType(currUserId,
+		ArticleCashFlowT.DEPOSIT);
 
-	Date lastTransactionDate = userTransactions.get(userTransactions.size() - 1).getTransactDate();
+	// получение дат кредита и депозита, после чего взятие последней
+	Date lastTransactionDateCr = userTransactionsCr.get(userTransactionsCr.size() - 1).getTransactDate();
+	Date lastTransactionDateDep = userTransactionsDep.get(userTransactionsDep.size() - 1).getTransactDate();
+	Date lastTransactionDate = (lastTransactionDateCr.after(lastTransactionDateDep)) ? lastTransactionDateCr
+		: lastTransactionDateDep;
 
 	int daysBetween = DateUtils.daysBetween(lastTransactionDate, new Date());
 	if (daysBetween > 0) {
@@ -359,6 +385,7 @@ public class HomeController {
 		long userBalance = Long.parseLong(trRep.getUserBalance(currUserId));
 		double rate = (userBalance > 0 ? Consts.DEPOSIT_RATE : Consts.CREDIT_RATE);
 		TransferT transferType = (userBalance > 0 ? TransferT.PROFIT : TransferT.SPEND);
+		ArticleCashFlowT acf = (userBalance > 0 ? ArticleCashFlowT.DEPOSIT : ArticleCashFlowT.CREDIT);
 		long sum = (long) (userBalance * rate);
 		long newBalance = userBalance + sum;
 
@@ -382,7 +409,7 @@ public class HomeController {
 		description = String.format(description, dateFrom, dateFrom, dateFrom, dateTo, dateTo, dateTo);
 
 		Transaction cdTr = new Transaction(description, new Date(), sum, transferType, currUserId, newBalance,
-			ArticleCashFlowT.CREDIT_DEPOSIT);
+			acf);
 		trRep.addTransaction(cdTr);
 	    }
 	}

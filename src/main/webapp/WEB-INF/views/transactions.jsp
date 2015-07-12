@@ -39,8 +39,11 @@
 								<c:when test="${transac.articleCashFlow == 'DAILY_BONUS'}">
 									<td>Ежедневный бонус</td>
 								</c:when>
-								<c:when test="${transac.articleCashFlow == 'CREDIT_DEPOSIT'}">
-									<td>Кредит/депозит</td>
+								<c:when test="${transac.articleCashFlow == 'CREDIT'}">
+									<td>Кредит</td>
+								</c:when>
+								<c:when test="${transac.articleCashFlow == 'DEPOSIT'}">
+									<td>Депозит</td>
 								</c:when>
 								<c:when test="${transac.articleCashFlow == 'LEVY_ON_PROPERTY'}">
 									<td>Сбор с имущества</td>
