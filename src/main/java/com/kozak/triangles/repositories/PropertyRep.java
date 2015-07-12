@@ -73,7 +73,7 @@ public class PropertyRep {
      */
     @SuppressWarnings("unchecked")
     public List<Property> getPropertyList(int page, int userId) {
-	String hql = "FROM Property as pr WHERE pr.userId = :userId ORDER BY pr.cash";
+	String hql = "FROM Property as pr WHERE pr.userId = :userId ORDER BY pr.cash DESC";
 	Query query = em.createQuery(hql).setParameter("userId", userId);
 
 	int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;

@@ -115,7 +115,12 @@ public class HomeController {
 	// ставки кредита и депозита
 	model.addAttribute("cr_rate", Consts.CREDIT_RATE);
 	model.addAttribute("dep_rate", Consts.DEPOSIT_RATE);
-
+	// ежедневный бонус
+	model.addAttribute("firDB", Consts.FIRST_DAY);
+	model.addAttribute("secDB", Consts.SECOND_DAY);
+	model.addAttribute("thiDB", Consts.THIRD_DAY);
+	model.addAttribute("fouDB", Consts.FOURTH_DAY);
+	model.addAttribute("fifDB", Consts.FIFTH_DAY);
 	return "wiki";
     }
 
