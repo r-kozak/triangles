@@ -15,6 +15,25 @@
   font-size: 50% !important; 
 }
 
+	#control > #info > a {
+		text-decoration: none;
+		padding: 10px 70px;
+		border: 2px solid;
+		color: #B8860B;
+		font-size: 22;
+	}
+	#control > #info > a:hover {
+		color: #DD8400;
+	}
+	#info {
+		margin-top: 8;
+		text-align: center;
+		font-size: 16;
+	}
+
+	#info > p {
+		margin-bottom: 17;
+	}
 </style>
 
 <title>Home</title>
@@ -45,33 +64,44 @@
 						</a>
 					</div>
 					<table>
-						<c:choose>
-				            <c:when test="${ready > 0}">
-				              <tr>
-								<td class="tableTd1">Готовых к сбору дохода</td>
-								<td class="tableTd2">${ready}</td>
-							  </tr>
-				            </c:when>
-				            <c:otherwise>
-				              <tr>
-								<td class="tableTd1">До ближайшего сбора</td>
-								<td class="tableTd2">
-    								<script>
-										$(function() {
-											var austDay = new Date(parseInt("<c:out value='${nextProfit.time}'/>"));
-											$('#defaultCountdown').countdown({
-												until : austDay
-											});
-										});
-									</script>
-									<div id="defaultCountdown"></div></td>
-							  </tr>
-				            </c:otherwise>
-			          </c:choose>
-						<tr>
-							<td class="tableTd1">Нужен ремонт для</td>
-							<td class="tableTd2">${needRepair}</td>
-						</tr>
+					<c:choose>
+						<c:when test="${comPrCount > 0}">
+							<c:choose>
+								<c:when test="${ready > 0}">
+									<tr>
+										<td class="tableTd1">Готовых к сбору дохода</td>
+										<td class="tableTd2">${ready}</td>
+									</tr>
+								</c:when>
+								<c:otherwise>
+									<tr>
+										<td class="tableTd1">До ближайшего сбора</td>
+										<td class="tableTd2">
+											<script>
+												$(function () {
+													var austDay = new Date(parseInt("<c:out value='${nextProfit.time}'/>"));
+													$('#defaultCountdown').countdown({
+														until: austDay
+													});
+												});
+											</script>
+											<div id="defaultCountdown"></div>
+										</td>
+									</tr>
+								</c:otherwise>
+							</c:choose>
+							<tr>
+								<td class="tableTd1">Нужен ремонт для</td>
+								<td class="tableTd2">${needRepair}/${comPrCount}</td>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<div id="info">
+								<p>Нет имущества</p>
+								<a href="${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a>
+							</div>
+						</c:otherwise>
+					</c:choose>
 					</table>
 				</div>
 				<div id="control">
@@ -88,19 +118,19 @@
 					<table>
 						<tr>
 							<td class="tableTd1">Всего заработано, &tridot;</td>
-							<td class="tableTd2">${profitSum}</td>
+							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitSum}"/></td>
 						</tr>
 						<tr>
 							<td class="tableTd1">Прибыль с имущества, &tridot;</td>
-							<td class="tableTd2">${profitFromProp}</td>
+							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitFromProp}"/></td>
 						</tr>
 						<tr>
 							<td class="tableTd1">Ежедневный бонус, &tridot;</td>
-							<td class="tableTd2">${profitDB}</td>
+							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitDB}"/></td>
 						</tr>
 						<tr>
 							<td class="tableTd1">Депозиты, &tridot;</td>
-							<td class="tableTd2">${profitDep}</td>
+							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitDep}"/></td>
 						</tr>
 					</table>
 				</div>
@@ -109,11 +139,11 @@
 					<table>
 						<tr>
 							<td class="tableTd1">Всего потрачено, &tridot;</td>
-							<td class="tableTd2">${spendSum}</td>
+							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendSum}"/></td>
 						</tr>
 						<tr>
 							<td class="tableTd1">На покупку имущества, &tridot;</td>
-							<td class="tableTd2">${spendBuyPr}</td>
+							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendBuyPr}"/></td>
 						</tr>
 						<tr>
 							<td class="tableTd1">Ремонт имущества, &tridot;</td>
@@ -125,7 +155,7 @@
 						</tr>
 						<tr>
 							<td class="tableTd1">Кредиты, &tridot;</td>
-							<td class="tableTd2">${spendCr}</td>
+							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendCr}"/></td>
 						</tr>
 						<tr>
 							<td class="tableTd1">Покупка лицензий на строительство, &tridot;</td>

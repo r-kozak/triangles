@@ -43,7 +43,12 @@ public class TransactionRep {
     public long getSumByAcf(int userId, ArticleCashFlowT acf) {
 	String hql = "SELECT sum(summa) from Transac as tr where tr.userId = :userId and tr.articleCashFlow = :acf";
 	Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("acf", acf);
-	return Long.valueOf(query.getSingleResult().toString());
+	Long result = (Long) query.getSingleResult();
+	if (result != null) {
+	    return result;
+	} else {
+	    return 0;
+	}
     }
 
     public long getSumByTransfType(int userId, TransferT transfT) {

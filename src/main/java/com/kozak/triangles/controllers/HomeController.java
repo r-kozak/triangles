@@ -79,6 +79,7 @@ public class HomeController {
 	model.addAttribute("rePrCo", rePrRep.allPrCount(false)); // колво предложений на рынке имущества
 	model.addAttribute("newRePrCo", rePrRep.allPrCount(true)); // новых предложений на рын.имущ.
 	model.addAttribute("ready", prRep.allPrCount(currUserId, true, false)); // колво готовых к сбору дохода
+	model.addAttribute("comPrCount", prRep.allPrCount(currUserId, false, false)); // всего имущества
 	model.addAttribute("nextProfit", prRep.getMinNextProfit(currUserId)); // дата следующей прибыли
 	model.addAttribute("needRepair", prRep.allPrCount(currUserId, false, true)); // скольким имуществам нужен ремонт
 
@@ -310,12 +311,12 @@ public class HomeController {
 	    trRep.addTransaction(firstT);
 
 	    // transaction for DEPOSIT
-	    firstT = new Transaction("Начальный кредит/депозит", yest, 0, TransferT.PROFIT, user.getId(), 17000,
+	    firstT = new Transaction("Начальный депозит", yest, 0, TransferT.PROFIT, user.getId(), 17000,
 		    ArticleCashFlowT.DEPOSIT);
 	    trRep.addTransaction(firstT);
 
 	    // transaction for CREDIT
-	    firstT = new Transaction("Начальный кредит/депозит", yest, 0, TransferT.SPEND, user.getId(), 17000,
+	    firstT = new Transaction("Начальный кредит", yest, 0, TransferT.SPEND, user.getId(), 17000,
 		    ArticleCashFlowT.CREDIT);
 	    trRep.addTransaction(firstT);
 
