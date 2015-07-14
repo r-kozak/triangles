@@ -386,14 +386,16 @@ public class DateUtils {
     }
 
     /**
-     * 
-     * @return now + COUNT of days
+     * @param start
+     *            - дата к которой добавить дни
+     * @return start + COUNT of days
      */
-    public static Date getNowPlusDay(int count) {
-	Calendar tomorrow = Calendar.getInstance();
-	tomorrow.add(Calendar.DATE, count);
+    public static Date getPlusDay(Date start, int count) {
+	Calendar c = Calendar.getInstance();
+	c.setTime(start);
+	c.add(Calendar.DATE, count);
 
-	return tomorrow.getTime();
+	return c.getTime();
     }
 
     /**

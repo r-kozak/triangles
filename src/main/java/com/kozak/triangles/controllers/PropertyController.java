@@ -109,14 +109,11 @@ public class PropertyController {
 	    model.addAttribute("bap", bap); // balance after purchase
 
 	    if (userMoney >= prop.getPurchasePrice()) { // хватает денег
-		model.addAttribute("title", "Покупка за наличные");
+		model.addAttribute("title", "Обычная покупка");
 		return "apply_buy";
 	    } else if (userMoney + sellSum >= prop.getPurchasePrice()) { // покупка в кредит
 		model.addAttribute("title", "Покупка в кредит");
 		return "apply_buy";
-	    } else if (userMoney <= 0) { // баланс < 0
-		model.addAttribute("errorMsg",
-			"Ваш баланс равен или меньше нуля. Покупка невозможна. Продайте что-нибудь или заработайте денег.");
 	    } else if (userMoney + sellSum < prop.getPurchasePrice()) { // низкая состоятельность
 		model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
 			+ "Ваш максимум = " + Util.moneyFormat(userMoney + sellSum) + "&tridot;");
@@ -178,10 +175,6 @@ public class PropertyController {
 		    rePrRep.updateREproposal(prop);
 
 		    ra.addFlashAttribute("popup", true); // будем отображать поздравление о покупке
-		} else if (userMoney <= 0) {
-		    model.addAttribute("errorMsg",
-			    "Ваш баланс равен или меньше нуля. Покупка невозможна. Продайте что-нибудь или заработайте денег.");
-		    return "error";
 		} else if (userMoney + sellSum < prop.getPurchasePrice()) {
 		    model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
 			    + "Ваш максимум = " + Util.moneyFormat(userMoney + sellSum) + "&tridot;");

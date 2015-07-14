@@ -88,13 +88,21 @@ public class Util {
 		gen += gen * Util.getAreaPercent(p.getCityArea()) / 100;
 		cash += gen;
 	    }
+
+	    Date dateFrom = d1;// дата, которая станет след.датой прибыли
+	    int countOfDay = calcC; // сколько дней прибавлять
 	    // если в кассе больше, чем вместимость - сделать, как вместимость
-	    if (cash > cashCap)
+	    if (cash > cashCap) {
 		cash = cashCap;
+		// касса заполнена. след. прибыль = к сейчас добавить один день
+		dateFrom = new Date();
+		countOfDay = 1;
+	    }
 
 	    // установить значение кассы и дату nextProfit
 	    p.setCash(cash);
-	    p.setNextProfit(DateUtils.getNowPlusDay(1));
+
+	    p.setNextProfit(DateUtils.getPlusDay(dateFrom, countOfDay));
 
 	    prRep.updateProperty(p);// обновить имущество
 	}

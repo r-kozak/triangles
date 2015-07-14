@@ -104,14 +104,16 @@ public class Property {
     }
 
     public Property(CommBuildData data, int userId, CityAreasT cityArea, Date purchaseDate, long initialCost) {
+	Date now = new Date();
+
 	this.level = 0;
 	this.depreciationPercent = 0;
 	this.valid = true;
 	this.cash = 0;
 	this.cashLevel = 0;
 	this.name = "no_name";
-	this.nextProfit = DateUtils.getNowPlusDay(1);
-	this.nextDepreciation = DateUtils.getNowPlusDay(7); // + 7 days
+	this.nextProfit = DateUtils.getPlusDay(now, 1);
+	this.nextDepreciation = DateUtils.getPlusDay(now, 7); // + 7 days
 
 	this.cashCapacity = data.getCashCapacity().get(0);
 	this.commBuildingType = data.getCommBuildType();

@@ -209,9 +209,9 @@ body {
 			</tr>
 			<tr>
 				<td>Прибыль (день):</td>
-				<td class="info">${data.profitMin}&tridot;</td>
-				<td class="info">-</td>
-				<td class="info">${data.profitMax}&tridot;</td>
+				<td class="info">от ${data.profitMin}&tridot;</td>
+				<td class="info"></td>
+				<td class="info">до ${data.profitMax}&tridot;</td>
 				<td class="info">(+${percent}% за район)</td>
 			</tr>
 			<tr>
