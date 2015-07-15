@@ -81,7 +81,8 @@
 												$(function () {
 													var austDay = new Date(parseInt("<c:out value='${nextProfit.time}'/>"));
 													$('#defaultCountdown').countdown({
-														until: austDay
+														until: austDay,
+														expiryUrl: "${requestScope['javax.servlet.forward.request_uri']}"
 													});
 												});
 											</script>

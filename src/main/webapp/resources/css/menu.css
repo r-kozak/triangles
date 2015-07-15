@@ -1,6 +1,6 @@
 
 #menu {
-  margin: 0 0 0 -160;
+  margin: 0 7 0 -160;
   background: rgb(236, 236, 236);
   padding-top: 176; 
 }
@@ -24,7 +24,7 @@
   text-align: center;
   width: 100%;
   background: rgb(103, 103, 103);
-  color: aliceblue;
-  height: 32;
+  color: white;
+  height: 32; 
   line-height: 1.6;
 }

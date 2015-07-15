@@ -1,9 +1,7 @@
 package com.kozak.triangles.controllers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,52 +29,43 @@ public class IssuesController {
 
     @RequestMapping(value = "/issues", method = RequestMethod.GET)
     String propertyGET() {
-        return "issues";
+	return "issues";
     }
 
     @RequestMapping(value = "/transactions", method = RequestMethod.GET)
     String transactionsGET(Model model, User user, HttpServletRequest request, TransactForm tf) {
-        String contextPath = request.getContextPath();
-        Integer page = Util.getPageNumber(request);
+	// String contextPath = request.getContextPath();
+	// Integer page = Util.getPageNumber(request);
+	int page = Integer.parseInt(tf.getPage());
 
-        Long transCount = trRep.allTrCount(user.getId());
-        int lastPageNumber = (int) (transCount / Consts.ROWS_ON_PAGE)
-                + ((transCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
-        List<Transaction> transacs = trRep.transList(page, user.getId());
+	Long transCount = trRep.allTrCount(user.getId());
+	int lastPageNumber = (int) (transCount / Consts.ROWS_ON_PAGE)
+		+ ((transCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+	List<Transaction> transacs = trRep.transList(page, user.getId());
 
-        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
-        model.addAttribute("transacs", transacs);
-        model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, contextPath + "/transactions?", page));
+	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	model.addAttribute("transacs", transacs);
+	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, "", page));
 
-        // TODO test search
-        if (tf.isNeedClear()) {
-            tf.clear();
-        }
-        model.addAttribute("tf", tf);
+	if (tf.isNeedClear()) {
+	    tf.clear();
+	}
+	model.addAttribute("tf", tf);
 
-        List<String> articles = new ArrayList<String>();
-        for (ArticleCashFlowT a : ArticleCashFlowT.values()) {
-            articles.add(a.name());
-        }
+	// articles
+	List<String> articles = new ArrayList<String>();
+	for (ArticleCashFlowT a : ArticleCashFlowT.values()) {
+	    articles.add(a.name());
+	}
 
-        // test transfer
-        Map<String, Object> mo = new HashMap<String, Object>();
-        tf.setCompanyName("The Selected Company");
-        mo.put("tf", tf);
+	// transfer
+	List<String> transfers = new ArrayList<String>();
+	transfers.add("spend");
+	transfers.add("profit");
 
-        List<String> companyNames = new ArrayList<String>();
-        companyNames.add("First Company Name");
-        companyNames.add("The Selected Company");
-        companyNames.add("Last Company Name");
+	model.addAttribute("transfers", transfers);
+	model.addAttribute("articles", articles);
 
-        mo.put("companyNames", companyNames);
-
-        Map<String, Map<String, Object>> modelForView = new HashMap<String, Map<String, Object>>();
-        model.addAttribute("vars", mo);
-        //
-        model.addAttribute("articles", articles);
-        // //
-
-        return "transactions";
+	return "transactions";
     }
 }

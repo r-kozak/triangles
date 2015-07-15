@@ -57,6 +57,12 @@
 legend {
   color:red
 }
+#transfer {
+  width: 184;
+  height: 30;
+  font-size: 17;
+  margin: 10 0 10 0;
+}
 </style>
 
 <script>
@@ -95,14 +101,11 @@ legend {
 
 			<fieldset id="searchBlock">
 			<legend>Движение</legend>
-				<div id="searchEl">
-					<form:checkbox id="profitCb" path="profit"/> <label for="profitCb">Прибыль</label>
-				</div>
-				<div id="searchEl">
-					<form:checkbox id="spendCb" path="spend"/> <label for="spendCb">Расход</label>
-				</div>
+				<form:select path="transfer" id="transfer">    
+					<form:option value="NONE" label="--- Выбрать ---"/>
+			   		<form:options items="${transfers}" />
+				</form:select>
 			</fieldset>
-
 
 			<fieldset id="searchBlock">
 			<legend>Статьи затрат</legend>
@@ -112,14 +115,12 @@ legend {
 			</fieldset>
 
 			<form:checkbox id="needClear" path="needClear" hidden="true"/>
-			<input id="page" path="page">
+			<input id="page" path="page" name="page" value="1" hidden="true" >
 		</div>
 		<div id="searchEl">
 			<input id="searchSubmit" type="submit" name="submit1" value="Искать">
-			<input id="searchSubmit" class="submClear" title="Очистить" type="reset" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
+			<input id="searchSubmit" class="submClear" title="Очистить" type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
 		</div>
-		
-	<form:select path="companyName" id="companyName" items="${vars.companyNames}"  />
 	</form:form>
 </div>
 	<div class="content">
