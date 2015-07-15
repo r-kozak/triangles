@@ -8,7 +8,7 @@ body {
 	width: 100%;
 	display: -webkit-box;
 	-webkit-box-pack: center;
-	background: rgb(227, 227, 227) url(bg.png) repeat;
+	background: rgb(244, 244, 244);
 }
 
 /* header */

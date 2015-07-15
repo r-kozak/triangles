@@ -5,8 +5,71 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <title>Транзакции</title>
+
+<style>
+#searchBlock {
+	padding: 5;
+	margin-top: 10px; 
+}
+#searchForm {
+	margin-top: 50;
+}
+#searchEl{
+	margin-top:5;
+}
+#searchEl span{
+	display: block;
+	margin-top:5;
+}
+#searchEl span label{
+	margin-left:5;
+}
+.date{
+	width: 125;
+	font-size:12px;
+}
+#nadp {
+	width:55;
+	display: inline-block;
+}
+#searchSubmit {
+  height: 28;
+  width: 155;
+  background: transparent;
+  border: 3px solid rgb(110, 110, 110);
+  margin-top: 10;
+  font-weight: bold;
+  font-size: 15;
+  display: inline-block;
+}
+.submClear {
+	 width: 40 !important;
+	 vertical-align: bottom;
+}
+.submClear:hover {
+	 color: red !important;
+}
+#searchSubmit:hover {
+  border-color: black;
+  color: red;
+  cursor: pointer; 
+}
+legend {
+  color:red
+}
+</style>
+
+<script>
+    function submForm(obj) {
+        document.getElementById('page').value = obj.getAttribute("value");
+        document.getElementById('searchForm').submit();
+        return false;
+    }
+</script>
+
 <t:template>
 	<div id="menu">
+	<div id="menuTitle">Меню</div>
 		<div id="elMenu">
 			<a href="${pageContext.request.contextPath}/property">Упр. имуществом</a>
 		</div>
@@ -16,7 +79,49 @@
 		<div id="elMenu">
 			<a href="${pageContext.request.contextPath}/property/commerc-pr">Моё коммерческое</a>
 		</div>
-	</div>
+
+	<form:form id="searchForm" method="GET" commandName="tf">
+		<div id="searchWrap">
+		<div id="menuTitle">Поиск</div>
+			<fieldset id = "searchBlock">
+			<legend>Период</legend>
+				<div id="searchEl">
+					<div id="nadp">Начало:</div> <form:input class="date" type="date" path="dateFrom"/>
+				</div>
+				<div id="searchEl">
+					<div id="nadp">Конец:</div> <form:input class="date" type="date" path="dateTo"/>
+				</div>
+			</fieldset>
+
+			<fieldset id="searchBlock">
+			<legend>Движение</legend>
+				<div id="searchEl">
+					<form:checkbox id="profitCb" path="profit"/> <label for="profitCb">Прибыль</label>
+				</div>
+				<div id="searchEl">
+					<form:checkbox id="spendCb" path="spend"/> <label for="spendCb">Расход</label>
+				</div>
+			</fieldset>
+
+
+			<fieldset id="searchBlock">
+			<legend>Статьи затрат</legend>
+				<div id="searchEl">
+					<form:checkboxes path="articles" items="${articles}"/>      
+				</div>
+			</fieldset>
+
+			<form:checkbox id="needClear" path="needClear" hidden="true"/>
+			<input id="page" path="page">
+		</div>
+		<div id="searchEl">
+			<input id="searchSubmit" type="submit" name="submit1" value="Искать">
+			<input id="searchSubmit" class="submClear" title="Очистить" type="reset" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
+		</div>
+		
+	<form:select path="companyName" id="companyName" items="${vars.companyNames}"  />
+	</form:form>
+</div>
 	<div class="content">
 		<div class="tranBlock">
 		<h1 align="center">Транзакции</h1>

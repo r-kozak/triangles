@@ -1,7 +1,7 @@
 
 #menu {
   margin: 0 0 0 -160;
-  background: rgba(150, 251, 255, 0.25);
+  background: rgb(236, 236, 236);
   padding-top: 176; 
 }
 
@@ -17,5 +17,14 @@
 
 #elMenu > a:hover {
 	border-left: 3px solid black;
-	font-weight: bold;
+	color:red;
+}
+#menuTitle{
+  font-size: 20;
+  text-align: center;
+  width: 100%;
+  background: rgb(103, 103, 103);
+  color: aliceblue;
+  height: 32;
+  line-height: 1.6;
 }

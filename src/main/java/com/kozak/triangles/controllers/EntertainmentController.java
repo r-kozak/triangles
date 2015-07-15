@@ -23,37 +23,37 @@ public class EntertainmentController {
 
     @RequestMapping(value = "/entertainment", method = RequestMethod.GET)
     String entertainmentGET(Model model, TransactForm tf) {
-	// TransactForm tf = new TransactForm();
-	// tf.setProfit(true);
+        // TransactForm tf = new TransactForm();
+        // tf.setProfit(true);
 
-	// List<String> preCheckedVals = new ArrayList<String>();
-	// preCheckedVals.add("CREDIT");
-	// tf.setArticles(preCheckedVals);
-	if (tf.isNeedClear()) {
-	    tf.clear();
-	}
-	model.addAttribute("tf", tf);
+        // List<String> preCheckedVals = new ArrayList<String>();
+        // preCheckedVals.add("CREDIT");
+        // tf.setArticles(preCheckedVals);
+        if (tf.isNeedClear()) {
+            tf.clear();
+        }
+        model.addAttribute("tf", tf);
 
-	List<String> articles = new ArrayList<String>();
-	for (ArticleCashFlowT a : ArticleCashFlowT.values()) {
-	    articles.add(a.name());
-	}
+        List<String> articles = new ArrayList<String>();
+        for (ArticleCashFlowT a : ArticleCashFlowT.values()) {
+            articles.add(a.name());
+        }
 
-	model.addAttribute("articles", articles);
+        model.addAttribute("articles", articles);
 
-	return "entertainment";
+        return "entertainment";
     }
 
     @RequestMapping(value = "/entertainment", method = RequestMethod.POST)
     String entertainmentPOST(Model model, TransactForm tf) {
-	model.addAttribute("tf", tf);
+        model.addAttribute("tf", tf);
 
-	List<String> articles = new ArrayList<String>();
-	for (ArticleCashFlowT a : ArticleCashFlowT.values()) {
-	    articles.add(a.name());
-	}
+        List<String> articles = new ArrayList<String>();
+        for (ArticleCashFlowT a : ArticleCashFlowT.values()) {
+            articles.add(a.name());
+        }
 
-	model.addAttribute("articles", articles);
-	return "entertainment";
+        model.addAttribute("articles", articles);
+        return "entertainment";
     }
 }

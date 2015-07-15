@@ -52,15 +52,13 @@ public class TagCreator {
     private static StringBuilder generateTagNav(StringBuilder sb, String navPref, int currPage, int i) {
         sb.append("<li>");
 
-        sb.append("<a href=\"");
-        sb.append(navPref + "&page=");
-        sb.append(i);
-        sb.append("\"");
+        sb.append("<a href");
         if (i == currPage) {
             sb.append(" class=\"whitesquareactive\"");
         } else {
             sb.append(" class=\"whitesquare\"");
         }
+        sb.append("onclick=\"submForm(this); return false;\" value=\"" + i + "\"");
         sb.append(">");
         sb.append(i);
         sb.append("</a>");
