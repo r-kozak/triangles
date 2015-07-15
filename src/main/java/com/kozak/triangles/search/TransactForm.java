@@ -9,65 +9,83 @@ public class TransactForm {
     private String dateFrom;
     private String dateTo;
     private List<String> articles;
+    private String companyName;
+
+    private String transfer;
     private boolean needClear;
 
     public void clear() {
-	this.profit = false;
-	this.spend = false;
-	this.dateFrom = "";
-	this.dateTo = "";
-	if (articles != null) {
-	    this.articles.clear();
-	}
-	this.needClear = false;
+        this.profit = false;
+        this.spend = false;
+        this.dateFrom = "";
+        this.dateTo = "";
+        if (articles != null) {
+            this.articles.clear();
+        }
+        this.needClear = false;
     }
 
     public boolean isNeedClear() {
-	return needClear;
+        return needClear;
     }
 
     public void setNeedClear(boolean needClear) {
-	this.needClear = needClear;
+        this.needClear = needClear;
     }
 
     public String getDateFrom() {
-	return dateFrom;
+        return dateFrom;
     }
 
     public void setDateFrom(String dateFrom) {
-	this.dateFrom = dateFrom;
+        this.dateFrom = dateFrom;
     }
 
     public String getDateTo() {
-	return dateTo;
+        return dateTo;
     }
 
     public void setDateTo(String dateTo) {
-	this.dateTo = dateTo;
+        this.dateTo = dateTo;
     }
 
     public List<String> getArticles() {
-	return articles;
+        return articles;
     }
 
     public void setArticles(List<String> articles) {
-	this.articles = articles;
+        this.articles = articles;
     }
 
     public boolean isProfit() {
-	return profit;
+        return profit;
     }
 
     public void setProfit(boolean profit) {
-	this.profit = profit;
+        this.profit = profit;
     }
 
     public boolean isSpend() {
-	return spend;
+        return spend;
     }
 
     public void setSpend(boolean spend) {
-	this.spend = spend;
+        this.spend = spend;
     }
 
+    public void setTransfer(String transfer) {
+        this.transfer = transfer;
+    }
+
+    public String getTransfer() {
+        return transfer;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 }
