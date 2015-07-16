@@ -6,5 +6,5 @@ package com.kozak.triangles.enums;
  * @author Roman: 06 июня 2015 г. 15:34:31
  */
 public enum TransferT {
-	PROFIT, SPEND
+    NONE, PROFIT, SPEND
 }

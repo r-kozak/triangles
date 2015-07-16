@@ -1,14 +1,18 @@
 package com.kozak.triangles.search;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class TransactForm {
+import com.kozak.triangles.enums.ArticleCashFlowT;
+import com.kozak.triangles.enums.TransferT;
 
-    private String dateFrom;
-    private String dateTo;
-    private List<String> articles;
-    private String transfer;
+public class TransactSearch {
+
     private boolean needClear;
+    private String dateFrom = "";
+    private String dateTo = "";
+    private List<ArticleCashFlowT> articles = new ArrayList<ArticleCashFlowT>();
+    private TransferT transfer;
     private String page = "1";
 
     public String getPage() {
@@ -20,13 +24,12 @@ public class TransactForm {
     }
 
     public void clear() {
+	this.needClear = false;
 	this.dateFrom = "";
 	this.dateTo = "";
-	if (articles != null) {
-	    this.articles.clear();
-	}
-	this.needClear = false;
-	this.transfer = "NONE";
+	articles = new ArrayList<ArticleCashFlowT>();
+	this.transfer = null;
+	page = "1";
     }
 
     public boolean isNeedClear() {
@@ -53,19 +56,19 @@ public class TransactForm {
 	this.dateTo = dateTo;
     }
 
-    public List<String> getArticles() {
+    public List<ArticleCashFlowT> getArticles() {
 	return articles;
     }
 
-    public void setArticles(List<String> articles) {
+    public void setArticles(List<ArticleCashFlowT> articles) {
 	this.articles = articles;
     }
 
-    public void setTransfer(String transfer) {
+    public void setTransfer(TransferT transfer) {
 	this.transfer = transfer;
     }
 
-    public String getTransfer() {
+    public TransferT getTransfer() {
 	return transfer;
     }
 }
