@@ -86,7 +86,7 @@ legend {
 			<a href="${pageContext.request.contextPath}/property/commerc-pr">Моё коммерческое</a>
 		</div>
 
-	<form:form id="searchForm" method="GET" commandName="tf">
+	<form:form id="searchForm" method="GET" commandName="ts">
 		<div id="searchWrap">
 		<div id="menuTitle">Поиск</div>
 			<fieldset id = "searchBlock">
@@ -126,6 +126,7 @@ legend {
 	<div class="content">
 		<div class="tranBlock">
 		<h1 align="center">Транзакции</h1>
+				<c:if test="${!empty transacs}">
 			<table class="beaTable">
 				<tr>
 					<td>Дата</td>
@@ -135,8 +136,6 @@ legend {
 					<td>Сумма</td>
 					<td>Баланс</td>
 				</tr>
-	
-				<c:if test="${!empty transacs}">
 					<c:forEach items="${transacs}" var="transac">
 						<tr>
 							<td><fmt:formatDate value="${transac.transactDate}" pattern="dd-MM-yyyy HH:mm:ss" /></td>
@@ -179,6 +178,11 @@ legend {
 							<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${transac.balance}"/></td>
 						</tr>
 					</c:forEach>
+					<tr>
+						<td colspan=4 style="text-align: left; font-weight:bold;">Всего:</td>
+						<td style="font-weight:bold;"><fmt:formatNumber type="number" maxFractionDigits="3" value="${totalSum}"/></td>
+						<td>―</td>
+					</tr>
 				</c:if>
 			</table>
 	

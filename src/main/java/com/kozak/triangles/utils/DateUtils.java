@@ -419,4 +419,32 @@ public class DateUtils {
 
 	return res.getTime();
     }
+
+    /**
+     * @param dateStr
+     *            строковая дата
+     * @return дата для запроса (начало дня)
+     */
+    public static Date getStartDateForQuery(String dateStr) throws ParseException {
+	if (dateStr.isEmpty()) {
+	    return new Date(Long.MIN_VALUE);
+	}
+	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	Date parsed = df.parse(dateStr);
+	return getStart(parsed);
+    }
+
+    /**
+     * @param dateStr
+     *            строковая дата
+     * @return дата для запроса (конец дня)
+     */
+    public static Date getEndDateForQuery(String dateStr) throws ParseException {
+	if (dateStr.isEmpty()) {
+	    dateStr = "9999-12-31";
+	}
+	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	Date parsed = df.parse(dateStr);
+	return getEnd(parsed);
+    }
 }

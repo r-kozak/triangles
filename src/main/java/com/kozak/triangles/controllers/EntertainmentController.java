@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.repositories.TestRep;
-import com.kozak.triangles.search.TransactForm;
+import com.kozak.triangles.search.TransactSearch;
 
 @SessionAttributes("user")
 @Controller
@@ -22,7 +22,7 @@ public class EntertainmentController {
     TestRep testRep;
 
     @RequestMapping(value = "/entertainment", method = RequestMethod.GET)
-    String entertainmentGET(Model model, TransactForm tf) {
+    String entertainmentGET(Model model, TransactSearch tf) {
         // TransactForm tf = new TransactForm();
         // tf.setProfit(true);
 
@@ -45,7 +45,7 @@ public class EntertainmentController {
     }
 
     @RequestMapping(value = "/entertainment", method = RequestMethod.POST)
-    String entertainmentPOST(Model model, TransactForm tf) {
+    String entertainmentPOST(Model model, TransactSearch tf) {
         model.addAttribute("tf", tf);
 
         List<String> articles = new ArrayList<String>();
