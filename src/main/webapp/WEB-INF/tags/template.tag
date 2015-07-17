@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/specific_pr.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jquery.countdown.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/home.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/search.css" type="text/css" />
 
 <script src="${pageContext.request.contextPath}/resources/js/jquery-2.1.4.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/change_balance.js"></script>

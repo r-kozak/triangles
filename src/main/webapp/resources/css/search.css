@@ -1,0 +1,60 @@
+#searchBlock {
+	padding: 5;
+	margin-top: 10px; 
+}
+#searchForm {
+	margin-top: 50;
+}
+#searchEl{
+	margin-top:5;
+}
+#searchEl span{
+	display: block;
+	margin-top:5;
+}
+#searchEl span label{
+	margin-left:5;
+}
+.dateEl{
+	width: 125;
+	font-size:12px;
+	border: 2px solid rgb(110, 110, 110);
+}
+#nadp {
+	width:55;
+	display: inline-block;
+}
+#searchSubmit {
+  height: 28;
+  width: 155;
+  background: transparent;
+  border: 3px solid rgb(110, 110, 110);
+  margin-top: 10;
+  font-weight: bold;
+  font-size: 15;
+  display: inline-block;
+}
+#searchSubmit:hover {
+  border-color: black;
+  color: red;
+  cursor: pointer; 
+}
+.submClear {
+	 width: 40 !important;
+	 vertical-align: bottom;
+}
+.submClear:hover {
+	 color: red !important;
+}
+legend {
+  color:red;
+  font-size:14px;
+}
+#selectEl {
+  width: 184;
+  height: 30;
+  font-size: 17;
+  margin: 10 0 10 0;
+  border: 2px solid rgb(110, 110, 110);
+  background-color: white;
+}

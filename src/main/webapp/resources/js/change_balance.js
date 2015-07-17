@@ -20,3 +20,9 @@ function popUp(a, bloc) {
 		"z-index" : "18"
 	});
 };
+
+function submForm(obj) {
+    document.getElementById('page').value = obj.getAttribute("value");
+    document.getElementById('searchForm').submit();
+    return false;
+}

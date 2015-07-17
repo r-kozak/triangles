@@ -6,73 +6,6 @@
 
 <title>Транзакции</title>
 
-<style>
-#searchBlock {
-	padding: 5;
-	margin-top: 10px; 
-}
-#searchForm {
-	margin-top: 50;
-}
-#searchEl{
-	margin-top:5;
-}
-#searchEl span{
-	display: block;
-	margin-top:5;
-}
-#searchEl span label{
-	margin-left:5;
-}
-.date{
-	width: 125;
-	font-size:12px;
-}
-#nadp {
-	width:55;
-	display: inline-block;
-}
-#searchSubmit {
-  height: 28;
-  width: 155;
-  background: transparent;
-  border: 3px solid rgb(110, 110, 110);
-  margin-top: 10;
-  font-weight: bold;
-  font-size: 15;
-  display: inline-block;
-}
-.submClear {
-	 width: 40 !important;
-	 vertical-align: bottom;
-}
-.submClear:hover {
-	 color: red !important;
-}
-#searchSubmit:hover {
-  border-color: black;
-  color: red;
-  cursor: pointer; 
-}
-legend {
-  color:red
-}
-#transfer {
-  width: 184;
-  height: 30;
-  font-size: 17;
-  margin: 10 0 10 0;
-}
-</style>
-
-<script>
-    function submForm(obj) {
-        document.getElementById('page').value = obj.getAttribute("value");
-        document.getElementById('searchForm').submit();
-        return false;
-    }
-</script>
-
 <t:template>
 	<div id="menu">
 	<div id="menuTitle">Меню</div>
@@ -92,16 +25,16 @@ legend {
 			<fieldset id = "searchBlock">
 			<legend>Период</legend>
 				<div id="searchEl">
-					<div id="nadp">Начало:</div> <form:input class="date" type="date" path="dateFrom"/>
+					<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="dateFrom"/>
 				</div>
 				<div id="searchEl">
-					<div id="nadp">Конец:</div> <form:input class="date" type="date" path="dateTo"/>
+					<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="dateTo"/>
 				</div>
 			</fieldset>
 
 			<fieldset id="searchBlock">
 			<legend>Движение</legend>
-				<form:select path="transfer" id="transfer">    
+				<form:select path="transfer" id="selectEl">    
 					<form:option value="NONE" label="--- Выбрать ---"/>
 			   		<form:options items="${transfers}" />
 				</form:select>

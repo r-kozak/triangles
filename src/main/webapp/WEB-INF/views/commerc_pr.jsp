@@ -7,12 +7,30 @@
 <title>Коммерческое имущество</title>
 <t:template>
 	<div id="menu">
+	<div id="menuTitle">Меню</div>
 		<div id="elMenu">
 			<a href="${pageContext.request.contextPath}/property">Упр. имуществом</a>
 		</div>
 		<div id="elMenu">
 			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
 		</div>
+		
+		<form:form id="searchForm" method="GET" commandName="cps">
+		<div id="searchWrap">
+		<div id="menuTitle">Поиск</div>
+			<fieldset id = "searchBlock">
+			<legend>Период</legend>
+			
+			</fieldset>
+
+			<form:checkbox id="needClear" path="needClear" hidden="true"/>
+			<input id="page" path="page" name="page" value="1" hidden="true" >
+		</div>
+		<div id="searchEl">
+			<input id="searchSubmit" type="submit" name="submit1" value="Искать">
+			<input id="searchSubmit" class="submClear" title="Очистить" type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
+		</div>
+	</form:form>
 	</div>
 	<div class="content">
 		<div class="tranBlock">
@@ -32,7 +50,6 @@
 						<td>Касса, &tridot;</td>
 						<td>Собрать доход</td>
 					</tr>
-	
 	
 					<c:forEach items="${comProps}" var="prop">
 						<tr>

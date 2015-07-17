@@ -31,52 +31,54 @@ public class IssuesController {
 
     @RequestMapping(value = "/issues", method = RequestMethod.GET)
     String propertyGET() {
-	return "issues";
+        return "issues";
     }
 
     @RequestMapping(value = "/transactions", method = RequestMethod.GET)
     String transactionsGET(Model model, User user, HttpServletRequest request, TransactSearch ts) throws ParseException {
-	if (ts.isNeedClear()) {
-	    ts.clear();
-	}
-	model.addAttribute("ts", ts);
+        if (ts.isNeedClear())
+            ts.clear();
+        model.addAttribute("ts", ts);
 
-	int page = Integer.parseInt(ts.getPage());
-	// результат с БД [количество всего; транзакции с учетом пагинации]
-	List<Object> dbResult = trRep.transList(page, user.getId(), ts);
+        int page = Integer.parseInt(ts.getPage());
+        // результат с БД [количество всего; транзакции с учетом пагинации]
+        List<Object> dbResult = trRep.transList(page, user.getId(), ts);
 
-	Long transCount = Long.valueOf(dbResult.get(0).toString());
-	@SuppressWarnings("unchecked")
-	List<Transaction> transacs = (List<Transaction>) dbResult.get(1);
+        Long transCount = Long.valueOf(dbResult.get(0).toString());
+        int lastPageNumber = (int) (transCount / Consts.ROWS_ON_PAGE)
+                + ((transCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 
-	int lastPageNumber = (int) (transCount / Consts.ROWS_ON_PAGE)
-		+ ((transCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+        @SuppressWarnings("unchecked")
+        List<Transaction> transacs = (List<Transaction>) dbResult.get(1);
 
-	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
-	model.addAttribute("transacs", transacs);
-	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, "", page));
+        // total sum
+        long totalSum = 0;
+        for (Transaction tr : transacs) {
+            totalSum += tr.getSum();
+        }
 
-	// articles
-	List<ArticleCashFlowT> articles = new ArrayList<ArticleCashFlowT>();
-	for (ArticleCashFlowT a : ArticleCashFlowT.values()) {
-	    articles.add(a);
-	}
+        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+        model.addAttribute("transacs", transacs);
+        model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, "", page));
+        model.addAttribute("articles", getArticlesCashFlow());
+        model.addAttribute("transfers", getTransferTypes());
+        model.addAttribute("totalSum", totalSum);
 
-	// transfer
-	List<TransferT> transfers = new ArrayList<TransferT>();
-	transfers.add(TransferT.PROFIT);
-	transfers.add(TransferT.SPEND);
+        return "transactions";
+    }
 
-	// total sum
-	long totalSum = 0;
-	for (Transaction tr : transacs) {
-	    totalSum += tr.getSum();
-	}
+    private List<ArticleCashFlowT> getArticlesCashFlow() {
+        List<ArticleCashFlowT> articles = new ArrayList<ArticleCashFlowT>();
+        for (ArticleCashFlowT a : ArticleCashFlowT.values()) {
+            articles.add(a);
+        }
+        return articles;
+    }
 
-	model.addAttribute("transfers", transfers);
-	model.addAttribute("articles", articles);
-	model.addAttribute("totalSum", totalSum);
-
-	return "transactions";
+    private List<TransferT> getTransferTypes() {
+        List<TransferT> transfers = new ArrayList<TransferT>();
+        transfers.add(TransferT.PROFIT);
+        transfers.add(TransferT.SPEND);
+        return transfers;
     }
 }
