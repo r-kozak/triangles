@@ -21,8 +21,18 @@ function popUp(a, bloc) {
 	});
 };
 
-function submForm(obj) {
+function setPage(obj) {
     document.getElementById('page').value = obj.getAttribute("value");
     document.getElementById('searchForm').submit();
     return false;
-}
+};
+
+function searchFormSubmit(f) {
+	if(document.getElementById('sell_pr_from').value == "") {
+		document.getElementById('sell_pr_from').value = 0;
+	}
+	if(document.getElementById('sell_pr_to').value == "") { 
+		document.getElementById('sell_pr_to').value = 0;
+	}
+	return f.submit();
+};

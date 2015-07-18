@@ -6,38 +6,20 @@ import java.util.List;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
 
-public class TransactSearch {
+public class TransactSearch extends AbstractSearch {
 
-    private boolean needClear;
     private String dateFrom = "";
     private String dateTo = "";
     private List<ArticleCashFlowT> articles = new ArrayList<ArticleCashFlowT>();
     private TransferT transfer;
-    private String page = "1";
-
-    public String getPage() {
-	return page;
-    }
-
-    public void setPage(String page) {
-	this.page = page;
-    }
 
     public void clear() {
-	this.needClear = false;
+	setNeedClear(false);
 	this.dateFrom = "";
 	this.dateTo = "";
 	articles = new ArrayList<ArticleCashFlowT>();
 	this.transfer = null;
-	page = "1";
-    }
-
-    public boolean isNeedClear() {
-	return needClear;
-    }
-
-    public void setNeedClear(boolean needClear) {
-	this.needClear = needClear;
+	setPage("1");
     }
 
     public String getDateFrom() {

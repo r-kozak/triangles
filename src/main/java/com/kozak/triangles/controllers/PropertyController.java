@@ -29,6 +29,8 @@ import com.kozak.triangles.repositories.BuildingDataRep;
 import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.ReProposalRep;
 import com.kozak.triangles.repositories.TransactionRep;
+import com.kozak.triangles.search.CommPropSearch;
+import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
 
@@ -73,7 +75,7 @@ public class PropertyController {
 
 	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
 	model.addAttribute("proposals", proposals);
-	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, contextPath + "/property/r-e-market?", page));
+	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
 
 	@SuppressWarnings("unchecked")
 	Map<String, Object> map = (Map<String, Object>) RequestContextUtils.getInputFlashMap(request);
@@ -97,6 +99,7 @@ public class PropertyController {
 	if (prop == null || !prop.isValid()) { // уже кто-то купил
 	    model.addAttribute("errorMsg",
 		    "Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
+	    model.addAttribute("backLink", "property/r-e-market");
 	    return "error";
 	} else {
 	    Long userMoney = Long.parseLong(trRep.getUserBalance(user.getId()));
@@ -117,6 +120,7 @@ public class PropertyController {
 	    } else if (userMoney + sellSum < prop.getPurchasePrice()) { // низкая состоятельность
 		model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
 			+ "Ваш максимум = " + Util.moneyFormat(userMoney + sellSum) + "&tridot;");
+		model.addAttribute("backLink", "property/r-e-market");
 	    }
 	    return "error";
 	}
@@ -143,6 +147,7 @@ public class PropertyController {
 	    if (prop == null || !prop.isValid()) {
 		model.addAttribute("errorMsg",
 			"Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
+		model.addAttribute("backLink", "property/r-e-market");
 		return "error";
 	    } else {
 		int userId = user.getId();
@@ -178,6 +183,7 @@ public class PropertyController {
 		} else if (userMoney + sellSum < prop.getPurchasePrice()) {
 		    model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
 			    + "Ваш максимум = " + Util.moneyFormat(userMoney + sellSum) + "&tridot;");
+		    model.addAttribute("backLink", "property/r-e-market");
 		    return "error";
 		}
 	    }
@@ -190,20 +196,29 @@ public class PropertyController {
      * 
      */
     @RequestMapping(value = "/commerc-pr", method = RequestMethod.GET)
-    String userProperty(@ModelAttribute("user") User user, Model model, HttpServletRequest request) {
-	String contextPath = request.getContextPath();
-	int page = Util.getPageNumber(request);
-	int userId = user.getId();
+    String userProperty(@ModelAttribute("user") User user, Model model, HttpServletRequest request,
+	    CommPropSearch cps) {
 
+	if (cps.isNeedClear())
+	    cps.clear();
+
+	int page = Integer.parseInt(cps.getPage());
+
+	int userId = user.getId();
 	Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
 
 	Long propCount = prRep.allPrCount(userId, false, false);
 	int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 	List<Property> comProps = prRep.getPropertyList(page, userId);
 
+	cps.setPrice(comProps); // установка мин и макс цены продажи (если == 0)
+	cps.setDepreciation(comProps); // установка мин и макс износа (если == 0)
+
 	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	model.addAttribute("cps", cps);
 	model.addAttribute("comProps", comProps);
-	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, contextPath + "/property/commerc-pr?", page));
+	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
+	model.addAttribute("types", SearchCollections.getCommBuildTypes());
 
 	// если собирали наличку с кассы - для информационного popup окна
 	String cash = (String) model.asMap().getOrDefault("changeBal", "");
@@ -260,7 +275,7 @@ public class PropertyController {
 	}
 
 	if (action.equals("change_name")) {
-	    if (newName.length() > 0) {
+	    if (newName.length() > 0 && newName.length() <= 25) {
 		prop.setName(newName);
 		prRep.updateProperty(prop);
 	    }

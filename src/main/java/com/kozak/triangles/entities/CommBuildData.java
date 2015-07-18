@@ -8,6 +8,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -67,8 +68,7 @@ public class CommBuildData {
     @Column(name = "remTerm_max")
     int remTermMax;
 
-    @ElementCollection
-    @Column(name = "cash_capacity")
+    @ElementCollection(fetch = FetchType.EAGER)
     List<Long> cashCapacity;
 
     @Column(name = "comm_build_type")
@@ -86,147 +86,147 @@ public class CommBuildData {
     }
 
     public CommBuildData(int paybackPeriodMin, int paybackPeriodMax, long purchasePriceMin, long purchasePriceMax,
-            CommBuildingsT commBuildType, BuildingsT buildType, int buildTime, int remTermMin, int remTermMax) {
+	    CommBuildingsT commBuildType, BuildingsT buildType, int buildTime, int remTermMin, int remTermMax) {
 
-        this.paybackPeriodMin = paybackPeriodMin;
-        this.paybackPeriodMax = paybackPeriodMax;
-        this.purchasePriceMin = purchasePriceMin;
-        this.purchasePriceMax = purchasePriceMax;
+	this.paybackPeriodMin = paybackPeriodMin;
+	this.paybackPeriodMax = paybackPeriodMax;
+	this.purchasePriceMin = purchasePriceMin;
+	this.purchasePriceMax = purchasePriceMax;
 
-        this.usefulLife = paybackPeriodMax * 2;
+	this.usefulLife = paybackPeriodMax * 2;
 
-        this.profitMin = (int) (purchasePriceMin / (paybackPeriodMax * 7));
-        this.profitMax = (int) (purchasePriceMin / (paybackPeriodMin * 7));
+	this.profitMin = (int) (purchasePriceMin / (paybackPeriodMax * 7));
+	this.profitMax = (int) (purchasePriceMin / (paybackPeriodMin * 7));
 
-        ArrayList<Long> cashList = new ArrayList<Long>(5);
-        cashList.add((long) profitMax);
-        cashList.add((long) (profitMax * 1.1));
-        cashList.add((long) (profitMax * 1.3));
-        cashList.add((long) (profitMax * 1.6));
-        cashList.add((long) (profitMax * 2.0));
-        cashList.add((long) (profitMax * 2.5));
+	ArrayList<Long> cashList = new ArrayList<Long>(5);
+	cashList.add((long) profitMax);
+	cashList.add((long) (profitMax * 1.1));
+	cashList.add((long) (profitMax * 1.3));
+	cashList.add((long) (profitMax * 1.6));
+	cashList.add((long) (profitMax * 2.0));
+	cashList.add((long) (profitMax * 2.5));
 
-        this.cashCapacity = cashList;
+	this.cashCapacity = cashList;
 
-        this.commBuildType = commBuildType;
-        this.buildType = buildType;
+	this.commBuildType = commBuildType;
+	this.buildType = buildType;
 
-        this.buildTime = buildTime;
+	this.buildTime = buildTime;
 
-        this.remTermMin = remTermMin;
-        this.remTermMax = remTermMax;
+	this.remTermMin = remTermMin;
+	this.remTermMax = remTermMax;
     }
 
     public Integer getId() {
-        return id;
+	return id;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+	this.id = id;
     }
 
     public int getPaybackPeriodMin() {
-        return paybackPeriodMin;
+	return paybackPeriodMin;
     }
 
     public void setPaybackPeriodMin(int paybackPeriodMin) {
-        this.paybackPeriodMin = paybackPeriodMin;
+	this.paybackPeriodMin = paybackPeriodMin;
     }
 
     public int getPaybackPeriodMax() {
-        return paybackPeriodMax;
+	return paybackPeriodMax;
     }
 
     public void setPaybackPeriodMax(int paybackPeriodMax) {
-        this.paybackPeriodMax = paybackPeriodMax;
+	this.paybackPeriodMax = paybackPeriodMax;
     }
 
     public long getPurchasePriceMin() {
-        return purchasePriceMin;
+	return purchasePriceMin;
     }
 
     public void setPurchasePriceMin(long purchasePriceMin) {
-        this.purchasePriceMin = purchasePriceMin;
+	this.purchasePriceMin = purchasePriceMin;
     }
 
     public long getPurchasePriceMax() {
-        return purchasePriceMax;
+	return purchasePriceMax;
     }
 
     public void setPurchasePriceMax(long purchasePriceMax) {
-        this.purchasePriceMax = purchasePriceMax;
+	this.purchasePriceMax = purchasePriceMax;
     }
 
     public int getUsefulLife() {
-        return usefulLife;
+	return usefulLife;
     }
 
     public void setUsefulLife(int usefulLife) {
-        this.usefulLife = usefulLife;
+	this.usefulLife = usefulLife;
     }
 
     public int getProfitMin() {
-        return profitMin;
+	return profitMin;
     }
 
     public void setProfitMin(int profitMin) {
-        this.profitMin = profitMin;
+	this.profitMin = profitMin;
     }
 
     public int getProfitMax() {
-        return profitMax;
+	return profitMax;
     }
 
     public void setProfitMax(int profitMax) {
-        this.profitMax = profitMax;
+	this.profitMax = profitMax;
     }
 
     public List<Long> getCashCapacity() {
-        return cashCapacity;
+	return cashCapacity;
     }
 
     public void setCashCapacity(ArrayList<Long> cashCapacity) {
-        this.cashCapacity = cashCapacity;
+	this.cashCapacity = cashCapacity;
     }
 
     public int getBuildTime() {
-        return buildTime;
+	return buildTime;
     }
 
     public void setBuildTime(int buildTime) {
-        this.buildTime = buildTime;
+	this.buildTime = buildTime;
     }
 
     public int getRemTermMin() {
-        return remTermMin;
+	return remTermMin;
     }
 
     public void setRemTermMin(int remTermMin) {
-        this.remTermMin = remTermMin;
+	this.remTermMin = remTermMin;
     }
 
     public int getRemTermMax() {
-        return remTermMax;
+	return remTermMax;
     }
 
     public void setRemTermMax(int remTermMax) {
-        this.remTermMax = remTermMax;
+	this.remTermMax = remTermMax;
     }
 
     public CommBuildingsT getCommBuildType() {
-        return commBuildType;
+	return commBuildType;
     }
 
     public void setCommBuildType(CommBuildingsT commBuildType) {
-        this.commBuildType = commBuildType;
+	this.commBuildType = commBuildType;
     }
 
     public BuildingsT getBuildType() {
-        return buildType;
+	return buildType;
     }
 
     public void setBuildType(BuildingsT buildType) {
-        this.buildType = buildType;
+	this.buildType = buildType;
     }
 
 }

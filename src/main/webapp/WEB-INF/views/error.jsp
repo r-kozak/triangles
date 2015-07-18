@@ -42,7 +42,7 @@
 		<a href="${pageContext.request.contextPath}/property/r-e-market">В течение 5 сек. вас перенаправит туда, откуда вы пришли, но можно и быстрее...</a>
 		<script language="JavaScript" type="text/javascript">
 			function toREmarket() {
-				location = "${pageContext.request.contextPath}/property/r-e-market";
+				location = "${pageContext.request.contextPath}/${backLink}";
 			}
 			setTimeout('toREmarket()', 5000);
 		</script>

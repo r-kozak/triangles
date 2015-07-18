@@ -105,12 +105,6 @@
 					</c:choose>
 					</table>
 				</div>
-				<div id="control">
-					<div id="block_title">Рынок труда</div>
-				</div>
-				<div id="control">
-
-				</div>
 			</div>
 			<div id="statistic_wrap">
 				<h3>Статистика</h3>

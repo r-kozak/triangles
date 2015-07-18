@@ -20,6 +20,10 @@ import com.kozak.triangles.validators.LoginValidator;
 @SessionAttributes("user")
 @Controller
 public class LoginController {
+    @ModelAttribute("user")
+    public User getUser() {
+	return new User();
+    }
 
     private LoginValidator loginValidator;
     private UserRep userRepository;

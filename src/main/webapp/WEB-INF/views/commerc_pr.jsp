@@ -4,6 +4,67 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+<style>
+	.labelFromTo {
+		display: inline-block;
+	}
+	.depr_lab {
+		width:90; 
+		border:0;
+		font-weight:bold;
+		background: rgb(236, 236, 236);
+	}
+	.slider {
+		margin: 0 0 10 7;
+		width: 171;
+	}
+	.ui-state-default, .ui-widget-content .ui-state-default{
+		border: 1px solid #00CED1 !important;
+	}
+	.ui-widget-header {
+		background: rgb(0, 113, 100) !important;
+	}
+</style>
+
+<head>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+	<script type="text/javascript">
+		$(function () {
+			$("#depreciation-slider").slider({
+				range: true,
+				min: 0,
+				max: 100,
+				values: [${cps.depreciationFrom}, ${cps.depreciationTo}],
+				slide: function (event, ui) {
+					$("#depr_from").val(ui.values[0]);
+					$("#depr_to").val(ui.values[1]);
+					$("#depr_lab_fr").val(ui.values[0]);
+					$("#depr_lab_to").val(ui.values[1]);
+				}
+			});
+			$("#depr_lab_fr").val($("#depreciation-slider").slider("values", 0));
+			$("#depr_lab_to").val($("#depreciation-slider").slider("values", 1));
+		});
+		$(function () {
+			$("#sell_price-slider").slider({
+				range: true,
+				min: ${cps.sellPriceMin},
+				max: ${cps.sellPriceMax},
+				values: [${cps.sellPriceFrom}, ${cps.sellPriceTo}],
+				slide: function (event, ui) {
+					$("#sell_pr_from").val(ui.values[0]);
+					$("#sell_pr_to").val(ui.values[1]);
+					$("#sell_pr_lab_fr").val(ui.values[0]);
+					$("#sell_pr_lab_to").val(ui.values[1]);
+				}
+			});
+			$("#sell_pr_lab_fr").val($("#sell_price-slider").slider("values", 0));
+			$("#sell_pr_lab_to").val($("#sell_price-slider").slider("values", 1));
+		});
+	</script>
+</head>
+
 <title>Коммерческое имущество</title>
 <t:template>
 	<div id="menu">
@@ -15,22 +76,52 @@
 			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
 		</div>
 		
-		<form:form id="searchForm" method="GET" commandName="cps">
-		<div id="searchWrap">
-		<div id="menuTitle">Поиск</div>
-			<fieldset id = "searchBlock">
-			<legend>Период</legend>
-			
-			</fieldset>
-
-			<form:checkbox id="needClear" path="needClear" hidden="true"/>
-			<input id="page" path="page" name="page" value="1" hidden="true" >
-		</div>
-		<div id="searchEl">
-			<input id="searchSubmit" type="submit" name="submit1" value="Искать">
-			<input id="searchSubmit" class="submClear" title="Очистить" type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
-		</div>
-	</form:form>
+		<form:form id="searchForm" method="GET" commandName="cps" onsubmit="searchFormSubmit(this);return false;">
+			<div id="searchWrap">
+			<div id="menuTitle">Поиск</div>
+				<fieldset id = "searchBlock">
+					<form:input class="textInp" type="text" path="name" placeholder="Наименование"></form:input>
+				</fieldset>
+				
+				<fieldset id = "searchBlock"> 
+				<legend>Тип</legend>
+					<div id="searchEl">
+						<form:checkboxes path="types" items="${types}"/>      
+					</div>
+				</fieldset>
+				
+				<fieldset id = "searchBlock">
+				<legend>Цена продажи, &tridot;</legend>
+					<div id="searchEl">
+						<input type="text" class="depr_lab" id="sell_pr_lab_fr" readonly>
+						<input type="text" class="depr_lab" id="sell_pr_lab_to" readonly style="float:right; text-align:right">
+						<div class="slider" id="sell_price-slider"></div>
+						
+						<form:input id="sell_pr_from" class="textInp2" hidden="true" path="sellPriceFrom"></form:input>
+						<form:input id="sell_pr_to" class="textInp2"  hidden="true" path="sellPriceTo"></form:input>
+					</div>
+				</fieldset>
+				
+				<fieldset id = "searchBlock">
+				<legend>Износ, %</legend>
+					<div id="searchEl">
+						<input type="text" class="depr_lab" id="depr_lab_fr" readonly>
+						<input type="text" class="depr_lab" id="depr_lab_to" readonly style="float:right; text-align:right">
+						<div class="slider" id="depreciation-slider"></div>
+						
+						<form:input id="depr_from" hidden="true" path="depreciationFrom"></form:input>
+						<form:input id="depr_to" hidden="true" path="depreciationTo"></form:input>
+					</div>
+				</fieldset>
+	
+				<form:checkbox id="needClear" path="needClear" hidden="true"/>
+				<input id="page" path="page" name="page" value="1" hidden="true" >
+			</div>
+			<div id="searchEl">
+				<input id="searchSubmit" type="submit" name="submit1" value="Искать">
+				<input id="searchSubmit" class="submClear" title="Очистить" type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
+			</div>
+		</form:form>
 	</div>
 	<div class="content">
 		<div class="tranBlock">

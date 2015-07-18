@@ -35,8 +35,8 @@ public class UserRep {
     }
 
     public User getCurrentUserByLogin(String userLogin) {
-	String hql = "from User as user where login = :userLogin";
-	Query query = em.createQuery(hql).setParameter("userLogin", userLogin);
+	String hql = "from User as user where lower(login) like :userLogin";
+	Query query = em.createQuery(hql).setParameter("userLogin", userLogin.toLowerCase());
 	return (User) query.getSingleResult();
     }
 

@@ -12,8 +12,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.validator.constraints.Length;
-
 import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 import com.kozak.triangles.utils.DateUtils;
@@ -83,7 +81,6 @@ public class Property {
     private long sellingPrice;
 
     @Column(name = "name")
-    @Length(min = 3, max = 25, message = "Длина наименования может быть 3-25 символов!")
     private String name;
 
     @Column(name = "build_type")
