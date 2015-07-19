@@ -75,26 +75,26 @@
 							
 							<c:choose>
 								<c:when test="${transac.articleCashFlow == 'DAILY_BONUS'}">
-									<td>Ежедневный бонус</td>
+									<td style="text-align:left">Ежедневный бонус</td>
 								</c:when>
 								<c:when test="${transac.articleCashFlow == 'CREDIT'}">
-									<td>Кредит</td>
+									<td style="text-align:left">Кредит</td>
 								</c:when>
 								<c:when test="${transac.articleCashFlow == 'DEPOSIT'}">
-									<td>Депозит</td>
+									<td style="text-align:left">Депозит</td>
 								</c:when>
 								<c:when test="${transac.articleCashFlow == 'LEVY_ON_PROPERTY'}">
-									<td>Сбор с имущества</td>
+									<td style="text-align:left">Сбор с имущества</td>
 								</c:when>
 								<c:when test="${transac.articleCashFlow == 'BUY_PROPERTY'}">
-									<td>Покупка имущества</td>
+									<td style="text-align:left">Покупка имущества</td>
 								</c:when>
 								<c:otherwise>
 									<td>${transac.articleCashFlow}</td>
 								</c:otherwise>
 							</c:choose>
 							
-							<td>${transac.description}</td>
+							<td style="text-align:left">${transac.description}</td>
 							
 							<c:choose>
 								<c:when test="${transac.transferType == 'PROFIT'}">

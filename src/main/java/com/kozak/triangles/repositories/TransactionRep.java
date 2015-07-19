@@ -73,19 +73,6 @@ public class TransactionRep {
     }
 
     /**
-     * получает количество всех транзакций юзера нужно для пагинации
-     * 
-     * @param userId
-     * @return
-     */
-    public Long allTrCount(int userId) {
-	String hql = "select count(id) FROM Transac as tr where tr.userId = :userId";
-	Query query = em.createQuery(hql).setParameter("userId", userId);
-
-	return Long.valueOf(query.getSingleResult().toString());
-    }
-
-    /**
      * возвращает список транзакций пользователя с учетом страницы, на которую он перешел
      * 
      * @param page

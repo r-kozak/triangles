@@ -3,7 +3,6 @@ package com.kozak.triangles.repositories;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.CommBuildData;
-import com.kozak.triangles.enums.buildings.CommBuildingsT;
 
 /**
  * Репозиторий данных о строениях
@@ -26,29 +24,16 @@ public class BuildingDataRep {
 
     // /////////// CommBuildingData
     public void addCommBuildingData(CommBuildData data) {
-        em.persist(data);
-    }
-
-    public CommBuildData getCommBuildDataByType(CommBuildingsT type) {
-        String hql = "from CommBuildData as cbd where cbd.commBuildType = :type";
-
-        Query query = em.createQuery(hql)
-                .setParameter("type", type);
-
-        try {
-            return (CommBuildData) query.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+	em.persist(data);
     }
 
     /**
      * @return список с типами зданий и их данными
      */
     public List<?> getCommBuildDataList() {
-        String hql = "from CommBuildData as cbd ORDER BY cbd.commBuildType";
-        Query query = em.createQuery(hql);
+	String hql = "from CommBuildData as cbd ORDER BY cbd.id";
+	Query query = em.createQuery(hql);
 
-        return query.getResultList();
+	return query.getResultList();
     }
 }

@@ -100,7 +100,9 @@ public class Property {
     public Property() {
     }
 
-    public Property(CommBuildData data, int userId, CityAreasT cityArea, Date purchaseDate, long initialCost) {
+    public Property(CommBuildData data, int userId, CityAreasT cityArea, Date purchaseDate,
+	    long initialCost, String hash) {
+
 	Date now = new Date();
 
 	this.level = 0;
@@ -108,7 +110,7 @@ public class Property {
 	this.valid = true;
 	this.cash = 0;
 	this.cashLevel = 0;
-	this.name = "no_name";
+	this.name = "property-" + hash;
 	this.nextProfit = DateUtils.getPlusDay(now, 1);
 	this.nextDepreciation = DateUtils.getPlusDay(now, 7); // + 7 days
 

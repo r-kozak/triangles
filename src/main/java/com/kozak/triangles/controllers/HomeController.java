@@ -158,7 +158,7 @@ public class HomeController {
 
 	// для каждого имущества
 	for (Property p : properties) {
-	    CommBuildData data = mapData.get(p.getCommBuildingType().toString());
+	    CommBuildData data = mapData.get(p.getCommBuildingType().name());
 
 	    int deprSum = 0;
 	    double deprPerc = 0;
@@ -208,23 +208,26 @@ public class HomeController {
 	CommBuildData data = null;
 	BuildingsT superTYPE = BuildingsT.TRADING;
 
+	// получить данные всех коммерческих строений
+	HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+
 	// init STALL
 	CommBuildingsT TYPE = CommBuildingsT.STALL;
-	if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
+	if (mapData.get(TYPE.name()) == null) {
 	    data = new CommBuildData(3, 6, 4500, 5500, TYPE, superTYPE, 4, 1, 2);
 	    buiDataRep.addCommBuildingData(data);
 	}
 
 	// init VILLAGE_SHOP
 	TYPE = CommBuildingsT.VILLAGE_SHOP;
-	if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
+	if (mapData.get(TYPE.name()) == null) {
 	    data = new CommBuildData(2, 10, 10000, 15000, TYPE, superTYPE, 6, 2, 3);
 	    buiDataRep.addCommBuildingData(data);
 	}
 
 	// init STATIONER_SHOP
 	TYPE = CommBuildingsT.STATIONER_SHOP;
-	if (buiDataRep.getCommBuildDataByType(TYPE) == null) {
+	if (mapData.get(TYPE.name()) == null) {
 	    data = new CommBuildData(5, 12, 17000, 30000, TYPE, superTYPE, 7, 1, 4);
 	    buiDataRep.addCommBuildingData(data);
 	}

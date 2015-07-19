@@ -5,6 +5,11 @@
 	border: 1px solid black;
 }
 
+.beaTable  td > a {
+	color: red;
+	font-size: 13;
+}
+
 .beaTable table {
 	border-collapse: collapse;
 	border-spacing: 0;

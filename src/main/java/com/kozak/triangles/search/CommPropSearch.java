@@ -2,18 +2,18 @@ package com.kozak.triangles.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
-import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 
 public class CommPropSearch extends AbstractSearch {
-    private String name;
-    private List<CommBuildingsT> types;
+    private String name = "";
+    private List<CommBuildingsT> types = new ArrayList<CommBuildingsT>();
     private long sellPriceFrom;
     private long sellPriceTo;
     private long sellPriceMin;
     private long sellPriceMax;
+    private double depreciationMin;
+    private double depreciationMax;
     private double depreciationFrom;
     private double depreciationTo;
 
@@ -28,35 +28,29 @@ public class CommPropSearch extends AbstractSearch {
 	this.depreciationTo = 0.0;
     }
 
-    public void setPrice(List<Property> comProps) {
-	TreeSet<Long> sellingPrices = new TreeSet<Long>();
-	for (Property prop : comProps) {
-	    sellingPrices.add(prop.getSellingPrice());
-	}
-	this.setSellPriceMin(sellingPrices.first());
-	this.setSellPriceMax(sellingPrices.last());
+    public void setPrice(Object minPrice, Object maxPrice) {
+	this.setSellPriceMin((Long) minPrice);
+	this.setSellPriceMax((Long) maxPrice);
+
 	if (this.getSellPriceFrom() == 0) {
-	    // получить минимальную цену имущества
-	    this.setSellPriceFrom(sellingPrices.first());
+	    this.setSellPriceFrom((Long) minPrice);
 	}
 	if (this.getSellPriceTo() == 0) {
-	    // получить максимальную цену имущества
-	    this.setSellPriceTo(sellingPrices.last());
+	    this.setSellPriceTo((Long) maxPrice);
 	}
     }
 
-    public void setDepreciation(List<Property> comProps) {
-	TreeSet<Double> depreciations = new TreeSet<Double>();
-	for (Property prop : comProps) {
-	    depreciations.add(prop.getDepreciationPercent());
-	}
+    public void setDepreciation(Object minPerc, Object maxPerc) {
+	this.setDepreciationMin((Double) minPerc);
+	this.setDepreciationMax(Math.ceil((Double) maxPerc));
+
 	if (this.getDepreciationFrom() == 0) {
 	    // получить минимальный процент износа
-	    this.setDepreciationFrom(depreciations.first());
+	    this.setDepreciationFrom((Double) minPerc);
 	}
 	if (this.getDepreciationTo() == 0) {
 	    // получить максимальный процент износа
-	    this.setDepreciationTo(Math.ceil(depreciations.last()));
+	    this.setDepreciationTo(Math.ceil((Double) maxPerc));
 	}
     }
 
@@ -123,5 +117,21 @@ public class CommPropSearch extends AbstractSearch {
 
     public void setDepreciationTo(double depreciationTo) {
 	this.depreciationTo = depreciationTo;
+    }
+
+    public double getDepreciationMin() {
+	return depreciationMin;
+    }
+
+    public void setDepreciationMin(double depreciationMin) {
+	this.depreciationMin = depreciationMin;
+    }
+
+    public double getDepreciationMax() {
+	return depreciationMax;
+    }
+
+    public void setDepreciationMax(double depreciationMax) {
+	this.depreciationMax = depreciationMax;
     }
 }

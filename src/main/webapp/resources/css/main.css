@@ -1,6 +1,5 @@
 * {
 	margin: 0;
-/* 	padding: 0; */
 	-webkit-box-sizing: border-box;
 }
 
@@ -85,7 +84,7 @@ body {
 	border: 2px solid;
 	border-color: darkturquoise;
 	border-bottom: none;
-	width: 900px;
+	width: 890px;
 	background: white;
 }
 

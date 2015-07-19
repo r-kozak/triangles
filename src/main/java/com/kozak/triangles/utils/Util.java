@@ -1,5 +1,6 @@
 package com.kozak.triangles.utils;
 
+import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,7 +69,7 @@ public class Util {
 
 	// для каждого имущества
 	for (Property p : properties) {
-	    CommBuildData data = mapData.get(p.getCommBuildingType().toString());
+	    CommBuildData data = mapData.get(p.getCommBuildingType().name());
 
 	    long cashCap = p.getCashCapacity(); // получить вместимость кассы
 	    long cash = p.getCash(); // получить тек. значение кассы
@@ -106,5 +107,17 @@ public class Util {
 
 	    prRep.updateProperty(p);// обновить имущество
 	}
+    }
+
+    public static String getHash(int length) {
+	char[] chars = "0123456789abcdefghijklmnopqrstuvwxyz".toCharArray();
+	StringBuilder sb = new StringBuilder();
+	SecureRandom random = new SecureRandom();
+	for (int i = 0; i < length; i++) {
+	    char c = chars[random.nextInt(chars.length)];
+	    sb.append(c);
+	}
+	String output = sb.toString();
+	return output;
     }
 }

@@ -1,10 +1,10 @@
 package com.kozak.triangles.utils;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.Random;
 
 import com.kozak.triangles.entities.CommBuildData;
 import com.kozak.triangles.entities.RealEstateProposal;
@@ -75,7 +75,7 @@ public class ProposalGenerator {
 	aStart *= 100;
 	aEnd = aEnd * 100 + 100;
 
-	Random random = new Random();
+	SecureRandom random = new SecureRandom();
 	// get the range, casting to long to avoid overflow problems
 	long range = (long) aEnd - (long) aStart + 1;
 	// compute a fraction of the range, 0 <= frac < range

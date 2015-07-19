@@ -1,6 +1,7 @@
 package com.kozak.triangles.controllers;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ import com.kozak.triangles.repositories.ReProposalRep;
 import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.search.CommPropSearch;
 import com.kozak.triangles.search.SearchCollections;
+import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
 
@@ -93,7 +95,7 @@ public class PropertyController {
      *            id предложения с рынка
      */
     @RequestMapping(value = "/buy/{prId}", method = RequestMethod.GET)
-    String buyProperty(@PathVariable int prId, User user, Model model) {
+    String buyProperty(@PathVariable("prId") int prId, User user, Model model) {
 	RealEstateProposal prop = rePrRep.getREProposalById(prId);
 
 	if (prop == null || !prop.isValid()) { // уже кто-то купил
@@ -106,9 +108,12 @@ public class PropertyController {
 	    long sellSum = prRep.getSellingSumAllPropByUser(user.getId()) / 2;// (ост. стоим. всего имущества юзера / 2)
 	    long bap = userMoney - prop.getPurchasePrice(); // balance after purchase
 
+	    // получить данные всех коммерческих строений
+	    HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+
 	    model.addAttribute("percent", Util.getAreaPercent(prop.getCityArea()));
 	    model.addAttribute("prop", prop); // само предложение
-	    model.addAttribute("data", buiDataRep.getCommBuildDataByType(prop.getCommBuildingType()));
+	    model.addAttribute("data", mapData.get(prop.getCommBuildingType().name()));
 	    model.addAttribute("bap", bap); // balance after purchase
 
 	    if (userMoney >= prop.getPurchasePrice()) { // хватает денег
@@ -160,24 +165,26 @@ public class PropertyController {
 		boolean inCredit = userMoney + sellSum >= prop.getPurchasePrice(); // берем в кредит
 
 		if (moneyEnough || inCredit) {
-		    // снять деньги
+		    // данные операции
 		    Date purchDate = new Date();
 		    long price = prop.getPurchasePrice();
 
-		    Transaction t = new Transaction("Покупка имущества", purchDate, price, TransferT.SPEND, userId,
-			    userMoney - prop.getPurchasePrice(), ArticleCashFlowT.BUY_PROPERTY);
-
-		    trRep.addTransaction(t);
-
-		    // экзэмпляр данных про тот тип, который мы покупаем
-		    CommBuildData data = buiDataRep.getCommBuildDataByType(prop.getCommBuildingType());
+		    // получить данные всех коммерческих строений
+		    HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+		    CommBuildData data = mapData.get(prop.getCommBuildingType().name());
 		    // добавить новое имущество пользователю
-		    Property newProp = new Property(data, userId, prop.getCityArea(), purchDate, price);
+		    String nameHash = Util.getHash(5);
+		    Property newProp = new Property(data, userId, prop.getCityArea(), purchDate, price, nameHash);
 		    prRep.addProperty(newProp);
 
 		    // предложение на рынке теперь не валидное
 		    prop.setValid(false);
 		    rePrRep.updateREproposal(prop);
+
+		    // снять деньги
+		    Transaction t = new Transaction("Покупка имущества: property-" + nameHash, purchDate, price,
+			    TransferT.SPEND, userId, userMoney - prop.getPurchasePrice(), ArticleCashFlowT.BUY_PROPERTY);
+		    trRep.addTransaction(t);
 
 		    ra.addFlashAttribute("popup", true); // будем отображать поздравление о покупке
 		} else if (userMoney + sellSum < prop.getPurchasePrice()) {
@@ -196,8 +203,7 @@ public class PropertyController {
      * 
      */
     @RequestMapping(value = "/commerc-pr", method = RequestMethod.GET)
-    String userProperty(@ModelAttribute("user") User user, Model model, HttpServletRequest request,
-	    CommPropSearch cps) {
+    String userProperty(@ModelAttribute("user") User user, Model model, CommPropSearch cps) {
 
 	if (cps.isNeedClear())
 	    cps.clear();
@@ -207,18 +213,28 @@ public class PropertyController {
 	int userId = user.getId();
 	Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
 
-	Long propCount = prRep.allPrCount(userId, false, false);
-	int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
-	List<Property> comProps = prRep.getPropertyList(page, userId);
+	// результат с БД: количество всего; имущество с учетом пагинации;
+	List<Object> dbResult = prRep.getPropertyList(page, userId, cps);
 
-	cps.setPrice(comProps); // установка мин и макс цены продажи (если == 0)
-	cps.setDepreciation(comProps); // установка мин и макс износа (если == 0)
+	// результат с БД:
+	// [
+	// // MIN прод. цена имущества; MAX прод. цена имущества
+	// // MIN процент износа; MAX процент износа
+	// ]
+	List<Object> rangeValues = prRep.getRangeValues(userId);
+
+	Long propCount = Long.valueOf(dbResult.get(0).toString());
+	int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+
+	cps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
+	cps.setDepreciation(rangeValues.get(2), rangeValues.get(3)); // установка мин и макс износа
 
 	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
 	model.addAttribute("cps", cps);
-	model.addAttribute("comProps", comProps);
+	model.addAttribute("comProps", dbResult.get(1));
 	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
 	model.addAttribute("types", SearchCollections.getCommBuildTypes());
+	model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);
 
 	// если собирали наличку с кассы - для информационного popup окна
 	String cash = (String) model.asMap().getOrDefault("changeBal", "");
@@ -247,7 +263,9 @@ public class PropertyController {
 	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
 	model.addAttribute("prop", prop);
 	// добавим вид деятельности
-	model.addAttribute("type", buiDataRep.getCommBuildDataByType(prop.getCommBuildingType()).getBuildType());
+	// получить данные всех коммерческих строений
+	HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+	model.addAttribute("type", mapData.get(prop.getCommBuildingType().name()).getBuildType());
 
 	// если собирали наличку с кассы - для информационного popup окна
 	String cash = (String) model.asMap().getOrDefault("changeBal", "");

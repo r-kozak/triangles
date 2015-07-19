@@ -3,8 +3,6 @@ package com.kozak.triangles.controllers;
 import java.text.ParseException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +31,7 @@ public class IssuesController {
     }
 
     @RequestMapping(value = "/transactions", method = RequestMethod.GET)
-    String transactionsGET(Model model, User user, HttpServletRequest request, TransactSearch ts) throws ParseException {
+    String transactionsGET(Model model, User user, TransactSearch ts) throws ParseException {
 	if (ts.isNeedClear())
 	    ts.clear();
 	model.addAttribute("ts", ts);

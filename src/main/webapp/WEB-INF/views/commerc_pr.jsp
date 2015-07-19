@@ -5,10 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <style>
-	.labelFromTo {
-		display: inline-block;
-	}
-	.depr_lab {
+	.value_lab {
 		width:90; 
 		border:0;
 		font-weight:bold;
@@ -24,6 +21,9 @@
 	.ui-widget-header {
 		background: rgb(0, 113, 100) !important;
 	}
+	#name {
+		width:185;
+	}
 </style>
 
 <head>
@@ -33,12 +33,12 @@
 		$(function () {
 			$("#depreciation-slider").slider({
 				range: true,
-				min: 0,
-				max: 100,
-				values: [${cps.depreciationFrom}, ${cps.depreciationTo}],
+				min: <c:out value='${cps.depreciationMin}'/>,
+				max: <c:out value='${cps.depreciationMax}'/>,
+				values: [<c:out value='${cps.depreciationFrom}'/>, <c:out value='${cps.depreciationTo}'/>],
 				slide: function (event, ui) {
 					$("#depr_from").val(ui.values[0]);
-					$("#depr_to").val(ui.values[1]);
+					$("#depr_to").val(ui.values[1]); 
 					$("#depr_lab_fr").val(ui.values[0]);
 					$("#depr_lab_to").val(ui.values[1]);
 				}
@@ -49,9 +49,9 @@
 		$(function () {
 			$("#sell_price-slider").slider({
 				range: true,
-				min: ${cps.sellPriceMin},
-				max: ${cps.sellPriceMax},
-				values: [${cps.sellPriceFrom}, ${cps.sellPriceTo}],
+				min: <c:out value='${cps.sellPriceMin}'/>,
+				max: <c:out value='${cps.sellPriceMax}'/>,
+				values: [<c:out value='${cps.sellPriceFrom}'/>, <c:out value='${cps.sellPriceTo}'/>],
 				slide: function (event, ui) {
 					$("#sell_pr_from").val(ui.values[0]);
 					$("#sell_pr_to").val(ui.values[1]);
@@ -93,8 +93,8 @@
 				<fieldset id = "searchBlock">
 				<legend>Цена продажи, &tridot;</legend>
 					<div id="searchEl">
-						<input type="text" class="depr_lab" id="sell_pr_lab_fr" readonly>
-						<input type="text" class="depr_lab" id="sell_pr_lab_to" readonly style="float:right; text-align:right">
+						<input type="text" class="value_lab" id="sell_pr_lab_fr" readonly>
+						<input type="text" class="value_lab" id="sell_pr_lab_to" readonly style="float:right; text-align:right">
 						<div class="slider" id="sell_price-slider"></div>
 						
 						<form:input id="sell_pr_from" class="textInp2" hidden="true" path="sellPriceFrom"></form:input>
@@ -105,8 +105,8 @@
 				<fieldset id = "searchBlock">
 				<legend>Износ, %</legend>
 					<div id="searchEl">
-						<input type="text" class="depr_lab" id="depr_lab_fr" readonly>
-						<input type="text" class="depr_lab" id="depr_lab_to" readonly style="float:right; text-align:right">
+						<input type="text" class="value_lab" id="depr_lab_fr" readonly>
+						<input type="text" class="value_lab" id="depr_lab_to" readonly style="float:right; text-align:right">
 						<div class="slider" id="depreciation-slider"></div>
 						
 						<form:input id="depr_from" hidden="true" path="depreciationFrom"></form:input>
@@ -126,15 +126,18 @@
 	<div class="content">
 		<div class="tranBlock">
 			<h1 align="center">Коммерческое имущество</h1>
-			<c:if test="${empty comProps}">
+			<c:if test="${empty comProps && !userHaveProps}">
 				<div class = "noData">У вас нет имущества. Его можно купить на рынке. <a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a></div>
+			</c:if>
+			<c:if test="${empty comProps && userHaveProps}">
+				<div class = "noData">Поиск не дал результатов. Попробуйте задать другие параметры.</div>
 			</c:if>
 			
 			<c:if test="${!empty comProps}">
 				<table class="beaTable">
 					<tr>
 						<td>Тип</td>
-						<td>Наименование</td>
+						<td>Наимено- вание</td>
 						<td>Уровень</td>
 						<td>Цена продажи, &tridot;</td>
 						<td>Износ, %</td>
@@ -146,20 +149,20 @@
 						<tr>
 							<c:choose>
 								<c:when test="${prop.commBuildingType == 'STALL'}">
-									<td>Киоск</td>
+									<td style="text-align:left">Киоск</td>
 								</c:when>
 								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
-									<td>Сельский магазин</td>
+									<td style="text-align:left">Сельский магазин</td>
 								</c:when>
 								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
-									<td>Магазин канцтоваров</td>
+									<td style="text-align:left">Магазин канцтоваров</td>
 								</c:when>
 								<c:otherwise>
 									<td>${prop.commBuildingType}</td>
 								</c:otherwise>
 							</c:choose>
 	
-							<td><a href="${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
+							<td style="text-align:left"><a href="${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
 							<td>${prop.level}</td>
 							<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
 							<td>${prop.depreciationPercent}<progress max="100"

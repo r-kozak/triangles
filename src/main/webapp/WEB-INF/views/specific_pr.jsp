@@ -12,6 +12,10 @@
 	      	document.getElementById('NewNameInput').style.display = 'inline-block';
 	    	document.getElementById('wrap').style.display = 'block';
 	    	document.getElementById('name').style.opacity = '0';
+	    	document.getElementById('NewNameInput').focus();
+	    	document.getElementById('NewNameInput').selectionStart = 
+	    		document.getElementById('NewNameInput').value.length;
+
 	    }
 	    
 	    document.getElementById('wrap').onclick = function() {
@@ -20,7 +24,13 @@
 	      	document.getElementById('NewNameInput').style.display = 'none';
 	    	document.getElementById('name').style.opacity = '1';
 	    }
+	    $("#NewNameInput").keydown(function(event){
+	        if(event.keyCode == 13){
+	            $(action).val('change_name');
+	        }
+	    });
 	};
+
 </script>
 <t:template>
 	<!-- Задний прозрачный фон-->

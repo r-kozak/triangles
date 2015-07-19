@@ -1,7 +1,11 @@
 package com.kozak.triangles.repositories;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,7 +16,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Property;
+import com.kozak.triangles.enums.buildings.CommBuildingsT;
 import com.kozak.triangles.interfaces.Consts;
+import com.kozak.triangles.search.CommPropSearch;
 
 /**
  * репозиторий имущества пользователя
@@ -74,15 +80,63 @@ public class PropertyRep {
      * @return список имущества пользователя для отображения на странице имущества
      */
     @SuppressWarnings("unchecked")
-    public List<Property> getPropertyList(int page, int userId) {
-	String hql = "FROM Property as pr WHERE pr.userId = :userId ORDER BY pr.cash DESC";
-	Query query = em.createQuery(hql).setParameter("userId", userId);
+    public List<Object> getPropertyList(int page, int userId, CommPropSearch cps) {
+	String hql0 = "FROM Property as pr WHERE pr.userId = :userId";
+	String hql1 = "";
+	String hql2 = " ORDER BY pr.cash DESC, pr.nextProfit";
 
+	Map<String, Object> params = new HashMap<String, Object>();
+	params.put("userId", userId);
+
+	// name filter
+	if (!cps.getName().isEmpty()) {
+	    hql1 += " and lower(pr.name) like :name";
+	    params.put("name", "%" + cps.getName().toLowerCase() + "%");
+	}
+
+	// types filter
+	List<CommBuildingsT> types = cps.getTypes(); // типы из формы
+	if (types != null && !types.isEmpty()) {
+	    hql1 += " and pr.commBuildingType IN (:types)";
+	    params.put("types", types);
+	}
+
+	// selling price filter
+	long priceFrom = cps.getSellPriceFrom();
+	long priceTo = cps.getSellPriceTo();
+	if (priceFrom > 0 && priceTo > 0) {
+	    hql1 += " and pr.sellingPrice between :priceFrom AND :priceTo";
+	    params.put("priceFrom", priceFrom);
+	    params.put("priceTo", priceTo);
+	}
+
+	// depreciation percent filter
+	double percFrom = cps.getDepreciationFrom();
+	double percTo = cps.getDepreciationTo();
+	if (percTo > 0) {
+	    hql1 += " and pr.depreciationPercent between :percFrom AND :percTo";
+	    params.put("percFrom", percFrom);
+	    params.put("percTo", percTo);
+	}
+
+	Query query = em.createQuery(hql0 + hql1 + hql2);
+	// установка параметров
+	for (Map.Entry<String, Object> entry : params.entrySet()) {
+	    query.setParameter(entry.getKey(), entry.getValue());
+	}
+
+	List<Object> result = new ArrayList<Object>(2); // результат
+	int totalCount = query.getResultList().size();// общее количество имущества для пагинации
+
+	// пагинация
 	int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
 	query.setFirstResult(firstResult);
 	query.setMaxResults(Consts.ROWS_ON_PAGE);
 
-	return query.getResultList();
+	result.add(totalCount);
+	result.add(query.getResultList());
+
+	return result;
     }
 
     /**
@@ -127,5 +181,43 @@ public class PropertyRep {
 	String hql = "SELECT min(nextProfit) FROM Property as pr WHERE pr.userId = :userId";
 	Query query = em.createQuery(hql).setParameter("userId", userId);
 	return (Date) query.getSingleResult();
+    }
+
+    /**
+     * значения диапазонов:
+     * мин и макс значений цены продажи имущества
+     * мин и макс значений процента износа имущества
+     * 
+     * @param userId
+     * @return
+     */
+    public List<Object> getRangeValues(int userId) {
+	String hql = "FROM Property as pr WHERE pr.userId = ?0";
+	Query query = em.createQuery(hql).setParameter(0, userId);
+
+	List<Object> result = new ArrayList<Object>(2); // результат
+
+	// получить все имущество
+	List<Property> allProps = query.getResultList();
+
+	// вытянуть с него мин и макс цену продажи; мин и макс процент износа
+	TreeSet<Long> sellingPrices = new TreeSet<Long>();
+	TreeSet<Double> deprPerc = new TreeSet<Double>();
+	if (!allProps.isEmpty()) {
+	    for (Property prop : allProps) {
+		sellingPrices.add(prop.getSellingPrice());
+		deprPerc.add(prop.getDepreciationPercent());
+	    }
+	} else {
+	    sellingPrices.add((long) 0);
+	    deprPerc.add((double) 0);
+	}
+
+	result.add(sellingPrices.first());
+	result.add(sellingPrices.last());
+	result.add(deprPerc.first());
+	result.add(deprPerc.last());
+
+	return result;
     }
 }
