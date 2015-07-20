@@ -24,16 +24,22 @@ public class BuildingDataRep {
 
     // /////////// CommBuildingData
     public void addCommBuildingData(CommBuildData data) {
-	em.persist(data);
+        em.persist(data);
     }
 
     /**
      * @return список с типами зданий и их данными
      */
     public List<?> getCommBuildDataList() {
-	String hql = "from CommBuildData as cbd ORDER BY cbd.id";
-	Query query = em.createQuery(hql);
+        String hql = "from CommBuildData as cbd ORDER BY cbd.id";
+        Query query = em.createQuery(hql);
 
-	return query.getResultList();
+        return query.getResultList();
+    }
+
+    public void removeAllData() {
+        for (Object cbd : getCommBuildDataList()) {
+            em.remove(cbd);
+        }
     }
 }

@@ -5,22 +5,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <style>
-	.value_lab {
-		width:90; 
-		border:0;
-		font-weight:bold;
-		background: rgb(236, 236, 236);
-	}
-	.slider {
-		margin: 0 0 10 7;
-		width: 171;
-	}
-	.ui-state-default, .ui-widget-content .ui-state-default{
-		border: 1px solid #00CED1 !important;
-	}
-	.ui-widget-header {
-		background: rgb(0, 113, 100) !important;
-	}
 	#name {
 		width:185;
 	}
@@ -76,7 +60,7 @@
 			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
 		</div>
 		
-		<form:form id="searchForm" method="GET" commandName="cps" onsubmit="searchFormSubmit(this);return false;">
+		<form:form id="searchForm" method="GET" commandName="cps">
 			<div id="searchWrap">
 			<div id="menuTitle">Поиск</div>
 				<fieldset id = "searchBlock">

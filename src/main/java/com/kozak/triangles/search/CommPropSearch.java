@@ -18,120 +18,119 @@ public class CommPropSearch extends AbstractSearch {
     private double depreciationTo;
 
     public void clear() {
-	this.name = "";
-	setNeedClear(false);
-	setPage("1");
-	types = new ArrayList<CommBuildingsT>();
-	this.sellPriceFrom = 0;
-	this.sellPriceTo = 0;
-	this.depreciationFrom = 0.0;
-	this.depreciationTo = 0.0;
+        super.clear();
+        this.name = "";
+        types = new ArrayList<CommBuildingsT>();
+        this.sellPriceFrom = 0;
+        this.sellPriceTo = 0;
+        this.depreciationFrom = 0.0;
+        this.depreciationTo = 0.0;
     }
 
     public void setPrice(Object minPrice, Object maxPrice) {
-	this.setSellPriceMin((Long) minPrice);
-	this.setSellPriceMax((Long) maxPrice);
+        this.setSellPriceMin((Long) minPrice);
+        this.setSellPriceMax((Long) maxPrice);
 
-	if (this.getSellPriceFrom() == 0) {
-	    this.setSellPriceFrom((Long) minPrice);
-	}
-	if (this.getSellPriceTo() == 0) {
-	    this.setSellPriceTo((Long) maxPrice);
-	}
+        if (this.getSellPriceFrom() == 0) {
+            this.setSellPriceFrom((Long) minPrice);
+        }
+        if (this.getSellPriceTo() == 0) {
+            this.setSellPriceTo((Long) maxPrice);
+        }
     }
 
     public void setDepreciation(Object minPerc, Object maxPerc) {
-	this.setDepreciationMin((Double) minPerc);
-	this.setDepreciationMax(Math.ceil((Double) maxPerc));
+        this.setDepreciationMin((Double) minPerc);
+        this.setDepreciationMax(Math.ceil((Double) maxPerc));
 
-	if (this.getDepreciationFrom() == 0) {
-	    // получить минимальный процент износа
-	    this.setDepreciationFrom((Double) minPerc);
-	}
-	if (this.getDepreciationTo() == 0) {
-	    // получить максимальный процент износа
-	    this.setDepreciationTo(Math.ceil((Double) maxPerc));
-	}
+        if (this.getDepreciationFrom() == 0) {
+            // получить минимальный процент износа
+            this.setDepreciationFrom((Double) minPerc);
+        }
+        if (this.getDepreciationTo() == 0) {
+            // получить максимальный процент износа
+            this.setDepreciationTo(Math.ceil((Double) maxPerc));
+        }
     }
 
     // ////////////////////////////////////
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     public List<CommBuildingsT> getTypes() {
-	return types;
+        return types;
     }
 
     public void setTypes(List<CommBuildingsT> types) {
-	this.types = types;
+        this.types = types;
     }
 
     public long getSellPriceFrom() {
-	return sellPriceFrom;
+        return sellPriceFrom;
     }
 
     public void setSellPriceFrom(long sellPriceFrom) {
-	this.sellPriceFrom = sellPriceFrom;
+        this.sellPriceFrom = sellPriceFrom;
     }
 
     public long getSellPriceTo() {
-	return sellPriceTo;
+        return sellPriceTo;
     }
 
     public void setSellPriceTo(long sellPriceTo) {
-	this.sellPriceTo = sellPriceTo;
+        this.sellPriceTo = sellPriceTo;
     }
 
     public long getSellPriceMin() {
-	return sellPriceMin;
+        return sellPriceMin;
     }
 
     public void setSellPriceMin(long sellPriceMin) {
-	this.sellPriceMin = sellPriceMin;
+        this.sellPriceMin = sellPriceMin;
     }
 
     public long getSellPriceMax() {
-	return sellPriceMax;
+        return sellPriceMax;
     }
 
     public void setSellPriceMax(long sellPriceMax) {
-	this.sellPriceMax = sellPriceMax;
+        this.sellPriceMax = sellPriceMax;
     }
 
     public double getDepreciationFrom() {
-	return depreciationFrom;
+        return depreciationFrom;
     }
 
     public void setDepreciationFrom(double depreciationFrom) {
-	this.depreciationFrom = depreciationFrom;
+        this.depreciationFrom = depreciationFrom;
     }
 
     public double getDepreciationTo() {
-	return depreciationTo;
+        return depreciationTo;
     }
 
     public void setDepreciationTo(double depreciationTo) {
-	this.depreciationTo = depreciationTo;
+        this.depreciationTo = depreciationTo;
     }
 
     public double getDepreciationMin() {
-	return depreciationMin;
+        return depreciationMin;
     }
 
     public void setDepreciationMin(double depreciationMin) {
-	this.depreciationMin = depreciationMin;
+        this.depreciationMin = depreciationMin;
     }
 
     public double getDepreciationMax() {
-	return depreciationMax;
+        return depreciationMax;
     }
 
     public void setDepreciationMax(double depreciationMax) {
-	this.depreciationMax = depreciationMax;
+        this.depreciationMax = depreciationMax;
     }
 }

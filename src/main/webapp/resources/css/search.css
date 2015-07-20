@@ -58,3 +58,20 @@ legend {
   border: 2px solid rgb(110, 110, 110);
   background-color: white;
 }
+
+	.value_lab {
+		width:90; 
+		border:0;
+		font-weight:bold;
+		background: rgb(236, 236, 236);
+	}
+	.slider {
+		margin: 0 0 10 7;
+		width: 171;
+	}
+	.ui-state-default, .ui-widget-content .ui-state-default{
+		border: 1px solid #00CED1 !important;
+	}
+	.ui-widget-header {
+		background: rgb(0, 113, 100) !important;
+	}
