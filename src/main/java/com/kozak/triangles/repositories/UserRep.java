@@ -20,6 +20,7 @@ public class UserRep {
     public EntityManager em;
 
     public void addUser(User user) {
+	user.setLogin(user.getLogin().trim());
 	em.persist(user);
     }
 
