@@ -47,20 +47,20 @@
 				<fieldset id = "searchBlock">
 				<legend>Разм. начало</legend>
 					<div id="searchEl">
-						<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="dateStartFrom"/>
+						<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="appearDateFrom"/>
 					</div>
 					<div id="searchEl">
-						<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="dateStartTo"/>
+						<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="appearDateTo"/>
 					</div>
 				</fieldset>
 				
 				<fieldset id = "searchBlock">
 				<legend>Разм. конец</legend>
 					<div id="searchEl">
-						<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="dateEndFrom"/>
+						<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="lossDateFrom"/>
 					</div>
 					<div id="searchEl">
-						<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="dateEndTo"/>
+						<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="lossDateTo"/>
 					</div>
 				</fieldset>
 				
@@ -103,11 +103,14 @@
 		<div class="tranBlock">
 			<h1 align="center">Рынок недвижимости</h1>
 
-			<c:if test="${empty proposals}">
+			<c:if test="${empty proposals && marketEmpty}">
 				<div class="noData">
 					Предложений нет. Вернитесь домой и приходите через минуту. 
 					<a href="${pageContext.request.contextPath}/home">ДОМОЙ</a>
 				</div>
+			</c:if>
+			<c:if test="${empty proposals && !marketEmpty}">
+				<div class = "noData">Поиск не дал результатов. Попробуйте задать другие параметры.</div>
 			</c:if>
 
 			<c:if test="${!empty proposals}">

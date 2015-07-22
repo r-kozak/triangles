@@ -1,5 +1,6 @@
 package com.kozak.triangles.controllers;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,8 +56,8 @@ public class PropertyController {
      */
     @RequestMapping(method = RequestMethod.GET)
     String propertyGET(@ModelAttribute("user") User user, Model model) {
-        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
-        return "property";
+	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	return "property";
     }
 
     /**
@@ -64,34 +65,41 @@ public class PropertyController {
      * 
      * @param request
      *            для получения параметров редиректа (для отображ. поздравления о покупке)
+     * @throws ParseException
      */
     @RequestMapping(value = "/r-e-market", method = RequestMethod.GET)
     String realEstMarket(@ModelAttribute("user") User user, Model model, HttpServletRequest request,
-            RealEstateProposalsSearch reps) {
+	    RealEstateProposalsSearch reps) throws ParseException {
 
-        if (reps.isNeedClear())
-            reps.clear();
+	if (reps.isNeedClear())
+	    reps.clear();
 
-        int page = Integer.parseInt(reps.getPage());
+	int page = Integer.parseInt(reps.getPage());
 
-        Long propCount = rePrRep.allPrCount(false);
-        int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
-        List<RealEstateProposal> proposals = rePrRep.getREProposalsList(page);
+	List<Object> rangeValues = rePrRep.getRangeValues();
+	List<Object> dbResult = rePrRep.getREProposalsList(page, reps);
+	List<RealEstateProposal> proposals = (List<RealEstateProposal>) dbResult.get(1);
 
-        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
-        model.addAttribute("reps", reps);
-        model.addAttribute("types", SearchCollections.getCommBuildTypes());
-        model.addAttribute("areas", SearchCollections.getCityAreas());
-        model.addAttribute("proposals", proposals);
-        model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
+	Long propCount = Long.valueOf(dbResult.get(0).toString());
+	int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) RequestContextUtils.getInputFlashMap(request);
-        if (map != null) {
-            // this is redirect
-            model.addAttribute("popup", map.getOrDefault("popup", false));
-        }
-        return "remarket";
+	reps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
+
+	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	model.addAttribute("reps", reps);
+	model.addAttribute("types", SearchCollections.getCommBuildTypes());
+	model.addAttribute("areas", SearchCollections.getCityAreas());
+	model.addAttribute("proposals", proposals);
+	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
+	model.addAttribute("marketEmpty", rePrRep.allPrCount(false) == 0);
+
+	@SuppressWarnings("unchecked")
+	Map<String, Object> map = (Map<String, Object>) RequestContextUtils.getInputFlashMap(request);
+	if (map != null) {
+	    // this is redirect
+	    model.addAttribute("popup", map.getOrDefault("popup", false));
+	}
+	return "remarket";
     }
 
     /**
@@ -102,39 +110,39 @@ public class PropertyController {
      */
     @RequestMapping(value = "/buy/{prId}", method = RequestMethod.GET)
     String buyProperty(@PathVariable("prId") int prId, User user, Model model) {
-        RealEstateProposal prop = rePrRep.getREProposalById(prId);
+	RealEstateProposal prop = rePrRep.getREProposalById(prId);
 
-        if (prop == null || !prop.isValid()) { // уже кто-то купил
-            model.addAttribute("errorMsg",
-                    "Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
-            model.addAttribute("backLink", "property/r-e-market");
-            return "error";
-        } else {
-            Long userMoney = Long.parseLong(trRep.getUserBalance(user.getId()));
-            long sellSum = prRep.getSellingSumAllPropByUser(user.getId()) / 2;// (ост. стоим. всего имущества юзера / 2)
-            long bap = userMoney - prop.getPurchasePrice(); // balance after purchase
+	if (prop == null || !prop.isValid()) { // уже кто-то купил
+	    model.addAttribute("errorMsg",
+		    "Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
+	    model.addAttribute("backLink", "property/r-e-market");
+	    return "error";
+	} else {
+	    Long userMoney = Long.parseLong(trRep.getUserBalance(user.getId()));
+	    long sellSum = prRep.getSellingSumAllPropByUser(user.getId()) / 2;// (ост. стоим. всего имущества юзера / 2)
+	    long bap = userMoney - prop.getPurchasePrice(); // balance after purchase
 
-            // получить данные всех коммерческих строений
-            HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+	    // получить данные всех коммерческих строений
+	    HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
 
-            model.addAttribute("percent", Util.getAreaPercent(prop.getCityArea()));
-            model.addAttribute("prop", prop); // само предложение
-            model.addAttribute("data", mapData.get(prop.getCommBuildingType().name()));
-            model.addAttribute("bap", bap); // balance after purchase
+	    model.addAttribute("percent", Util.getAreaPercent(prop.getCityArea()));
+	    model.addAttribute("prop", prop); // само предложение
+	    model.addAttribute("data", mapData.get(prop.getCommBuildingType().name()));
+	    model.addAttribute("bap", bap); // balance after purchase
 
-            if (userMoney >= prop.getPurchasePrice()) { // хватает денег
-                model.addAttribute("title", "Обычная покупка");
-                return "apply_buy";
-            } else if (userMoney + sellSum >= prop.getPurchasePrice()) { // покупка в кредит
-                model.addAttribute("title", "Покупка в кредит");
-                return "apply_buy";
-            } else if (userMoney + sellSum < prop.getPurchasePrice()) { // низкая состоятельность
-                model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
-                        + "Ваш максимум = " + Util.moneyFormat(userMoney + sellSum) + "&tridot;");
-                model.addAttribute("backLink", "property/r-e-market");
-            }
-            return "error";
-        }
+	    if (userMoney >= prop.getPurchasePrice()) { // хватает денег
+		model.addAttribute("title", "Обычная покупка");
+		return "apply_buy";
+	    } else if (userMoney + sellSum >= prop.getPurchasePrice()) { // покупка в кредит
+		model.addAttribute("title", "Покупка в кредит");
+		return "apply_buy";
+	    } else if (userMoney + sellSum < prop.getPurchasePrice()) { // низкая состоятельность
+		model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
+			+ "Ваш максимум = " + Util.moneyFormat(userMoney + sellSum) + "&tridot;");
+		model.addAttribute("backLink", "property/r-e-market");
+	    }
+	    return "error";
+	}
     }
 
     /**
@@ -149,59 +157,59 @@ public class PropertyController {
      */
     @RequestMapping(value = "/buy/{prId}", method = RequestMethod.POST)
     String confirmBuy(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action, User user,
-            Model model, RedirectAttributes ra) {
+	    Model model, RedirectAttributes ra) {
 
-        // пользователь подтвердил покупку
-        if (action.equals("confirm")) {
-            RealEstateProposal prop = rePrRep.getREProposalById(prId);
+	// пользователь подтвердил покупку
+	if (action.equals("confirm")) {
+	    RealEstateProposal prop = rePrRep.getREProposalById(prId);
 
-            if (prop == null || !prop.isValid()) {
-                model.addAttribute("errorMsg",
-                        "Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
-                model.addAttribute("backLink", "property/r-e-market");
-                return "error";
-            } else {
-                int userId = user.getId();
-                // баланс юзера и
-                // (ост. стоим. всего имущества / 2) для расчета состоятельности (для кредита)
-                Long userMoney = Long.parseLong(trRep.getUserBalance(userId));
-                long sellSum = prRep.getSellingSumAllPropByUser(userId) / 2;
+	    if (prop == null || !prop.isValid()) {
+		model.addAttribute("errorMsg",
+			"Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
+		model.addAttribute("backLink", "property/r-e-market");
+		return "error";
+	    } else {
+		int userId = user.getId();
+		// баланс юзера и
+		// (ост. стоим. всего имущества / 2) для расчета состоятельности (для кредита)
+		Long userMoney = Long.parseLong(trRep.getUserBalance(userId));
+		long sellSum = prRep.getSellingSumAllPropByUser(userId) / 2;
 
-                boolean moneyEnough = userMoney >= prop.getPurchasePrice(); // хватает денег
-                boolean inCredit = userMoney + sellSum >= prop.getPurchasePrice(); // берем в кредит
+		boolean moneyEnough = userMoney >= prop.getPurchasePrice(); // хватает денег
+		boolean inCredit = userMoney + sellSum >= prop.getPurchasePrice(); // берем в кредит
 
-                if (moneyEnough || inCredit) {
-                    // данные операции
-                    Date purchDate = new Date();
-                    long price = prop.getPurchasePrice();
+		if (moneyEnough || inCredit) {
+		    // данные операции
+		    Date purchDate = new Date();
+		    long price = prop.getPurchasePrice();
 
-                    // получить данные всех коммерческих строений
-                    HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
-                    CommBuildData data = mapData.get(prop.getCommBuildingType().name());
-                    // добавить новое имущество пользователю
-                    String nameHash = Util.getHash(5);
-                    Property newProp = new Property(data, userId, prop.getCityArea(), purchDate, price, nameHash);
-                    prRep.addProperty(newProp);
+		    // получить данные всех коммерческих строений
+		    HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+		    CommBuildData data = mapData.get(prop.getCommBuildingType().name());
+		    // добавить новое имущество пользователю
+		    String nameHash = Util.getHash(5);
+		    Property newProp = new Property(data, userId, prop.getCityArea(), purchDate, price, nameHash);
+		    prRep.addProperty(newProp);
 
-                    // предложение на рынке теперь не валидное
-                    prop.setValid(false);
-                    rePrRep.updateREproposal(prop);
+		    // предложение на рынке теперь не валидное
+		    prop.setValid(false);
+		    rePrRep.updateREproposal(prop);
 
-                    // снять деньги
-                    Transaction t = new Transaction("Покупка имущества: property-" + nameHash, purchDate, price,
-                            TransferT.SPEND, userId, userMoney - prop.getPurchasePrice(), ArticleCashFlowT.BUY_PROPERTY);
-                    trRep.addTransaction(t);
+		    // снять деньги
+		    Transaction t = new Transaction("Покупка имущества: property-" + nameHash, purchDate, price,
+			    TransferT.SPEND, userId, userMoney - prop.getPurchasePrice(), ArticleCashFlowT.BUY_PROPERTY);
+		    trRep.addTransaction(t);
 
-                    ra.addFlashAttribute("popup", true); // будем отображать поздравление о покупке
-                } else if (userMoney + sellSum < prop.getPurchasePrice()) {
-                    model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
-                            + "Ваш максимум = " + Util.moneyFormat(userMoney + sellSum) + "&tridot;");
-                    model.addAttribute("backLink", "property/r-e-market");
-                    return "error";
-                }
-            }
-        }
-        return "redirect:/property/r-e-market";
+		    ra.addFlashAttribute("popup", true); // будем отображать поздравление о покупке
+		} else if (userMoney + sellSum < prop.getPurchasePrice()) {
+		    model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
+			    + "Ваш максимум = " + Util.moneyFormat(userMoney + sellSum) + "&tridot;");
+		    model.addAttribute("backLink", "property/r-e-market");
+		    return "error";
+		}
+	    }
+	}
+	return "redirect:/property/r-e-market";
     }
 
     /**
@@ -211,44 +219,44 @@ public class PropertyController {
     @RequestMapping(value = "/commerc-pr", method = RequestMethod.GET)
     String userProperty(@ModelAttribute("user") User user, Model model, CommPropSearch cps) {
 
-        if (cps.isNeedClear())
-            cps.clear();
+	if (cps.isNeedClear())
+	    cps.clear();
 
-        int page = Integer.parseInt(cps.getPage());
+	int page = Integer.parseInt(cps.getPage());
 
-        int userId = user.getId();
-        Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
+	int userId = user.getId();
+	Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
 
-        // результат с БД: количество всего; имущество с учетом пагинации;
-        List<Object> dbResult = prRep.getPropertyList(page, userId, cps);
+	// результат с БД: количество всего; имущество с учетом пагинации;
+	List<Object> dbResult = prRep.getPropertyList(page, userId, cps);
 
-        // результат с БД:
-        // [
-        // // MIN прод. цена имущества; MAX прод. цена имущества
-        // // MIN процент износа; MAX процент износа
-        // ]
-        List<Object> rangeValues = prRep.getRangeValues(userId);
+	// результат с БД:
+	// [
+	// // MIN прод. цена имущества; MAX прод. цена имущества
+	// // MIN процент износа; MAX процент износа
+	// ]
+	List<Object> rangeValues = prRep.getRangeValues(userId);
 
-        Long propCount = Long.valueOf(dbResult.get(0).toString());
-        int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+	Long propCount = Long.valueOf(dbResult.get(0).toString());
+	int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 
-        cps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
-        cps.setDepreciation(rangeValues.get(2), rangeValues.get(3)); // установка мин и макс износа
+	cps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
+	cps.setDepreciation(rangeValues.get(2), rangeValues.get(3)); // установка мин и макс износа
 
-        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
-        model.addAttribute("cps", cps);
-        model.addAttribute("comProps", dbResult.get(1));
-        model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
-        model.addAttribute("types", SearchCollections.getCommBuildTypes());
-        model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);
+	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	model.addAttribute("cps", cps);
+	model.addAttribute("comProps", dbResult.get(1));
+	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
+	model.addAttribute("types", SearchCollections.getCommBuildTypes());
+	model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);
 
-        // если собирали наличку с кассы - для информационного popup окна
-        String cash = (String) model.asMap().getOrDefault("changeBal", "");
-        if (!cash.isEmpty()) {
-            model.addAttribute("changeBal", cash);
-        }
+	// если собирали наличку с кассы - для информационного popup окна
+	String cash = (String) model.asMap().getOrDefault("changeBal", "");
+	if (!cash.isEmpty()) {
+	    model.addAttribute("changeBal", cash);
+	}
 
-        return "commerc_pr";
+	return "commerc_pr";
     }
 
     /**
@@ -256,30 +264,30 @@ public class PropertyController {
      */
     @RequestMapping(value = "/{prId}", method = RequestMethod.GET)
     String specificPropertyPage(@ModelAttribute("prId") int prId, User user, Model model) {
-        int userId = user.getId();
-        Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
+	int userId = user.getId();
+	Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
 
-        // получить конкретное имущество текущего пользоватетя
-        Property prop = prRep.getSpecificProperty(userId, prId);
-        // если получили null - значит это не имущество пользователя
-        if (prop == null) {
-            return "redirect:/commerc-pr";
-        }
+	// получить конкретное имущество текущего пользоватетя
+	Property prop = prRep.getSpecificProperty(userId, prId);
+	// если получили null - значит это не имущество пользователя
+	if (prop == null) {
+	    return "redirect:/commerc-pr";
+	}
 
-        model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
-        model.addAttribute("prop", prop);
-        // добавим вид деятельности
-        // получить данные всех коммерческих строений
-        HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
-        model.addAttribute("type", mapData.get(prop.getCommBuildingType().name()).getBuildType());
+	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	model.addAttribute("prop", prop);
+	// добавим вид деятельности
+	// получить данные всех коммерческих строений
+	HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+	model.addAttribute("type", mapData.get(prop.getCommBuildingType().name()).getBuildType());
 
-        // если собирали наличку с кассы - для информационного popup окна
-        String cash = (String) model.asMap().getOrDefault("changeBal", "");
-        if (!cash.isEmpty()) {
-            model.addAttribute("changeBal", cash);
-        }
+	// если собирали наличку с кассы - для информационного popup окна
+	String cash = (String) model.asMap().getOrDefault("changeBal", "");
+	if (!cash.isEmpty()) {
+	    model.addAttribute("changeBal", cash);
+	}
 
-        return "specific_pr";
+	return "specific_pr";
     }
 
     /**
@@ -287,32 +295,32 @@ public class PropertyController {
      */
     @RequestMapping(value = "operations/{prId}", method = RequestMethod.POST)
     String propertyOperations(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
-            @ModelAttribute("newName") String newName, User user, Model model, HttpServletRequest request,
-            RedirectAttributes ra) {
+	    @ModelAttribute("newName") String newName, User user, Model model, HttpServletRequest request,
+	    RedirectAttributes ra) {
 
-        int userId = user.getId();
-        // получить конкретное имущество текущего пользоватетя
-        Property prop = prRep.getSpecificProperty(userId, prId);
-        // если получили null - значит это не имущество пользователя
-        if (prop == null) {
-            return "redirect:/property/commerc-pr";
-        }
+	int userId = user.getId();
+	// получить конкретное имущество текущего пользоватетя
+	Property prop = prRep.getSpecificProperty(userId, prId);
+	// если получили null - значит это не имущество пользователя
+	if (prop == null) {
+	    return "redirect:/property/commerc-pr";
+	}
 
-        if (action.equals("change_name")) {
-            if (newName.length() > 0 && newName.length() <= 25) {
-                prop.setName(newName);
-                prRep.updateProperty(prop);
-            }
-        } else if (action.equals("repair")) {
-            // TODO отремонтировать, снять деньги; если данное имущество НЕ valid на момент ремонта - установить
-            // nextProfit = tomorrow
-        } else if (action.equals("get_cash")) {
-            long cash = getCashFromProperty(prop); // сколько налички собрали
-            if (cash > 0) {
-                ra.addFlashAttribute("changeBal", "+" + cash); // передаем параметр
-            }
-        }
-        return "redirect:/property/" + prId;
+	if (action.equals("change_name")) {
+	    if (newName.length() > 0 && newName.length() <= 25) {
+		prop.setName(newName);
+		prRep.updateProperty(prop);
+	    }
+	} else if (action.equals("repair")) {
+	    // TODO отремонтировать, снять деньги; если данное имущество НЕ valid на момент ремонта - установить
+	    // nextProfit = tomorrow
+	} else if (action.equals("get_cash")) {
+	    long cash = getCashFromProperty(prop); // сколько налички собрали
+	    if (cash > 0) {
+		ra.addFlashAttribute("changeBal", "+" + cash); // передаем параметр
+	    }
+	}
+	return "redirect:/property/" + prId;
     }
 
     /**
@@ -320,24 +328,24 @@ public class PropertyController {
      */
     @RequestMapping(value = "get-cash/{prId}", method = RequestMethod.GET)
     String getCash(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
-            @ModelAttribute("newName") String newName, User user, Model model, HttpServletRequest request,
-            RedirectAttributes ra) {
+	    @ModelAttribute("newName") String newName, User user, Model model, HttpServletRequest request,
+	    RedirectAttributes ra) {
 
-        int userId = user.getId();
-        // получить конкретное имущество текущего пользоватетя
-        Property prop = prRep.getSpecificProperty(userId, prId);
-        // если получили null - значит это не имущество пользователя
-        if (prop == null) {
-            return "redirect:/property/commerc-pr";
-        }
+	int userId = user.getId();
+	// получить конкретное имущество текущего пользоватетя
+	Property prop = prRep.getSpecificProperty(userId, prId);
+	// если получили null - значит это не имущество пользователя
+	if (prop == null) {
+	    return "redirect:/property/commerc-pr";
+	}
 
-        // изымаем деньги
-        long cash = getCashFromProperty(prop); // сколько налички собрали
-        if (cash > 0) {
-            ra.addFlashAttribute("changeBal", "+" + cash); // передаем параметр
-        }
+	// изымаем деньги
+	long cash = getCashFromProperty(prop); // сколько налички собрали
+	if (cash > 0) {
+	    ra.addFlashAttribute("changeBal", "+" + cash); // передаем параметр
+	}
 
-        return "redirect:/property/commerc-pr";
+	return "redirect:/property/commerc-pr";
     }
 
     /**
@@ -347,23 +355,23 @@ public class PropertyController {
      *            экземпляр имущество
      */
     private long getCashFromProperty(Property prop) {
-        if (prop.getCash() > 0) {
-            int uId = prop.getUserId();
+	if (prop.getCash() > 0) {
+	    int uId = prop.getUserId();
 
-            String desc = "Сбор с имущества: " + prop.getName();
-            Long cash = prop.getCash();
-            Long oldBalance = Long.parseLong(trRep.getUserBalance(uId));
+	    String desc = "Сбор с имущества: " + prop.getName();
+	    Long cash = prop.getCash();
+	    Long oldBalance = Long.parseLong(trRep.getUserBalance(uId));
 
-            Transaction t = new Transaction(desc, new Date(), cash, TransferT.PROFIT, uId, oldBalance + cash,
-                    ArticleCashFlowT.LEVY_ON_PROPERTY);
+	    Transaction t = new Transaction(desc, new Date(), cash, TransferT.PROFIT, uId, oldBalance + cash,
+		    ArticleCashFlowT.LEVY_ON_PROPERTY);
 
-            trRep.addTransaction(t);
+	    trRep.addTransaction(t);
 
-            prop.setCash(0);
-            prRep.updateProperty(prop);
+	    prop.setCash(0);
+	    prRep.updateProperty(prop);
 
-            return cash;
-        }
-        return 0;
+	    return cash;
+	}
+	return 0;
     }
 }

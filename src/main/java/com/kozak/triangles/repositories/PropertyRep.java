@@ -189,7 +189,7 @@ public class PropertyRep {
      * @return
      */
     public List<Object> getRangeValues(int userId) {
-	List<Object> result = new ArrayList<Object>(2); // результат
+	List<Object> result = new ArrayList<Object>(4); // результат
 
 	String suff = "FROM Property as pr WHERE pr.userId = ?0";
 
