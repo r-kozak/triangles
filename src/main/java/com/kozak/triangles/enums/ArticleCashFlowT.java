@@ -7,5 +7,5 @@ package com.kozak.triangles.enums;
  */
 
 public enum ArticleCashFlowT {
-    DAILY_BONUS, CREDIT, DEPOSIT, LEVY_ON_PROPERTY, BUY_PROPERTY
+    DAILY_BONUS, CREDIT, DEPOSIT, LEVY_ON_PROPERTY, BUY_PROPERTY, PROPERTY_REPAIR
 }

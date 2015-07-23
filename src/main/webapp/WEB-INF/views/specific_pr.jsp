@@ -7,12 +7,6 @@
 <title>${prop.name}</title>
 
 <style>
-a.selected {
-  background-color:#1F75CC;
-  color:white;
-  z-index:100;
-}
-
 .messagepop {
   background-color:#FFFFFF;
   border:1px solid #999999;
@@ -24,19 +18,6 @@ a.selected {
   width:350;
   z-index:50;
   padding: 25px 25px 20px;
-}
-
-label {
-  display: block;
-  margin-bottom: 3px;
-  padding-left: 15px;
-  text-indent: -15px;
-}
-
-.messagepop p, .messagepop.div {
-  border-bottom: 1px solid #EFEFEF;
-  margin: 8px 0;
-  padding-bottom: 8px;
 }
 
 .variant {
@@ -77,7 +58,10 @@ label {
 	    //repair pop up
 	    $(function() {
 	        $("#repairBut").on('click', function(event) {
-	            $(this).addClass("selected").parent().append('<div class="messagepop pop"><form method="post" id="repair_variants" action="/messages"><h4>Ремонт</h4><div id="all_variants"><div id="full" class="variant">FULL</div><div id="allowed" class="variant">ALLOWED</div><div id="cancel" class="close">CANCEL</div></div></form></div>');
+	            $(this).addClass("selected").parent().append('<div class="messagepop pop"><form method="post" id="repair_variants" action="/messages">' +
+	            		'<h4>Ремонт</h4><div id="all_variants"><div id="full" class="variant">FULL</div><div id="allowed" class="variant">ALLOWED</div>'+
+	            		'<div id="cancel" class="close">CANCEL</div></div>'+
+	            		'<div id="errorMsg"></div></form></div>');
 	            $(".pop").slideFadeToggle();
 	            $("#repairBut").hide();
 	            
@@ -103,16 +87,18 @@ label {
 	    };
 	};
 	function sendPost(type1) {
-		//отправляю GET запрос и получаю ответ
 		$.post(
 				  "${pageContext.request.contextPath}/property/repair",
-				  {
-				    type: type1
-				  },
+				  { id: <c:out value='${prop.id}'/>, type: type1 },
 				  function(data) {
-				    alert(data);
-				    $('#deprVal').val(data);
-				    $('#deprBlock').html(data)/100;
+					  console.log(data.val1);
+					  console.log(data);
+					  
+					  if (data.error) {
+						  $('#errorMsg').html(data.errorMsg);
+					  }
+				    $('#deprVal').val(data.percAfterRepair);
+				    $('#deprBlock').html(data.percAfterRepair + "%");
 				  }
 				);
 	}
@@ -216,13 +202,13 @@ label {
 							<div id="deprBlock">
 								<c:choose>
 									<c:when test="${prop.depreciationPercent > 75}">
-										${prop.depreciationPercent} / 100
+										${prop.depreciationPercent}%
 									</c:when>
 									<c:when test="${prop.depreciationPercent > 50}">
-										${prop.depreciationPercent} / 100
+										${prop.depreciationPercent}%
 									</c:when>
 									<c:otherwise>
-										${prop.depreciationPercent} / 100
+										${prop.depreciationPercent}%
 									</c:otherwise>
 								</c:choose>
 							</div>
