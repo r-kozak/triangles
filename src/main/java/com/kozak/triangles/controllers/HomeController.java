@@ -193,7 +193,7 @@ public class HomeController {
 	    // установить новые значения
 	    p.setNextDepreciation(DateUtils.getPlusDay(new Date(), 7 - (dayBetw % 7)));
 	    p.setSellingPrice(p.getSellingPrice() - deprSum);
-	    p.setDepreciationPercent(p.getDepreciationPercent() + deprPerc);
+	    p.setDepreciationPercent(Util.numberRound(p.getDepreciationPercent() + deprPerc, 2));
 	    prRep.updateProperty(p);
 	}
     }
