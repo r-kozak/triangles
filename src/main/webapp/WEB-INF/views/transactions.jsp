@@ -89,6 +89,9 @@
 								<c:when test="${transac.articleCashFlow == 'BUY_PROPERTY'}">
 									<td style="text-align:left">Покупка имущества</td>
 								</c:when>
+								<c:when test="${transac.articleCashFlow == 'PROPERTY_REPAIR'}">
+									<td style="text-align:left">Ремонт имущества</td>
+								</c:when>
 								<c:otherwise>
 									<td>${transac.articleCashFlow}</td>
 								</c:otherwise>

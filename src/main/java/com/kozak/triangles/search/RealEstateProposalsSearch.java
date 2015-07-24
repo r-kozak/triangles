@@ -33,14 +33,14 @@ public class RealEstateProposalsSearch extends AbstractSearch {
     }
 
     public void setPrice(Object minPrice, Object maxPrice) {
-	this.setPriceMin((Long) minPrice);
-	this.setPriceMax((Long) maxPrice);
+	this.setPriceMin((long) minPrice);
+	this.setPriceMax((long) maxPrice);
 
 	if (this.getPriceFrom() == 0) {
-	    this.setPriceFrom((Long) minPrice);
+	    this.setPriceFrom((long) minPrice);
 	}
 	if (this.getPriceTo() == 0) {
-	    this.setPriceTo((Long) maxPrice);
+	    this.setPriceTo((long) maxPrice);
 	}
     }
 

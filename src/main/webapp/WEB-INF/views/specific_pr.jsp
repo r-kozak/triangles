@@ -15,19 +15,34 @@
   margin-top: 15px;
   position:absolute;
   text-align:center;
-  width:350;
+  width:360;
   z-index:50;
   padding: 25px 25px 20px;
 }
 
-.variant {
+.variant{
 	display: inline-block;
 	border: 1px solid;
 	margin: 0;
 	width: 90;
 	text-align: center;
 	padding: 10;
-	background-color: #D4D4D4;
+	margin: 10 5 5 5;
+}
+#full {
+	background-color: rgb(168, 255, 168);
+}
+#allowed {
+	background-color: rgb(255, 255, 158);
+}
+
+#cancel{
+	background-color: rgb(255, 190, 190);
+}
+
+#errorMessg {
+	color:red;
+	font-size: 12;
 }
 </style>
 <script>
@@ -59,21 +74,27 @@
 	    $(function() {
 	        $("#repairBut").on('click', function(event) {
 	            $(this).addClass("selected").parent().append('<div class="messagepop pop"><form method="post" id="repair_variants" action="/messages">' +
-	            		'<h4>Ремонт</h4><div id="all_variants"><div id="full" class="variant">FULL</div><div id="allowed" class="variant">ALLOWED</div>'+
-	            		'<div id="cancel" class="close">CANCEL</div></div>'+
-	            		'<div id="errorMsg"></div></form></div>');
+	            		'<h2>Ремонт</h2><div id="all_variants"><div id="full" class="variant">FULL</div><div id="allowed" class="variant">ALLOWED</div>'+
+	            		'<div id="cancel" class="variant">CANCEL</div></div>'+
+	            		'<div id="errorMessg"></div></form></div>');
 	            $(".pop").slideFadeToggle();
 	            $("#repairBut").hide();
 	            
-	            $('.close').on('click', function() {
+	            $('#cancel').on('click', function() {
 		            $(".pop").slideFadeToggle();
 		            $("#repairBut").removeClass("selected");
 		            $("#repairBut").show();
+		            $( ".pop" ).remove();
 		            return false;
 		        });
 	            
 	            $('#full').on('click', function() {
 		            sendPost("full");
+		            return false;
+		        });
+	            
+	            $('#allowed').on('click', function() {
+		            sendPost("allowed");
 		            return false;
 		        });
 	            
@@ -89,16 +110,18 @@
 	function sendPost(type1) {
 		$.post(
 				  "${pageContext.request.contextPath}/property/repair",
-				  { id: <c:out value='${prop.id}'/>, type: type1 },
+				  { propId: <c:out value='${prop.id}'/>, type: type1 },
 				  function(data) {
-					  console.log(data.val1);
-					  console.log(data);
-					  
 					  if (data.error) {
-						  $('#errorMsg').html(data.errorMsg);
+						  $('#errorMessg').html(data.message);
+					  } else {
+					    $('#deprVal').val(data.percAfterRepair);
+					    $('#deprBlock').html(Number(data.percAfterRepair) + "%");
+					    $('#balChan').html(data.changeBal + "&tridot;");
+					    $('#balanceVal').html(data.newBalance);
+					    popUp(data.changeBal, "#balChan");
+					    $('#cancel').trigger('click');
 					  }
-				    $('#deprVal').val(data.percAfterRepair);
-				    $('#deprBlock').html(data.percAfterRepair + "%");
 				  }
 				);
 	}
@@ -109,6 +132,7 @@
 	<div id="wrap"></div>
 
 	<div id="menu">
+	<div id="menuTitle">Меню</div>
 		<div id="elMenu">
 			<a href="${pageContext.request.contextPath}/property">Упр. имуществом</a>
 		</div>

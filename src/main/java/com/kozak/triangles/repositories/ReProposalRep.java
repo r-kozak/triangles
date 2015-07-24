@@ -183,8 +183,10 @@ public class ReProposalRep {
 	String minPrHql = "Select min(purchasePrice)" + suff;
 	String maxPrHql = "Select max(purchasePrice)" + suff;
 
-	result.add(em.createQuery(minPrHql).getSingleResult());
-	result.add(em.createQuery(maxPrHql).getSingleResult());
+	Long min = (Long) em.createQuery(minPrHql).getSingleResult();
+	Long max = (Long) em.createQuery(maxPrHql).getSingleResult();
+	result.add(min == null ? 0 : min);
+	result.add(max == null ? 0 : max);
 
 	return result;
     }

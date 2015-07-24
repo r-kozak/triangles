@@ -37,7 +37,7 @@
 	</div>
 	<div id="status" class="status">
 		<div class="dominant">Dominant: 0&#9813;</div>
-		<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Balance: ${balance}&tridot;</a></div>
+		<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Balance: <span id="balanceVal">${balance}</span>&tridot;</a></div>
 	</div>	
 	
 	<jsp:doBody/>

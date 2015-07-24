@@ -388,50 +388,70 @@ public class PropertyController {
 	return 0;
     }
 
-    @RequestMapping(value = "/repair", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-    public @ResponseBody ResponseEntity<String> type(@RequestParam("type") String type, @RequestParam("id") Integer id,
+    @RequestMapping(value = "/repair", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
+    public @ResponseBody ResponseEntity<String> repairJqueryRequest(@RequestParam("type") String type,
+	    @RequestParam("propId") Integer propId,
 	    User user) {
 	JSONObject resultJson = new JSONObject();
 
 	int userId = user.getId();
 
-	Property prop = prRep.getSpecificProperty(userId, id);
+	Property prop = prRep.getSpecificProperty(userId, propId);
 	long fullRepairSum = (long) (prop.getInitialCost() * prop.getDepreciationPercent() / 100);
 	long userMoney = Long.parseLong(trRep.getUserBalance(userId)); // баланс
 	long userSolvency = getSolvency(userId); // состоятельность
 
-	if (type.equals("full")) {
-	    if (fullRepairSum > 0) {
+	if (fullRepairSum <= 0) {
+	    putErrorMsg(resultJson, "Имущество не требует ремонта!");
+	} else if (userSolvency <= 0) {
+	    putErrorMsg(resultJson, "Ваша состоятельность = 0. Ремонт запрещен!");
+	} else {
+	    if (type.equals("full")) {
 		if (userSolvency >= fullRepairSum) {
-		    prop.setDepreciationPercent(0);
-		    prop.setSellingPrice(prop.getInitialCost());
-		    prRep.updateProperty(prop);
-
-		    Transaction t = new Transaction("Ремонт имущества: " + prop.getName(), new Date(), fullRepairSum,
-			    TransferT.SPEND, userId, userMoney - fullRepairSum, ArticleCashFlowT.PROPERTY_REPAIR);
-		    trRep.addTransaction(t);
-
-		    resultJson.put("error", false);
-		    resultJson.put("percAfterRepair", new Integer(0));
-		    resultJson.put("changeBal", "-" + fullRepairSum);
+		    repair(resultJson, prop, 0.0, prop.getInitialCost(), userMoney, fullRepairSum);
 		} else {
 		    double newDeprPerc = (userSolvency * prop.getDepreciationPercent()) / fullRepairSum;
-		    resultJson.put("error", true);
-		    resultJson.put("message",
-			    "Ваша состоятельность не позволяет сделать полный ремонт. Доступен ремонт на сумму: "
-				    + userSolvency + ". Процент износа после: " + newDeprPerc);
+		    putErrorMsg(resultJson,
+			    "Ваша состоятельность не позволяет сделать полный ремонт. <br/> Доступен ремонт на сумму: "
+				    + userSolvency + "<br/> Процент износа после ремонта: "
+				    + Util.numberRound(newDeprPerc, 2)
+				    + "%");
 		}
-
-		System.err.println(resultJson.toJSONString());
-		String json = resultJson.toJSONString();
-
-		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-		return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+	    } else if (type.equals("allowed")) {
+		double newDeprPerc = (userSolvency * prop.getDepreciationPercent()) / fullRepairSum;
+		long newSellingPrice = prop.getSellingPrice() + userSolvency;
+		repair(resultJson, prop, Util.numberRound(newDeprPerc, 2), newSellingPrice, userMoney, userSolvency);
 	    }
-	} else {
-	    return null;
 	}
-	return null;
+
+	System.err.println(resultJson.toJSONString());
+	String json = resultJson.toJSONString();
+
+	HttpHeaders responseHeaders = new HttpHeaders();
+	responseHeaders.add("Content-Type", "application/json; charset=utf-8");
+	return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void repair(JSONObject resultJson, Property prop, Double deprPercent, long sellPrice, long userMoney,
+	    long repairSum) {
+	prop.setDepreciationPercent(deprPercent);
+	prop.setSellingPrice(sellPrice);
+	prRep.updateProperty(prop);
+
+	Transaction t = new Transaction("Ремонт имущества: " + prop.getName(), new Date(), repairSum,
+		TransferT.SPEND, prop.getUserId(), userMoney - repairSum, ArticleCashFlowT.PROPERTY_REPAIR);
+	trRep.addTransaction(t);
+
+	resultJson.put("error", false);
+	resultJson.put("percAfterRepair", deprPercent);
+	resultJson.put("changeBal", "-" + repairSum);
+	resultJson.put("newBalance", userMoney - repairSum);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void putErrorMsg(JSONObject resultJson, String msg) {
+	resultJson.put("error", true);
+	resultJson.put("message", msg);
     }
 }
