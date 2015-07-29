@@ -1,11 +1,7 @@
 function popUp(a, bloc) {
-	var b = 3;
-	if (a.length >= 7)
-		b = 4;
-
 	$(bloc).css({
-		"left" : (window.screen.availWidth) - (16 - (a.length - b)) * a.length,
-		"top" : (window.screen.availHeight - 727) / 2,
+		"left" : (window.screen.availWidth) - a.length * 30,
+		"top" : (window.screen.availHeight - ((window.screen.availHeight * 73) / 100)) / 2,
 		"opacity" : "1"
 	});
 	$(bloc).animate({

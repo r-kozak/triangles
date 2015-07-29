@@ -108,7 +108,7 @@ body {
 #balChan {
 	left: 0;
 	background: transparent;
-	position: absolute;
+	position: fixed;
 	opacity: 0;
 	font-size: 20;
 	text-align: center;

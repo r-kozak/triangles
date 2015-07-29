@@ -28,21 +28,31 @@
 	text-align: center;
 	padding: 10;
 	margin: 10 5 5 5;
+	cursor: pointer;
 }
-#full {
+#repair {
 	background-color: rgb(168, 255, 168);
-}
-#allowed {
-	background-color: rgb(255, 255, 158);
 }
 
 #cancel{
 	background-color: rgb(255, 190, 190);
 }
 
+#repair:hover {
+	background-color: rgb(0, 242, 0);
+}
+
+#cancel:hover{
+	background-color: rgb(255, 113, 113);
+}
+
+#infoMessg {
+	color:green;
+	font-size: 12;
+}
 #errorMessg {
 	color:red;
-	font-size: 12;
+	font-size: 14;
 }
 </style>
 <script>
@@ -73,31 +83,45 @@
 	    //repair pop up
 	    $(function() {
 	        $("#repairBut").on('click', function(event) {
-	            $(this).addClass("selected").parent().append('<div class="messagepop pop"><form method="post" id="repair_variants" action="/messages">' +
-	            		'<h2>Ремонт</h2><div id="all_variants"><div id="full" class="variant">FULL</div><div id="allowed" class="variant">ALLOWED</div>'+
-	            		'<div id="cancel" class="variant">CANCEL</div></div>'+
-	            		'<div id="errorMessg"></div></form></div>');
-	            $(".pop").slideFadeToggle();
-	            $("#repairBut").hide();
-	            
-	            $('#cancel').on('click', function() {
-		            $(".pop").slideFadeToggle();
-		            $("#repairBut").removeClass("selected");
-		            $("#repairBut").show();
-		            $( ".pop" ).remove();
-		            return false;
-		        });
-	            
-	            $('#full').on('click', function() {
-		            sendPost("full");
-		            return false;
-		        });
-	            
-	            $('#allowed').on('click', function() {
-		            sendPost("allowed");
-		            return false;
-		        });
-	            
+	        	$.ajax({
+	        		  type: 'POST',
+	        		  url: "${pageContext.request.contextPath}/property/repair",
+	        		  data:  { propId: <c:out value='${prop.id}'/>, type: "info" },
+	        		  dataType: "json",
+	        		  async:true
+	        		}).done(function(data) {
+	        			  console.log(data);
+	        			  
+	        			  var zS = (!data.zeroSolvency) ? '<div id="repair" class="variant">Ремонт</div>' : "";
+	        			  var messageBlock = (!data.zeroSolvency) ? '#infoMessg' : '#errorMessg';
+	        			  $("#repairBut").addClass("selected").parent().append('<div class="messagepop pop">'+
+	        	            		'<form method="post" id="repair_variants" action="/messages">' +
+	        	            		'<h2>Ремонт</h2>' + 
+	        	            		'<div id="infoMessg"></div>'+
+	        	            		'<div id="errorMessg"></div>'+
+	        	            		'<div id="all_variants">'+
+	        	            		zS +
+	        	            		'<div id="cancel" class="variant">Закрыть</div></div>'+
+	        	            		'</form></div>');
+	        			  $(messageBlock).html(data.message);
+	        			  
+	      	            $(".pop").slideFadeToggle();
+	    	            $("#repairBut").hide();
+	    	            
+	    	            $('#cancel').on('click', function() {
+	    		            $(".pop").slideFadeToggle();
+	    		            $("#repairBut").removeClass("selected");
+	    		            $("#repairBut").show();
+	    		            $( ".pop" ).remove();
+	    		            return false;
+	    		        });
+	    	            
+	    	            $('#repair').on('click', function() {
+	    		            sendPost("repair");
+	    		            return false;
+	    		        });
+	        		});
+	        	
 	            return false;
 	        });
 	        
@@ -113,16 +137,19 @@
 				  { propId: <c:out value='${prop.id}'/>, type: type1 },
 				  function(data) {
 					  if (data.error) {
-						  $('#errorMessg').html(data.message);
+						 	$('#errorMessg').html(data.message);
 					  } else {
-					    $('#deprVal').val(data.percAfterRepair);
-					    $('#deprBlock').html(Number(data.percAfterRepair) + "%");
-					    $('#balChan').html(data.changeBal + "&tridot;");
-					    $('#balanceVal').html(data.newBalance);
-					    popUp(data.changeBal, "#balChan");
-					    $('#cancel').trigger('click');
-					  }
-				  }
+						    $('#deprVal').val(data.percAfterRepair);
+						    $('#deprBlock').html(Number(data.percAfterRepair) + "%");
+						    $('#balChan').html(data.changeBal + "&tridot;");
+						    $('#balanceVal').html(data.newBalance);
+						    popUp(data.changeBal, "#balChan");
+						    $('#cancel').trigger('click');
+						    if (data.percAfterRepair == 0) {
+						    	$('#repairTd').html('<h5>Ремонт не нужен.</h5>');
+						    }
+				  		}
+				  	}
 				);
 	}
    
@@ -238,8 +265,15 @@
 							</div>
 							<progress id="deprVal" max="100" value="${prop.depreciationPercent}">
 						</td>
-						<td><a id="repairBut" class="support-hover" >
-							<p class="button small bGreen"><span>Р</span></p><span class="tip">Ремонт</span></a>
+						<td>
+							<div id="repairTd">
+								<c:if test="${prop.depreciationPercent > 0}">
+									<a id="repairBut" class="support-hover"><p class="button small bGreen"><span>Р</span></p><span class="tip">Ремонт</span></a>
+								</c:if>
+								<c:if test="${prop.depreciationPercent == 0}">
+									<h5>Ремонт не нужен.</h5>
+								</c:if>
+							</div>
 						</td>
 					</tr>
 					<tr>

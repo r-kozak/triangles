@@ -388,6 +388,7 @@ public class PropertyController {
 	return 0;
     }
 
+    @SuppressWarnings("unchecked")
     @RequestMapping(value = "/repair", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
     public @ResponseBody ResponseEntity<String> repairJqueryRequest(@RequestParam("type") String type,
 	    @RequestParam("propId") Integer propId,
@@ -397,30 +398,40 @@ public class PropertyController {
 	int userId = user.getId();
 
 	Property prop = prRep.getSpecificProperty(userId, propId);
-	long fullRepairSum = (long) (prop.getInitialCost() * prop.getDepreciationPercent() / 100);
-	long userMoney = Long.parseLong(trRep.getUserBalance(userId)); // баланс
-	long userSolvency = getSolvency(userId); // состоятельность
 
-	if (fullRepairSum <= 0) {
-	    putErrorMsg(resultJson, "Имущество не требует ремонта!");
-	} else if (userSolvency <= 0) {
-	    putErrorMsg(resultJson, "Ваша состоятельность = 0. Ремонт запрещен!");
+	if (prop == null) {
+	    putErrorMsg(resultJson, "Произошла ошибка (код: 1)!");
 	} else {
-	    if (type.equals("full")) {
-		if (userSolvency >= fullRepairSum) {
-		    repair(resultJson, prop, 0.0, prop.getInitialCost(), userMoney, fullRepairSum);
+	    long fullRepairSum = (long) (prop.getInitialCost() * prop.getDepreciationPercent() / 100);
+	    long userMoney = Long.parseLong(trRep.getUserBalance(userId)); // баланс
+	    long userSolvency = getSolvency(userId); // состоятельность
+
+	    double newDeprPerc = Util.numberRound((userSolvency * prop.getDepreciationPercent())
+		    / fullRepairSum, 2); // процент после ремонта
+	    long repairSum = userSolvency; // сумма ремонта
+	    long newSellingPrice = prop.getSellingPrice() + userSolvency;
+
+	    if (userSolvency >= fullRepairSum) { // это полный ремонт
+		newDeprPerc = 0.00;
+		repairSum = fullRepairSum;
+		newSellingPrice = prop.getInitialCost();
+	    }
+
+	    if (type.equals("repair")) {
+		if (userSolvency <= 0) {
+		    putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
 		} else {
-		    double newDeprPerc = (userSolvency * prop.getDepreciationPercent()) / fullRepairSum;
-		    putErrorMsg(resultJson,
-			    "Ваша состоятельность не позволяет сделать полный ремонт. <br/> Доступен ремонт на сумму: "
-				    + userSolvency + "<br/> Процент износа после ремонта: "
-				    + Util.numberRound(newDeprPerc, 2)
-				    + "%");
+		    repair(resultJson, prop, newDeprPerc, newSellingPrice, userMoney, repairSum);
 		}
-	    } else if (type.equals("allowed")) {
-		double newDeprPerc = (userSolvency * prop.getDepreciationPercent()) / fullRepairSum;
-		long newSellingPrice = prop.getSellingPrice() + userSolvency;
-		repair(resultJson, prop, Util.numberRound(newDeprPerc, 2), newSellingPrice, userMoney, userSolvency);
+	    } else if (type.equals("info")) {
+		if (userSolvency <= 0) {
+		    resultJson.put("zeroSolvency", true);
+		    putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
+		} else {
+		    putErrorMsg(resultJson,
+			    String.format("Сумма ремонта: %s <br/> Процент износа после ремонта: %.2f%%", repairSum,
+				    newDeprPerc));
+		}
 	    }
 	}
 

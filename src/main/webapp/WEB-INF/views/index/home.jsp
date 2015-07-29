@@ -142,7 +142,7 @@
 						</tr>
 						<tr>
 							<td class="tableTd1">Ремонт имущества, &tridot;</td>
-							<td class="tableTd2">-</td>
+							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendRepair}"/></td>
 						</tr>
 						<tr>
 							<td class="tableTd1">Выплата зарплат, &tridot;</td>

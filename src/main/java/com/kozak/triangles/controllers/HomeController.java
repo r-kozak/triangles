@@ -91,6 +91,7 @@ public class HomeController {
 	model.addAttribute("spendSum", trRep.getSumByTransfType(currUserId, TransferT.SPEND)); // расход всего
 	model.addAttribute("spendCr", trRep.getSumByAcf(currUserId, ArticleCashFlowT.CREDIT));
 	model.addAttribute("spendBuyPr", trRep.getSumByAcf(currUserId, ArticleCashFlowT.BUY_PROPERTY));
+	model.addAttribute("spendRepair", trRep.getSumByAcf(currUserId, ArticleCashFlowT.PROPERTY_REPAIR));
 
 	return "index/home";
     }
