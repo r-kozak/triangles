@@ -112,7 +112,7 @@
 	    		            $(".pop").slideFadeToggle();
 	    		            $("#repairBut").removeClass("selected");
 	    		            $("#repairBut").show();
-	    		            $( ".pop" ).remove();
+	    		            $(".pop").remove();
 	    		            return false;
 	    		        });
 	    	            
@@ -130,6 +130,58 @@
 	    $.fn.slideFadeToggle = function(easing, callback) {
 	        return this.animate({ opacity: 'toggle', height: 'toggle' }, "fast", easing, callback);
 	    };
+	    
+	    //level-up for cash
+	    $.ajax({
+       		  type: 'POST',
+       		  url: "${pageContext.request.contextPath}/property/level-up",
+       		  data:  { propId: <c:out value='${prop.id}'/>, action: "getSum", obj: "cash" },
+       		  dataType: "json",
+       		  async:true
+       		}).done(function(data) {
+       			if(data.error) {
+       				$("#cash_up_td").html('<h5>' + data.message + '</h5>');
+       			} else {
+       				$("#cash_up_tip").html('Поднять. Сумма:' + data.sum + '&tridot;');
+       				
+       				$('#cashUpBut').on('click', function() {
+    		            sendPostLevelUp("up", "cash");
+    		            return false;
+    		        });
+       			}
+       		}); 
+	    
+	    function sendPostLevelUp(action0, obj0) {
+	    	$.ajax({
+	       		  type: 'POST',
+	       		  url: "${pageContext.request.contextPath}/property/level-up",
+	       		  data:  { propId: <c:out value='${prop.id}'/>, action: action0, obj: obj0 },
+	       		  dataType: "json",
+	       		  async:true
+	       		}).done(function(data) {
+	       			if(data.error) {
+	       				if(obj0 == "cash") {
+	       					$("#cash_up_td").html('<h5>' + data.message + '</h5>');
+	       				} else if (obj0 == "prop") {
+	       					alert("функцию +");
+	       				}
+	       			} 
+	       			//если было повышение
+	       			if (data.upped) {
+	       				changeBal(data);
+	       				
+	       				if(obj0 == "cash") {
+		       				$("#cash_up_tip").html('Поднять. Сумма:' + data.sum + '&tridot;');
+	       					$('#cash_level_td').html(data.currLevel);
+	       				} else if (obj0 == "prop") {
+	       					alert("функцию +");
+	       				}
+	       			}
+	       		}); 
+	    }
+	    
+	        		
+	    
 	};
 	function sendPost(type1) {
 		$.post(
@@ -141,16 +193,20 @@
 					  } else {
 						    $('#deprVal').val(data.percAfterRepair);
 						    $('#deprBlock').html(Number(data.percAfterRepair) + "%");
-						    $('#balChan').html(data.changeBal + "&tridot;");
-						    $('#balanceVal').html(data.newBalance);
-						    popUp(data.changeBal, "#balChan");
+						    changeBal(data);
 						    $('#cancel').trigger('click');
 						    if (data.percAfterRepair == 0) {
-						    	$('#repairTd').html('<h5>Ремонт не нужен.</h5>');
+						    	$('#repair_td').html('<h5>Ремонт не нужен.</h5>');
 						    }
 				  		}
 				  	}
 				);
+	}
+	
+	function changeBal(data) {
+	    $('#balChan').html(data.changeBal + "&tridot;");
+	    $('#balanceVal').html(data.newBalance);
+	    popUp(data.changeBal, "#balChan");
 	}
    
 </script>
@@ -266,7 +322,7 @@
 							<progress id="deprVal" max="100" value="${prop.depreciationPercent}">
 						</td>
 						<td>
-							<div id="repairTd">
+							<div id="repair_td">
 								<c:if test="${prop.depreciationPercent > 0}">
 									<a id="repairBut" class="support-hover"><p class="button small bGreen"><span>Р</span></p><span class="tip">Ремонт</span></a>
 								</c:if>
@@ -315,9 +371,13 @@
 					</tr>
 					<tr>
 						<td>Уровень кассы</td>
-						<td>${prop.cashLevel}</td>
-						<td><a class="support-hover" href="${pageContext.request.contextPath}/property/cash-up/${prop.id}">
-							<p class="button small bBlue"><span>▲</span></p><span class="tip">Поднять</span></a></td>
+						<td id="cash_level_td">${prop.cashLevel}</td>
+						<td>
+							<div id="cash_up_td">
+								<a id="cashUpBut" class="support-hover"><p class="button small bBlue"><span>▲</span></p>
+								<span class="tip" id="cash_up_tip">Поднять</span></a>
+							</div>
+						</td>
 					</tr>
 					<tr>
 						<td>Стоимость продажи</td>

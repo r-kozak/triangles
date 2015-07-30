@@ -17,7 +17,7 @@ public class SingletonData {
      * @return карту с ключами -
      */
     public static HashMap<String, CommBuildData> getCommBuildData(BuildingDataRep rep) {
-        if (commBDMap == null) {
+        if (commBDMap == null || commBDMap.isEmpty()) {
             commBDMap = new HashMap<String, CommBuildData>();
 
             @SuppressWarnings("unchecked")

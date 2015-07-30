@@ -482,8 +482,13 @@ public class PropertyController {
 
         resultJson.put("error", false);
         resultJson.put("percAfterRepair", deprPercent);
-        resultJson.put("changeBal", "-" + repairSum);
-        resultJson.put("newBalance", userMoney - repairSum);
+        addBalanceData(resultJson, repairSum, userMoney);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addBalanceData(JSONObject resultJson, long sum, long userMoney) {
+        resultJson.put("changeBal", "-" + sum);
+        resultJson.put("newBalance", userMoney - sum);
     }
 
     /**
@@ -520,13 +525,14 @@ public class PropertyController {
             long userSolvency = getSolvency(userId);
 
             if (obj.equals("cash")) {
-                int nextCashLevel = prop.getCashLevel() + 1;
+                int nCashLevel = prop.getCashLevel() + 1;
 
-                if (nextCashLevel > LAST_LEVEL) {
+                if (nCashLevel > LAST_LEVEL) {
                     // отправить сообщение, что достигли последнего уровня
-                    putErrorMsg(resultJson, "Это последний уровень.");
+                    putErrorMsg(resultJson, "Достигнут последний уровень.");
                 } else {
-                    long sum = (long) (prop.getInitialCost() * Util.getUniversalK(nextCashLevel) / Consts.K_DECREASE_CASH_L);
+                    long sum = (long) (prop.getInitialCost() * Util.getUniversalK(nCashLevel) / Consts.K_DECREASE_CASH_L);
+
                     if (action.equals("getSum")) {
                         if (userSolvency <= sum) {
                             putErrorMsg(resultJson, "Не хватает денег.");
@@ -535,17 +541,42 @@ public class PropertyController {
                         }
                     } else if (action.equals("up")) {
                         if (userSolvency >= sum) {
-                            prop.setCashLevel(nextCashLevel);
+                            // получить данные всех коммерческих строений
+                            HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+
+                            long nCashCapacity = mapData.get(prop.getCommBuildingType().name()).getCashCapacity()
+                                    .get(nCashLevel); // новая вместимость кассы
+
+                            prop.setCashLevel(nCashLevel);
+                            prop.setCashCapacity(nCashCapacity);
                             prRep.updateProperty(prop);
 
                             // снять деньги
                             String descr = String.format("Поднятие уровня кассы до: %s. Касса имущества: %s",
-                                    nextCashLevel, prop.getName());
-                            long newBal = Long.parseLong(trRep.getUserBalance(userId)) - sum;
-                            Transaction tr = new Transaction(descr, new Date(), sum, TransferT.SPEND, userId, newBal,
-                                    ArticleCashFlowT.UP_CASH_LEVEL);
+                                    nCashLevel, prop.getName());
+                            long currBal = Long.parseLong(trRep.getUserBalance(userId));
+                            Transaction tr = new Transaction(descr, new Date(), sum, TransferT.SPEND, userId, currBal
+                                    - sum, ArticleCashFlowT.UP_CASH_LEVEL);
                             trRep.addTransaction(tr);
                             // //
+
+                            long nextSum = (long) (prop.getInitialCost() * Util.getUniversalK(nCashLevel + 1) / Consts.K_DECREASE_CASH_L);
+                            userSolvency = getSolvency(userId);
+
+                            resultJson.put("upped", true);
+
+                            if (nCashLevel == LAST_LEVEL) {
+                                putErrorMsg(resultJson, "Достигнут последний уровень.");
+                            } else if (userSolvency < nextSum) {
+                                putErrorMsg(resultJson, "Не хватает денег.");
+                            }
+
+                            addBalanceData(resultJson, sum, currBal);
+                            resultJson.put("currLevel", nCashLevel);
+                            resultJson.put("sum", nextSum); // сумма след. повышения
+
+                        } else {
+                            putErrorMsg(resultJson, "Не хватает денег.");
                         }
                     }
                 }
