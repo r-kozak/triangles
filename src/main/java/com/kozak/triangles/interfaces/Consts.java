@@ -35,12 +35,12 @@ public interface Consts {
     int OUTSKIRTS_P = 5;
     int GHETTO_P = 0;
 
-    // коэфициенты вместимости кассы
-    double CASH_CAP_L1 = 1.1;
-    double CASH_CAP_L2 = 1.3;
-    double CASH_CAP_L3 = 1.6;
-    double CASH_CAP_L4 = 2.0;
-    double CASH_CAP_L5 = 2.5;
+    // универсальные коэфициенты вместимости кассы, начисления прибыли, повышения уровня имущества и кассы
+    double UNIVERS_K_L1 = 1.1;
+    double UNIVERS_K_L2 = 1.3;
+    double UNIVERS_K_L3 = 1.6;
+    double UNIVERS_K_L4 = 2.0;
+    double UNIVERS_K_L5 = 2.5;
 
     // проценты типов строителей
     int GASTARBEITER_B = 50;
@@ -56,4 +56,8 @@ public interface Consts {
     int LI_TERM_2 = 8;
     int LI_TERM_3 = 4;
     int LI_TERM_4 = 2;
+
+    int K_DECREASE_REPAIR = 2; // коэф. уменьшения суммы ремонта
+    int K_DECREASE_CASH_L = 5; // коэф. уменьшения суммы поднятия уровня кассы
+    int K_DECREASE_PROP_L = 3; // коэф. уменьшения суммы поднятия уровня имущества
 }
