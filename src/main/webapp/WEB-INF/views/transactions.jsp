@@ -59,6 +59,7 @@
 	<div class="content">
 		<div class="tranBlock">
 		<h1 align="center">Транзакции</h1>
+		<h3 align="right">Состоятельность: ${solvency}&tridot;</h3>
 				<c:if test="${!empty transacs}">
 			<table class="beaTable">
 				<tr>
@@ -91,6 +92,9 @@
 								</c:when>
 								<c:when test="${transac.articleCashFlow == 'PROPERTY_REPAIR'}">
 									<td style="text-align:left">Ремонт имущества</td>
+								</c:when>
+								<c:when test="${transac.articleCashFlow == 'UP_CASH_LEVEL'}">
+									<td style="text-align:left">Улучшение кассы</td>
 								</c:when>
 								<c:otherwise>
 									<td>${transac.articleCashFlow}</td>

@@ -1,14 +1,10 @@
 package com.kozak.triangles.interfaces;
 
 /**
- * Ставки
- * 
- * кредит (месячная, не %), депозит (месячная, не %)
- * 
  * @author Roman: 13 июня 2015 г. 12:18:06
  */
 public interface Consts {
-    // кредитные и депозитные ставки
+    // кредитные и депозитные ставки (месячная, НЕ %)
     double CREDIT_RATE = 7.66 / 100;
     double DEPOSIT_RATE = 3.375 / 100;
 
@@ -60,4 +56,8 @@ public interface Consts {
     int K_DECREASE_REPAIR = 2; // коэф. уменьшения суммы ремонта
     int K_DECREASE_CASH_L = 5; // коэф. уменьшения суммы поднятия уровня кассы
     int K_DECREASE_PROP_L = 3; // коэф. уменьшения суммы поднятия уровня имущества
+
+    // максимальные уровни
+    int MAX_CASH_LEVEL = 5; // кассы
+    int MAX_PROP_LEVEL = 5; // имущества
 }

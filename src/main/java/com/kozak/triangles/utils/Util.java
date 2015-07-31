@@ -17,6 +17,7 @@ import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.repositories.BuildingDataRep;
 import com.kozak.triangles.repositories.PropertyRep;
+import com.kozak.triangles.repositories.TransactionRep;
 
 public class Util {
     public static Model addBalanceToModel(Model model, String userBalance) {
@@ -91,7 +92,7 @@ public class Util {
         case 5:
             return Consts.UNIVERS_K_L5;
         default:
-            return 1;
+            return 0;
         }
     }
 
@@ -161,5 +162,11 @@ public class Util {
         }
         String output = sb.toString();
         return output;
+    }
+
+    public static long getSolvency(TransactionRep trRep, PropertyRep prRep, int userId) {
+        long userMoney = Long.parseLong(trRep.getUserBalance(userId));
+        long sellSum = prRep.getSellingSumAllPropByUser(userId) / 2;// (ост. стоим. всего имущества юзера / 2)
+        return userMoney + sellSum;
     }
 }

@@ -19,17 +19,18 @@ public class TestRep {
     public EntityManager em;
 
     public void addTest(AbstrTest test) {
-	em.persist(test);
+        em.persist(test);
     }
 
     public AbstrTest updateTest(AbstrTest test) {
-	return em.merge(test);
+        return em.merge(test);
     }
 
+    @SuppressWarnings("unchecked")
     public List<Test1> selectT1() {
-	String hql = "from Test1 as t";
-	Query query = em.createQuery(hql);
-	List<Test1> list = query.getResultList();
-	return list;
+        String hql = "from Test1 as t";
+        Query query = em.createQuery(hql);
+        List<Test1> list = query.getResultList();
+        return list;
     }
 }

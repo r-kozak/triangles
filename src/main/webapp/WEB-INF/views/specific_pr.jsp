@@ -142,7 +142,7 @@
        			if(data.error) {
        				$("#cash_up_td").html('<h5>' + data.message + '</h5>');
        			} else {
-       				$("#cash_up_tip").html('Поднять. Сумма:' + data.sum + '&tridot;');
+       				$("#cash_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;');
        				
        				$('#cashUpBut').on('click', function() {
     		            sendPostLevelUp("up", "cash");
@@ -171,8 +171,10 @@
 	       				changeBal(data);
 	       				
 	       				if(obj0 == "cash") {
-		       				$("#cash_up_tip").html('Поднять. Сумма:' + data.sum + '&tridot;');
+		       				$("#cash_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;');
 	       					$('#cash_level_td').html(data.currLevel);
+	       					$('#cashBlock').html($('#cashVal').val() + ' / ' + data.cashCap);
+	       					$('#cashVal').attr("max", data.cashCap);
 	       				} else if (obj0 == "prop") {
 	       					alert("функцию +");
 	       				}
@@ -307,17 +309,7 @@
 						<td>Процент износа</td>
 						<td>
 							<div id="deprBlock">
-								<c:choose>
-									<c:when test="${prop.depreciationPercent > 75}">
-										${prop.depreciationPercent}%
-									</c:when>
-									<c:when test="${prop.depreciationPercent > 50}">
-										${prop.depreciationPercent}%
-									</c:when>
-									<c:otherwise>
-										${prop.depreciationPercent}%
-									</c:otherwise>
-								</c:choose>
+								${prop.depreciationPercent}%
 							</div>
 							<progress id="deprVal" max="100" value="${prop.depreciationPercent}">
 						</td>
@@ -336,16 +328,16 @@
 						<td>Уровень</td>
 						<td>${prop.level}</td>
 						<td><a class="support-hover" href="${pageContext.request.contextPath}/property/level-up/${prop.id}">
-							<p class="button small bPurple"><span>▲</span></p><span class="tip">Поднять</span></a></td>
+							<p class="button small bPurple"><span>▲</span></p><span class="tip">Улучшить</span></a></td>
 					</tr>
 					<tr>
 						<td>Деньги в кассе</td>
 						<td>
-							<div>
+							<div id="cashBlock">
 								<fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cash}"/> / 
 								<fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cashCapacity}"/>
 							</div>
-							<progress max="${prop.cashCapacity}" value="${prop.cash}">
+							<progress id="cashVal" max="${prop.cashCapacity}" value="${prop.cash}">
 						</td>
 						<td width="200">
 							<c:choose>

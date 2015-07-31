@@ -39,67 +39,66 @@ public class ReProposalRep {
      * @return список с валидными предложениями на рынке недвижимости
      * @throws ParseException
      */
-    @SuppressWarnings("unchecked")
     public List<Object> getREProposalsList(int page, RealEstateProposalsSearch reps) throws ParseException {
-	String hql0 = "from re_proposal as rep where rep.valid = true";
-	String hql1 = "";
-	String hql2 = " ORDER BY rep.commBuildingType";
+        String hql0 = "from re_proposal as rep where rep.valid = true";
+        String hql1 = "";
+        String hql2 = " ORDER BY rep.commBuildingType";
 
-	Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<String, Object>();
 
-	// date filter
-	hql1 += " and rep.appearDate between :appearDateFrom and :appearDateTo";
-	Date appearDateFrom = DateUtils.getStartDateForQuery(reps.getAppearDateFrom());
-	Date appearDateTo = DateUtils.getEndDateForQuery(reps.getAppearDateTo());
-	params.put("appearDateFrom", appearDateFrom);
-	params.put("appearDateTo", appearDateTo);
+        // date filter
+        hql1 += " and rep.appearDate between :appearDateFrom and :appearDateTo";
+        Date appearDateFrom = DateUtils.getStartDateForQuery(reps.getAppearDateFrom());
+        Date appearDateTo = DateUtils.getEndDateForQuery(reps.getAppearDateTo());
+        params.put("appearDateFrom", appearDateFrom);
+        params.put("appearDateTo", appearDateTo);
 
-	hql1 += " and rep.lossDate between :lossDateFrom and :lossDateTo";
-	Date lossDateFrom = DateUtils.getStartDateForQuery(reps.getLossDateFrom());
-	Date lossDateTo = DateUtils.getEndDateForQuery(reps.getLossDateTo());
-	params.put("lossDateFrom", lossDateFrom);
-	params.put("lossDateTo", lossDateTo);
+        hql1 += " and rep.lossDate between :lossDateFrom and :lossDateTo";
+        Date lossDateFrom = DateUtils.getStartDateForQuery(reps.getLossDateFrom());
+        Date lossDateTo = DateUtils.getEndDateForQuery(reps.getLossDateTo());
+        params.put("lossDateFrom", lossDateFrom);
+        params.put("lossDateTo", lossDateTo);
 
-	// TODO area filter
-	List<CityAreasT> areas = reps.getAreas(); // типы из формы
-	if (areas != null && !areas.isEmpty()) {
-	    hql1 += " and rep.cityArea IN (:areas)";
-	    params.put("areas", areas);
-	}
+        // TODO area filter
+        List<CityAreasT> areas = reps.getAreas(); // типы из формы
+        if (areas != null && !areas.isEmpty()) {
+            hql1 += " and rep.cityArea IN (:areas)";
+            params.put("areas", areas);
+        }
 
-	// types filter
-	List<CommBuildingsT> types = reps.getTypes(); // типы из формы
-	if (types != null && !types.isEmpty()) {
-	    hql1 += " and rep.commBuildingType IN (:types)";
-	    params.put("types", types);
-	}
+        // types filter
+        List<CommBuildingsT> types = reps.getTypes(); // типы из формы
+        if (types != null && !types.isEmpty()) {
+            hql1 += " and rep.commBuildingType IN (:types)";
+            params.put("types", types);
+        }
 
-	// price filter
-	long priceFrom = reps.getPriceFrom();
-	long priceTo = reps.getPriceTo();
-	if (priceFrom > 0 && priceTo > 0) {
-	    hql1 += " and rep.purchasePrice between :priceFrom AND :priceTo";
-	    params.put("priceFrom", priceFrom);
-	    params.put("priceTo", priceTo);
-	}
+        // price filter
+        long priceFrom = reps.getPriceFrom();
+        long priceTo = reps.getPriceTo();
+        if (priceFrom > 0 && priceTo > 0) {
+            hql1 += " and rep.purchasePrice between :priceFrom AND :priceTo";
+            params.put("priceFrom", priceFrom);
+            params.put("priceTo", priceTo);
+        }
 
-	Query query = em.createQuery(hql0 + hql1 + hql2);
-	// установка параметров
-	for (Map.Entry<String, Object> entry : params.entrySet()) {
-	    query.setParameter(entry.getKey(), entry.getValue());
-	}
+        Query query = em.createQuery(hql0 + hql1 + hql2);
+        // установка параметров
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
 
-	List<Object> result = new ArrayList<Object>(2); // результат
-	int totalCount = query.getResultList().size();// общее количество транзакций для пагинации
+        List<Object> result = new ArrayList<Object>(2); // результат
+        int totalCount = query.getResultList().size();// общее количество транзакций для пагинации
 
-	int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
-	query.setFirstResult(firstResult);
-	query.setMaxResults(Consts.ROWS_ON_PAGE);
+        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+        query.setFirstResult(firstResult);
+        query.setMaxResults(Consts.ROWS_ON_PAGE);
 
-	result.add(totalCount);
-	result.add(query.getResultList());
+        result.add(totalCount);
+        result.add(query.getResultList());
 
-	return result;
+        return result;
     }
 
     /**
@@ -109,10 +108,10 @@ public class ReProposalRep {
      */
     @SuppressWarnings("unchecked")
     public List<RealEstateProposal> getOutdatedProposals() {
-	String hql = "from re_proposal as rep where rep.valid = true and rep.lossDate < :now ";
-	Query query = em.createQuery(hql).setParameter("now", new Date());
+        String hql = "from re_proposal as rep where rep.valid = true and rep.lossDate < :now ";
+        Query query = em.createQuery(hql).setParameter("now", new Date());
 
-	return query.getResultList();
+        return query.getResultList();
     }
 
     /**
@@ -122,7 +121,7 @@ public class ReProposalRep {
      *            RealEstateProposal, которое нужно добавить
      */
     public void addREproposal(RealEstateProposal prop) {
-	em.persist(prop);
+        em.persist(prop);
     }
 
     /**
@@ -132,7 +131,7 @@ public class ReProposalRep {
      *            - RealEstateProposal, которое нужно обновить
      */
     public void updateREproposal(RealEstateProposal prop) {
-	em.merge(prop);
+        em.merge(prop);
     }
 
     /**
@@ -142,7 +141,7 @@ public class ReProposalRep {
      * @return предложение с указанным id
      */
     public RealEstateProposal getREProposalById(int id) {
-	return em.find(RealEstateProposal.class, id);
+        return em.find(RealEstateProposal.class, id);
     }
 
     /**
@@ -153,20 +152,20 @@ public class ReProposalRep {
      * @return
      */
     public Long allPrCount(boolean countOfNew) {
-	String hql = "select count(id) FROM re_proposal as rep where rep.valid = true";
-	Query query = em.createQuery(hql);
+        String hql = "select count(id) FROM re_proposal as rep where rep.valid = true";
+        Query query = em.createQuery(hql);
 
-	if (countOfNew) {
-	    Calendar yestC = Calendar.getInstance();
-	    yestC.add(Calendar.DATE, -1);
-	    Date yest = yestC.getTime();
+        if (countOfNew) {
+            Calendar yestC = Calendar.getInstance();
+            yestC.add(Calendar.DATE, -1);
+            Date yest = yestC.getTime();
 
-	    hql += " and rep.appearDate > :yest";
+            hql += " and rep.appearDate > :yest";
 
-	    query = em.createQuery(hql);
-	    query.setParameter("yest", yest, TemporalType.TIMESTAMP);
-	}
-	return Long.valueOf(query.getSingleResult().toString());
+            query = em.createQuery(hql);
+            query.setParameter("yest", yest, TemporalType.TIMESTAMP);
+        }
+        return Long.valueOf(query.getSingleResult().toString());
     }
 
     /**
@@ -176,18 +175,18 @@ public class ReProposalRep {
      * @return
      */
     public List<Object> getRangeValues() {
-	List<Object> result = new ArrayList<Object>(2); // результат
+        List<Object> result = new ArrayList<Object>(2); // результат
 
-	String suff = "FROM re_proposal as rep where valid = true";
+        String suff = "FROM re_proposal as rep where valid = true";
 
-	String minPrHql = "Select min(purchasePrice)" + suff;
-	String maxPrHql = "Select max(purchasePrice)" + suff;
+        String minPrHql = "Select min(purchasePrice)" + suff;
+        String maxPrHql = "Select max(purchasePrice)" + suff;
 
-	Long min = (Long) em.createQuery(minPrHql).getSingleResult();
-	Long max = (Long) em.createQuery(maxPrHql).getSingleResult();
-	result.add(min == null ? 0 : min);
-	result.add(max == null ? 0 : max);
+        Long min = (Long) em.createQuery(minPrHql).getSingleResult();
+        Long max = (Long) em.createQuery(maxPrHql).getSingleResult();
+        result.add(min == null ? 0 : min);
+        result.add(max == null ? 0 : max);
 
-	return result;
+        return result;
     }
 }

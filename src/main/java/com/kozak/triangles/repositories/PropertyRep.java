@@ -78,7 +78,6 @@ public class PropertyRep {
      * 
      * @return список имущества пользователя для отображения на странице имущества
      */
-    @SuppressWarnings("unchecked")
     public List<Object> getPropertyList(int page, int userId, CommPropSearch cps) {
         String hql0 = "FROM Property as pr WHERE pr.userId = :userId";
         String hql1 = "";

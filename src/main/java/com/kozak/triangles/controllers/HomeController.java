@@ -105,11 +105,11 @@ public class HomeController {
         // данные имущества
         model.addAttribute("commBuData", buiDataRep.getCommBuildDataList());
         // коэфициенты вместимости кассы
-        model.addAttribute("ccl1", Consts.UNIVERS_K_L1);
-        model.addAttribute("ccl2", Consts.UNIVERS_K_L2);
-        model.addAttribute("ccl3", Consts.UNIVERS_K_L3);
-        model.addAttribute("ccl4", Consts.UNIVERS_K_L4);
-        model.addAttribute("ccl5", Consts.UNIVERS_K_L5);
+        model.addAttribute("uc1", Consts.UNIVERS_K_L1);
+        model.addAttribute("uc2", Consts.UNIVERS_K_L2);
+        model.addAttribute("uc3", Consts.UNIVERS_K_L3);
+        model.addAttribute("uc4", Consts.UNIVERS_K_L4);
+        model.addAttribute("uc5", Consts.UNIVERS_K_L5);
         // мин и макс частота генерации предложений на рынке
         model.addAttribute("frp_min", Consts.FREQ_RE_PROP_MIN);
         model.addAttribute("frp_max", Consts.FREQ_RE_PROP_MAX);
@@ -138,8 +138,10 @@ public class HomeController {
         model.addAttribute("thiDB", Consts.THIRD_DAY);
         model.addAttribute("fouDB", Consts.FOURTH_DAY);
         model.addAttribute("fifDB", Consts.FIFTH_DAY);
-        // коэф. уменьшения суммы ремонта
+        // коэф-ты уменьшения сумм
         model.addAttribute("kdr", Consts.K_DECREASE_REPAIR);
+        model.addAttribute("kdp", Consts.K_DECREASE_PROP_L);
+        model.addAttribute("kdc", Consts.K_DECREASE_CASH_L);
         return "wiki";
     }
 

@@ -126,7 +126,7 @@ public class PropertyController {
             return "error";
         } else {
             long userMoney = Long.parseLong(trRep.getUserBalance(user.getId()));
-            long userSolvency = getSolvency(user.getId()); // состоятельность пользователя
+            long userSolvency = Util.getSolvency(trRep, prRep, user.getId()); // состоятельность пользователя
             long bap = userMoney - prop.getPurchasePrice(); // balance after purchase
 
             // получить данные всех коммерческих строений
@@ -150,12 +150,6 @@ public class PropertyController {
             }
             return "error";
         }
-    }
-
-    private long getSolvency(int userId) {
-        long userMoney = Long.parseLong(trRep.getUserBalance(userId));
-        long sellSum = prRep.getSellingSumAllPropByUser(userId) / 2;// (ост. стоим. всего имущества юзера / 2)
-        return userMoney + sellSum;
     }
 
     /**
@@ -216,7 +210,7 @@ public class PropertyController {
                     ra.addFlashAttribute("popup", true); // будем отображать поздравление о покупке
                 } else if (userMoney + sellSum < prop.getPurchasePrice()) {
                     model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
-                            + "Ваш максимум = " + Util.moneyFormat(getSolvency(userId)) + "&tridot;");
+                            + "Ваш максимум = " + Util.moneyFormat(Util.getSolvency(trRep, prRep, userId)) + "&tridot;");
                     model.addAttribute("backLink", "property/r-e-market");
                     return "error";
                 }
@@ -410,7 +404,7 @@ public class PropertyController {
             fullRepairSum /= Consts.K_DECREASE_REPAIR; // сумма ремонта (сумма износа / K)
 
             long userMoney = Long.parseLong(trRep.getUserBalance(userId)); // баланс
-            long userSolvency = getSolvency(userId); // состоятельность
+            long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 
             double newDeprPerc = pdp - Util.numberRound((userSolvency * pdp) / fullRepairSum, 2); // проц после ремонта
 
@@ -508,93 +502,179 @@ public class PropertyController {
      * @param obj
      *            - объект [prop; cash] (само имущество или его касса)
      */
-    @SuppressWarnings("unchecked")
     @RequestMapping(value = "/level-up", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
     public @ResponseBody ResponseEntity<String> levelUp(@RequestParam("propId") Integer propId,
             @RequestParam("action") String action, @RequestParam("obj") String obj, User user) {
+
         JSONObject resultJson = new JSONObject();
-
         int userId = user.getId();
-
         Property prop = prRep.getSpecificProperty(userId, propId);
 
         if (prop == null) {
-            putErrorMsg(resultJson, "Произошла ошибка (код: 1)!");
+            putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
         } else {
-            final int LAST_LEVEL = 5;
-            long userSolvency = getSolvency(userId);
+            long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 
-            if (obj.equals("cash")) {
-                int nCashLevel = prop.getCashLevel() + 1;
+            if (obj.equals("cash")) { // если это повышение для кассы
+                int nCashLevel = prop.getCashLevel() + 1; // уровень, к которому будем повышать
 
-                if (nCashLevel > LAST_LEVEL) {
-                    // отправить сообщение, что достигли последнего уровня
+                if (nCashLevel > Consts.MAX_CASH_LEVEL) { // отправить сообщение, что достигли последнего уровня
                     putErrorMsg(resultJson, "Достигнут последний уровень.");
-                } else {
-                    long sum = (long) (prop.getInitialCost() * Util.getUniversalK(nCashLevel) / Consts.K_DECREASE_CASH_L);
-
-                    if (action.equals("getSum")) {
-                        if (userSolvency <= sum) {
-                            putErrorMsg(resultJson, "Не хватает денег.");
-                        } else {
-                            resultJson.put("sum", sum);
-                        }
-                    } else if (action.equals("up")) {
-                        if (userSolvency >= sum) {
-                            // получить данные всех коммерческих строений
-                            HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
-
-                            long nCashCapacity = mapData.get(prop.getCommBuildingType().name()).getCashCapacity()
-                                    .get(nCashLevel); // новая вместимость кассы
-
-                            prop.setCashLevel(nCashLevel);
-                            prop.setCashCapacity(nCashCapacity);
-                            prRep.updateProperty(prop);
-
-                            // снять деньги
-                            String descr = String.format("Поднятие уровня кассы до: %s. Касса имущества: %s",
-                                    nCashLevel, prop.getName());
-                            long currBal = Long.parseLong(trRep.getUserBalance(userId));
-                            Transaction tr = new Transaction(descr, new Date(), sum, TransferT.SPEND, userId, currBal
-                                    - sum, ArticleCashFlowT.UP_CASH_LEVEL);
-                            trRep.addTransaction(tr);
-                            // //
-
-                            long nextSum = (long) (prop.getInitialCost() * Util.getUniversalK(nCashLevel + 1) / Consts.K_DECREASE_CASH_L);
-                            userSolvency = getSolvency(userId);
-
-                            resultJson.put("upped", true);
-
-                            if (nCashLevel == LAST_LEVEL) {
-                                putErrorMsg(resultJson, "Достигнут последний уровень.");
-                            } else if (userSolvency < nextSum) {
-                                putErrorMsg(resultJson, "Не хватает денег.");
-                            }
-
-                            addBalanceData(resultJson, sum, currBal);
-                            resultJson.put("currLevel", nCashLevel);
-                            resultJson.put("sum", nextSum); // сумма след. повышения
-
-                        } else {
-                            putErrorMsg(resultJson, "Не хватает денег.");
-                        }
-                    }
+                } else { // повысить уровень или просто получить сумму повышения
+                    doActionsForCashLevelUp(resultJson, prop, nCashLevel, action, userSolvency, userId, obj);
                 }
             } else if (obj.equals("prop")) {
-                if (action.equals("getSum")) {
+                int nPropLevel = prop.getLevel() + 1; // уровень, к которому будем повышать
 
-                } else if (action.equals("up")) {
-
+                if (nPropLevel > Consts.MAX_PROP_LEVEL) { // отправить сообщение, что достигли последнего уровня
+                    putErrorMsg(resultJson, "Достигнут последний уровень.");
+                } else { // повысить уровень или просто получить сумму повышения
+                    doActionsForPropLevelUp(resultJson, prop, nPropLevel, action, userSolvency, userId, obj);
                 }
             }
         }
-
         System.err.println(resultJson.toJSONString());
         String json = resultJson.toJSONString();
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Content-Type", "application/json; charset=utf-8");
         return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+    }
+
+    /**
+     * делает действия для повышения уровня кассы
+     * 
+     * @param prop
+     *            имущество
+     * @param nCashLevel
+     *            уровень, к которому будем повышать
+     * @param action
+     *            действие (получить сумму или повысить уровень)
+     * @param userSolvency
+     *            состоятельность
+     * @param obj
+     *            объект - "cash"
+     */
+    private void doActionsForCashLevelUp(JSONObject resultJson, Property prop, int nCashLevel, String action,
+            long userSolvency, int userId, String obj) {
+
+        // получить сумму повышения уровня
+        // начальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
+        long sum = (long) (prop.getInitialCost() * Util.getUniversalK(nCashLevel) / Consts.K_DECREASE_CASH_L);
+
+        // если запросу нужно вернуть сумму улучшения
+        if (action.equals("getSum")) {
+            levelUpGetSumAction(resultJson, userSolvency, sum); // получение суммы для информации
+        } else if (action.equals("up")) { // если же действие запроса - повысить уровень
+            upLevel(resultJson, prop, userSolvency, sum, nCashLevel, userId, obj);
+        }
+    }
+
+    private void upLevel(JSONObject resultJson, Property prop, long userSolvency, long sum, int nLevel, int userId,
+            String obj) {
+        if (userSolvency >= sum) {
+            if (obj.equals("cash")) {
+                upCashLevel(resultJson, prop, nLevel, userId, sum); // повысить уровень кассы
+            } else if (obj.equals("prop")) {
+                upPropLevel(resultJson, prop, nLevel, userId, sum); // повысить уровень имущества
+            }
+        } else { // состоятельность < суммы улучшения
+            putErrorMsg(resultJson, "Не хватает денег. Нужно: " + sum);
+        }
+    }
+
+    /**
+     * делает действия для повышения уровня имущества
+     * 
+     * @param action
+     *            действие - получить сумму или повысить уровень
+     * @param userSolvency
+     *            состоятельность
+     * @param obj
+     *            объект - "prop"
+     */
+    private void doActionsForPropLevelUp(JSONObject resultJson, Property prop, int nPropLevel, String action,
+            long userSolvency, int userId, String obj) {
+
+        // получить данные всех коммерческих строений
+        HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+
+        // получить сумму повышения уровня
+        // максимальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
+        long maxPrice = mapData.get(prop.getCommBuildingType().name()).getPurchasePriceMax();
+        long sum = (long) (maxPrice * Util.getUniversalK(nPropLevel) / Consts.K_DECREASE_PROP_L);
+
+        // если запросу нужно вернуть сумму улучшения
+        if (action.equals("getSum")) {
+            levelUpGetSumAction(resultJson, userSolvency, sum); // получение суммы для информации
+        } else if (action.equals("up")) { // если же действие запроса - повысить уровень
+            upLevel(resultJson, prop, userSolvency, sum, nPropLevel, userId, obj);
+        }
+    }
+
+    private void upPropLevel(JSONObject resultJson, Property prop, int nPropLevel, int userId, long sum) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * функция добавления суммы повышения уровня для отображения на странице
+     */
+    @SuppressWarnings("unchecked")
+    private void levelUpGetSumAction(JSONObject resultJson, long userSolvency, long sum) {
+        if (userSolvency < sum) {
+            putErrorMsg(resultJson, "Не хватает денег. Нужно: " + sum);
+        } else {
+            resultJson.put("nextSum", sum);
+        }
+    }
+
+    /**
+     * метод повышения уровня кассы
+     * 
+     * @param prop
+     *            имущество
+     * @param nCashLevel
+     *            уровень, к которому будем повышать
+     * @param sum
+     *            сумма повышения уровня
+     */
+    @SuppressWarnings("unchecked")
+    private void upCashLevel(JSONObject resultJson, Property prop, int nCashLevel, int userId, long sum) {
+        // получить данные всех коммерческих строений
+        HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+
+        // новая вместимость кассы
+        long nCashCapacity = mapData.get(prop.getCommBuildingType().name()).getCashCapacity().get(nCashLevel);
+
+        prop.setCashLevel(nCashLevel);
+        prop.setCashCapacity(nCashCapacity);
+        prRep.updateProperty(prop);
+
+        // снять деньги
+        String descr = String.format("Улучшение кассы до уровня: %s. Касса имущества: %s", nCashLevel, prop.getName());
+        long currBal = Long.parseLong(trRep.getUserBalance(userId));
+        Transaction tr = new Transaction(descr, new Date(), sum, TransferT.SPEND, userId, currBal - sum,
+                ArticleCashFlowT.UP_CASH_LEVEL);
+        trRep.addTransaction(tr);
+        // //
+
+        // получить сумму улучшения до след. уровня + 1
+        long nextSum = (long) (prop.getInitialCost() * Util.getUniversalK(nCashLevel + 1) / Consts.K_DECREASE_CASH_L);
+        long userSolvency = Util.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
+
+        resultJson.put("upped", true); // уровень был поднят
+        resultJson.put("cashCap", nCashCapacity); // new cash capacity для отображения
+
+        if (nCashLevel == Consts.MAX_CASH_LEVEL) {
+            putErrorMsg(resultJson, "Достигнут последний уровень.");
+        } else if (userSolvency < nextSum) {
+            putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
+        }
+
+        addBalanceData(resultJson, sum, currBal);
+        resultJson.put("currLevel", nCashLevel);
+        resultJson.put("sum", nextSum); // сумма след. повышения
     }
 
 }
