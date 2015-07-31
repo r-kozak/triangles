@@ -132,6 +132,7 @@
 	    };
 	    
 	    //level-up for cash
+	    //получение суммы повышения уровня кассы имущества и назначение обработчика на клик по кнопке cashUpBut
 	    $.ajax({
        		  type: 'POST',
        		  url: "${pageContext.request.contextPath}/property/level-up",
@@ -150,8 +151,14 @@
     		        });
        			}
        		}); 
-	    
-	    function sendPostLevelUp(action0, obj0) {
+	}; //windows.onload()
+	
+	
+    //отправка запроса на повышение уровня кассы или имущества
+    function sendPostLevelUp(action0, obj0) {
+    	var o = (obj0 == "cash") ? "кассы?" : "имущества?";
+		var question = "Вы точно хотите повысить уровень " + o;
+    	if(confirm(question)) {
 	    	$.ajax({
 	       		  type: 'POST',
 	       		  url: "${pageContext.request.contextPath}/property/level-up",
@@ -179,12 +186,11 @@
 	       					alert("функцию +");
 	       				}
 	       			}
-	       		}); 
-	    }
-	    
-	        		
-	    
-	};
+	       	}); 
+    	}
+    }
+    
+	//отправка запроса на ремонт имущества
 	function sendPost(type1) {
 		$.post(
 				  "${pageContext.request.contextPath}/property/repair",
