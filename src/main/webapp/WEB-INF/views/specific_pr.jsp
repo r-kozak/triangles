@@ -170,7 +170,7 @@
 	       				if(obj0 == "cash") {
 	       					$("#cash_up_td").html('<h5>' + data.message + '</h5>');
 	       				} else if (obj0 == "prop") {
-	       					alert("функцию +");
+	       					$("#prop_up_td").html('<h5>' + data.message + '</h5>');
 	       				}
 	       			} 
 	       			//если было повышение
@@ -178,12 +178,13 @@
 	       				changeBal(data);
 	       				
 	       				if(obj0 == "cash") {
-		       				$("#cash_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;');
-	       					$('#cash_level_td').html(data.currLevel);
-	       					$('#cashBlock').html($('#cashVal').val() + ' / ' + data.cashCap);
-	       					$('#cashVal').attr("max", data.cashCap);
+		       				$("#cash_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;'); // текст подсказки при наведении на кнопку
+	       					$('#cash_level_td').html(data.currLevel); // сама надпись уровня
+	       					$('#cashBlock').html($('#cashVal').val() + ' / ' + data.cashCap); // 250 / 714
+	       					$('#cashVal').attr("max", data.cashCap); // установка максимального значения в кассе
 	       				} else if (obj0 == "prop") {
-	       					alert("функцию +");
+	       					$("#prop_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;'); // текст подсказки при наведении на кнопку
+	       					$('#prop_level_td').html(data.currLevel); // сама надпись уровня
 	       				}
 	       			}
 	       	}); 
@@ -333,8 +334,12 @@
 					<tr>
 						<td>Уровень</td>
 						<td>${prop.level}</td>
-						<td><a class="support-hover" href="${pageContext.request.contextPath}/property/level-up/${prop.id}">
-							<p class="button small bPurple"><span>▲</span></p><span class="tip">Улучшить</span></a></td>
+						<td>
+							<div id="prop_up_td">
+								<a class="support-hover" href="${pageContext.request.contextPath}/property/level-up/${prop.id}">
+								<p class="button small bPurple"><span>▲</span></p><span class="tip">Улучшить</span></a>
+							</div>
+						</td>
 					</tr>
 					<tr>
 						<td>Деньги в кассе</td>
