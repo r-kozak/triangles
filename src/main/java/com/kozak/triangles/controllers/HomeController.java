@@ -105,11 +105,11 @@ public class HomeController {
 	// данные имущества
 	model.addAttribute("commBuData", buiDataRep.getCommBuildDataList());
 	// коэфициенты вместимости кассы
-	model.addAttribute("uc1", Consts.UNIVERS_K_L1);
-	model.addAttribute("uc2", Consts.UNIVERS_K_L2);
-	model.addAttribute("uc3", Consts.UNIVERS_K_L3);
-	model.addAttribute("uc4", Consts.UNIVERS_K_L4);
-	model.addAttribute("uc5", Consts.UNIVERS_K_L5);
+	model.addAttribute("uc1", Consts.UNIVERS_K[1]);
+	model.addAttribute("uc2", Consts.UNIVERS_K[2]);
+	model.addAttribute("uc3", Consts.UNIVERS_K[3]);
+	model.addAttribute("uc4", Consts.UNIVERS_K[4]);
+	model.addAttribute("uc5", Consts.UNIVERS_K[5]);
 	// мин и макс частота генерации предложений на рынке
 	model.addAttribute("frp_min", Consts.FREQ_RE_PROP_MIN);
 	model.addAttribute("frp_max", Consts.FREQ_RE_PROP_MAX);
@@ -133,11 +133,11 @@ public class HomeController {
 	model.addAttribute("cr_rate", Consts.CREDIT_RATE);
 	model.addAttribute("dep_rate", Consts.DEPOSIT_RATE);
 	// ежедневный бонус
-	model.addAttribute("firDB", Consts.FIRST_DAY);
-	model.addAttribute("secDB", Consts.SECOND_DAY);
-	model.addAttribute("thiDB", Consts.THIRD_DAY);
-	model.addAttribute("fouDB", Consts.FOURTH_DAY);
-	model.addAttribute("fifDB", Consts.FIFTH_DAY);
+	model.addAttribute("firDB", Consts.DAILY_BONUS_SUM[1]);
+	model.addAttribute("secDB", Consts.DAILY_BONUS_SUM[2]);
+	model.addAttribute("thiDB", Consts.DAILY_BONUS_SUM[3]);
+	model.addAttribute("fouDB", Consts.DAILY_BONUS_SUM[4]);
+	model.addAttribute("fifDB", Consts.DAILY_BONUS_SUM[5]);
 	// коэф-ты уменьшения сумм
 	model.addAttribute("kdr", Consts.K_DECREASE_REPAIR);
 	model.addAttribute("kdp", Consts.K_DECREASE_PROP_L);
@@ -355,7 +355,7 @@ public class HomeController {
 	    }
 
 	    // добавляем транзакцию
-	    int bonusSum = Util.getBonusSum(dayNumber);
+	    int bonusSum = Consts.DAILY_BONUS_SUM[dayNumber];
 	    String description = "Ежедневный бонус (день " + dayNumber + "-й)";
 	    long oldBalance = Long.parseLong(trRep.getUserBalance(user.getId()));
 	    Transaction t = new Transaction(description, new Date(), bonusSum, TransferT.PROFIT, user.getId(),

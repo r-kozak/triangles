@@ -9,11 +9,7 @@ public interface Consts {
     double DEPOSIT_RATE = 3.375 / 100;
 
     // daily bonus by day number
-    int FIRST_DAY = 20;
-    int SECOND_DAY = 50;
-    int THIRD_DAY = 200;
-    int FOURTH_DAY = 400;
-    int FIFTH_DAY = 1000;
+    int[] DAILY_BONUS_SUM = { 0, 20, 50, 200, 400, 1000 };
 
     // количество элементов на страницу
     int ROWS_ON_PAGE = 12;
@@ -32,11 +28,7 @@ public interface Consts {
     int GHETTO_P = 0;
 
     // универсальные коэфициенты вместимости кассы, начисления прибыли, повышения уровня имущества и кассы
-    double UNIVERS_K_L1 = 1.1;
-    double UNIVERS_K_L2 = 1.3;
-    double UNIVERS_K_L3 = 1.6;
-    double UNIVERS_K_L4 = 2.0;
-    double UNIVERS_K_L5 = 2.5;
+    double[] UNIVERS_K = { 1, 1.1, 1.3, 1.6, 2.0, 2.5, 3.1 };
 
     // проценты типов строителей
     int GASTARBEITER_B = 50;

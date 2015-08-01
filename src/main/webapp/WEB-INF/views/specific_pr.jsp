@@ -136,21 +136,42 @@
 	    $.ajax({
        		  type: 'POST',
        		  url: "${pageContext.request.contextPath}/property/level-up",
-       		  data:  { propId: <c:out value='${prop.id}'/>, action: "getSum", obj: "cash" },
+       		  data:  { propId: <c:out value='${prop.id}'/>, action: "getSum", obj: "prop" },
        		  dataType: "json",
        		  async:true
        		}).done(function(data) {
        			if(data.error) {
-       				$("#cash_up_td").html('<h5>' + data.message + '</h5>');
+       				$("#prop_up_td").html('<h5>' + data.message + '</h5>');
        			} else {
-       				$("#cash_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;');
+       				$("#prop_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;');
        				
-       				$('#cashUpBut').on('click', function() {
-    		            sendPostLevelUp("up", "cash");
+       				$('#propUpBut').on('click', function() {
+    		            sendPostLevelUp("up", "prop");
     		            return false;
     		        });
        			}
        		}); 
+	    
+		//level-up for prop
+		//получение суммы повышения уровня имущества и назначение обработчика на клик по кнопке propUpBut
+		$.ajax({
+		  		  type: 'POST',
+		  		  url: "${pageContext.request.contextPath}/property/level-up",
+		  		  data:  { propId: <c:out value='${prop.id}'/>, action: "getSum", obj: "cash" },
+		  		  dataType: "json",
+		  		  async:true
+		  		}).done(function(data) {
+		  			if(data.error) {
+		  				$("#cash_up_td").html('<h5>' + data.message + '</h5>');
+		  			} else {
+		  				$("#cash_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;');
+		  				
+		  				$('#cashUpBut').on('click', function() {
+			            sendPostLevelUp("up", "cash");
+			            return false;
+			        });
+		  			}
+		  		}); 
 	}; //windows.onload()
 	
 	
@@ -333,11 +354,11 @@
 					</tr>
 					<tr>
 						<td>Уровень</td>
-						<td>${prop.level}</td>
+						<td id="prop_level_td">${prop.level}</td>
 						<td>
 							<div id="prop_up_td">
-								<a class="support-hover" href="${pageContext.request.contextPath}/property/level-up/${prop.id}">
-								<p class="button small bPurple"><span>▲</span></p><span class="tip">Улучшить</span></a>
+								<a id="propUpBut" class="support-hover""><p class="button small bPurple"><span>↑</span></p>
+								<span class="tip" id="prop_up_tip">Улучшить</span></a>
 							</div>
 						</td>
 					</tr>
@@ -377,8 +398,8 @@
 						<td id="cash_level_td">${prop.cashLevel}</td>
 						<td>
 							<div id="cash_up_td">
-								<a id="cashUpBut" class="support-hover"><p class="button small bBlue"><span>▲</span></p>
-								<span class="tip" id="cash_up_tip">Поднять</span></a>
+								<a id="cashUpBut" class="support-hover"><p class="button small bBlue"><span>↑</span></p>
+								<span class="tip" id="cash_up_tip">Улучшить</span></a>
 							</div>
 						</td>
 					</tr>
