@@ -571,7 +571,7 @@ public class PropertyController {
 
 	// получить сумму повышения уровня
 	// начальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
-	long sum = (long) (prop.getInitialCost() * Consts.UNIVERS_K[nCashLevel] / Consts.K_DECREASE_CASH_L);
+	long sum = Math.round(prop.getInitialCost() * Consts.UNIVERS_K[nCashLevel] / Consts.K_DECREASE_CASH_L);
 
 	// если запросу нужно вернуть сумму улучшения
 	if (action.equals("getSum")) {
@@ -600,7 +600,7 @@ public class PropertyController {
 	// получить сумму повышения уровня
 	// максимальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
 	long maxPrice = mapData.get(prop.getCommBuildingType().name()).getPurchasePriceMax();
-	long sum = (long) (maxPrice * Consts.UNIVERS_K[nPropLevel] / Consts.K_DECREASE_PROP_L);
+	long sum = Math.round(maxPrice * Consts.UNIVERS_K[nPropLevel] / Consts.K_DECREASE_PROP_L);
 
 	// если запросу нужно вернуть сумму улучшения
 	if (action.equals("getSum")) {
@@ -666,7 +666,7 @@ public class PropertyController {
 	// //
 
 	// получить сумму улучшения до след. уровня + 1
-	long nextSum = (long) (prop.getInitialCost() * Consts.UNIVERS_K[nCashLevel + 1] / Consts.K_DECREASE_CASH_L);
+	long nextSum = Math.round(prop.getInitialCost() * Consts.UNIVERS_K[nCashLevel + 1] / Consts.K_DECREASE_CASH_L);
 	long userSolvency = Util.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
 
 	resultJson.put("upped", true); // уровень был поднят
@@ -701,7 +701,7 @@ public class PropertyController {
 
 	// получить сумму улучшения до след. уровня + 1
 	long maxPrice = mapData.get(prop.getCommBuildingType().name()).getPurchasePriceMax();
-	long nextSum = (long) (maxPrice * Consts.UNIVERS_K[nPropLevel + 1] / Consts.K_DECREASE_PROP_L);
+	long nextSum = Math.round(maxPrice * Consts.UNIVERS_K[nPropLevel + 1] / Consts.K_DECREASE_PROP_L);
 	long userSolvency = Util.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
 
 	resultJson.put("upped", true); // уровень был поднят

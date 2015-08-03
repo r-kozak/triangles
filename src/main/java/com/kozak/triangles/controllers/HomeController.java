@@ -395,7 +395,7 @@ public class HomeController {
 		double rate = (userBalance > 0 ? Consts.DEPOSIT_RATE : Consts.CREDIT_RATE);
 		TransferT transferType = (userBalance > 0 ? TransferT.PROFIT : TransferT.SPEND);
 		ArticleCashFlowT acf = (userBalance > 0 ? ArticleCashFlowT.DEPOSIT : ArticleCashFlowT.CREDIT);
-		long sum = (long) (userBalance * rate);
+		long sum = Math.round(userBalance * rate);
 		long newBalance = userBalance + sum;
 
 		// date for description

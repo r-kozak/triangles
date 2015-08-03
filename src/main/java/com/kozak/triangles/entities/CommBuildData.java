@@ -100,12 +100,12 @@ public class CommBuildData {
 	this.profitMax = (int) (purchasePriceMin / (paybackPeriodMin * 7));
 
 	ArrayList<Long> cashList = new ArrayList<Long>(5);
-	cashList.add((long) ((long) profitMax * Consts.UNIVERS_K[0]));
-	cashList.add((long) (profitMax * Consts.UNIVERS_K[1]));
-	cashList.add((long) (profitMax * Consts.UNIVERS_K[2]));
-	cashList.add((long) (profitMax * Consts.UNIVERS_K[3]));
-	cashList.add((long) (profitMax * Consts.UNIVERS_K[4]));
-	cashList.add((long) (profitMax * Consts.UNIVERS_K[5]));
+	cashList.add(Math.round(profitMax * Consts.UNIVERS_K[0]));
+	cashList.add(Math.round(profitMax * Consts.UNIVERS_K[1]));
+	cashList.add(Math.round(profitMax * Consts.UNIVERS_K[2]));
+	cashList.add(Math.round(profitMax * Consts.UNIVERS_K[3]));
+	cashList.add(Math.round(profitMax * Consts.UNIVERS_K[4]));
+	cashList.add(Math.round(profitMax * Consts.UNIVERS_K[5]));
 
 	this.cashCapacity = cashList;
 
