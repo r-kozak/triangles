@@ -336,15 +336,26 @@ public class PropertyController {
 	    RedirectAttributes ra) {
 
 	int userId = user.getId();
-	// получить конкретное имущество текущего пользоватетя
-	Property prop = prRep.getSpecificProperty(userId, prId);
-	// если получили null - значит это не имущество пользователя
-	if (prop == null) {
-	    return "redirect:/property/commerc-pr";
-	}
+	long cash = 0;
 
-	// изымаем деньги
-	long cash = getCashFromProperty(prop); // сколько налички собрали
+	if (prId == 0) { // это сбор со всего имущества
+	    // получить список всего имущества, где в кассе > 0
+	    List<Property> allPrWithCash = prRep.getPropertyWithNotEmptyCash(userId);
+	    for (Property p : allPrWithCash) {
+		cash += getCashFromProperty(p); // собрать доход с кассы
+	    }
+	} else { // сбор с конкретного имущества
+
+	    // получить конкретное имущество текущего пользоватетя
+	    Property prop = prRep.getSpecificProperty(userId, prId);
+	    // если получили null - значит это не имущество пользователя
+	    if (prop == null) {
+		return "redirect:/property/commerc-pr";
+	    }
+
+	    // изымаем деньги
+	    cash = getCashFromProperty(prop); // сколько налички собрали
+	}
 	if (cash > 0) {
 	    ra.addFlashAttribute("changeBal", "+" + cash); // передаем параметр
 	}
@@ -406,7 +417,7 @@ public class PropertyController {
 	    long userMoney = Long.parseLong(trRep.getUserBalance(userId)); // баланс
 	    long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 
-	    double newDeprPerc = pdp - Util.numberRound((userSolvency * pdp) / fullRepairSum, 2); // проц после ремонта
+	    double newDeprPerc = Util.numberRound(pdp - (userSolvency * pdp) / fullRepairSum, 2); // проц после ремонта
 
 	    long repairSum = userSolvency; // сумма ремонта
 	    long newSellingPrice = prop.getSellingPrice() + userSolvency;

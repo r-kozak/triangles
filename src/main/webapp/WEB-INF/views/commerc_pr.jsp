@@ -5,6 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <style>
+	/*наименование имущества*/
 	#name {
 		width:185;
 	}
@@ -118,11 +119,17 @@
 			</c:if>
 			
 			<c:if test="${!empty comProps}">
+				<div id="actionBlock">
+					<a class="support-hover" href="${pageContext.request.contextPath}/property/get-cash/0">
+											<p class="button small bRed"><span>Собрать всё</span></p> <span class="tip">Собрать доход со всего имущества</span>
+					</a>
+				</div>
 				<table class="beaTable">
 					<tr>
 						<td>Тип</td>
 						<td>Наимено- вание</td>
 						<td>Уровень</td>
+						<td>Район</td>
 						<td>Цена продажи, &tridot;</td>
 						<td>Износ, %</td>
 						<td>Касса, &tridot;</td>
@@ -148,6 +155,25 @@
 	
 							<td style="text-align:left"><a href="${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
 							<td>${prop.level}</td>
+													<!-- Район -->
+								<c:choose>
+									<c:when test="${prop.cityArea == 'GHETTO'}">
+										<td>Гетто</td>
+									</c:when>
+									<c:when test="${prop.cityArea == 'OUTSKIRTS'}">
+										<td>Окраина</td>
+									</c:when>
+									<c:when test="${prop.cityArea == 'CHINATOWN'}">
+										<td>Чайнатаун</td>
+									</c:when>
+									<c:when test="${prop.cityArea == 'CENTER'}">
+										<td>Центр</td>
+									</c:when>
+									<c:otherwise>
+										<td>${prop.cityArea}</td>
+									</c:otherwise>
+								</c:choose>
+
 							<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
 							<td>${prop.depreciationPercent}<progress max="100"
 									value="${prop.depreciationPercent}"></td>
@@ -156,7 +182,7 @@
 	
 							<td align="center">
 								<c:if test="${prop.cash > 0}">
-									<a href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
+									<a class="support-hover" href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
 											<p class="button small bRed"><span>&#10004;</span></p> <span class="tip">Собрать</span>
 									</a>
 								</c:if>

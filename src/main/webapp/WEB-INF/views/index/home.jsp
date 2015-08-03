@@ -141,6 +141,14 @@
 							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendBuyPr}"/></td>
 						</tr>
 						<tr>
+							<td class="tableTd1">На повышение уровня имущества, &tridot;</td>
+							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendUpLevel}"/></td>
+						</tr>
+						<tr>
+							<td class="tableTd1">На повышение уровня кассы, &tridot;</td>
+							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendUpCash}"/></td>
+						</tr>
+						<tr>
 							<td class="tableTd1">Ремонт имущества, &tridot;</td>
 							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendRepair}"/></td>
 						</tr>

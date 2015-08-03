@@ -14,12 +14,11 @@ public class TransactSearch extends AbstractSearch {
     private TransferT transfer;
 
     public void clear() {
-	setNeedClear(false);
+	super.clear();
 	this.dateFrom = "";
 	this.dateTo = "";
 	articles = new ArrayList<ArticleCashFlowT>();
 	this.transfer = null;
-	setPage("1");
     }
 
     public String getDateFrom() {

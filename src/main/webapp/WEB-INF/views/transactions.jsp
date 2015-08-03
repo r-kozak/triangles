@@ -19,7 +19,7 @@
 			<a href="${pageContext.request.contextPath}/property/commerc-pr">Моё коммерческое</a>
 		</div>
 
-	<form:form id="searchForm" method="GET" commandName="ts">
+	<form:form id="searchForm" name="searchForm" method="GET" commandName="ts">
 		<div id="searchWrap">
 		<div id="menuTitle">Поиск</div>
 			<fieldset id = "searchBlock">
@@ -48,7 +48,8 @@
 			</fieldset>
 
 			<form:checkbox id="needClear" path="needClear" hidden="true"/>
-			<input id="page" path="page" name="page" value="1" hidden="true" >
+			<input id="page" path="page" name="page" value="1" hidden="true">
+			<form:input id="showAll" path="showAll" name="showAll" value="" hidden="true"></form:input>
 		</div>
 		<div id="searchEl">
 			<input id="searchSubmit" type="submit" name="submit1" value="Искать">
@@ -61,6 +62,11 @@
 		<h1 align="center">Транзакции</h1>
 		<h3 align="right">Состоятельность: <fmt:formatNumber type="number" maxFractionDigits="3" value="${solvency}"/>&tridot;</h3>
 				<c:if test="${!empty transacs}">
+				<div id="actionBlock">
+					<a class="support-hover" onclick="document.searchForm.showAll.value='true'; document.searchForm.submit();" >
+						<p class="button small bRed"><span>Показать все</span></p> <span class="tip">Показать все транзакции с текущими фильтрами</span>
+					</a>
+				</div>
 			<table class="beaTable">
 				<tr>
 					<td>Дата</td>

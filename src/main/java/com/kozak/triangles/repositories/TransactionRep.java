@@ -81,7 +81,7 @@ public class TransactionRep {
      * @return
      * @throws ParseException
      */
-    public List<Object> transList(int page, int userId, TransactSearch ts) throws ParseException {
+    public List<Object> transList(int page, int userId, TransactSearch ts, boolean showAll) throws ParseException {
 	String hql0 = "from Transac as tr where tr.userId = :userId";
 	String hql1 = "";
 	String hql2 = " order by id DESC";
@@ -119,9 +119,11 @@ public class TransactionRep {
 	List<Object> result = new ArrayList<Object>(2); // результат
 	int totalCount = query.getResultList().size();// общее количество транзакций для пагинации
 
-	int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
-	query.setFirstResult(firstResult);
-	query.setMaxResults(Consts.ROWS_ON_PAGE);
+	if (!showAll) { // если показывать не все транзакции
+	    int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+	    query.setFirstResult(firstResult);
+	    query.setMaxResults(Consts.ROWS_ON_PAGE);
+	}
 
 	result.add(totalCount);
 	result.add(query.getResultList());

@@ -92,6 +92,8 @@ public class HomeController {
 	model.addAttribute("spendCr", trRep.getSumByAcf(currUserId, ArticleCashFlowT.CREDIT));
 	model.addAttribute("spendBuyPr", trRep.getSumByAcf(currUserId, ArticleCashFlowT.BUY_PROPERTY));
 	model.addAttribute("spendRepair", trRep.getSumByAcf(currUserId, ArticleCashFlowT.PROPERTY_REPAIR));
+	model.addAttribute("spendUpCash", trRep.getSumByAcf(currUserId, ArticleCashFlowT.UP_CASH_LEVEL));
+	model.addAttribute("spendUpLevel", trRep.getSumByAcf(currUserId, ArticleCashFlowT.UP_PROP_LEVEL));
 
 	return "index/home";
     }
