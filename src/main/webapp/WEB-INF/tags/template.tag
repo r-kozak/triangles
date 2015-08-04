@@ -36,26 +36,22 @@
 		</div>
 	</div>
 	<div id="status" class="status">
-		<div class="dominant">Dominant: 0&#9813;</div>
-		<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Balance: <span id="balanceVal">${balance}</span>&tridot;</a></div>
+		<table style="width:100%; text-align:center">
+			<tbody>
+				<tr>
+				  <td>
+					<div class="dominant">Dominant: 0&#9813;</div>
+				  </td>
+				  <td>
+					<div class="solvency">Solvency: <span id="solvencyVal">${solvency}</span>&tridot;</div>
+				  </td>
+				  <td>
+					<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Balance: <span id="balanceVal">${balance}</span>&tridot;</a></div>
+				  </td>  
+				</tr>
+			</tbody>
+		</table>
 	</div>	
-	
-	<table style="width:100%; text-align:center">
-		<tbody>
-			<tr>
-			  <td>
-				<div class="dominant">Dominant: 0&#9813;</div>
-			  </td>
-			  <td>
-				<div class="solvency">Solvency: <span id="solvencyVal">${solvency}</span>&tridot;</div>
-			  </td>
-			  <td>
-				<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Balance: <span id="balanceVal">${balance}</span>&tridot;</a></div>
-			  </td>  
-			</tr>
-		</tbody>
-	</table>
-	
 	<jsp:doBody/>
 </body>
 </html>
