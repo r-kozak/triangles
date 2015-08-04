@@ -46,8 +46,8 @@ public interface Consts {
     int LI_TERM_4 = 2;
 
     int K_DECREASE_REPAIR = 2; // коэф. уменьшения суммы ремонта
-    int K_DECREASE_CASH_L = 5; // коэф. уменьшения суммы поднятия уровня кассы
-    int K_DECREASE_PROP_L = 3; // коэф. уменьшения суммы поднятия уровня имущества
+    int K_DECREASE_CASH_L = 10; // коэф. уменьшения суммы поднятия уровня кассы
+    int K_DECREASE_PROP_L = 8; // коэф. уменьшения суммы поднятия уровня имущества
 
     // максимальные уровни
     int MAX_CASH_LEVEL = 5; // кассы
