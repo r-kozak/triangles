@@ -75,7 +75,8 @@ public class HomeController {
 	salaryPayment(currUserId); // выдача зп работникам
 
 	// статистика
-	model = Util.addBalanceToModel(model, trRep.getUserBalance(currUserId));
+	String userBalance = trRep.getUserBalance(currUserId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, currUserId));
 	model.addAttribute("rePrCo", rePrRep.allPrCount(false)); // колво предложений на рынке имущества
 	model.addAttribute("newRePrCo", rePrRep.allPrCount(true)); // новых предложений на рын.имущ.
 	model.addAttribute("ready", prRep.allPrCount(currUserId, true, false)); // колво готовых к сбору дохода
@@ -103,7 +104,10 @@ public class HomeController {
      */
     @RequestMapping(value = "/wiki", method = RequestMethod.GET)
     String wiki(User user, Model model) {
-	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	int currUserId = user.getId();
+	String userBalance = trRep.getUserBalance(currUserId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, currUserId));
+
 	// данные имущества
 	model.addAttribute("commBuData", buiDataRep.getCommBuildDataList());
 	// коэфициенты вместимости кассы

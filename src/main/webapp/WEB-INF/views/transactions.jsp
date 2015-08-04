@@ -60,7 +60,6 @@
 	<div class="content">
 		<div class="tranBlock">
 		<h1 align="center">Транзакции</h1>
-		<h3 align="right">Состоятельность: <fmt:formatNumber type="number" maxFractionDigits="3" value="${solvency}"/>&tridot;</h3>
 				<c:if test="${!empty transacs}">
 				<div id="actionBlock">
 					<a class="support-hover" onclick="document.searchForm.showAll.value='true'; document.searchForm.submit();" >

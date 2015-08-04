@@ -5,8 +5,8 @@ package com.kozak.triangles.interfaces;
  */
 public interface Consts {
     // кредитные и депозитные ставки (месячная, НЕ %)
-    double CREDIT_RATE = 7.66 / 100;
-    double DEPOSIT_RATE = 3.375 / 100;
+    double CREDIT_RATE = 20.0 / 100;
+    double DEPOSIT_RATE = 15.0 / 100;
 
     // daily bonus by day number
     int[] DAILY_BONUS_SUM = { 0, 20, 50, 200, 400, 1000 };

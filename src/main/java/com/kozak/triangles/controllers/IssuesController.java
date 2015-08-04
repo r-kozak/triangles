@@ -59,8 +59,9 @@ public class IssuesController {
 	    totalSum += tr.getSum();
 	}
 
-	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
-	model.addAttribute("solvency", Util.getSolvency(trRep, prRep, user.getId()));
+	int currUserId = user.getId();
+	String userBalance = trRep.getUserBalance(currUserId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, currUserId));
 	model.addAttribute("transacs", transacs);
 	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
 	model.addAttribute("articles", SearchCollections.getArticlesCashFlow());

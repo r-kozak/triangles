@@ -63,7 +63,9 @@ public class PropertyController {
      */
     @RequestMapping(method = RequestMethod.GET)
     String propertyGET(@ModelAttribute("user") User user, Model model) {
-	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	int currUserId = user.getId();
+	String userBalance = trRep.getUserBalance(currUserId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, currUserId));
 	return "property";
     }
 
@@ -93,7 +95,9 @@ public class PropertyController {
 
 	reps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
 
-	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	int currUserId = user.getId();
+	String userBalance = trRep.getUserBalance(currUserId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, currUserId));
 	model.addAttribute("reps", reps);
 	model.addAttribute("types", SearchCollections.getCommBuildTypes());
 	model.addAttribute("areas", SearchCollections.getCityAreas());
@@ -250,7 +254,8 @@ public class PropertyController {
 	cps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
 	cps.setDepreciation(rangeValues.get(2), rangeValues.get(3)); // установка мин и макс износа
 
-	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	String userBalance = trRep.getUserBalance(userId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId));
 	model.addAttribute("cps", cps);
 	model.addAttribute("comProps", dbResult.get(1));
 	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
@@ -281,7 +286,8 @@ public class PropertyController {
 	    return "redirect:/commerc-pr";
 	}
 
-	model = Util.addBalanceToModel(model, trRep.getUserBalance(user.getId()));
+	String userBalance = trRep.getUserBalance(userId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId));
 	model.addAttribute("prop", prop);
 	// добавим вид деятельности
 	// получить данные всех коммерческих строений
@@ -431,7 +437,7 @@ public class PropertyController {
 		if (userSolvency <= 0) {
 		    putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
 		} else {
-		    repair(resultJson, prop, newDeprPerc, newSellingPrice, userMoney, repairSum);
+		    repair(resultJson, prop, newDeprPerc, newSellingPrice, userMoney, repairSum, userId);
 		}
 	    } else if (type.equals("info")) {
 		if (userSolvency <= 0) {
@@ -469,7 +475,7 @@ public class PropertyController {
      */
     @SuppressWarnings("unchecked")
     private void repair(JSONObject resultJson, Property prop, Double deprPercent, long sellPrice, long userMoney,
-	    long repairSum) {
+	    long repairSum, int userId) {
 	prop.setDepreciationPercent(deprPercent);
 	prop.setSellingPrice(sellPrice);
 	// если данное имущество НЕ valid на момент ремонта - установить
@@ -487,13 +493,14 @@ public class PropertyController {
 
 	resultJson.put("error", false);
 	resultJson.put("percAfterRepair", deprPercent);
-	addBalanceData(resultJson, repairSum, userMoney);
+	addBalanceData(resultJson, repairSum, userMoney, userId);
     }
 
     @SuppressWarnings("unchecked")
-    private void addBalanceData(JSONObject resultJson, long sum, long userMoney) {
+    private void addBalanceData(JSONObject resultJson, long sum, long userMoney, int userId) {
 	resultJson.put("changeBal", "-" + sum);
 	resultJson.put("newBalance", userMoney - sum);
+	resultJson.put("newSolvency", Util.getSolvency(String.valueOf(userMoney - sum), prRep, userId));
     }
 
     /**
@@ -678,7 +685,7 @@ public class PropertyController {
 	    putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
 	}
 
-	addBalanceData(resultJson, sum, currBal);
+	addBalanceData(resultJson, sum, currBal, userId);
 	resultJson.put("currLevel", nCashLevel);
 	resultJson.put("nextSum", nextSum); // сумма след. повышения
     }
@@ -712,7 +719,7 @@ public class PropertyController {
 	    putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
 	}
 
-	addBalanceData(resultJson, sum, currBal);
+	addBalanceData(resultJson, sum, currBal, userId);
 	resultJson.put("currLevel", nPropLevel);
 	resultJson.put("nextSum", nextSum); // сумма след. повышения
     }
