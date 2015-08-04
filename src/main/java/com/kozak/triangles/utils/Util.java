@@ -20,9 +20,12 @@ import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
 
 public class Util {
-    public static Model addBalanceToModel(Model model, String userBalance) {
+    public static Model addBalanceToModel(Model model, String userBalance, String userSolvency) {
 	String balance = moneyFormat(Long.valueOf(userBalance));
-	return model.addAttribute("balance", balance);
+	String solvency = moneyFormat(Long.valueOf(userSolvency));
+	 model.addAttribute("solvency", solvency);
+	 model.addAttribute("balance", balance);
+	return model;
     }
 
     public static String moneyFormat(Number sum) {
@@ -121,6 +124,11 @@ public class Util {
 
     public static long getSolvency(TransactionRep trRep, PropertyRep prRep, int userId) {
 	long userMoney = Long.parseLong(trRep.getUserBalance(userId));
+	long sellSum = prRep.getSellingSumAllPropByUser(userId) / 2;// (ост. стоим. всего имущества юзера / 2)
+	return userMoney + sellSum;
+    }
+	
+	public static long getSolvency(long userMoney, PropertyRep prRep, int userId) {
 	long sellSum = prRep.getSellingSumAllPropByUser(userId) / 2;// (ост. стоим. всего имущества юзера / 2)
 	return userMoney + sellSum;
     }
