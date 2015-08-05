@@ -266,8 +266,11 @@ public class HomeController {
 	    // генерируем предложения
 	    ProposalGenerator pg = new ProposalGenerator();
 	    ArrayList<RealEstateProposal> result = pg.generateProposalsREMarket(activeUsers, mapData);
-	    for (RealEstateProposal prop : result) {
-		rePrRep.addREproposal(prop);
+	    while (result.isEmpty()) {
+		result = pg.generateProposalsREMarket(activeUsers, mapData);
+		for (RealEstateProposal prop : result) {
+		    rePrRep.addREproposal(prop);
+		}
 	    }
 	}
 	// если пришла дата след. генерации, значит нужно генерить новую

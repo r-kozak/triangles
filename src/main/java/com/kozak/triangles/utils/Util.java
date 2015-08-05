@@ -87,7 +87,7 @@ public class Util {
 	    for (int i = 0; i < calcC; i++) {
 		// згенерить и приплюсовать к кассе значение прибыли !!! учитывая район и уровень имущества!!!
 		long gen = Math.round(pg.generateRandNum(pMin, pMax) * Consts.UNIVERS_K[pLevel]); // коэф. уровня
-		gen += gen * Util.getAreaPercent(p.getCityArea()) / 100; // процент района
+		gen += Math.round(gen * Util.getAreaPercent(p.getCityArea()) / 100); // процент района
 		cash += gen;
 	    }
 
