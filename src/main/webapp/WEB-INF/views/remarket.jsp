@@ -32,73 +32,66 @@
 	<!-- Задний прозрачный фон-->
 	<div id="wrap"></div>
 
-	<div id="menu">
-	<div id="menuTitle">Меню</div>
-		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property">Упр. имуществом</a>
+<t:menu>
+	<form:form id="searchForm" method="GET" commandName="reps">
+		<div id="searchWrap">
+		<div id="menuTitle">Поиск</div>
+			<fieldset id = "searchBlock">
+			<legend>Разм. начало</legend>
+				<div id="searchEl">
+					<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="appearDateFrom"/>
+				</div>
+				<div id="searchEl">
+					<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="appearDateTo"/>
+				</div>
+			</fieldset>
+			
+			<fieldset id = "searchBlock">
+			<legend>Разм. конец</legend>
+				<div id="searchEl">
+					<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="lossDateFrom"/>
+				</div>
+				<div id="searchEl">
+					<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="lossDateTo"/>
+				</div>
+			</fieldset>
+			
+			<fieldset id = "searchBlock"> 
+			<legend>Район</legend>
+				<div id="searchEl">
+					<form:checkboxes path="areas" items="${areas}"/>      
+				</div>
+			</fieldset>
+			
+			<fieldset id = "searchBlock"> 
+			<legend>Тип</legend>
+				<div id="searchEl">
+					<form:checkboxes path="types" items="${types}"/>      
+				</div>
+			</fieldset>
+			
+			<fieldset id = "searchBlock">
+			<legend>Цена, &tridot;</legend>
+				<div id="searchEl">
+					<input type="text" class="value_lab" id="pr_lab_fr" readonly>
+					<input type="text" class="value_lab" id="pr_lab_to" readonly style="float:right; text-align:right">
+					<div class="slider" id="price-slider"></div>
+					
+					<form:input id="pr_from" class="textInp2" hidden="true" path="priceFrom"></form:input>
+					<form:input id="pr_to" class="textInp2"  hidden="true" path="priceTo"></form:input>
+				</div>
+			</fieldset>
+
+			<form:checkbox id="needClear" path="needClear" hidden="true"/>
+			<input id="page" path="page" name="page" value="1" hidden="true" >
 		</div>
-		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property/commerc-pr">Моё коммерческое</a>
+		<div id="searchEl">
+			<input id="searchSubmit" type="submit" name="submit1" value="Искать">
+			<input id="searchSubmit" class="submClear" title="Очистить" type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
 		</div>
-		
-		<form:form id="searchForm" method="GET" commandName="reps">
-			<div id="searchWrap">
-			<div id="menuTitle">Поиск</div>
-				<fieldset id = "searchBlock">
-				<legend>Разм. начало</legend>
-					<div id="searchEl">
-						<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="appearDateFrom"/>
-					</div>
-					<div id="searchEl">
-						<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="appearDateTo"/>
-					</div>
-				</fieldset>
-				
-				<fieldset id = "searchBlock">
-				<legend>Разм. конец</legend>
-					<div id="searchEl">
-						<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="lossDateFrom"/>
-					</div>
-					<div id="searchEl">
-						<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="lossDateTo"/>
-					</div>
-				</fieldset>
-				
-				<fieldset id = "searchBlock"> 
-				<legend>Район</legend>
-					<div id="searchEl">
-						<form:checkboxes path="areas" items="${areas}"/>      
-					</div>
-				</fieldset>
-				
-				<fieldset id = "searchBlock"> 
-				<legend>Тип</legend>
-					<div id="searchEl">
-						<form:checkboxes path="types" items="${types}"/>      
-					</div>
-				</fieldset>
-				
-				<fieldset id = "searchBlock">
-				<legend>Цена, &tridot;</legend>
-					<div id="searchEl">
-						<input type="text" class="value_lab" id="pr_lab_fr" readonly>
-						<input type="text" class="value_lab" id="pr_lab_to" readonly style="float:right; text-align:right">
-						<div class="slider" id="price-slider"></div>
-						
-						<form:input id="pr_from" class="textInp2" hidden="true" path="priceFrom"></form:input>
-						<form:input id="pr_to" class="textInp2"  hidden="true" path="priceTo"></form:input>
-					</div>
-				</fieldset>
-	
-				<form:checkbox id="needClear" path="needClear" hidden="true"/>
-				<input id="page" path="page" name="page" value="1" hidden="true" >
-			</div>
-			<div id="searchEl">
-				<input id="searchSubmit" type="submit" name="submit1" value="Искать">
-				<input id="searchSubmit" class="submClear" title="Очистить" type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
-			</div>
-		</form:form>
-	</div>
+	</form:form>
+</t:menu>
+
 	<div class="content">
 		<div class="tranBlock">
 			<h1 align="center">Рынок недвижимости</h1>

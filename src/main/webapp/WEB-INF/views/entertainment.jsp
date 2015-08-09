@@ -74,15 +74,7 @@
 <t:template>
 <div id="menu">
 <div id="menuTitle">Меню</div>
-		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property">Упр. имуществом</a>
-		</div>
-		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
-		</div>
-		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property/commerc-pr">Моё коммерческое</a>
-		</div>
+		<t:menu/>
 
 	<form:form id="forma" method="GET" commandName="tf">
 		<div id="searchWrap">

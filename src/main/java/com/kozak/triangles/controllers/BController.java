@@ -22,19 +22,14 @@ import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @Controller
-public class IssuesController {
+public class BController {
     @Autowired
     private TransactionRep trRep;
+
     @Autowired
     private PropertyRep prRep;
 
-    @RequestMapping(value = "/issues", method = RequestMethod.GET)
-    String propertyGET() {
-	return "issues";
-    }
-
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/transactions", method = RequestMethod.GET)
+    @RequestMapping(value = "/bt", method = RequestMethod.GET)
     String transactionsGET(Model model, User user, TransactSearch ts) throws ParseException {
 	if (ts.isNeedClear())
 	    ts.clear();
@@ -68,6 +63,6 @@ public class IssuesController {
 	model.addAttribute("transfers", SearchCollections.getTransferTypes());
 	model.addAttribute("totalSum", totalSum);
 
-	return "transactions";
+	return "b_transactions";
     }
 }

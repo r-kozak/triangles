@@ -52,62 +52,56 @@
 
 <title>Коммерческое имущество</title>
 <t:template>
-	<div id="menu">
-	<div id="menuTitle">Меню</div>
-		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property">Упр. имуществом</a>
+
+<t:menu>
+	<form:form id="searchForm" method="GET" commandName="cps">
+		<div id="searchWrap">
+		<div id="menuTitle">Поиск</div>
+			<fieldset id = "searchBlock">
+				<form:input class="textInp" type="text" path="name" placeholder="Наименование"></form:input>
+			</fieldset>
+			
+			<fieldset id = "searchBlock"> 
+			<legend>Тип</legend>
+				<div id="searchEl">
+					<form:checkboxes path="types" items="${types}"/>      
+				</div>
+			</fieldset>
+			
+			<fieldset id = "searchBlock">
+			<legend>Цена продажи, &tridot;</legend>
+				<div id="searchEl">
+					<input type="text" class="value_lab" id="sell_pr_lab_fr" readonly>
+					<input type="text" class="value_lab" id="sell_pr_lab_to" readonly style="float:right; text-align:right">
+					<div class="slider" id="sell_price-slider"></div>
+					
+					<form:input id="sell_pr_from" class="textInp2" hidden="true" path="sellPriceFrom"></form:input>
+					<form:input id="sell_pr_to" class="textInp2"  hidden="true" path="sellPriceTo"></form:input>
+				</div>
+			</fieldset>
+			
+			<fieldset id = "searchBlock">
+			<legend>Износ, %</legend>
+				<div id="searchEl">
+					<input type="text" class="value_lab" id="depr_lab_fr" readonly>
+					<input type="text" class="value_lab" id="depr_lab_to" readonly style="float:right; text-align:right">
+					<div class="slider" id="depreciation-slider"></div>
+					
+					<form:input id="depr_from" hidden="true" path="depreciationFrom"></form:input>
+					<form:input id="depr_to" hidden="true" path="depreciationTo"></form:input>
+				</div>
+			</fieldset>
+
+			<form:checkbox id="needClear" path="needClear" hidden="true"/>
+			<input id="page" path="page" name="page" value="1" hidden="true" >
 		</div>
-		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
+		<div id="searchEl">
+			<input id="searchSubmit" type="submit" name="submit1" value="Искать">
+			<input id="searchSubmit" class="submClear" title="Очистить" type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
 		</div>
-		
-		<form:form id="searchForm" method="GET" commandName="cps">
-			<div id="searchWrap">
-			<div id="menuTitle">Поиск</div>
-				<fieldset id = "searchBlock">
-					<form:input class="textInp" type="text" path="name" placeholder="Наименование"></form:input>
-				</fieldset>
-				
-				<fieldset id = "searchBlock"> 
-				<legend>Тип</legend>
-					<div id="searchEl">
-						<form:checkboxes path="types" items="${types}"/>      
-					</div>
-				</fieldset>
-				
-				<fieldset id = "searchBlock">
-				<legend>Цена продажи, &tridot;</legend>
-					<div id="searchEl">
-						<input type="text" class="value_lab" id="sell_pr_lab_fr" readonly>
-						<input type="text" class="value_lab" id="sell_pr_lab_to" readonly style="float:right; text-align:right">
-						<div class="slider" id="sell_price-slider"></div>
-						
-						<form:input id="sell_pr_from" class="textInp2" hidden="true" path="sellPriceFrom"></form:input>
-						<form:input id="sell_pr_to" class="textInp2"  hidden="true" path="sellPriceTo"></form:input>
-					</div>
-				</fieldset>
-				
-				<fieldset id = "searchBlock">
-				<legend>Износ, %</legend>
-					<div id="searchEl">
-						<input type="text" class="value_lab" id="depr_lab_fr" readonly>
-						<input type="text" class="value_lab" id="depr_lab_to" readonly style="float:right; text-align:right">
-						<div class="slider" id="depreciation-slider"></div>
-						
-						<form:input id="depr_from" hidden="true" path="depreciationFrom"></form:input>
-						<form:input id="depr_to" hidden="true" path="depreciationTo"></form:input>
-					</div>
-				</fieldset>
-	
-				<form:checkbox id="needClear" path="needClear" hidden="true"/>
-				<input id="page" path="page" name="page" value="1" hidden="true" >
-			</div>
-			<div id="searchEl">
-				<input id="searchSubmit" type="submit" name="submit1" value="Искать">
-				<input id="searchSubmit" class="submClear" title="Очистить" type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
-			</div>
-		</form:form>
-	</div>
+	</form:form>
+</t:menu>
+
 	<div class="content">
 		<div class="tranBlock">
 			<h1 align="center">Коммерческое имущество</h1>

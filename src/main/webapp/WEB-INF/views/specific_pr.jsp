@@ -245,18 +245,7 @@
 	<!-- Задний прозрачный фон-->
 	<div id="wrap"></div>
 
-	<div id="menu">
-	<div id="menuTitle">Меню</div>
-		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property">Упр. имуществом</a>
-		</div>
-		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
-		</div>
-		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property/commerc-pr">Моё коммерческое</a>
-		</div>
-	</div>
+	<t:menu/>
 	
 	<div class="content">
 		<div class="tranBlock">

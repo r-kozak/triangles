@@ -6,6 +6,8 @@
 
 <title>Транзакции</title>
 
+<link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/css/bootstrap.min.css'>
+
 <t:template>
 <t:menu>
 	<form:form id="searchForm" name="searchForm" method="GET" commandName="ts">
@@ -47,16 +49,21 @@
 	</form:form>
 </t:menu>
 
-	<div class="content">
+
 		<div class="tranBlock">
-		<h1 align="center">Транзакции</h1>
+
 				<c:if test="${!empty transacs}">
 				<div id="actionBlock">
 					<a class="support-hover" onclick="document.searchForm.showAll.value='true'; document.searchForm.submit();" >
 						<p class="button small bRed"><span>Показать все</span></p> <span class="tip">Показать все транзакции с текущими фильтрами</span>
 					</a>
 				</div>
-			<table class="beaTable">
+<div class="panel panel-default">
+	<div class="panel-heading"><h4>Транзакции</h4></div>
+	  <div class="panel-body">
+	    <p>Это транзакции</p>
+	  </div>
+			<table class="table">
 				<tr>
 					<td>Дата</td>
 					<td>Статья затрат</td>
@@ -120,10 +127,14 @@
 					</tr>
 				</c:if>
 			</table>
+		</div>
 	
 			<div class="pagination">
 				<ul>${tagNav}</ul>
 			</div>
 		</div>
-	</div>
+
+	
+	<script type="text/javascript" src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="webjars/jquery/2.1.4/jquery.min.js"></script>
 </t:template>
