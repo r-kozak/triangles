@@ -585,15 +585,13 @@ p {
 			
 			<div id="ba.db" class="sp_point fs2">Дневной бонус</div>
 			<div class="text">
-			<p>Каждый день при первом посещении начисляется бонус за вход в игру. Заходя в игру <u>регулярно</u> в течении 5-ти дней, бонус
-			  увеличивается. Если за первый день начисляется ${firDB}&tridot;, то за 5-й день уже ${fifDB}&tridot;.
+			<p>Каждый день при первом посещении начисляется бонус за вход в игру. Заходя в игру <u>регулярно</u> в течении 10-ти дней, бонус
+			  увеличивается. Если за первый день начисляется ${dailyBonus[1]}&tridot;, то за 10-й день уже ${dailyBonus[10]}&tridot;.
 			<p><b>Размеры бонуса:</b>
 			   <ul>
-					<li>День 1 = ${firDB}&tridot;</li>
-					<li>День 2 = ${secDB}&tridot;</li>
-					<li>День 3 = ${thiDB}&tridot;</li>
-					<li>День 4 = ${fouDB}&tridot;</li>
-					<li>День 5 = ${fifDB}&tridot;</li>
+			   		<c:forEach items="${dailyBonus}" var="dailySum" varStatus="i" begin="1" end="10">
+			   				<li>День ${i.count} = ${dailySum}&tridot;</li>
+			   		</c:forEach>
 			  	</ul>
 			<p>После пятого дня цыкл обновляется и начисление начинается с дня 1. Если хотя бы один день в цикле пропущен, начисление 
 			  тоже начинается с дня 1. 
@@ -640,11 +638,11 @@ p {
 					<tr>
 						<td><b>k</b></td>
 						<td>1</td>
-						<td>${uc1}</td>
-						<td>${uc2}</td>
-						<td>${uc3}</td>
-						<td>${uc4}</td>
-						<td>${uc5}</td>
+						<td>${univCoef[1]}</td>
+						<td>${univCoef[2]}</td>
+						<td>${univCoef[3]}</td>
+						<td>${univCoef[4]}</td>
+						<td>${univCoef[5]}</td>
 					</tr>
 				</table>
 			</div>

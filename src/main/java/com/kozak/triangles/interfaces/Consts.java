@@ -9,7 +9,7 @@ public interface Consts {
     double DEPOSIT_RATE = 15.0 / 100;
 
     // daily bonus by day number
-    int[] DAILY_BONUS_SUM = { 0, 20, 50, 200, 400, 1000 };
+    int[] DAILY_BONUS_SUM = { 0, 125, 250, 500, 1000, 1800, 2900, 4000, 6000, 12000, 15000 };
 
     // количество элементов на страницу
     int ROWS_ON_PAGE = 12;
