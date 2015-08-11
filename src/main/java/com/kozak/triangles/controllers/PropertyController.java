@@ -665,7 +665,7 @@ public class PropertyController {
 	prRep.updateProperty(prop);
 
 	// снять деньги
-	String descr = String.format("Улучшение кассы до уровня: %s. Касса имущества: %s", nCashLevel, prop.getName());
+	String descr = String.format("Улучшение кассы до уровня: %s. Касса им-ва: %s", nCashLevel, prop.getName());
 	long currBal = Long.parseLong(trRep.getUserBalance(userId));
 	Transaction tr = new Transaction(descr, new Date(), sum, TransferT.SPEND, userId, currBal - sum,
 		ArticleCashFlowT.UP_CASH_LEVEL);
@@ -699,7 +699,7 @@ public class PropertyController {
 	prRep.updateProperty(prop);
 
 	// снять деньги
-	String descr = String.format("Улучшение имущества: %s до уровня: %s", prop.getName(), nPropLevel);
+	String descr = String.format("Улучшение им-ва: %s до уровня: %s", prop.getName(), nPropLevel);
 	long currBal = Long.parseLong(trRep.getUserBalance(userId));
 	Transaction tr = new Transaction(descr, new Date(), sum, TransferT.SPEND, userId, currBal - sum,
 		ArticleCashFlowT.UP_PROP_LEVEL);

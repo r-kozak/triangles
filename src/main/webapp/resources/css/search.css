@@ -14,6 +14,7 @@
 }
 #searchEl span label{
 	margin-left:5;
+	font-weight: normal;
 }
 .dateEl{
 	width: 125;
@@ -25,19 +26,7 @@
 	display: inline-block;
 }
 #searchSubmit {
-  height: 28;
-  width: 155;
-  background: transparent;
-  border: 3px solid rgb(110, 110, 110);
-  margin-top: 10;
-  font-weight: bold;
-  font-size: 15;
-  display: inline-block;
-}
-#searchSubmit:hover {
-  border-color: black;
-  color: red;
-  cursor: pointer; 
+  width: 162;
 }
 .submClear {
 	 width: 40 !important;
@@ -49,6 +38,12 @@
 legend {
   color:red;
   font-size:14px;
+  margin:0;
+  width: auto;
+  border-bottom: 0;
+}
+fieldset {
+	border: 1px solid lightgray;
 }
 #selectEl {
   width: 184;

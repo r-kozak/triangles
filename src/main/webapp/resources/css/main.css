@@ -60,7 +60,7 @@ body {
 .status {
 	background: darkturquoise;
 	width: 100%;
-	height: 30px;
+	height: auto;
 	margin-top: 50px;
 	color: azure;
 	position: fixed;
@@ -82,7 +82,7 @@ body {
 	border: 2px solid;
 	border-color: darkturquoise;
 	border-bottom: none;
-	width: 890px;
+	width: 100%;
 	background: white;
 }
 
@@ -100,7 +100,10 @@ body {
 }
 
 .tranBlock {
-	margin-top: 110px;
+	margin-top: 80px;
+	display: inline-block;
+	min-width: 83%;
+	max-width: 83%;
 }
 
 #balChan {
@@ -164,11 +167,4 @@ body {
 	font-family: 'Arial Black', Gadget, sans-serif;
 	border: 4px dashed #D8D8D8;
 	z-index: 200;
-}
-/*блок с кпопками действий над таблицей*/
-#actionBlock {
-	text-align: right;
-	margin: 20 5 -20 5;
-	padding: 15 0 5 0;
-	box-shadow: inset 0 7px 11px -10px rgba(200, 0, 0, 0.6);
 }

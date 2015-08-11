@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
-import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.search.TransactSearch;
-import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
@@ -37,15 +35,15 @@ public class BController {
 
 	int page = Integer.parseInt(ts.getPage());
 	// результат с БД [количество всего; транзакции с учетом пагинации]
-	List<Object> dbResult = trRep.transList(page, user.getId(), ts, ts.isShowAll());
+	List<Object> dbResult = trRep.transList(page, user.getId(), ts, /* ts.isShowAll() */true);
 
-	Long transCount = Long.valueOf(dbResult.get(0).toString());
+	// Long transCount = Long.valueOf(dbResult.get(0).toString());
 
-	int lastPageNumber = 1;
-	if (!ts.isShowAll()) { // если показать транзакции НЕ ВСЕ (с пагинацией_
-	    lastPageNumber = (int) (transCount / Consts.ROWS_ON_PAGE)
-		    + ((transCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
-	}
+	// int lastPageNumber = 1;
+	// if (!ts.isShowAll()) { // если показать транзакции НЕ ВСЕ (с пагинацией_
+	// lastPageNumber = (int) (transCount / Consts.ROWS_ON_PAGE)
+	// + ((transCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+	// }
 	List<Transaction> transacs = (List<Transaction>) dbResult.get(1);
 
 	// total sum
@@ -58,7 +56,7 @@ public class BController {
 	String userBalance = trRep.getUserBalance(currUserId);
 	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, currUserId));
 	model.addAttribute("transacs", transacs);
-	model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
+	// model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
 	model.addAttribute("articles", SearchCollections.getArticlesCashFlow());
 	model.addAttribute("transfers", SearchCollections.getTransferTypes());
 	model.addAttribute("totalSum", totalSum);

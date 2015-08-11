@@ -1,18 +1,18 @@
 
 #menu {
   margin: 0 7 0;
-  background: rgb(236, 236, 236);
-  padding-top: 176; 
+  float: left;
+  padding-top: 105; 
+  display: inline-block;
 }
 
 #elMenu > a {
-  height: 45;
   width: 195;
   display: block;
   padding: 10 0 10 5;
   text-decoration: none;
   color: black;
-  font-size: 16;
+  font-size: 14px;
 }
 
 #elMenu > a:hover {
