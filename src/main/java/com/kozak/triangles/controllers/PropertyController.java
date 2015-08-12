@@ -237,8 +237,9 @@ public class PropertyController {
         // ]
         List<Object> rangeValues = prRep.getRangeValues(userId);
 
-        Long propCount = Long.valueOf(dbResult.get(0).toString());
-        int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+        // Long propCount = Long.valueOf(dbResult.get(0).toString());
+        // int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 :
+        // 0);
 
         cps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
         cps.setDepreciation(rangeValues.get(2), rangeValues.get(3)); // установка мин и макс износа
@@ -247,7 +248,7 @@ public class PropertyController {
         model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId));
         model.addAttribute("cps", cps);
         model.addAttribute("comProps", dbResult.get(1));
-        model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
+        // model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
         model.addAttribute("types", SearchCollections.getCommBuildTypes());
         model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);
 
@@ -257,7 +258,7 @@ public class PropertyController {
             model.addAttribute("changeBal", cash);
         }
 
-        return "commerc_pr";
+        return "b_commerc_pr";
     }
 
     /**

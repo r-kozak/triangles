@@ -6,8 +6,8 @@
 
 <title>Транзакции</title>
 
-<link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/css/bootstrap.min.css'>
-<link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/datatables/1.10.7/css/jquery.dataTables.min.css'>
+<%-- <link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/css/bootstrap.min.css'> --%>
+<%-- <link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/datatables/1.10.7/css/jquery.dataTables.min.css'> --%>
 
 <t:template>
 <div class="content">
@@ -128,11 +128,6 @@
 						<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${transac.balance}"/></td>
 					</tr>
 				</c:forEach>
-<%-- 				<tr> --%>
-<%-- 					<td colspan="4" style="text-align: left; font-weight:bold;">Всего:</td> --%>
-<%-- 					<td style="font-weight:bold;"><fmt:formatNumber type="number" maxFractionDigits="3" value="${totalSum}"/></td> --%>
-<%-- 					<td>―</td> --%>
-<%-- 				</tr> --%>
 			  </tbody>
 		</table>
 		
@@ -148,7 +143,6 @@
 </div> <!-- content -->
 
 
-<script type="text/javascript" src="webjars/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript" src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
 

@@ -117,8 +117,9 @@
 											<p class="button small bRed"><span>Собрать всё</span></p> <span class="tip">Собрать доход со всего имущества</span>
 					</a>
 				</div>
-				<table class="table table-striped table-bordered">
-					<tr>
+				<table class="table table-striped table-bordered" id="prop_table">
+				<thead>
+					<tr class="info">
 						<td>Тип</td>
 						<td>Наимено- вание</td>
 						<td>Уровень</td>
@@ -128,7 +129,8 @@
 						<td>Касса, &tridot;</td>
 						<td>Собрать доход</td>
 					</tr>
-	
+				<thead>
+				<tbody>
 					<c:forEach items="${comProps}" var="prop">
 						<tr>
 							<c:choose>
@@ -168,11 +170,23 @@
 								</c:choose>
 
 							<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
-							<td>${prop.depreciationPercent}<progress max="100"
-									value="${prop.depreciationPercent}"></td>
-							<td>${prop.cash} / ${prop.cashCapacity}<progress
-									max="${prop.cashCapacity}" value="${prop.cash}"></td>
-	
+							<td>
+									
+								<div class="progress">
+  									<div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="${prop.depreciationPercent}" aria-valuemin="0" aria-valuemax="100" 
+  										style="width: ${prop.depreciationPercent}%; min-width: 2em;">${prop.depreciationPercent}
+  									</div>
+								</div>
+							</td>
+							<td>
+								<div style="text-align:center">
+									<div>${prop.cash} / ${prop.cashCapacity}</div>
+								</div>
+								<div class="progress">
+								  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="${prop.cash}" aria-valuemin="0" aria-valuemax="${prop.cashCapacity}" 
+								  		style="width: ${prop.cashCapacity / prop.cash * 100}%;"></div>
+								</div>
+							</td>
 							<td align="center">
 								<c:if test="${prop.cash > 0}">
 									<a class="support-hover" href="${pageContext.request.contextPath}/property/get-cash/${prop.id}">
@@ -182,12 +196,9 @@
 							</td>
 						</tr>
 					</c:forEach>
+				</tbody>
 				</table>
 			</c:if>
-	
-			<div class="pagination">
-				<ul>${tagNav}</ul>
-			</div>
 		</div>
 	</div>
 	<div id="balChan">
@@ -200,4 +211,18 @@
 			</c:when>
 		</c:choose>
 	</div>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
+    $('[data-toggle="collapse"]').collapse(); // для сворачивания блоков
+  
+    //красивая табличка
+    $('#prop_table').dataTable(); // сделать сортировку, пагинацию, поиск
+});
+</script>
+
 </t:template>
