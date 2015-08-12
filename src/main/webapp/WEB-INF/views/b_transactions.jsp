@@ -7,7 +7,7 @@
 <title>Транзакции</title>
 
 <link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/css/bootstrap.min.css'>
-<link rel='stylesheet' href='//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css'>
+<link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/datatables/1.10.7/css/jquery.dataTables.min.css'>
 
 <t:template>
 <div class="content">
@@ -42,7 +42,6 @@
 
 			<form:checkbox id="needClear" path="needClear" hidden="true"/>
 			<input id="page" path="page" name="page" value="1" hidden="true">
-			<form:input id="showAll" path="showAll" name="showAll" value="" hidden="true"></form:input>
 		</div>
 		<div id="searchEl">
 			<button id="searchSubmit" class="btn btn-primary btn-sm" type="submit" name="submit1">Искать</button>
@@ -54,17 +53,18 @@
 <div class="tranBlock">
 	<c:if test="${!empty transacs}">
 				
-				
-	<h1 style="text-align:center;">Транзакции</h1>
-<div class="panel panel-default">
-	<div class="panel-body">
-		<p><a href="${pageContext.request.contextPath}/wiki#ba.tr">Транзакции</a> - это раздел, где можно посмотреть все операции, которые 
-	    повлияли на размер баланса.</p>	
-	</div>
-	  <div class="panel-heading">
-	    <a class="btn btn-default" data-toggle="tooltip" title="Показать все транзакции с текущими фильтрами" 
-	    onclick="document.searchForm.showAll.value='true'; document.searchForm.submit();">Показать все</a>
-	  </div>
+		<h1 style="text-align:center;">Транзакции</h1>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+			    <button class="btn btn-default" data-toggle="collapse" data-target="#tr_descr" data-toggle="tooltip"
+			     title="Показать или скрыть подробное описание раздела Транзакции">Описание</button>
+			</div>
+			<div class="panel-body collapse" id="tr_descr">
+				<p><a href="${pageContext.request.contextPath}/wiki#ba.tr">Транзакции</a> - это раздел, где можно посмотреть все операции, которые 
+			    повлияли на размер баланса.</p>	
+			</div>
+		</div>
+
 		<table id="transTable" class="table table-striped table-bordered">
 	      <thead>
 			<tr class="info" style="font-weight:bold">
@@ -134,20 +134,38 @@
 <%-- 					<td>―</td> --%>
 <%-- 				</tr> --%>
 			  </tbody>
-			</c:if>
 		</table>
-	</div>
+		
+		<div class="panel panel-default" style="margin-top:5">
+			<div class="panel-body">
+			    <p class="text-right">Общая сумма операций по выбранным фильтрам: <b><fmt:formatNumber type="number" maxFractionDigits="3" 
+			    value="${totalSum}"/>&tridot;</b></p>
+			</div>
+		</div>
+		
+	</c:if>
 </div> <!-- tranBlock -->
 </div> <!-- content -->
 
+
 <script type="text/javascript" src="webjars/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript" src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+
+<!-- Сортировка даты -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+<script type="text/javascript" src="webjars/datatables-plugins/1.10.7/sorting/datetime-moment.js"></script>
 	
 <script>
 $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip(); 
-    $('#transTable').DataTable();
+    $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
+    $('[data-toggle="collapse"]').collapse(); // для сворачивания блоков
+  
+    //красивая табличка
+    $.fn.dataTable.moment('DD-MM-YYYY HH:mm:ss'); // сортировка даты в табличке
+    $('#transTable').dataTable( { // сделать сортировку, пагинацию, поиск
+        "order": [[ 0, "desc" ]]
+    } );
 });
 </script>
 </t:template>

@@ -1,9 +1,3 @@
-/*#content {
-	width: 900;
-	height: auto;
-	border: 1px solid;
-}*/
-
 #home_block {
 	width: 100%;
 	height: auto;
@@ -17,7 +11,7 @@
 	text-align: center;
 	padding: 12 0 12 0;
 	color: teal;
-	border-top: 2px solid rgb(181, 181, 255);
+	border-top: 2px solid rgb(0, 206, 209);
 }
 
 #control {
@@ -41,7 +35,7 @@
 	padding: 12 0 12 0;
 	text-align: center;
 	color: teal;
-	border-top: 2px solid rgb(181, 181, 255);
+	border-top: 2px solid rgb(0, 206, 209);
 }
 
 .statistic {
