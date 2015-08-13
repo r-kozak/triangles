@@ -6,9 +6,6 @@
 
 <title>Транзакции</title>
 
-<%-- <link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/css/bootstrap.min.css'> --%>
-<%-- <link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/datatables/1.10.7/css/jquery.dataTables.min.css'> --%>
-
 <t:template>
 <div class="content">
 <t:menu>
@@ -56,7 +53,7 @@
 		<h1 style="text-align:center;">Транзакции</h1>
 		<div class="panel panel-default">
 			<div class="panel-heading">
-			    <button class="btn btn-default" data-toggle="collapse" data-target="#tr_descr" data-toggle="tooltip"
+			    <button id="descr" class="btn btn-default" data-toggle="tooltip"  data-toggle="collapse" data-target="#tr_descr" 
 			     title="Показать или скрыть подробное описание раздела Транзакции">Описание</button>
 			</div>
 			<div class="panel-body collapse" id="tr_descr">
@@ -153,8 +150,15 @@
 <script>
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
-    $('[data-toggle="collapse"]').collapse(); // для сворачивания блоков
+    $('[data-toggle="collapse"]').collapse(); // свернуть блок с описанием
   
+  	//по клику на кнопку "Описание" - показать или скрыть описание
+    $("#descr").on("click",
+    		function(){
+    			$("#tr_descr").collapse('toggle');
+    		}
+    	);
+    
     //красивая табличка
     $.fn.dataTable.moment('DD-MM-YYYY HH:mm:ss'); // сортировка даты в табличке
     $('#transTable').dataTable( { // сделать сортировку, пагинацию, поиск
