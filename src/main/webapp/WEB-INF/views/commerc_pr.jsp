@@ -199,7 +199,7 @@
 									</div>
 								<div class="progress">
 								  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="${prop.cash}" aria-valuemin="0" aria-valuemax="${prop.cashCapacity}" 
-								  		style="width: ${prop.cashCapacity / prop.cash * 100}%;"></div>
+								  		style="width: ${prop.cash / prop.cashCapacity * 100}%;"></div> 
 								</div>
 							</td>
 							<td style="text-align:center">
