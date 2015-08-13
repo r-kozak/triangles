@@ -84,6 +84,8 @@ body {
 	border-bottom: none;
 	width: 99%;
 	background: white;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .wrapperNav {

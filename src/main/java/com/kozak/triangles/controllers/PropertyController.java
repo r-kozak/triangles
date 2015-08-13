@@ -42,7 +42,6 @@ import com.kozak.triangles.search.RealEstateProposalsSearch;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.SingletonData;
-import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
@@ -79,8 +78,10 @@ public class PropertyController {
         List<Object> dbResult = rePrRep.getREProposalsList(page, reps);
         List<RealEstateProposal> proposals = (List<RealEstateProposal>) dbResult.get(1);
 
-        Long propCount = Long.valueOf(dbResult.get(0).toString());
-        int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+        // пагинация не нужна
+        // Long propCount = Long.valueOf(dbResult.get(0).toString());
+        // int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 :
+        // 0);
 
         reps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
 
@@ -91,7 +92,7 @@ public class PropertyController {
         model.addAttribute("types", SearchCollections.getCommBuildTypes());
         model.addAttribute("areas", SearchCollections.getCityAreas());
         model.addAttribute("proposals", proposals);
-        model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
+        // model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
         model.addAttribute("marketEmpty", rePrRep.allPrCount(false) == 0);
 
         Map<String, Object> map = (Map<String, Object>) RequestContextUtils.getInputFlashMap(request);
@@ -251,6 +252,7 @@ public class PropertyController {
         // model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
         model.addAttribute("types", SearchCollections.getCommBuildTypes());
         model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);
+        model.addAttribute("ready", prRep.allPrCount(userId, true, false)); // колво готовых к сбору дохода
 
         // если собирали наличку с кассы - для информационного popup окна
         String cash = (String) model.asMap().getOrDefault("changeBal", "");
@@ -258,7 +260,7 @@ public class PropertyController {
             model.addAttribute("changeBal", cash);
         }
 
-        return "b_commerc_pr";
+        return "commerc_pr";
     }
 
     /**

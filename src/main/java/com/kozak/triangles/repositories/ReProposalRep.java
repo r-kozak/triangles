@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
-import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.search.RealEstateProposalsSearch;
 import com.kozak.triangles.utils.DateUtils;
 
@@ -91,9 +90,10 @@ public class ReProposalRep {
         List<Object> result = new ArrayList<Object>(2); // результат
         int totalCount = query.getResultList().size();// общее количество транзакций для пагинации
 
-        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
-        query.setFirstResult(firstResult);
-        query.setMaxResults(Consts.ROWS_ON_PAGE);
+        // пагинация не нужна
+        // int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+        // query.setFirstResult(firstResult);
+        // query.setMaxResults(Consts.ROWS_ON_PAGE);
 
         result.add(totalCount);
         result.add(query.getResultList());

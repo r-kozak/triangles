@@ -66,6 +66,6 @@ public class MoneyController {
         model.addAttribute("transfers", SearchCollections.getTransferTypes());
         model.addAttribute("totalSum", totalSum);
 
-        return "b_transactions";
+        return "transactions";
     }
 }

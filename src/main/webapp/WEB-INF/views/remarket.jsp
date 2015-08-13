@@ -32,6 +32,7 @@
 	<!-- Задний прозрачный фон-->
 	<div id="wrap"></div>
 
+<div class="content">
 <t:menu>
 	<form:form id="searchForm" method="GET" commandName="reps">
 		<div id="searchWrap">
@@ -86,13 +87,12 @@
 			<input id="page" path="page" name="page" value="1" hidden="true" >
 		</div>
 		<div id="searchEl">
-			<input id="searchSubmit" type="submit" name="submit1" value="Искать">
-			<input id="searchSubmit" class="submClear" title="Очистить" type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
+			<button id="searchSubmit" class="btn btn-primary btn-sm" type="submit" name="submit1">Искать</button>
+			<input id="submClear" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Очистить фильтр"  type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
 		</div>
 	</form:form>
 </t:menu>
 
-	<div class="content">
 		<div class="tranBlock">
 			<h1 align="center">Рынок недвижимости</h1>
 
@@ -107,15 +107,29 @@
 			</c:if>
 
 			<c:if test="${!empty proposals}">
-				<table class="beaTable">
-					<tr>
-						<td>Тип</td>
-						<td>Район города</td>
-						<td>Размещение</td>
-						<td>Конец размещения</td>
-						<td>Цена, &tridot;</td>
-						<td>Купить</td>
-					</tr>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+				    <button id="descr" class="btn btn-default" data-toggle="tooltip"  data-toggle="collapse" data-target="#pr_descr" 
+				     title="Показать или скрыть подробное описание раздела Рынок имущества">Описание</button>
+				</div>
+				<div class="panel-body collapse" id="pr_descr">
+					<p><a href="${pageContext.request.contextPath}/wiki#pr.ma">Рынок имущества</a> - это раздел, где можно купить коммерческое
+					имущество (магазины, супермаркеты, заводы, фабрики и т.д.). Рынок является глобальным, если вы купили имущество, для других
+					игроков оно станет недоступным.</p>	
+				</div>
+			</div>
+				<table id="prop_table" class="table table-striped">
+					<thead>
+						<tr class="info" style="font-weight:bold">
+							<td>Тип</td>
+							<td>Район города</td>
+							<td>Размещение</td>
+							<td>Конец размещения</td>
+							<td>Цена, &tridot;</td>
+							<td>Купить</td>
+						</tr>
+					</thead>
+					<tbody>
 				<c:forEach items="${proposals}" var="prop">
 					<tr>
 						<c:choose>
@@ -158,19 +172,14 @@
 
 						<td><fmt:formatNumber type="number" maxFractionDigits="3"
 								value="${prop.purchasePrice}" /></td>
-						<td><a class="support-hover"
-							href="${pageContext.request.contextPath}/property/buy/${prop.id}">
-								<p class="button small bRed">
-									<span>BUY</span>
-								</p>
-								<span class="tip">Купить</span>
-						</a></td>
+						<td>
+							<a class="btn btn-danger btn-lg" title="Купить имущество" data-toggle="tooltip" 
+								href="${pageContext.request.contextPath}/property/buy/${prop.id}">BUY</a>
+						</td>
 					</tr>
 				</c:forEach>
+				</tbody>
 			</table>
-			<div class="pagination">
-				<ul>${tagNav}</ul>
-			</div>
 			</c:if>
 		</div>
 	</div>
@@ -201,4 +210,31 @@
 			</c:when>
 		</c:choose>
 	</div>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+
+<!-- Сортировка даты -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables-plugins/1.10.7/sorting/datetime-moment.js"></script>
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
+    $('[data-toggle="collapse"]').collapse(); // свернуть блок с описанием
+  
+  	//по клику на кнопку "Описание" - показать или скрыть описание
+    $("#descr").on("click",
+    		function(){
+    			$("#pr_descr").collapse('toggle');
+    		}
+    	);
+    
+    //красивая табличка
+    $.fn.dataTable.moment('DD-MM-YYYY HH:mm'); // сортировка даты в табличке
+    $('#prop_table').dataTable( { // сделать сортировку, пагинацию, поиск
+        "order": [[ 0, "asc" ]]
+    } );
+});
+</script>
 </t:template>
