@@ -13,6 +13,7 @@
   cursor:default;
   display:none;
   margin-top: 15px;
+  margin-left: -300;
   position:absolute;
   text-align:center;
   width:360;
@@ -54,6 +55,14 @@
 	color:red;
 	font-size: 14;
 }
+#defaultCountdown {
+  width: 200;
+  margin-left:auto;
+  margin-right: auto;
+}
+.table tr td {
+	text-align: center !important;
+}
 </style>
 <script>
 	window.onload = function(){ 
@@ -64,7 +73,7 @@
 	    	document.getElementById('name').style.opacity = '0';
 	    	document.getElementById('NewNameInput').focus();
 	    	document.getElementById('NewNameInput').selectionStart = 
-	    		document.getElementById('NewNameInput').value.length;
+	    	 document.getElementById('NewNameInput').value.length;
 
 	    }
 	    
@@ -143,8 +152,8 @@
        			if(data.error) {
        				$("#prop_up_td").html('<h5>' + data.message + '</h5>');
        			} else {
-       				$("#prop_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;');
-       				
+       				$("#propUpBut").attr("data-original-title", 'Улучшить. Сумма: ' + data.nextSum);
+       				 
        				$('#propUpBut').on('click', function() {
     		            sendPostLevelUp("up", "prop");
     		            return false;
@@ -164,7 +173,7 @@
 		  			if(data.error) {
 		  				$("#cash_up_td").html('<h5>' + data.message + '</h5>');
 		  			} else {
-		  				$("#cash_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;');
+		  				$("#cashUpBut").attr("data-original-title", 'Улучшить. Сумма: ' + data.nextSum);
 		  				
 		  				$('#cashUpBut').on('click', function() {
 			            sendPostLevelUp("up", "cash");
@@ -199,15 +208,16 @@
 	       				changeBal(data);
 	       				
 	       				if(obj0 == "cash") {
-		       				$("#cash_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;'); // текст подсказки при наведении на кнопку
+		       				$("#cashUpBut").attr("data-original-title", 'Улучшить. Сумма: ' + data.nextSum); // текст подсказки при наведении на кнопку
 	       					$('#cash_level_td').html(data.currLevel); // сама надпись уровня
-	       					$('#cashBlock').html($('#cashVal').val() + ' / ' + data.cashCap); // 250 / 714
-	       					$('#cashVal').attr("max", data.cashCap); // установка максимального значения в кассе
+	       					$('#cashBlock').html($('#cashVal').attr("aria-valuenow") + ' / ' + data.cashCap); // 250 / 714
+	       					$('#cashVal').attr("aria-valuemax", data.cashCap); // установка максимального значения в кассе
+	       					$('#cashVal').attr("style", "width: " +  $('#cashVal').attr("aria-valuenow") / data.cashCap * 100 + "%"); // показать новую заполненность прогресс бара
 	       				} else if (obj0 == "prop") {
-	       					$("#prop_up_tip").html('Улучшить. Сумма:' + data.nextSum + '&tridot;'); // текст подсказки при наведении на кнопку
+	       					$("#propUpBut").attr("data-original-title", 'Улучшить. Сумма: ' + data.nextSum); // текст подсказки при наведении на кнопку
 	       					$('#prop_level_td').html(data.currLevel); // сама надпись уровня
 	       				}
-	       			}
+	       			} 
 	       	}); 
     	}
     }
@@ -245,24 +255,24 @@
 	<!-- Задний прозрачный фон-->
 	<div id="wrap"></div>
 
+<div class="content">
 	<t:menu/>
 	
-	<div class="content">
 		<div class="tranBlock">
 			<form:form name="property" action="operations/${prop.id}" commandName="prop" method="post">
 				<input type="hidden" name="action" id="action">
 			
 				<input id="NewNameInput" name="newName" type="text" value="${prop.name}" maxlength="25">
-				<p onclick="document.property.action.value='change_name'; document.property.submit();" 
-							id="but1" class="button small bGreen"><span>&#10004;</span></p>
+				<a class="btn btn-success" data-toggle="tooltip" title="Сохранить" 
+					onclick="document.property.action.value='change_name'; document.property.submit();" id="but1">
+					<span class="glyphicon glyphicon-floppy-disk"></span></a>
+
 				
+				<h1 id="name" align="center">${prop.name} <a id="hider" class="btn btn-info" data-toggle="tooltip" title="Переименовать">
+					<span class="glyphicon glyphicon-pencil"></span></a></h1>
 				
-				<h1 id="name" align="center">${prop.name} <a id="hider" class="support-hover">
-				<p class="button small bBlue"><span>&#9997;</span></p><span class="tip"><font size="2">Изменить</font></span></a></h1>
-				
-		
-				<table class="beaTable">
-					<tr>
+				<table class="table table-striped">
+					<tr class="info">
 						<td>Характеристика</td>
 						<td>Значение</td>
 						<td>Действие</td>
@@ -334,7 +344,7 @@
 						<td>
 							<div id="repair_td">
 								<c:if test="${prop.depreciationPercent > 0}">
-									<a id="repairBut" class="support-hover"><p class="button small bGreen"><span>Р</span></p><span class="tip">Ремонт</span></a>
+									<a id="repairBut" class="btn btn-danger" data-toggle="tooltip" title="Ремонт"><span class="glyphicon glyphicon-wrench"></span></a>
 								</c:if>
 								<c:if test="${prop.depreciationPercent == 0}">
 									<h5>Ремонт не нужен.</h5>
@@ -347,8 +357,7 @@
 						<td id="prop_level_td">${prop.level}</td>
 						<td>
 							<div id="prop_up_td">
-								<a id="propUpBut" class="support-hover""><p class="button small bPurple"><span>↑</span></p>
-								<span class="tip" id="prop_up_tip">Улучшить</span></a>
+								<a id="propUpBut" class="btn btn-success" data-toggle="tooltip" title="Улучшить"><span class="glyphicon glyphicon-menu-up"></span></a>
 							</div>
 						</td>
 					</tr>
@@ -359,13 +368,18 @@
 								<fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cash}"/> / 
 								<fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cashCapacity}"/>
 							</div>
-							<progress id="cashVal" max="${prop.cashCapacity}" value="${prop.cash}">
+<%-- 							<progress id="cashVal" max="${prop.cashCapacity}" value="${prop.cash}"> --%>
+							
+							<div class="progress">
+							  <div id="cashVal" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="${prop.cash}" aria-valuemin="0" aria-valuemax="${prop.cashCapacity}" 
+							  		style="width: ${prop.cash / prop.cashCapacity * 100}%;"></div>
+							</div>
 						</td>
-						<td width="200">
+						<td>
 							<c:choose>
     							<c:when test="${prop.cash > 0}">
-									<a class="support-hover"><p onclick="document.property.action.value='get_cash'; document.property.submit();" 
-									class="button small bRed"><span>&#10004;</span></p><span class="tip">Собрать</span></a>
+									<a id="repairBut" class="btn btn-danger" data-toggle="tooltip" title="Собрать прибыль"
+									  onclick="document.property.action.value='get_cash'; document.property.submit();"><span class="glyphicon glyphicon-piggy-bank"></span></a>
 								</c:when>    
     							<c:otherwise>
     							через...
@@ -388,16 +402,16 @@
 						<td id="cash_level_td">${prop.cashLevel}</td>
 						<td>
 							<div id="cash_up_td">
-								<a id="cashUpBut" class="support-hover"><p class="button small bBlue"><span>↑</span></p>
-								<span class="tip" id="cash_up_tip">Улучшить</span></a>
+								<a id="cashUpBut" class="btn btn-success" data-toggle="tooltip" title="Улучшить"><span class="glyphicon glyphicon-menu-up"></span></a>
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td>Стоимость продажи</td>
 						<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
-						<td><a class="support-hover" href="${pageContext.request.contextPath}/property/sell/${prop.id}">
-							<p class="button small bGray"><span>&tridot;</span></p><span class="tip">Продать</span></a></td>
+						<td>
+								<a id="cashUpBut" class="btn btn-danger" data-toggle="tooltip" title="Продать" href="#"><span class="glyphicon glyphicon-briefcase"></span></a>
+						</td>
 					</tr>
 				</table>
 			</form:form>
@@ -411,4 +425,13 @@
 			</script>
 		</c:if>
 	</div>
+	
+	<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
+});
+</script>
 </t:template>
