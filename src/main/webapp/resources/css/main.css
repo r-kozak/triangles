@@ -168,3 +168,11 @@ body {
 	border: 4px dashed #D8D8D8;
 	z-index: 200;
 }
+
+.table td {
+	vertical-align: middle !important;
+}
+
+#prop_table .progress {
+	margin-bottom: 0 !important;
+}
