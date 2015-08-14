@@ -183,9 +183,7 @@
 
 							<td style="text-align:center"><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
 							<td>
-								<div style="text-align:center">
-									<div>${prop.depreciationPercent}</div>
-								</div>
+								<div style="text-align:center">${prop.depreciationPercent}</div>
 								<div class="progress">
   									<div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="${prop.depreciationPercent}" aria-valuemin="0" aria-valuemax="100" 
   										style="width: ${prop.depreciationPercent}%;"></div>

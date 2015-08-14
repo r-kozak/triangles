@@ -174,7 +174,7 @@
 								value="${prop.purchasePrice}" /></td>
 						<td align="center">
 							<a class="btn btn-danger btn-lg" title="Купить имущество" data-toggle="tooltip" 
-								href="${pageContext.request.contextPath}/property/buy/${prop.id}"><span class="glyphicon glyphicon-shopping-cart"</span></a>
+								href="${pageContext.request.contextPath}/property/buy/${prop.id}"><span class="glyphicon glyphicon-shopping-cart"></span></a>
 						</td>
 					</tr>
 				</c:forEach>

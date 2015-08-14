@@ -231,7 +231,8 @@
 					  if (data.error) {
 						 	$('#errorMessg').html(data.message);
 					  } else {
-						    $('#deprVal').val(data.percAfterRepair);
+						    $('#deprVal').attr("aria-valuenow", data.percAfterRepair); // прогресс-бар - текущее значение 
+						    $('#deprVal').attr("style", "width: " + data.percAfterRepair + "%"); // показать заполненность прогрессбара
 						    $('#deprBlock').html(Number(data.percAfterRepair) + "%");
 						    changeBal(data);
 						    $('#cancel').trigger('click');
@@ -339,7 +340,10 @@
 							<div id="deprBlock">
 								${prop.depreciationPercent}%
 							</div>
-							<progress id="deprVal" max="100" value="${prop.depreciationPercent}">
+							<div class="progress">
+								<div id="deprVal" class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="${prop.depreciationPercent}" aria-valuemin="0" aria-valuemax="100" 
+									style="width: ${prop.depreciationPercent}%;"></div>
+							</div>
 						</td>
 						<td>
 							<div id="repair_td">
@@ -368,7 +372,6 @@
 								<fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cash}"/> / 
 								<fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cashCapacity}"/>
 							</div>
-<%-- 							<progress id="cashVal" max="${prop.cashCapacity}" value="${prop.cash}"> --%>
 							
 							<div class="progress">
 							  <div id="cashVal" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="${prop.cash}" aria-valuemin="0" aria-valuemax="${prop.cashCapacity}" 
