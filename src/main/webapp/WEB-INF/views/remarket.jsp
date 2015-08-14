@@ -109,8 +109,8 @@
 			<c:if test="${!empty proposals}">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-				    <button id="descr" class="btn btn-default" data-toggle="tooltip"  data-toggle="collapse" data-target="#pr_descr" 
-				     title="Показать или скрыть подробное описание раздела Рынок имущества">Описание</button>
+				    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip"  data-toggle="collapse" data-target="#pr_descr" 
+				     title="Показать или скрыть подробное описание раздела Рынок имущества"><span class="glyphicon glyphicon-info-sign"></span></button>
 				</div>
 				<div class="panel-body collapse" id="pr_descr">
 					<p><a href="${pageContext.request.contextPath}/wiki#pr.ma">Рынок имущества</a> - это раздел, где можно купить коммерческое
@@ -172,9 +172,9 @@
 
 						<td><fmt:formatNumber type="number" maxFractionDigits="3"
 								value="${prop.purchasePrice}" /></td>
-						<td>
+						<td align="center">
 							<a class="btn btn-danger btn-lg" title="Купить имущество" data-toggle="tooltip" 
-								href="${pageContext.request.contextPath}/property/buy/${prop.id}">BUY</a>
+								href="${pageContext.request.contextPath}/property/buy/${prop.id}"><span class="glyphicon glyphicon-shopping-cart"</span></a>
 						</td>
 					</tr>
 				</c:forEach>

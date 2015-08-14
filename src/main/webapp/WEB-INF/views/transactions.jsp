@@ -53,8 +53,8 @@
 		<h1 style="text-align:center;">Транзакции</h1>
 		<div class="panel panel-default">
 			<div class="panel-heading">
-			    <button id="descr" class="btn btn-default" data-toggle="tooltip"  data-toggle="collapse" data-target="#tr_descr" 
-			     title="Показать или скрыть подробное описание раздела Транзакции">Описание</button>
+			    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip"  data-toggle="collapse" data-target="#tr_descr" 
+			     title="Показать или скрыть подробное описание раздела Транзакции"><span class="glyphicon glyphicon-info-sign"></span></button>
 			</div>
 			<div class="panel-body collapse" id="tr_descr">
 				<p><a href="${pageContext.request.contextPath}/wiki#ba.tr">Транзакции</a> - это раздел, где можно посмотреть все операции, которые 

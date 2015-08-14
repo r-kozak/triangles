@@ -1,5 +1,5 @@
 #NewNameInput{
-	 margin: 6 310;
+	 margin: 6 0;
 	 display:none;
 	 border-width:3px;
 	 border-style:dotted;
@@ -11,7 +11,7 @@
 	 font-family:arial;
 	 color:#7a3403;
 	 padding-left:4px;
-	 width:230px;
+	 width:876px;
 	 height:35px;
 	 background:#ffffff;
 	 z-index:201;
@@ -19,7 +19,7 @@
 }
 
 #but1 {
-	margin: 12 550;
+	margin: 9 882;
 	display: none;
 	z-index:200;
 	position: absolute;

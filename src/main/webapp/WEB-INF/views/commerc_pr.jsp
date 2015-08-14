@@ -114,11 +114,11 @@
 			<c:if test="${!empty comProps}">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-					    <button id="descr" class="btn btn-default" data-toggle="tooltip" data-toggle="collapse" data-target="#pr_descr" 
-					     title="Показать или скрыть подробное описание раздела Коммерческое имущество">Описание</button>
-					     
-					     <a id="profit_from_all_btn" class="btn btn-default" data-toggle="tooltip" title="Собрать прибыль со всего имущества" 
-					     	href="${pageContext.request.contextPath}/property/get-cash/0">Собрать всё</a>
+					     <a id="profit_from_all_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Собрать прибыль со всего имущества" 
+					     	href="${pageContext.request.contextPath}/property/get-cash/0"><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span></a>
+					     	
+					    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip" data-toggle="collapse" data-target="#pr_descr" 
+					     title="Показать или скрыть подробное описание раздела Коммерческое имущество"><span class="glyphicon glyphicon-info-sign"></span></button>
 					</div>
 					<div class="panel-body collapse" id="pr_descr">
 						<p><a href="${pageContext.request.contextPath}/wiki#pr">Коммерческое имущество</a> - это раздел, где можно посмотреть всё коммерческое
@@ -138,7 +138,7 @@
 						<td style="text-align:center">Цена продажи, &tridot;</td>
 						<td style="text-align:center">Износ, %</td>
 						<td style="text-align:center">Касса, &tridot;</td>
-						<td style="text-align:center">Собрать доход</td>
+						<td style="text-align:center">Собрать прибыль</td>
 					</tr>
 				<thead>
 				<tbody>
@@ -193,17 +193,19 @@
 							</td>
 							<td>
 								<div style="text-align:center">
-									<div>${prop.cash} / ${prop.cashCapacity}</div>
-								</div>
+									<div>
+										<fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cash}"/> / 
+										<fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.cashCapacity}"/></div>
+									</div>
 								<div class="progress">
 								  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="${prop.cash}" aria-valuemin="0" aria-valuemax="${prop.cashCapacity}" 
-								  		style="width: ${prop.cashCapacity / prop.cash * 100}%;"></div>
+								  		style="width: ${prop.cash / prop.cashCapacity * 100}%;"></div> 
 								</div>
 							</td>
 							<td style="text-align:center">
 								<c:if test="${prop.cash > 0}">
 										<a class="btn btn-danger btn-lg" title="Собрать прибыль" data-toggle="tooltip" 
-										href="${pageContext.request.contextPath}/property/get-cash/${prop.id}"><span class="glyphicon glyphicon-ok"></span></a>
+										href="${pageContext.request.contextPath}/property/get-cash/${prop.id}"><span class="glyphicon glyphicon-piggy-bank"></span></a>
 								</c:if>
 							</td>
 						</tr>
@@ -240,13 +242,16 @@ $(document).ready(function(){
     	);
      
     //если нет имущества с НЕ собранным доходом - сделать кнопку "Собрать всё" не активной
-    if ("<c:out value='${ready <= 0}'/>") {
+    var noReady = ${ready <= 0};
+    if (noReady == true) {
 		$("#profit_from_all_btn").attr('disabled', true);
 		$("#profit_from_all_btn").attr('href', "#");
 	}
     
     //красивая табличка
-    $('#prop_table').dataTable(); // сделать сортировку, пагинацию, поиск
+    $('#prop_table').dataTable( { // сделать сортировку, пагинацию, поиск
+        "order": [[ 7, "desc" ]] // сортировка по деньгам в кассе
+    } );
 });
 </script>
 
