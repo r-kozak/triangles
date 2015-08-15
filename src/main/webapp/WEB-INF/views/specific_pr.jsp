@@ -99,8 +99,6 @@
 	        		  dataType: "json",
 	        		  async:true
 	        		}).done(function(data) {
-	        			  console.log(data);
-	        			  
 	        			  var zS = (!data.zeroSolvency) ? '<div id="repair" class="variant">Ремонт</div>' : "";
 	        			  var messageBlock = (!data.zeroSolvency) ? '#infoMessg' : '#errorMessg';
 	        			  $("#repairBut").addClass("selected").parent().append('<div class="messagepop pop">'+
@@ -130,18 +128,16 @@
 	    		            return false;
 	    		        });
 	        		});
-	        	
 	            return false;
 	        });
-	        
 	    });
 
 	    $.fn.slideFadeToggle = function(easing, callback) {
 	        return this.animate({ opacity: 'toggle', height: 'toggle' }, "fast", easing, callback);
 	    };
 	    
-	    //level-up for cash
-	    //получение суммы повышения уровня кассы имущества и назначение обработчика на клик по кнопке cashUpBut
+	    //level-up for prop
+	    //получение суммы повышения уровня имущества и назначение обработчика на клик по кнопке propUpBut
 	    $.ajax({
        		  type: 'POST',
        		  url: "${pageContext.request.contextPath}/property/level-up",
@@ -155,14 +151,30 @@
        				$("#propUpBut").attr("data-original-title", 'Улучшить. Сумма: ' + data.nextSum);
        				 
        				$('#propUpBut').on('click', function() {
-    		            sendPostLevelUp("up", "prop");
+       					var propName = "<c:out value='${prop.name}'/>"; // имя имущества
+       					var currLevel = parseInt($('#prop_level_td').html()); // текущий уровень
+       					
+       					$('#modalUpLevel').modal(); // показать модальное окно
+       			    	$('#modalUpLevelTitle').html('Поднятие уровня имущества'); // задать заголовок модального окна
+       			    	$('#modalUpLevelBody').html('Вы точно хотите поднять уровень имущества <b>' + propName + '</b>? </br>' + 
+       			    			'Сумма: <b>' + data.nextSum + '&tridot;</b> </br>' +
+       			    			'Будет достигнут уровень: <b>' + (currLevel + 1) + '</b>'); // задать тело модального окна
+       			    		
+		    			$('#confirm_up_level').unbind('click'); // удалим все обработчики события 'click' у элемента confirm_up_level
+    			  		// назначить обработчик кнопке confirm_up_level (кнопка модального окна)
+		    			$('#confirm_up_level').on('click', function() {
+			            	$('#modalUpLevel').modal('hide'); // скрыть модальное окно
+			            	sendPostLevelUp("up", "prop") // повысить уровень
+	  			    	});
     		            return false;
     		        });
+  			    	
+       				
        			}
        		}); 
 	    
-		//level-up for prop
-		//получение суммы повышения уровня имущества и назначение обработчика на клик по кнопке propUpBut
+		//level-up for cash
+		//получение суммы повышения уровня кассы имущества и назначение обработчика на клик по кнопке cashUpBut
 		$.ajax({
 		  		  type: 'POST',
 		  		  url: "${pageContext.request.contextPath}/property/level-up",
@@ -176,19 +188,34 @@
 		  				$("#cashUpBut").attr("data-original-title", 'Улучшить. Сумма: ' + data.nextSum);
 		  				
 		  				$('#cashUpBut').on('click', function() {
-			            sendPostLevelUp("up", "cash");
-			            return false;
-			        });
+		  					var propName = "<c:out value='${prop.name}'/>"; // имя имущества
+		  					var currLevel = parseInt($('#cash_level_td').html()); // текущий уровень
+		  					
+	       					$('#modalUpLevel').modal(); // показать модальное окно
+	       			    	$('#modalUpLevelTitle').html('Поднятие уровня кассы'); // задать заголовок модального окна
+	       			    	$('#modalUpLevelBody').html('Вы точно хотите поднять уровень кассы имущества <b>' + propName + '</b>? </br>' + 
+	       			    			'Сумма: <b>' + data.nextSum + '&tridot;</b> </br>' +
+	       			    			'Будет достигнут уровень: <b>' + (currLevel + 1) + '</b>'); // задать тело модального окна
+	       			    			
+	       			    	// удалим все обработчики события 'click' у элемента confirm_up_level 
+	       			    	$('#confirm_up_level').unbind('click'); 
+	       			  		// назначить обработчик кнопке confirm_up_level (кнопка модального окна)
+		       				$('#confirm_up_level').on('click', function() {
+				            	$('#modalUpLevel').modal('hide'); // скрыть модальное окно
+				            	sendPostLevelUp("up", "cash"); // повысить уровень
+		  			    	});
+	    		            return false;
+			        	});
 		  			}
 		  		}); 
-	}; //windows.onload()
+	}; //window.onload()
 	
 	
     //отправка запроса на повышение уровня кассы или имущества
     function sendPostLevelUp(action0, obj0) {
-    	var o = (obj0 == "cash") ? "кассы?" : "имущества?";
-		var question = "Вы точно хотите повысить уровень " + o;
-    	if(confirm(question)) {
+//     	var o = (obj0 == "cash") ? "кассы?" : "имущества?";
+// 		var question = "Вы точно хотите повысить уровень " + o;
+//     	if(confirm(question)) {
 	    	$.ajax({
 	       		  type: 'POST',
 	       		  url: "${pageContext.request.contextPath}/property/level-up",
@@ -219,7 +246,7 @@
 	       				}
 	       			} 
 	       	}); 
-    	}
+//     	}
     }
     
 	//отправка запроса на ремонт имущества
@@ -437,4 +464,23 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
 });
 </script>
+
+<!-- модальное окно повышения уровня имущества или кассы -->
+<div class="modal fade" id="modalUpLevel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalUpLevelTitle">Заголовок</h4>
+      </div>
+      <div class="modal-body" id="modalUpLevelBody">
+        Тело
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+        <button id="confirm_up_level" type="button" class="btn btn-success">Улучшить</button> <!-- кнопка подтверждения улучшения имущ. или кассы -->
+      </div>
+    </div>
+  </div>
+</div>
 </t:template>
