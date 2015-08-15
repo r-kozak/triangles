@@ -1,3 +1,4 @@
+// функция для движения окна с суммой, на которую изменился баланс после какой-то операции
 function popUp(a, bloc) {
 	$(bloc).css({
 		"left" : (window.screen.availWidth) - a.length * 30,
@@ -15,6 +16,16 @@ function popUp(a, bloc) {
 	$(bloc).css({
 		"z-index" : "18"
 	});
+};
+
+// функция для изменения баланса и состоятельности
+// данные приходят при отправке запросов на сервер
+// данные в формате JSON
+function changeBal(data) {
+    $('#balChan').html(data.changeBal + "&tridot;"); //блок с балансом для движения вверх
+    popUp(data.changeBal, "#balChan"); //движение вверх блока с балансом
+    $('#balanceVal').html(data.newBalance); //новое значение баланса
+    $('#solvencyVal').html(data.newSolvency); //новое значение состоятельности
 };
 
 function setPage(obj) {

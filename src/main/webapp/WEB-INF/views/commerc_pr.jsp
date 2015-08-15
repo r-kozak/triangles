@@ -114,8 +114,8 @@
 			<c:if test="${!empty comProps}">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-					     <a id="profit_from_all_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Собрать прибыль со всего имущества" 
-					     	href="${pageContext.request.contextPath}/property/get-cash/0"><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span></a>
+					     <button id="profit_from_all_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Собрать прибыль со всего имущества" >
+					     <span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span></button>
 					     	
 					    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip" data-toggle="collapse" data-target="#pr_descr" 
 					     title="Показать или скрыть подробное описание раздела Коммерческое имущество"><span class="glyphicon glyphicon-info-sign"></span></button>
@@ -202,8 +202,9 @@
 							</td>
 							<td style="text-align:center">
 								<c:if test="${prop.cash > 0}">
-										<a class="btn btn-danger btn-lg" title="Собрать прибыль" data-toggle="tooltip" 
-										href="${pageContext.request.contextPath}/property/get-cash/${prop.id}"><span class="glyphicon glyphicon-piggy-bank"></span></a>
+										<button class="btn btn-danger btn-lg" title="Собрать прибыль" data-toggle="tooltip" 
+										onclick="window.location.replace('${pageContext.request.contextPath}/property/get-cash/${prop.id}')">
+										<span class="glyphicon glyphicon-piggy-bank"></span></button>
 								</c:if>
 							</td>
 						</tr>
@@ -238,12 +239,16 @@ $(document).ready(function(){
     			$("#pr_descr").collapse('toggle');
     		}
     	);
-     
+    
+    // по клику на кнопку Собрать всё - пройти по ссылке
+    $("#profit_from_all_btn").on('click', function() {
+    	window.location.replace("${pageContext.request.contextPath}/property/get-cash/0");
+    });
+    
     //если нет имущества с НЕ собранным доходом - сделать кнопку "Собрать всё" не активной
     var noReady = ${ready <= 0};
     if (noReady == true) {
 		$("#profit_from_all_btn").attr('disabled', true);
-		$("#profit_from_all_btn").attr('href', "#");
 	}
     
     //красивая табличка

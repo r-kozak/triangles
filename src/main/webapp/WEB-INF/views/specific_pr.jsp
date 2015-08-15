@@ -221,12 +221,7 @@
 				);
 	}
 	
-	function changeBal(data) {
-	    $('#balChan').html(data.changeBal + "&tridot;"); //блок с балансом для движения вверх
-	    popUp(data.changeBal, "#balChan"); //движение вверх блока с балансом
-	    $('#balanceVal').html(data.newBalance); //новое значение баланса
-	    $('#solvencyVal').html(data.newSolvency); //новое значение состоятельности
-	}
+
    
 </script>
 <t:template>
