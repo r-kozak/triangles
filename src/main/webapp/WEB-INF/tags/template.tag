@@ -8,7 +8,6 @@
 <link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/datatables/1.10.7/css/jquery.dataTables.min.css'>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/buttons.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/menu.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/specific_pr.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jquery.countdown.css" type="text/css" />

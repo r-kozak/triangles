@@ -7,6 +7,20 @@
 <title>Рынок недвижимости</title>
 
 <head>
+<style>
+.buyBlock {
+	padding: 10px 40px 10px 40px;
+}
+
+.buyBlock td.credit {
+	font-size: 16px;
+	color: red;
+	font-weight: bold;
+	width: auto;
+	height: 30px;
+}
+</style>
+
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 	<script type="text/javascript">
@@ -26,12 +40,97 @@
 			$("#pr_lab_fr").val($("#price-slider").slider("values", 0));
 			$("#pr_lab_to").val($("#price-slider").slider("values", 1));
 		});
+		
+		document.ready = function(){ 
+			$(".buy_btn").on('click', function(event) {
+				var clicked_btn = $(this);
+				var propId = clicked_btn.attr('id');
+				
+	        	$.ajax({
+	        		  type: 'POST',
+	        		  url: "${pageContext.request.contextPath}/property/buy",
+	        		  data:  { propId: propId, action: "info" },
+	        		  dataType: "json",
+	        		  async:true
+	        		}).done(function(data) {
+	        			$('#modal_confirm').unbind('click'); // удалим все обработчики события 'click' у элемента modal_confirm
+	        			
+	        			if(data.error) {
+	        				$('#modalWindowTitle').html("Ошибка"); // задать заголовок модального окна
+	        				$('#modalWindowBody').html('<div id="errorMessg">');
+	           				$("#errorMessg").html('<h5>' + data.message + '</h5>');
+	           				$('#modal_confirm').attr('disabled', true); // сделать кнопку "Купить" недоступной
+	           				$('#modalWindow').modal(); // показать модальное окно
+	           				
+	           				hideBuyBtn(clicked_btn, "Ошибка"); // удалить кнопку Buy в таблице
+	           			} else {
+							$('#modalWindowBody').html('<div class="buyBlock">' +
+									'<table class="table">' + 
+									'<tr><td><strong>Номер заказа:</strong></td> <td>' + data.propId + '</td></tr>' +
+									'<tr><td><strong>Тип:</strong></td> <td>' + data.buildType + '</td></tr>' +
+									'<tr><td><strong>Район:</strong></td> <td>' + data.cityArea + '</td></tr>' +
+									'<tr><td><strong>Цена:</strong></td><td>' + data.price + '&tridot;</td></tr>' +
+									'<tr><td><b>Баланс после покупки:</b></td><td><span id="newBalLab">' + data.newBalance + '&tridot;</span></td></tr>' +
+									'</table></div>');
+							
+							if (data.newBalance >= 0) {
+								$('#newBalLab').addClass('text-success');
+							} else {
+								$('#newBalLab').addClass('text-danger');
+							}
+						
+							$('#modalWindowTitle').html(data.title); // задать заголовок модального окна
+							$('#modal_confirm').attr('disabled', false); // сделать кнопку "Купить" доступной
+							$('#modalWindow').modal(); // показать модальное окно
+							    
+							// назначить обработчик кнопке modal_confirm (кнопка модального окна)
+						    $('#modal_confirm').on('click', function() {
+						    	sendPostConfirmBuy(propId, clicked_btn);
+						  	});
+	           			}
+	        		});
+	            return false;
+	        });
+		}; // document.ready()
+		
+		// фукнция отправки подтверждения покупки (id имущества, нажатая кнопка "Купить")
+		function sendPostConfirmBuy(propId, clicked_btn) {
+			$.ajax({
+      		  type: 'POST',
+      		  url: "${pageContext.request.contextPath}/property/buy",
+      		  data:  { propId: propId, action: "confirm" },
+      		  dataType: "json",
+      		  async:true
+      		}).done(function(data) {
+      			$('#modal_confirm').unbind('click'); // удалим все обработчики события 'click' у элемента modal_confirm
+
+      			if(data.error) {
+      				$('#modalWindowTitle').html("Ошибка"); // задать заголовок модального окна
+    				$('#modalWindowBody').html('<div id="errorMessg">');
+       				$("#errorMessg").html('<h5>' + data.message + '</h5>');
+       				$('#modal_confirm').attr('disabled', true); // сделать кнопку "Купить" недоступной
+
+					hideBuyBtn(clicked_btn, "Ошибка"); // удалить кнопку Buy в таблице
+       			} else {
+				    $('#modalWindow').modal('hide'); // скрыть модальное окно
+					changeBal(data); //изменить значение баланса
+					hideBuyBtn(clicked_btn, "Куплено"); // удалить кнопку Buy
+       			}
+      		});
+		};
+		
+		// функция скрывает нажатую кнопку BUY (в случае ошибки или удачной покупки)
+		// clicked_btn - нажатая кнопка
+		// text - текст в ячейке, будет вместо кнопки clicked_btn
+		function hideBuyBtn(clicked_btn, text) {
+		    //при удачной покупке или 
+			$('#'+clicked_btn.attr('aria-describedby')).remove(); // удалить подсказку к кнопке покупки
+			clicked_btn.closest("td").html('<p class="text-danger"><b>' + text +'</b></span>'); // в ячейку поместить текст "Куплено"
+			clicked_btn.remove(); // удалить кнопку покупки
+		}
 	</script>
 </head>
 <t:template>
-	<!-- Задний прозрачный фон-->
-	<div id="wrap"></div>
-
 <div class="content">
 <t:menu>
 	<form:form id="searchForm" method="GET" commandName="reps">
@@ -173,8 +272,8 @@
 						<td><fmt:formatNumber type="number" maxFractionDigits="3"
 								value="${prop.purchasePrice}" /></td>
 						<td align="center">
-							<a class="btn btn-danger btn-lg" title="Купить имущество" data-toggle="tooltip" 
-								href="${pageContext.request.contextPath}/property/buy/${prop.id}"><span class="glyphicon glyphicon-shopping-cart"></span></a>
+							<button id=${prop.id} class="btn btn-danger btn-lg buy_btn" title="Купить имущество" data-toggle="tooltip" 
+								><span class="glyphicon glyphicon-shopping-cart"></span></button>
 						</td>
 					</tr>
 				</c:forEach>
@@ -183,34 +282,16 @@
 			</c:if>
 		</div>
 	</div>
-	<div id="popup">
-		Поздравляем с покупкой!
-		<c:choose>
-			<c:when test="${popup == true}">
-				<script>
-					(function popUp() {
-						$("#wrap").css({
-							"display" : "block"
-						});
-						$("#popup")
-								.css(
-										{
-											"left" : (window.screen.availWidth - 600) / 2,
-											"top" : (window.screen.availHeight - 110) / 2 - 150,
-											"display" : "block"
-										});
-					})();
-					setTimeout(function() {
-						$('#popup').fadeOut(1500)
-					}, 1500);
-					setTimeout(function() {
-						$('#wrap').fadeOut(1500)
-					}, 1500);
-				</script>
-			</c:when>
-		</c:choose>
-	</div>
 
+	<div id="balChan">
+		<c:if test="${changeBal.length() > 0}">
+			${changeBal}&tridot;
+			<script>
+				popUp("<c:out value='${changeBal}'/>", "#balChan");
+			</script>
+		</c:if>
+	</div>
+	
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
 
@@ -237,4 +318,23 @@ $(document).ready(function(){
     } );
 });
 </script>
+
+<!-- модальное окно для отображения информации о покупке -->
+<div class="modal fade" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalWindowTitle">Заголовок</h4>
+      </div>
+      <div class="modal-body" id="modalWindowBody">
+	        Тело
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+        <button id="modal_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Купить</span></button>
+      </div>
+    </div>
+  </div>
+</div>
 </t:template>

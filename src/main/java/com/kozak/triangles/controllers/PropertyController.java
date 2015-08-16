@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -104,92 +103,63 @@ public class PropertyController {
     }
 
     /**
-     * запрос на покупку имущества
+     * Операции с покупкой недвижимости (получить информацию о покупке, подтвердить покупку)
      * 
-     * @param prId
-     *            id предложения с рынка
+     * @param propId
+     *            - id имущества
+     * @param action
+     *            - действие ("info" - получить информацию, "confirm" - подтвердить покупку)
+     * @return JSON модель с информацией о покупке или с результатом покупки
      */
-    @RequestMapping(value = "/buy/{prId}", method = RequestMethod.GET)
-    String buyProperty(@PathVariable("prId") int prId, User user, Model model) {
-	RealEstateProposal prop = rePrRep.getREProposalById(prId);
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/buy", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
+    public @ResponseBody ResponseEntity<String> jqueryBuyProperty(@RequestParam("propId") Integer propId,
+	    @RequestParam("action") String action, User user) {
 
-	if (prop == null || !prop.isValid()) { // уже кто-то купил
-	    model.addAttribute("errorMsg",
+	JSONObject resultJson = new JSONObject();
+	int userId = user.getId();
+	RealEstateProposal prop = rePrRep.getREProposalById(propId);
+
+	long userMoney = Long.parseLong(trRep.getUserBalance(userId));
+	long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
+
+	if (prop == null) {
+	    putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
+	} else if (!prop.isValid()) {
+	    putErrorMsg(resultJson,
 		    "Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
-	    model.addAttribute("backLink", "property/r-e-market");
-	    return "error";
+	} else if (userSolvency < prop.getPurchasePrice()) {
+	    putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам купить это имущество. "
+		    + "Ваш максимум = <b>" + Util.moneyFormat(userSolvency) + "&tridot;</b>");
 	} else {
-	    long userMoney = Long.parseLong(trRep.getUserBalance(user.getId()));
-	    long userSolvency = Util.getSolvency(trRep, prRep, user.getId()); // состоятельность пользователя
-	    long bap = userMoney - prop.getPurchasePrice(); // balance after purchase
+	    long newBalance = userMoney - prop.getPurchasePrice(); // balance after purchase
 
 	    // получить данные всех коммерческих строений
 	    HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+	    // данные конкретного имущества
+	    CommBuildData buildData = mapData.get(prop.getCommBuildingType().name());
 
-	    model.addAttribute("percent", Util.getAreaPercent(prop.getCityArea()));
-	    model.addAttribute("prop", prop); // само предложение
-	    model.addAttribute("data", mapData.get(prop.getCommBuildingType().name()));
-	    model.addAttribute("bap", bap); // balance after purchase
-
-	    if (userMoney >= prop.getPurchasePrice()) { // хватает денег
-		model.addAttribute("title", "Обычная покупка");
-		return "apply_buy";
-	    } else if (userSolvency >= prop.getPurchasePrice()) { // покупка в кредит
-		model.addAttribute("title", "Покупка в кредит");
-		return "apply_buy";
-	    } else if (userSolvency < prop.getPurchasePrice()) { // низкая состоятельность
-		model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
-			+ "Ваш максимум = " + Util.moneyFormat(userSolvency) + "&tridot;");
-		model.addAttribute("backLink", "property/r-e-market");
-	    }
-	    return "error";
-	}
-    }
-
-    /**
-     * ответ о покупке имущества от пользователя
-     * 
-     * @param prId
-     *            id предложения с рынка
-     * @param action
-     *            действие, которое выбрал пользователь (cancel, confirm)
-     * @param ra
-     *            RedirectAttributes - добавляется признак отображения инфо окна, ловится при редиректе на "remarket"
-     */
-    @RequestMapping(value = "/buy/{prId}", method = RequestMethod.POST)
-    String confirmBuy(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action, User user,
-	    Model model, RedirectAttributes ra) {
-
-	// пользователь подтвердил покупку
-	if (action.equals("confirm")) {
-	    RealEstateProposal prop = rePrRep.getREProposalById(prId);
-
-	    if (prop == null || !prop.isValid()) {
-		model.addAttribute("errorMsg",
-			"Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
-		model.addAttribute("backLink", "property/r-e-market");
-		return "error";
-	    } else {
-		int userId = user.getId();
-		// баланс юзера и
-		// (ост. стоим. всего имущества / 2) для расчета состоятельности (для кредита)
-		long userMoney = Long.parseLong(trRep.getUserBalance(userId));
-		long sellSum = prRep.getSellingSumAllPropByUser(userId) / 2;
-
-		boolean moneyEnough = userMoney >= prop.getPurchasePrice(); // хватает денег
-		boolean inCredit = userMoney + sellSum >= prop.getPurchasePrice(); // берем в кредит
-
-		if (moneyEnough || inCredit) {
+	    if (action.equals("info")) { // получение информации
+		if (userMoney >= prop.getPurchasePrice()) { // хватает денег
+		    resultJson.put("title", "Обычная покупка");
+		} else if (userSolvency >= prop.getPurchasePrice()) { // покупка в кредит
+		    resultJson.put("title", "Покупка в кредит");
+		}
+		resultJson.put("areaPercent", Util.getAreaPercent(prop.getCityArea()));
+		resultJson.put("propId", prop.getId()); // номер заказа
+		resultJson.put("price", prop.getPurchasePrice()); // цена покупки
+		resultJson.put("cityArea", prop.getCityArea().toString()); // район недвижимости
+		resultJson.put("buildType", buildData.getCommBuildType().toString()); // тип недвиги
+		resultJson.put("newBalance", newBalance); // balance after purchase
+	    } else if (action.equals("confirm")) { // подтверждение покупки
+		if (userMoney >= prop.getPurchasePrice() || userSolvency >= prop.getPurchasePrice()) {
 		    // данные операции
 		    Date purchDate = new Date();
 		    long price = prop.getPurchasePrice();
 
-		    // получить данные всех коммерческих строений
-		    HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
-		    CommBuildData data = mapData.get(prop.getCommBuildingType().name());
 		    // добавить новое имущество пользователю
 		    String nameHash = Util.getHash(5);
-		    Property newProp = new Property(data, userId, prop.getCityArea(), purchDate, price, nameHash);
+		    Property newProp = new Property(buildData, userId, prop.getCityArea(), purchDate, price, nameHash);
 		    prRep.addProperty(newProp);
 
 		    // предложение на рынке теперь не валидное
@@ -201,16 +171,16 @@ public class PropertyController {
 			    TransferT.SPEND, userId, userMoney - prop.getPurchasePrice(), ArticleCashFlowT.BUY_PROPERTY);
 		    trRep.addTransaction(t);
 
-		    ra.addFlashAttribute("popup", true); // будем отображать поздравление о покупке
-		} else if (userMoney + sellSum < prop.getPurchasePrice()) {
-		    model.addAttribute("errorMsg", "Ваша состоятельность не позволяет вам купить это имущество. "
-			    + "Ваш максимум = " + Util.moneyFormat(Util.getSolvency(trRep, prRep, userId)) + "&tridot;");
-		    model.addAttribute("backLink", "property/r-e-market");
-		    return "error";
+		    addBalanceData(resultJson, prop.getPurchasePrice(), userMoney, userId);
 		}
 	    }
 	}
-	return "redirect:/property/r-e-market";
+	System.err.println(resultJson.toJSONString());
+	String json = resultJson.toJSONString();
+
+	HttpHeaders responseHeaders = new HttpHeaders();
+	responseHeaders.add("Content-Type", "application/json; charset=utf-8");
+	return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
     }
 
     /**
@@ -492,11 +462,18 @@ public class PropertyController {
 	addBalanceData(resultJson, repairSum, userMoney, userId);
     }
 
+    /**
+     * добавляет информацию о балансе в модель JSON
+     * 
+     * @param sum
+     *            - сумма операции
+     */
     @SuppressWarnings("unchecked")
     private void addBalanceData(JSONObject resultJson, long sum, long userMoney, int userId) {
 	resultJson.put("changeBal", "-" + sum);
-	resultJson.put("newBalance", userMoney - sum);
-	resultJson.put("newSolvency", Util.getSolvency(String.valueOf(userMoney - sum), prRep, userId));
+	resultJson.put("newBalance", Util.moneyFormat(userMoney - sum));
+	resultJson.put("newSolvency",
+		Util.moneyFormat(Util.getSolvency(String.valueOf(userMoney - sum), prRep, userId)));
     }
 
     /**
