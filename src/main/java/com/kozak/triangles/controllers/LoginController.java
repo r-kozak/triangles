@@ -2,6 +2,8 @@ package com.kozak.triangles.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.repositories.UserRep;
+import com.kozak.triangles.utils.Cooker;
 import com.kozak.triangles.validators.LoginValidator;
 
 @SessionAttributes("user")
@@ -42,7 +45,7 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ModelAndView login(@ModelAttribute("user") User user, BindingResult bindResult) {
+    public ModelAndView login(@ModelAttribute("user") User user, BindingResult bindResult, HttpServletResponse response) {
 
 	ModelAndView mAndView = new ModelAndView();
 
@@ -52,6 +55,8 @@ public class LoginController {
 	    mAndView.setViewName("index/index");
 	    return mAndView;
 	}
+	// добавить куки c логином юзера на месяц или пока он их не удалит нажав на выход
+	Cooker.addCookie(response, "userLogin", user.getLogin(), 24 * 60 * 60 * 30);
 
 	RedirectView rv = new RedirectView("home");
 	mAndView.setView(rv);
@@ -59,7 +64,9 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/exit", method = RequestMethod.GET)
-    public String exit(Model model) {
+    public String exit(Model model, HttpServletResponse response) {
+	Cooker.addCookie(response, "userLogin", "", 0); // удалить куки c логином юзера
+
 	model.addAttribute("user", new User());
 	return "redirect:/";
     }

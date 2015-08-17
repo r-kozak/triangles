@@ -34,4 +34,14 @@
 			<beans:bean class="com.kozak.triangles.interceptors.AccessInterceptor" />
 		</interceptor>
 	</interceptors>
+	
+	<!-- Access interceptor -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/" /> 
+			<mapping path="/login/**" />
+			<mapping path="/signup/**" />
+			<beans:bean class="com.kozak.triangles.interceptors.StartInterceptor" />
+		</interceptor>
+	</interceptors>
 </beans:beans>
