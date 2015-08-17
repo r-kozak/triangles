@@ -32,8 +32,8 @@
 			<a href="${pageContext.request.contextPath}/home"><img src="${pageContext.request.contextPath}/resources/img/logo.png" align="middle"></a>
 		</div>
  		<div class="headerNav">
- 			<a href="${pageContext.request.contextPath}/wiki">wiki</a>
-			<a href="${pageContext.request.contextPath}/exit">exit</a>
+ 			<a title="wiki" href="${pageContext.request.contextPath}/wiki"><span class="glyphicon glyphicon-question-sign"></span></a>
+			<a title="Выход" href="${pageContext.request.contextPath}/exit"><span class="glyphicon glyphicon-log-out"></span></a>
 		</div>
 	</div>
 	<div id="status" class="status">
