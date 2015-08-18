@@ -52,4 +52,19 @@ public class UserRep {
 	return Integer.valueOf(query.getSingleResult().toString());
     }
 
+    /**
+     * Получить юзера по зашифрованному логину и паролю (нужно для входа по куки)
+     * 
+     * @param ul
+     *            - зашифрованный логин юзера
+     * @param up
+     *            - пароль юзера
+     * @return юзер
+     */
+    public User getUserByEncrLoginAndPassword(String ul, String up) {
+	String hql = "from User as u where u.encrLogin like :ul and u.password like :up";
+	Query query = em.createQuery(hql).setParameter("ul", ul).setParameter("up", up);
+	return (User) query.getSingleResult();
+    }
+
 }

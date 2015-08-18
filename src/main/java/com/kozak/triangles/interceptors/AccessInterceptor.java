@@ -24,9 +24,10 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 	    throws Exception {
 	User user = (User) session.getAttribute("user");
 	if (user == null || user.getLogin() == null) {
-	    String userLogin = Cooker.getCookieByName(request, "userLogin");
-	    if (userLogin != null) {
-		session.setAttribute("user", userRep.getCurrentUserByLogin(userLogin));
+	    String ul = Cooker.getCookieByName(request, "ul");
+	    String up = Cooker.getCookieByName(request, "up");
+	    if (ul != null) {
+		session.setAttribute("user", userRep.getUserByEncrLoginAndPassword(ul, up));
 		response.sendRedirect(request.getContextPath() + "/home");
 		return true;
 	    }

@@ -18,9 +18,10 @@ public class StartInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-	String userLogin = Cooker.getCookieByName(request, "userLogin");
-	if (userLogin != null) {
-	    session.setAttribute("user", userRep.getCurrentUserByLogin(userLogin));
+	String ul = Cooker.getCookieByName(request, "ul");
+	String up = Cooker.getCookieByName(request, "up");
+	if (ul != null && up != null) {
+	    session.setAttribute("user", userRep.getUserByEncrLoginAndPassword(ul, up));
 	    response.sendRedirect(request.getContextPath() + "/home");
 	    return false;
 	}

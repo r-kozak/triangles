@@ -28,7 +28,7 @@ public class SignupValidator implements Validator {
 	}
 
 	for (User u : userList) {
-	    if (u.getLogin().toLowerCase().equals(user.getLogin().toLowerCase())) {
+	    if (u.getLogin().equalsIgnoreCase(user.getLogin())) {
 		errors.rejectValue("login", "login.alreadyExist", "User with this login already exists!");
 	    }
 	}

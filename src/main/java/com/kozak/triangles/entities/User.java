@@ -26,8 +26,8 @@ public class User {
     @Length(min = 4, max = 20, message = "Login length must be 4-20!")
     private String login;
 
-    @Column(name = "password", length = 20)
-    @Length(min = 4, max = 20, message = "Password length must be 4-20!")
+    @Column(name = "password", length = 32)
+    @Length(min = 4, max = 32, message = "Password length must be 4-32!")
     private String password;
 
     @Column(name = "email", length = 50)
@@ -47,6 +47,9 @@ public class User {
     @Column(name = "day_number")
     private int dayNumber;
 
+    // //////// зашифрованный логин
+    @Column(name = "encr_login")
+    private String encrLogin;
     // /////////////////
 
     @Transient
@@ -125,5 +128,13 @@ public class User {
 
     public void setLastBonus(Date lastBonus) {
 	this.lastBonus = lastBonus;
+    }
+
+    public String getEncrLogin() {
+	return encrLogin;
+    }
+
+    public void setEncrLogin(String encrLogin) {
+	this.encrLogin = encrLogin;
     }
 }
