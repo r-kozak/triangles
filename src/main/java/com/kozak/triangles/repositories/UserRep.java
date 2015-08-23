@@ -67,4 +67,18 @@ public class UserRep {
 	return (User) query.getSingleResult();
     }
 
+    /**
+     * получает юзера по ID
+     */
+    public User find(int userId) {
+	return em.find(User.class, userId);
+    }
+
+    /**
+     * получает доминантность юзера
+     */
+    public int getUserDomi(int userId) {
+	return find(userId).getDomi();
+    }
+
 }

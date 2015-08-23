@@ -95,6 +95,10 @@ public class Property {
     @Column(name = "next_depr")
     private Date nextDepreciation;
 
+    // признак - на продаже имущество или нет
+    @Column(name = "on_sale")
+    private boolean onSale;
+
     // //////////////////////////////////////////////
 
     public Property() {
@@ -249,5 +253,13 @@ public class Property {
 
     public void setNextDepreciation(Date nextDepreciation) {
 	this.nextDepreciation = nextDepreciation;
+    }
+
+    public boolean isOnSale() {
+	return onSale;
+    }
+
+    public void setOnSale(boolean onSale) {
+	this.onSale = onSale;
     }
 }

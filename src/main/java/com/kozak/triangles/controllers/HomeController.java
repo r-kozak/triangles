@@ -61,40 +61,41 @@ public class HomeController {
 	currUser.setLastEnter(new Date());
 	userRep.updateUser(currUser);
 
-	int currUserId = currUser.getId();
-	user.setId(currUserId);
+	int userId = currUser.getId();
+	user.setId(userId);
 
 	buildDataInit(); // инициализируем данные по строениям для каждого типа
 	checkFirstTime(currUser); // проверка, первый ли вход в игру (вообще)
 	giveDailyBonus(currUser); // начисление ежедневного бонуса
-	giveCreditDeposit(currUserId); // начисление кредита/депозита
+	giveCreditDeposit(userId); // начисление кредита/депозита
 	manageREMarketProposals(); // очистить-добавить предложения на глобальный рынок недвижимости
-	Util.profitCalculation(currUserId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
-	propertyDepreciation(currUserId); // начисление амортизации
-	levyOnProperty(currUserId); // сбор средств с имущества, где есть кассир
-	salaryPayment(currUserId); // выдача зп работникам
+	Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
+	propertyDepreciation(userId); // начисление амортизации
+	levyOnProperty(userId); // сбор средств с имущества, где есть кассир
+	salaryPayment(userId); // выдача зп работникам
 
 	// статистика
-	String userBalance = trRep.getUserBalance(currUserId);
-	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, currUserId));
+	String userBalance = trRep.getUserBalance(userId);
+	int userDomi = userRep.getUserDomi(userId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
 	model.addAttribute("rePrCo", rePrRep.allPrCount(false)); // колво предложений на рынке имущества
 	model.addAttribute("newRePrCo", rePrRep.allPrCount(true)); // новых предложений на рын.имущ.
-	model.addAttribute("ready", prRep.allPrCount(currUserId, true, false)); // колво готовых к сбору дохода
-	model.addAttribute("comPrCount", prRep.allPrCount(currUserId, false, false)); // всего имущества
-	model.addAttribute("nextProfit", prRep.getMinNextProfit(currUserId)); // дата следующей прибыли
-	model.addAttribute("needRepair", prRep.allPrCount(currUserId, false, true)); // скольким имуществам нужен ремонт
+	model.addAttribute("ready", prRep.allPrCount(userId, true, false)); // колво готовых к сбору дохода
+	model.addAttribute("comPrCount", prRep.allPrCount(userId, false, false)); // всего имущества
+	model.addAttribute("nextProfit", prRep.getMinNextProfit(userId)); // дата следующей прибыли
+	model.addAttribute("needRepair", prRep.allPrCount(userId, false, true)); // скольким имуществам нужен ремонт
 
-	model.addAttribute("profitSum", trRep.getSumByTransfType(currUserId, TransferT.PROFIT)); // прибыль всего
-	model.addAttribute("profitFromProp", trRep.getSumByAcf(currUserId, ArticleCashFlowT.LEVY_ON_PROPERTY));
-	model.addAttribute("profitDB", trRep.getSumByAcf(currUserId, ArticleCashFlowT.DAILY_BONUS));
-	model.addAttribute("profitDep", trRep.getSumByAcf(currUserId, ArticleCashFlowT.DEPOSIT));
+	model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
+	model.addAttribute("profitFromProp", trRep.getSumByAcf(userId, ArticleCashFlowT.LEVY_ON_PROPERTY));
+	model.addAttribute("profitDB", trRep.getSumByAcf(userId, ArticleCashFlowT.DAILY_BONUS));
+	model.addAttribute("profitDep", trRep.getSumByAcf(userId, ArticleCashFlowT.DEPOSIT));
 
-	model.addAttribute("spendSum", trRep.getSumByTransfType(currUserId, TransferT.SPEND)); // расход всего
-	model.addAttribute("spendCr", trRep.getSumByAcf(currUserId, ArticleCashFlowT.CREDIT));
-	model.addAttribute("spendBuyPr", trRep.getSumByAcf(currUserId, ArticleCashFlowT.BUY_PROPERTY));
-	model.addAttribute("spendRepair", trRep.getSumByAcf(currUserId, ArticleCashFlowT.PROPERTY_REPAIR));
-	model.addAttribute("spendUpCash", trRep.getSumByAcf(currUserId, ArticleCashFlowT.UP_CASH_LEVEL));
-	model.addAttribute("spendUpLevel", trRep.getSumByAcf(currUserId, ArticleCashFlowT.UP_PROP_LEVEL));
+	model.addAttribute("spendSum", trRep.getSumByTransfType(userId, TransferT.SPEND)); // расход всего
+	model.addAttribute("spendCr", trRep.getSumByAcf(userId, ArticleCashFlowT.CREDIT));
+	model.addAttribute("spendBuyPr", trRep.getSumByAcf(userId, ArticleCashFlowT.BUY_PROPERTY));
+	model.addAttribute("spendRepair", trRep.getSumByAcf(userId, ArticleCashFlowT.PROPERTY_REPAIR));
+	model.addAttribute("spendUpCash", trRep.getSumByAcf(userId, ArticleCashFlowT.UP_CASH_LEVEL));
+	model.addAttribute("spendUpLevel", trRep.getSumByAcf(userId, ArticleCashFlowT.UP_PROP_LEVEL));
 
 	return "index/home";
     }
@@ -104,9 +105,10 @@ public class HomeController {
      */
     @RequestMapping(value = "/wiki", method = RequestMethod.GET)
     String wiki(User user, Model model) {
-	int currUserId = user.getId();
-	String userBalance = trRep.getUserBalance(currUserId);
-	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, currUserId));
+	int userId = user.getId();
+	String userBalance = trRep.getUserBalance(userId);
+	int userDomi = userRep.getUserDomi(userId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
 
 	// данные имущества
 	model.addAttribute("commBuData", buiDataRep.getCommBuildDataList());
@@ -419,8 +421,8 @@ public class HomeController {
 			: "Начислено кредит за: %td.%tm.%ty - %td.%tm.%ty");
 		description = String.format(description, dateFrom, dateFrom, dateFrom, dateTo, dateTo, dateTo);
 
-		Transaction cdTr = new Transaction(description, new Date(), sum, transferType, currUserId, newBalance,
-			acf);
+		Transaction cdTr = new Transaction(description, new Date(), Math.abs(sum), transferType, currUserId,
+			newBalance, acf);
 		trRep.addTransaction(cdTr);
 	    }
 	}

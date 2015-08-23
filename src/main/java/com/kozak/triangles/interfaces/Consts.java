@@ -52,4 +52,8 @@ public interface Consts {
     // максимальные уровни
     int MAX_CASH_LEVEL = 5; // кассы
     int MAX_PROP_LEVEL = 5; // имущества
+
+    // коэфициенты доминантности
+    double K_PROP_LEVEL_DOMI = 1.5; // коэф. умножения уровня имущества при его повышении
+    int K_DOMI_BUY_PROP = 10; // коэф. - доминантность при покупке имущества
 }

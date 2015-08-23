@@ -47,6 +47,10 @@ public class User {
     @Column(name = "day_number")
     private int dayNumber;
 
+    // доминантность
+    @Column(name = "domi")
+    private int domi;
+
     // //////// зашифрованный логин
     @Column(name = "encr_login")
     private String encrLogin;
@@ -136,5 +140,13 @@ public class User {
 
     public void setEncrLogin(String encrLogin) {
 	this.encrLogin = encrLogin;
+    }
+
+    public int getDomi() {
+	return domi;
+    }
+
+    public void setDomi(int domi) {
+	this.domi = domi;
     }
 }

@@ -20,11 +20,13 @@ import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
 
 public class Util {
-    public static Model addMoneyInfoToModel(Model model, String userBalance, Long userSolvency) {
+    public static Model addMoneyInfoToModel(Model model, String userBalance, Long userSolvency, int userDomi) {
 	String balance = moneyFormat(Long.valueOf(userBalance));
 	String solvency = moneyFormat(userSolvency);
+	String domi = moneyFormat(userDomi);
 	model.addAttribute("solvency", solvency);
 	model.addAttribute("balance", balance);
+	model.addAttribute("domi", domi);
 	return model;
     }
 

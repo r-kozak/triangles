@@ -53,8 +53,15 @@
 		<h1 style="text-align:center;">Транзакции</h1>
 		<div class="panel panel-default">
 			<div class="panel-heading">
-			    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip"  data-toggle="collapse" data-target="#tr_descr" 
-			     title="Показать или скрыть подробное описание раздела Транзакции"><span class="glyphicon glyphicon-info-sign"></span></button>
+				<button id="buy_500_tr" class="btn btn-default" data-toggle="tooltip"
+	  				title="Купить 500&tridot; за 1 очко доминантности"> <span style="font-size:125%">+500&tridot;</span>
+				</button>
+				<button id="buy_5000_tr" class="btn btn-default" data-toggle="tooltip"
+	  				title="Купить 5000&tridot; за 10 очков доминантности"> <span style="font-size:125%">+5000&tridot;</span>
+				</button>
+			    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip"
+			     	title="Показать или скрыть подробное описание раздела Транзакции"> <span class="glyphicon glyphicon-info-sign"></span>
+			    </button>
 			</div>
 			<div class="panel-body collapse" id="tr_descr">
 				<p><a href="${pageContext.request.contextPath}/wiki#ba.tr">Транзакции</a> - это раздел, где можно посмотреть все операции, которые 
@@ -132,6 +139,7 @@
 			<div class="panel-body">
 			    <p class="text-right">Общая сумма операций по выбранным фильтрам: <b><fmt:formatNumber type="number" maxFractionDigits="3" 
 			    value="${totalSum}"/>&tridot;</b></p>
+			    <p class="text-right text-danger"><b>Расхождение прибыль - расход = баланс: ${profit - spend + (-userBal)}</b></p>
 			</div>
 		</div>
 		
@@ -152,18 +160,105 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
     $('[data-toggle="collapse"]').collapse(); // свернуть блок с описанием
   
+    // по клику на купить 500 triangles - отправить POST запрос на покупку  
+    $("#buy_500_tr").on("click", function() {
+    		infoBuyTriangles(500);
+        }
+    );
+    
+ 	// по клику на купить 5000 triangles - отправить POST запрос на покупку  
+    $("#buy_5000_tr").on("click", function() {
+    		infoBuyTriangles(5000);
+        }
+    );
+    
   	//по клику на кнопку "Описание" - показать или скрыть описание
-    $("#descr").on("click",
-    		function(){
-    			$("#tr_descr").collapse('toggle');
-    		}
-    	);
+   	$("#descr").on("click", function(){
+   			$("#tr_descr").collapse('toggle');
+   		}
+   	);
+    
     
     //красивая табличка
     $.fn.dataTable.moment('DD-MM-YYYY HH:mm:ss'); // сортировка даты в табличке
     $('#transTable').dataTable( { // сделать сортировку, пагинацию, поиск
         "order": [[ 0, "desc" ]]
     } );
+    
+    // запрос на получение информации от сервера при покупке triangles
+    // count_ - количество для покупки
+    function infoBuyTriangles(count_) {
+    	$.ajax({
+  		  type: 'POST',
+  		  url: "${pageContext.request.contextPath}/buy-triangles",
+  		  data:  { count: count_, action: "info" },
+  		  dataType: "json",
+  		  async:true
+  		}).done(function(data) {
+				var messageBlock = (data.domiEnough) ? '#infoMessg' : '#errorMessg';
+				
+				$('#modalWindowBody').html('<div id="infoMessg"></div>'+
+				        		'<div id="errorMessg">');
+				$(messageBlock).html(data.message);
+				
+				$('#modalWindowTitle').html('Покупка triangles'); // задать заголовок модального окна
+				$('#text_modal_confirm').html('<span class="glyphicon glyphicon-shopping-cart"></span>'); // текст для кнопки подтверждения
+
+				$('#modal_confirm').unbind('click'); // удалим все обработчики события 'click' у элемента modal_confirm
+		    	if (!data.domiEnough) { // не хватает доминантности на покупку
+					$('#modal_confirm').attr('disabled', true);
+				} else {
+					// назначить обработчик кнопке modal_confirm (кнопка модального окна)
+					$('#modal_confirm').on('click', function() {
+					    	$('#modalWindow').modal('hide'); // скрыть модальное окно
+					    	$('#modal_confirm').attr('disabled', false);
+					    	if (!data.zeroSolvency) { // хватает денег
+						     	confirmBuyTriangles(count_);
+							}
+					  }
+					);
+				}
+				$('#modalWindow').modal(); // показать модальное окно
+  		});
+      	return false;
+    }
+    
+ 	// запрос на подтверждение покупки triangles
+    // count_ - количество для покупки
+    function confirmBuyTriangles(count_) {
+    	$.ajax({
+  		  type: 'POST',
+  		  url: "${pageContext.request.contextPath}/buy-triangles",
+  		  data:  { count: count_, action: "confirm" },
+  		  dataType: "json",
+  		  async:true
+  		}).done(function(data) {
+				
+  		});
+      	return false;
+    }
+    
+    
+    
 });
 </script>
+
+<!-- модальное окно покупки triangles за очки доминантности -->
+<div class="modal fade" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalWindowTitle">Заголовок</h4>
+      </div>
+      <div class="modal-body" id="modalWindowBody">
+        Тело
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+        <button id="modal_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Подтвердить</span></button> <!-- кнопка подтверждения улучшения имущ. или кассы -->
+      </div>
+    </div>
+  </div>
+</div>
 </t:template>

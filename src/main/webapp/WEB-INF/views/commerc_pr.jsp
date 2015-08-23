@@ -138,6 +138,7 @@
 						<td style="text-align:center">Цена продажи, &tridot;</td>
 						<td style="text-align:center">Износ, %</td>
 						<td style="text-align:center">Касса, &tridot;</td>
+						<td style="text-align:center" hidden="true">След. прибыль</td>
 						<td style="text-align:center">Собрать прибыль</td>
 					</tr>
 				<thead>
@@ -200,6 +201,9 @@
 								  		style="width: ${prop.cash / prop.cashCapacity * 100}%;"></div> 
 								</div>
 							</td>
+							<td style="text-align:center" hidden="true">
+								<fmt:formatDate value="${prop.nextProfit}" pattern="dd-MM-yyyy HH:mm:ss" />
+							</td>
 							<td style="text-align:center">
 								<c:if test="${prop.cash > 0}">
 										<button class="btn btn-danger btn-lg" title="Собрать прибыль" data-toggle="tooltip" 
@@ -228,6 +232,10 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
 
+<!-- Сортировка даты -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables-plugins/1.10.7/sorting/datetime-moment.js"></script>
+
 <script>
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
@@ -245,16 +253,23 @@ $(document).ready(function(){
     	window.location.replace("${pageContext.request.contextPath}/property/get-cash/0");
     });
     
+    $.fn.dataTable.moment('DD-MM-YYYY HH:mm:ss'); // сортировка даты в табличке
+    
     //если нет имущества с НЕ собранным доходом - сделать кнопку "Собрать всё" не активной
     var noReady = ${ready <= 0};
     if (noReady == true) {
 		$("#profit_from_all_btn").attr('disabled', true);
+		
+	    //красивая табличка
+	    $('#prop_table').dataTable( { // сделать сортировку, пагинацию, поиск
+	        "order": [[ 8, "asc" ]] // сортировка по след. прибыли
+	    });
+	} else {
+	    //красивая табличка
+	    $('#prop_table').dataTable( { // сделать сортировку, пагинацию, поиск
+	        "order": [[ 7, "desc" ]] // сортировка по деньгам в кассе
+	    });
 	}
-    
-    //красивая табличка
-    $('#prop_table').dataTable( { // сделать сортировку, пагинацию, поиск
-        "order": [[ 7, "desc" ]] // сортировка по деньгам в кассе
-    } );
 });
 </script>
 

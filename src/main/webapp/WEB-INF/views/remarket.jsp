@@ -272,8 +272,8 @@
 						<td><fmt:formatNumber type="number" maxFractionDigits="3"
 								value="${prop.purchasePrice}" /></td>
 						<td align="center">
-							<button id=${prop.id} class="btn btn-danger btn-lg buy_btn" title="Купить имущество" data-toggle="tooltip" 
-								><span class="glyphicon glyphicon-shopping-cart"></span></button>
+							<button id=${prop.id} class="btn btn-danger btn-lg buy_btn" title="Купить имущество" data-toggle="tooltip">
+							    <span class="glyphicon glyphicon-shopping-cart"></span></button>
 						</td>
 					</tr>
 				</c:forEach>

@@ -26,6 +26,7 @@ function changeBal(data) {
     popUp(data.changeBal, "#balChan"); //движение вверх блока с балансом
     $('#balanceVal').html(data.newBalance); //новое значение баланса
     $('#solvencyVal').html(data.newSolvency); //новое значение состоятельности
+    $('#domiVal').html(data.newDomi); //новое значение доминантности
 };
 
 function setPage(obj) {

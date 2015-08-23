@@ -36,6 +36,7 @@ import com.kozak.triangles.repositories.BuildingDataRep;
 import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.ReProposalRep;
 import com.kozak.triangles.repositories.TransactionRep;
+import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.search.CommPropSearch;
 import com.kozak.triangles.search.RealEstateProposalsSearch;
 import com.kozak.triangles.search.SearchCollections;
@@ -55,6 +56,9 @@ public class PropertyController {
     private PropertyRep prRep;
     @Autowired
     private ReProposalRep rePrRep;
+    @Autowired
+    private UserRep userRep;
+    private int domiAmount;
 
     /**
      * переход на страницу рынка недвижимости
@@ -84,9 +88,10 @@ public class PropertyController {
 
 	reps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
 
-	int currUserId = user.getId();
-	String userBalance = trRep.getUserBalance(currUserId);
-	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, currUserId));
+	int userId = user.getId();
+	String userBalance = trRep.getUserBalance(userId);
+	int userDomi = userRep.getUserDomi(userId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
 	model.addAttribute("reps", reps);
 	model.addAttribute("types", SearchCollections.getCommBuildTypes());
 	model.addAttribute("areas", SearchCollections.getCityAreas());
@@ -168,10 +173,13 @@ public class PropertyController {
 
 		    // снять деньги
 		    Transaction t = new Transaction("Покупка имущества: property-" + nameHash, purchDate, price,
-			    TransferT.SPEND, userId, userMoney - prop.getPurchasePrice(), ArticleCashFlowT.BUY_PROPERTY);
+			    TransferT.SPEND, userId, userMoney - price, ArticleCashFlowT.BUY_PROPERTY);
 		    trRep.addTransaction(t);
 
+		    MoneyController.upUserDomi(Consts.K_DOMI_BUY_PROP, userId, userRep); // повысить доминантность
+
 		    addBalanceData(resultJson, prop.getPurchasePrice(), userMoney, userId);
+		    resultJson.put("newDomi", userRep.getUserDomi(userId)); // информация для обновления значения домин.
 		}
 	    }
 	}
@@ -215,10 +223,27 @@ public class PropertyController {
 	cps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
 	cps.setDepreciation(rangeValues.get(2), rangeValues.get(3)); // установка мин и макс износа
 
+	// пересчитать доминантность
+	List<Property> allPr = (List<Property>) dbResult.get(1);
+	int userDomi = 0;
+	for (Property p : allPr) {
+	    userDomi += 10;
+	    for (int i = 0; i < p.getLevel(); i++) {
+		userDomi += Math.round((i + 1) * Consts.K_PROP_LEVEL_DOMI);
+	    }
+	    for (int i = 0; i < p.getCashLevel(); i++) {
+		userDomi += i + 1;
+	    }
+	}
+	user.setDomi(userDomi);
+	userRep.updateUser(user);
+	//
+
 	String userBalance = trRep.getUserBalance(userId);
-	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId));
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+	model.addAttribute("domi", userDomi);
 	model.addAttribute("cps", cps);
-	model.addAttribute("comProps", dbResult.get(1));
+	model.addAttribute("comProps", dbResult.get(1)); // все коммерческое имущество юзера
 	// model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
 	model.addAttribute("types", SearchCollections.getCommBuildTypes());
 	model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);
@@ -249,7 +274,8 @@ public class PropertyController {
 	}
 
 	String userBalance = trRep.getUserBalance(userId);
-	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId));
+	int userDomi = userRep.getUserDomi(userId);
+	model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
 	model.addAttribute("prop", prop);
 	// добавим вид деятельности
 	// получить данные всех коммерческих строений
@@ -602,14 +628,23 @@ public class PropertyController {
 	}
     }
 
+    /**
+     * повышает уровень кассы или имущества
+     */
+    @SuppressWarnings("unchecked")
     private void upLevel(JSONObject resultJson, Property prop, long userSolvency, long sum, int nLevel, int userId,
 	    String obj) {
 	if (userSolvency >= sum) {
+	    domiAmount = 0;
 	    if (obj.equals("cash")) {
 		upCashLevel(resultJson, prop, nLevel, userId, sum); // повысить уровень кассы
+		domiAmount = nLevel;
 	    } else if (obj.equals("prop")) {
 		upPropLevel(resultJson, prop, nLevel, userId, sum); // повысить уровень имущества
+		domiAmount = (int) Math.round(nLevel * Consts.K_PROP_LEVEL_DOMI);
 	    }
+	    MoneyController.upUserDomi(domiAmount, userId, userRep); // повышение доминантности
+	    resultJson.put("newDomi", userRep.find(userId).getDomi()); // новая доминантность
 	} else { // состоятельность < суммы улучшения
 	    putErrorMsg(resultJson, "Не хватает денег. Нужно: " + sum);
 	}

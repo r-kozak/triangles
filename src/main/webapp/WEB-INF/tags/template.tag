@@ -41,7 +41,7 @@
 			<tbody>
 				<tr>
 				  <td>
-					<div class="dominant">Dominant: 0&#9813;</div>
+					<div class="dominant">Dominant: <span id="domiVal">${domi}</span>&#9813;</div>
 				  </td>
 				  <td>
 					<div class="solvency">Solvency: <span id="solvencyVal">${solvency}</span>&tridot;</div>

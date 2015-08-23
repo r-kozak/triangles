@@ -59,6 +59,18 @@ public class RealEstateProposal {
     @Column(name = "valid")
     private boolean valid = true;
 
+    // id имущества, которое продается (0, если новое)
+    @Column(name = "used_id")
+    private int usedId;
+
+    // уровень имущества (0, если новое)
+    @Column(name = "prop_level")
+    private int prop_level;
+
+    // уровень кассы имущества (0, если новое)
+    @Column(name = "cash_level")
+    private int cash_level;
+
     public RealEstateProposal(CommBuildingsT commBuildingType, Date appearDate, Date lossDate, long purchasePrice,
 	    CityAreasT cityArea) {
 	this.commBuildingType = commBuildingType;
@@ -125,5 +137,29 @@ public class RealEstateProposal {
 
     public void setValid(boolean valid) {
 	this.valid = valid;
+    }
+
+    public int getUsedId() {
+	return usedId;
+    }
+
+    public void setUsedId(int usedId) {
+	this.usedId = usedId;
+    }
+
+    public int getProp_level() {
+	return prop_level;
+    }
+
+    public void setProp_level(int prop_level) {
+	this.prop_level = prop_level;
+    }
+
+    public int getCash_level() {
+	return cash_level;
+    }
+
+    public void setCash_level(int cash_level) {
+	this.cash_level = cash_level;
     }
 }

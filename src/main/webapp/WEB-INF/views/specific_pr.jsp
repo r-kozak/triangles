@@ -7,9 +7,6 @@
 <title>${prop.name}</title>
 
 <style>
-#errorMessg {
-	color:red;
-}
 #defaultCountdown {
   width: 200;
   margin-left:auto;

@@ -148,3 +148,7 @@ body {
 #prop_table .progress {
 	margin-bottom: 0 !important;
 }
+
+#errorMessg {
+	color:red;
+}
