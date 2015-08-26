@@ -36,9 +36,14 @@ public class Util {
 	return result;
     }
 
-    public static Double numberRound(double numToRound, int precision) {
-	double result = new BigDecimal(numToRound).setScale(precision, RoundingMode.HALF_UP).doubleValue();
-	return result;
+    public static double numberRound(double value, int places) {
+        if (places < 0)
+            throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 
     public static int getAreaPercent(CityAreasT cityArea) {
