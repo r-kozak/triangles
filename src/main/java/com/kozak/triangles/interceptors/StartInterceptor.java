@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.kozak.triangles.entities.User;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.utils.Cooker;
 
@@ -18,13 +19,16 @@ public class StartInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-	String ul = Cooker.getCookieByName(request, "ul");
-	String up = Cooker.getCookieByName(request, "up");
-	if (ul != null && up != null) {
-	    session.setAttribute("user", userRep.getUserByEncrLoginAndPassword(ul, up));
-	    response.sendRedirect(request.getContextPath() + "/home");
-	    return false;
-	}
-	return super.preHandle(request, response, handler);
+        String ul = Cooker.getCookieByName(request, "ul");
+        String up = Cooker.getCookieByName(request, "up");
+        if (ul != null && up != null) {
+            User user = userRep.getUserByEncrLoginAndPassword(ul, up);
+            if (user != null) {
+                session.setAttribute("user", user);
+                response.sendRedirect(request.getContextPath() + "/home");
+                return false;
+            }
+        }
+        return super.preHandle(request, response, handler);
     }
 }

@@ -215,4 +215,8 @@ public class PropertyRep {
 
         return result;
     }
+
+    public Property getPropertyById(int id) {
+        return em.find(Property.class, id);
+    }
 }

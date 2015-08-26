@@ -1,6 +1,7 @@
 package com.kozak.triangles.entities;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,9 @@ import javax.persistence.TemporalType;
 
 import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
+import com.kozak.triangles.repositories.BuildingDataRep;
+import com.kozak.triangles.utils.DateUtils;
+import com.kozak.triangles.utils.SingletonData;
 
 /**
  * Предложения на рынке недвижимости
@@ -65,101 +69,134 @@ public class RealEstateProposal {
 
     // уровень имущества (0, если новое)
     @Column(name = "prop_level")
-    private int prop_level;
+    private int propLevel;
 
     // уровень кассы имущества (0, если новое)
     @Column(name = "cash_level")
-    private int cash_level;
+    private int cashLevel;
 
-    public RealEstateProposal(CommBuildingsT commBuildingType, Date appearDate, Date lossDate, long purchasePrice,
-	    CityAreasT cityArea) {
-	this.commBuildingType = commBuildingType;
-	this.appearDate = appearDate;
-	this.lossDate = lossDate;
-	this.purchasePrice = purchasePrice;
-	this.cityArea = cityArea;
+    // процент износа имущества
+    @Column(name = "depreciation")
+    private double depreciation;
+
+    public RealEstateProposal(CommBuildingsT commBuildingType, Date lossDate, long purchasePrice,
+            CityAreasT cityArea) {
+        this.commBuildingType = commBuildingType;
+        this.appearDate = new Date();
+        this.lossDate = lossDate;
+        this.purchasePrice = purchasePrice;
+        this.cityArea = cityArea;
+    }
+
+    /**
+     * конструктор вызывается при формировании предложения на рынке когда пользователь продает имущество
+     */
+    public RealEstateProposal(Property prop, BuildingDataRep buiDataRep) {
+        // получить данные всех коммерческих строений
+        HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+        CommBuildData propData = mapData.get(prop.getCommBuildingType().name());
+        int countDaysOnMarket = Math.round((propData.getRemTermMin() + propData.getRemTermMax()) / 2);
+
+        this.commBuildingType = prop.getCommBuildingType();
+        this.appearDate = new Date();
+
+        this.lossDate = DateUtils.getPlusDay(new Date(), countDaysOnMarket);
+        this.purchasePrice = prop.getSellingPrice();
+        this.cityArea = prop.getCityArea();
+        this.usedId = prop.getId();
+        this.propLevel = prop.getLevel();
+        this.cashLevel = prop.getCashLevel();
+        this.depreciation = prop.getDepreciationPercent();
     }
 
     public RealEstateProposal() {
     }
 
     public Integer getId() {
-	return id;
+        return id;
     }
 
     public void setId(Integer id) {
-	this.id = id;
+        this.id = id;
     }
 
     public CommBuildingsT getCommBuildingType() {
-	return commBuildingType;
+        return commBuildingType;
     }
 
     public void setCommBuildingType(CommBuildingsT commBuildingType) {
-	this.commBuildingType = commBuildingType;
+        this.commBuildingType = commBuildingType;
     }
 
     public Date getAppearDate() {
-	return appearDate;
+        return appearDate;
     }
 
     public void setAppearDate(Date appearDate) {
-	this.appearDate = appearDate;
+        this.appearDate = appearDate;
     }
 
     public Date getLossDate() {
-	return lossDate;
+        return lossDate;
     }
 
     public void setLossDate(Date lossDate) {
-	this.lossDate = lossDate;
+        this.lossDate = lossDate;
     }
 
     public long getPurchasePrice() {
-	return purchasePrice;
+        return purchasePrice;
     }
 
     public void setPurchasePrice(long purchasePrice) {
-	this.purchasePrice = purchasePrice;
+        this.purchasePrice = purchasePrice;
     }
 
     public CityAreasT getCityArea() {
-	return cityArea;
+        return cityArea;
     }
 
     public void setCityArea(CityAreasT cityArea) {
-	this.cityArea = cityArea;
+        this.cityArea = cityArea;
     }
 
     public boolean isValid() {
-	return valid;
+        return valid;
     }
 
     public void setValid(boolean valid) {
-	this.valid = valid;
+        this.valid = valid;
     }
 
     public int getUsedId() {
-	return usedId;
+        return usedId;
     }
 
     public void setUsedId(int usedId) {
-	this.usedId = usedId;
+        this.usedId = usedId;
     }
 
-    public int getProp_level() {
-	return prop_level;
+    public double getDepreciation() {
+        return depreciation;
     }
 
-    public void setProp_level(int prop_level) {
-	this.prop_level = prop_level;
+    public void setDepreciation(double depreciation) {
+        this.depreciation = depreciation;
     }
 
-    public int getCash_level() {
-	return cash_level;
+    public int getPropLevel() {
+        return propLevel;
     }
 
-    public void setCash_level(int cash_level) {
-	this.cash_level = cash_level;
+    public void setPropLevel(int propLevel) {
+        this.propLevel = propLevel;
+    }
+
+    public int getCashLevel() {
+        return cashLevel;
+    }
+
+    public void setCashLevel(int cashLevel) {
+        this.cashLevel = cashLevel;
     }
 }
