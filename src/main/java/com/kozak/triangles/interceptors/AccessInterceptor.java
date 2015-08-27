@@ -19,7 +19,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     HttpSession session;
 
-    @Override
+    @Override 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         User user = (User) session.getAttribute("user");

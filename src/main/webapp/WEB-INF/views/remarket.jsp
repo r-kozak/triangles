@@ -64,12 +64,20 @@
 	           				
 	           				hideBuyBtn(clicked_btn, "Ошибка"); // удалить кнопку Buy в таблице
 	           			} else {
+	           				var usedText = ""; // текст будет отображен, если имущество б/у
+	           				if (data.condition == "б/у") {
+	           					usedText = '<tr><td><b>Уровень:</b></td> <td>' + data.propLevel + '</td></tr>' +
+								'<tr><td><b>Уровень кассы:</b></td> <td>' + data.cashLevel + '</td></tr>' +
+								'<tr><td><b>Износ:</b></td> <td>' + data.depreciation + '%</td></tr>';
+							}
 							$('#modalWindowBody').html('<div class="buyBlock">' +
 									'<table class="table">' + 
-									'<tr><td><strong>Номер заказа:</strong></td> <td>' + data.propId + '</td></tr>' +
-									'<tr><td><strong>Тип:</strong></td> <td>' + data.buildType + '</td></tr>' +
-									'<tr><td><strong>Район:</strong></td> <td>' + data.cityArea + '</td></tr>' +
-									'<tr><td><strong>Цена:</strong></td><td>' + data.price + '&tridot;</td></tr>' +
+									'<tr><td><b>Номер заказа:</b></td> <td>' + data.propId + '</td></tr>' +
+									'<tr><td><b>Состояние:</b></td> <td>' + data.condition + '</td></tr>' +
+									'<tr><td><b>Тип:</b></td> <td>' + data.buildType + '</td></tr>' +
+									'<tr><td><b>Район:</b></td> <td>' + data.cityArea + '</td></tr>' +
+									usedText + 
+									'<tr><td><b>Цена:</b></td><td>' + data.price + '&tridot;</td></tr>' +
 									'<tr><td><b>Баланс после покупки:</b></td><td><span id="newBalLab">' + data.newBalance + '&tridot;</span></td></tr>' +
 									'</table></div>');
 							
@@ -224,6 +232,9 @@
 							<td>Район города</td>
 							<td>Размещение</td>
 							<td>Конец размещения</td>
+							<td>Уровень</td>
+							<td>Уровень кассы</td>
+							<td>Износ, %</td>
 							<td>Цена, &tridot;</td>
 							<td>Купить</td>
 						</tr>
@@ -264,13 +275,12 @@
 							</c:otherwise>
 						</c:choose>
 
-						<td><fmt:formatDate value="${prop.appearDate}"
-								pattern="dd-MM-yyyy HH:mm" /></td>
-						<td><fmt:formatDate value="${prop.lossDate}"
-								pattern="dd-MM-yyyy HH:mm" /></td>
-
-						<td><fmt:formatNumber type="number" maxFractionDigits="3"
-								value="${prop.purchasePrice}" /></td>
+						<td><fmt:formatDate value="${prop.appearDate}" pattern="dd-MM-yyyy HH:mm" /></td>
+						<td><fmt:formatDate value="${prop.lossDate}" pattern="dd-MM-yyyy HH:mm" /></td>
+						<td>${prop.propLevel}</td>
+						<td>${prop.cashLevel}</td>
+						<td>${prop.depreciation}</td>
+						<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.purchasePrice}" /></td>
 						<td align="center">
 							<button id=${prop.id} class="btn btn-danger btn-lg buy_btn" title="Купить имущество" data-toggle="tooltip">
 							    <span class="glyphicon glyphicon-shopping-cart"></span></button>

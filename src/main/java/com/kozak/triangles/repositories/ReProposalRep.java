@@ -157,9 +157,8 @@ public class ReProposalRep {
     public Long allPrCount(boolean countOfNew, int userId) {
         List<Integer> propsOnSale = this.getPropertyIdsOnSale(userId);
 
-        String hql = "select count(id) FROM re_proposal as rep where rep.valid = true";
+        String hql = "select count(id) FROM re_proposal as rep where rep.valid = true and rep.usedId not in (:propsOnSale)";
         Query query = em.createQuery(hql).setParameter("propsOnSale", propsOnSale);
-        ;
 
         if (countOfNew) {
             Calendar yestC = Calendar.getInstance();
@@ -212,6 +211,11 @@ public class ReProposalRep {
     public List<Integer> getPropertyIdsOnSale(int userId) {
         String hql = "Select id from Property as pr where pr.onSale = true and pr.userId = :userId";
         Query query = this.em.createQuery(hql).setParameter("userId", (Object) userId);
-        return query.getResultList();
+
+        List<Integer> result = query.getResultList();
+        if (result.isEmpty()) {
+            result.add(-1); // нужно хотя бы один элемент, чтобы не делать проверок дальше
+        }
+        return result;
     }
 }

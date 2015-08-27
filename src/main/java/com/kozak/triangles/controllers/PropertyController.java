@@ -146,10 +146,11 @@ public class PropertyController {
             CommBuildData buildData = mapData.get(prop.getCommBuildingType().name());
 
             if (action.equals("info")) { // получение информации
+                String usedText = (prop.getUsedId() != 0) ? "<b>(Б/У)</b>" : "<b>(НОВОЕ)</b>";
                 if (userMoney >= prop.getPurchasePrice()) { // хватает денег
-                    resultJson.put("title", "Обычная покупка");
+                    resultJson.put("title", "Обычная покупка " + usedText);
                 } else if (userSolvency >= prop.getPurchasePrice()) { // покупка в кредит
-                    resultJson.put("title", "Покупка в кредит");
+                    resultJson.put("title", "Покупка в кредит " + usedText);
                 }
                 resultJson.put("buildType", buildData.getCommBuildType().toString()); // тип недвиги
                 resultJson.put("newBalance", newBalance); // balance after purchase
@@ -277,7 +278,7 @@ public class PropertyController {
         Property prop = prRep.getSpecificProperty(userId, prId);
         // если получили null - значит это не имущество пользователя
         if (prop == null) {
-            return "redirect:/commerc-pr";
+            return "redirect:/property/commerc-pr";
         }
 
         String userBalance = trRep.getUserBalance(userId);

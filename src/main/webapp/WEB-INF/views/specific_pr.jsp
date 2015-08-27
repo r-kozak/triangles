@@ -153,14 +153,25 @@
 			        	});
 		  			}
 		  		}); 
+		
+		//послать пост запрос на получении информации о имуществе (на продаже или нет)
+		//также назначить обработчик при клике мышей по кнопке Продать
+		$.post(
+				  "${pageContext.request.contextPath}/property/sell",
+				  { propId: <c:out value='${prop.id}'/>, action: "info" },
+				  function(data) { 
+					  sellProperty(data);
+					  $('#propSellBut').on('click', function() {
+						  sendSellPost(); // послать запрос чтобы продать или отменить продажу
+						  $('#'+$('#propSellBut').attr('aria-describedby')).remove(); // удаление подсказки
+					  });
+				  	}
+				);
 	}; //window.onload()
 	
 	
     //отправка запроса на повышение уровня кассы или имущества
     function sendPostLevelUp(action0, obj0) {
-//     	var o = (obj0 == "cash") ? "кассы?" : "имущества?";
-// 		var question = "Вы точно хотите повысить уровень " + o;
-//     	if(confirm(question)) {
 	    	$.ajax({
 	       		  type: 'POST',
 	       		  url: "${pageContext.request.contextPath}/property/level-up",
@@ -191,7 +202,6 @@
 	       				}
 	       			} 
 	       	}); 
-//     	}
     }
     
 	//отправка запроса на ремонт имущества
@@ -206,6 +216,7 @@
 						    $('#deprVal').attr("aria-valuenow", data.percAfterRepair); // прогресс-бар - текущее значение 
 						    $('#deprVal').attr("style", "width: " + data.percAfterRepair + "%"); // показать заполненность прогрессбара
 						    $('#deprBlock').html(Number(data.percAfterRepair) + "%");
+						    $('#sellPriceVal').html(data.propSellingPrice);
 						    changeBal(data);
 						    $('#cancel').trigger('click');
 						    if (data.percAfterRepair == 0) {
@@ -214,6 +225,38 @@
 				  		}
 				  	}
 				);
+	}
+	
+	//отправка запроса на продажу / отмену продажи имущества
+	function sendSellPost() {
+		$.post(
+				  "${pageContext.request.contextPath}/property/sell",
+				  { propId: <c:out value='${prop.id}'/>, action: "sell" },
+				  function(data) {
+					  if (!data.error) {
+						sellProperty(data);		  
+					  } else {
+						  $('#modalErrorBody').html('Ошибка! Нельзя отменить. Возможно имущество уже купили. Проверьте ' + 
+								  '<a href="${pageContext.request.contextPath}/transactions" target="_blank">транзакции.</a>' + 
+								  'Или сразу идите <a href="${pageContext.request.contextPath}/home">домой</a>, потому что сдесь уже делать нечего...');
+						  $('#modalError').modal();
+					  }
+				  	}
+				);
+	}
+	
+	// функция вызывается при загрузке страницы - для показа кнопки "Продать"
+	// и при нажатии кнопки "Продать" для перерисовки
+	function sellProperty(data) {
+		if (data.onSale) {
+		  $('#propSellBut').html('<span class="glyphicon glyphicon-remove-circle"></span>');
+		  $('#propSellBut').attr("data-original-title", 'Отмена продажи');
+		  $('#endSaleDateVal').html('<span class="text-danger">Дата продажи:<br/>' + data.endSaleDate + '</span>');
+	 	} else {
+		  $('#propSellBut').html('<span class="glyphicon glyphicon-briefcase"></span>');
+		  $('#propSellBut').attr("data-original-title", 'Продать');
+		  $('#endSaleDateVal').html('');
+	  	}
 	}
 	
 
@@ -378,9 +421,10 @@
 					</tr>
 					<tr>
 						<td>Стоимость продажи</td>
-						<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
+						<td id="sellPriceVal"><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
 						<td>
-								<a id="cashUpBut" class="btn btn-danger" data-toggle="tooltip" title="Продать" href="#"><span class="glyphicon glyphicon-briefcase"></span></a>
+							<a id="propSellBut" class="btn btn-danger" data-toggle="tooltip"></a>
+							<div id="endSaleDateVal"></div>
 						</td>
 					</tr>
 				</table>
@@ -419,6 +463,24 @@ $(document).ready(function(){
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
         <button id="modal_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Подтвердить</span></button> <!-- кнопка подтверждения улучшения имущ. или кассы -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- модальное окно для отображения ошибки -->
+<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalErrorTitle">Ошибка</h4>
+      </div>
+      <div class="modal-body" id="modalErrorBody">
+        Тело
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ок</button>
       </div>
     </div>
   </div>

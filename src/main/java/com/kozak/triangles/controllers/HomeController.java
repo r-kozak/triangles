@@ -302,7 +302,9 @@ public class HomeController {
         List<RealEstateProposal> outdated = rePrRep.getOutdatedProposals();
         for (RealEstateProposal rep : outdated) {
             // если это б/у имущество - начислить деньги продавцу
-            Util.buyUsedProperty(rep, new Date(), 0, "sold", prRep, trRep);
+            if (rep.getUsedId() != 0) {
+                Util.buyUsedProperty(rep, new Date(), 0, "sold", prRep, trRep);
+            }
 
             // rePrRep.removeReProposalByUsedId(rep.getId());
             rep.setValid(false);
