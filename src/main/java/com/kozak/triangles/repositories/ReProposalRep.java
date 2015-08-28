@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TemporalType;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,14 +38,18 @@ public class ReProposalRep {
      * @throws ParseException
      */
     public List<Object> getREProposalsList(int page, RealEstateProposalsSearch reps, int userId) throws ParseException {
-        List<Integer> propsOnSale = this.getPropertyIdsOnSale(userId);
-        String hql0 = "from re_proposal as rep where rep.valid = true and rep.usedId not in (:propsOnSale)";
+        String hql0 = "from re_proposal as rep where rep.valid = true";
         String hql1 = "";
         String hql2 = " ORDER BY rep.commBuildingType";
 
         Map<String, Object> params = new HashMap<String, Object>();
 
-        params.put("propsOnSale", propsOnSale);
+        // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
+        List<Integer> propsOnSale = this.getPropertyIdsOnSale(userId);
+        if (!propsOnSale.isEmpty()) {
+            hql0 += " and rep.usedId not in (:propsOnSale)";
+            params.put("propsOnSale", propsOnSale);
+        }
 
         // date filter
         hql1 += " and rep.appearDate between :appearDateFrom and :appearDateTo";
@@ -61,7 +64,7 @@ public class ReProposalRep {
         params.put("lossDateFrom", lossDateFrom);
         params.put("lossDateTo", lossDateTo);
 
-        // TODO area filter
+        // area filter
         List<CityAreasT> areas = reps.getAreas(); // типы из формы
         if (areas != null && !areas.isEmpty()) {
             hql1 += " and rep.cityArea IN (:areas)";
@@ -155,21 +158,33 @@ public class ReProposalRep {
      * @return
      */
     public Long allPrCount(boolean countOfNew, int userId) {
-        List<Integer> propsOnSale = this.getPropertyIdsOnSale(userId);
+        // параметры, которые потом установятся запросу
+        Map<String, Object> params = new HashMap<String, Object>();
 
-        String hql = "select count(id) FROM re_proposal as rep where rep.valid = true and rep.usedId not in (:propsOnSale)";
-        Query query = em.createQuery(hql).setParameter("propsOnSale", propsOnSale);
+        String hql = "select count(id) FROM re_proposal as rep where rep.valid = true";
+
+        // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
+        List<Integer> propsOnSale = this.getPropertyIdsOnSale(userId);
+        if (!propsOnSale.isEmpty()) {
+            hql += " and rep.usedId not in (:propsOnSale)";
+            params.put("propsOnSale", propsOnSale);
+        }
 
         if (countOfNew) {
             Calendar yestC = Calendar.getInstance();
             yestC.add(Calendar.DATE, -1);
             Date yest = yestC.getTime();
 
-            hql = String.valueOf(hql) + " and rep.appearDate > :yest";
-
-            query = this.em.createQuery(hql).setParameter("propsOnSale", propsOnSale);
-            query.setParameter("yest", yest, TemporalType.TIMESTAMP);
+            hql += " and rep.appearDate > :yest";
+            params.put("yest", yest);
         }
+
+        Query query = em.createQuery(hql);
+        // установка параметров
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+
         return Long.valueOf(query.getSingleResult().toString());
     }
 
@@ -180,16 +195,35 @@ public class ReProposalRep {
      * @return
      */
     public List<Object> getRangeValues(int userId) {
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        String suff = "FROM re_proposal as rep where valid = true";
+
+        // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
         List<Integer> propsOnSale = this.getPropertyIdsOnSale(userId);
+        if (!propsOnSale.isEmpty()) {
+            suff += " and rep.usedId not in (:propsOnSale)";
+            params.put("propsOnSale", propsOnSale);
+        }
 
         ArrayList<Object> result = new ArrayList<Object>(2);
 
-        String suff = "FROM re_proposal as rep where valid = true and rep.usedId not in (?0)";
-
+        // строки запроса
         String minPrHql = "Select min(purchasePrice)" + suff;
         String maxPrHql = "Select max(purchasePrice)" + suff;
-        Long min = (Long) this.em.createQuery(minPrHql).setParameter(0, propsOnSale).getSingleResult();
-        Long max = (Long) this.em.createQuery(maxPrHql).setParameter(0, propsOnSale).getSingleResult();
+
+        // запросы
+        Query queryMin = em.createQuery(minPrHql);
+        Query queryMax = em.createQuery(maxPrHql);
+
+        // установка параметров
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            queryMin.setParameter(entry.getKey(), entry.getValue());
+            queryMax.setParameter(entry.getKey(), entry.getValue());
+        }
+
+        Long min = (Long) queryMin.getSingleResult();
+        Long max = (Long) queryMax.getSingleResult();
 
         result.add(min == null ? 0 : min);
         result.add(max == null ? 0 : max);
@@ -208,14 +242,17 @@ public class ReProposalRep {
         return (RealEstateProposal) query.getSingleResult();
     }
 
+    /**
+     * получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
+     * при переходе на рынок
+     * 
+     * @param userId
+     */
+    @SuppressWarnings("unchecked")
     public List<Integer> getPropertyIdsOnSale(int userId) {
         String hql = "Select id from Property as pr where pr.onSale = true and pr.userId = :userId";
         Query query = this.em.createQuery(hql).setParameter("userId", (Object) userId);
 
-        List<Integer> result = query.getResultList();
-        if (result.isEmpty()) {
-            result.add(-1); // нужно хотя бы один элемент, чтобы не делать проверок дальше
-        }
-        return result;
+        return query.getResultList();
     }
 }

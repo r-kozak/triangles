@@ -15,7 +15,7 @@ public class LoginValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-	return User.class.equals(clazz);
+        return User.class.equals(clazz);
     }
 
     @Override
@@ -23,22 +23,22 @@ public class LoginValidator implements Validator {
     }
 
     public void validate(Object target, Errors errors, List<User> userList) throws NoSuchAlgorithmException {
-	User user = (User) target;
-	String login = user.getLogin().toLowerCase();
-	String password = Encryptor.toMD5(user.getPassword());
+        User user = (User) target;
+        String login = user.getLogin().toLowerCase();
+        String password = Encryptor.toMD5(user.getPassword());
 
-	for (User u : userList) {
-	    boolean dataMatched = u.getLogin().equalsIgnoreCase(login) && u.getPassword().equals(password);
-	    user.setAuthenticated(dataMatched);
+        for (User u : userList) {
+            boolean dataMatched = u.getLogin().equalsIgnoreCase(login) && u.getPassword().equals(password);
+            user.setAuthenticated(dataMatched);
 
-	    if (dataMatched) // если юзер аутентифицирован - прерываем цикл
-		break;
-	}
+            if (dataMatched) // если юзер аутентифицирован - прерываем цикл
+                break;
+        }
 
-	if (!user.isAuthenticated()) {
-	    errors.rejectValue("login", "authenticated.notCorrectLoginPassword",
-		    "Please check that you have entered your login and password correctly.");
-	}
+        if (!user.isAuthenticated()) {
+            errors.rejectValue("login", "authenticated.notCorrectLoginPassword",
+                    "Please check that you have entered your login and password correctly.");
+        }
     }
 
 }

@@ -230,26 +230,27 @@ public class PropertyController {
         cps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
         cps.setDepreciation(rangeValues.get(2), rangeValues.get(3)); // установка мин и макс износа
 
-        // пересчитать доминантность
-        List<Property> allPr = (List<Property>) dbResult.get(1);
-        int userDomi = 0;
-        for (Property p : allPr) {
-            userDomi += 10;
-            for (int i = 0; i < p.getLevel(); i++) {
-                userDomi += Math.round((i + 1) * Consts.K_PROP_LEVEL_DOMI);
-            }
-            for (int i = 0; i < p.getCashLevel(); i++) {
-                userDomi += i + 1;
-            }
-        }
+        // // пересчитать доминантность
+        // List<Property> allPr = (List<Property>) dbResult.get(1);
+        // int userDomi = 0;
+        // for (Property p : allPr) {
+        // userDomi += 10;
+        // for (int i = 0; i < p.getLevel(); i++) {
+        // userDomi += Math.round((i + 1) * Consts.K_PROP_LEVEL_DOMI);
+        // }
+        // for (int i = 0; i < p.getCashLevel(); i++) {
+        // userDomi += i + 1;
+        // }
+        // }
+        // user.setDomi(userDomi);
+        // userRep.updateUser(user);
+        // //
         user = userRep.getCurrentUserByLogin(user.getLogin());
-        user.setDomi(userDomi);
-        userRep.updateUser(user);
-        //
 
         String userBalance = trRep.getUserBalance(userId);
-        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
-        model.addAttribute("domi", userDomi);
+        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+                user.getDomi());
+        model.addAttribute("domi", user.getDomi());
         model.addAttribute("cps", cps);
         model.addAttribute("comProps", dbResult.get(1)); // все коммерческое имущество юзера
         // model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));

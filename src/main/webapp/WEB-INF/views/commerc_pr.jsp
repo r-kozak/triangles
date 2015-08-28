@@ -68,7 +68,7 @@
 				</div>
 			</fieldset>
 			
-			<fieldset id = "searchBlock">
+			<fieldset id="searchBlock">
 			<legend>Цена продажи, &tridot;</legend>
 				<div id="searchEl">
 					<input type="text" class="value_lab" id="sell_pr_lab_fr" readonly>
@@ -80,7 +80,7 @@
 				</div>
 			</fieldset>
 			
-			<fieldset id = "searchBlock">
+			<fieldset id="searchBlock">
 			<legend>Износ, %</legend>
 				<div id="searchEl">
 					<input type="text" class="value_lab" id="depr_lab_fr" readonly>
@@ -144,7 +144,15 @@
 				<thead>
 				<tbody>
 					<c:forEach items="${comProps}" var="prop">
-						<tr>
+							<c:choose>
+								<c:when test="${prop.onSale}">
+									<tr class="warning text-danger">
+								</c:when>
+								<c:otherwise>
+									<tr>
+								</c:otherwise>
+							</c:choose>
+							
 							<c:choose>
 								<c:when test="${prop.commBuildingType == 'STALL'}">
 									<td style="text-align:left">Киоск</td>

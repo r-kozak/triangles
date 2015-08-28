@@ -98,11 +98,12 @@
        				$('#propUpBut').on('click', function() {
        					var propName = "<c:out value='${prop.name}'/>"; // имя имущества
        					var currLevel = parseInt($('#prop_level_td').html()); // текущий уровень
+       					var nextSum = $(this).attr('data-original-title').substring(17);
        					
        			    	$('#modalWindowTitle').html('Поднятие уровня имущества'); // задать заголовок модального окна
        			    	$('#text_modal_confirm').html('Улучшить'); // текст для кнопки подтверждения
        			    	$('#modalWindowBody').html('Вы точно хотите поднять уровень имущества <b>' + propName + '</b>? </br>' + 
-       			    			'Сумма: <b>' + data.nextSum + '&tridot;</b> </br>' +
+       			    			'Сумма: <b><div>' + nextSum + '&tridot;</b> </br>' +
        			    			'Будет достигнут уровень: <b>' + (currLevel + 1) + '</b>'); // задать тело модального окна
        					$('#modalWindow').modal(); // показать модальное окно
        			    		
@@ -134,11 +135,12 @@
 		  				$('#cashUpBut').on('click', function() {
 		  					var propName = "<c:out value='${prop.name}'/>"; // имя имущества
 		  					var currLevel = parseInt($('#cash_level_td').html()); // текущий уровень
+		  					var nextSum = $(this).attr('data-original-title').substring(17);
 		  					
 	       			    	$('#modalWindowTitle').html('Поднятие уровня кассы'); // задать заголовок модального окна
 	       			    	$('#text_modal_confirm').html('Улучшить'); // текст для кнопки подтверждения
 	       			    	$('#modalWindowBody').html('Вы точно хотите поднять уровень кассы имущества <b>' + propName + '</b>? </br>' + 
-	       			    			'Сумма: <b>' + data.nextSum + '&tridot;</b> </br>' +
+	       			    			'Сумма: <b>' + nextSum + '&tridot;</b> </br>' +
 	       			    			'Будет достигнут уровень: <b>' + (currLevel + 1) + '</b>'); // задать тело модального окна
 	       					$('#modalWindow').modal(); // показать модальное окно
 	       			    			

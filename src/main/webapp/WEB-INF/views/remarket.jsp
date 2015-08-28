@@ -241,7 +241,15 @@
 					</thead>
 					<tbody>
 				<c:forEach items="${proposals}" var="prop">
-					<tr>
+						<c:choose>
+							<c:when test="${prop.usedId != 0}">
+								<tr class="warning text-danger">
+							</c:when>
+							<c:otherwise>
+								<tr>
+							</c:otherwise>
+						</c:choose>
+							
 						<c:choose>
 							<c:when test="${prop.commBuildingType == 'STALL'}">
 								<td>Киоск</td>
