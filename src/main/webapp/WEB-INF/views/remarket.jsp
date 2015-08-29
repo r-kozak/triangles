@@ -201,7 +201,7 @@
 </t:menu>
 
 		<div class="tranBlock">
-			<h1 align="center">Рынок недвижимости</h1>
+			<h3 class="page-header" align=center>Рынок недвижимости</h3>
 
 			<c:if test="${empty proposals && marketEmpty}">
 				<div class="noData">

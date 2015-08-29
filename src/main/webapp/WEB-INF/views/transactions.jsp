@@ -50,7 +50,7 @@
 <div class="tranBlock">
 	<c:if test="${!empty transacs}">
 				
-		<h1 style="text-align:center;">Транзакции</h1>
+		<h3 class="page-header" align=center>Транзакции</h3>
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<button id="buy_500_tr" class="btn btn-default" data-toggle="tooltip"

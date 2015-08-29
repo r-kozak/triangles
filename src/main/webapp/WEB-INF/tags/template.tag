@@ -11,7 +11,6 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/menu.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/specific_pr.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jquery.countdown.css" type="text/css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/home.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/search.css" type="text/css" />
 
 

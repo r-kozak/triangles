@@ -87,6 +87,7 @@ public class HomeController {
 
         model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
         model.addAttribute("profitFromProp", trRep.getSumByAcf(userId, ArticleCashFlowT.LEVY_ON_PROPERTY));
+        model.addAttribute("profitFromPropSell", trRep.getSumByAcf(userId, ArticleCashFlowT.SELL_PROPERTY));
         model.addAttribute("profitDB", trRep.getSumByAcf(userId, ArticleCashFlowT.DAILY_BONUS));
         model.addAttribute("profitDep", trRep.getSumByAcf(userId, ArticleCashFlowT.DEPOSIT));
 

@@ -201,7 +201,6 @@ public class PropertyController {
      * переход на страницу коммерческой недвижимости пользователя
      * 
      */
-    @SuppressWarnings("unchecked")
     @RequestMapping(value = "/commerc-pr", method = RequestMethod.GET)
     public String userProperty(@ModelAttribute("user") User user, Model model, CommPropSearch cps) {
 
@@ -250,7 +249,6 @@ public class PropertyController {
         String userBalance = trRep.getUserBalance(userId);
         model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
                 user.getDomi());
-        model.addAttribute("domi", user.getDomi());
         model.addAttribute("cps", cps);
         model.addAttribute("comProps", dbResult.get(1)); // все коммерческое имущество юзера
         // model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));

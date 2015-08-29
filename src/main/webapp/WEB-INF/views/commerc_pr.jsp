@@ -103,7 +103,7 @@
 </t:menu>
 
 <div class="tranBlock">
-			<h1 align="center">Коммерческое имущество</h1>
+			<h3 class="page-header" align=center>Коммерческое имущество</h3>
 			<c:if test="${empty comProps && !userHaveProps}">
 				<div class = "noData">У вас нет имущества. Его можно купить на рынке. <a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a></div>
 			</c:if>
