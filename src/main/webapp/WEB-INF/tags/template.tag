@@ -2,6 +2,8 @@
 
 <html>
 <head>
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/ico.ico" type="image/x-icon">
+
 <script src="${pageContext.request.contextPath}/resources/js/jquery-2.1.4.js"></script>
 
 <link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/css/bootstrap.min.css'>
@@ -13,14 +15,11 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jquery.countdown.css" type="text/css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/search.css" type="text/css" />
 
-
-
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/change_balance.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/jquery.plugin.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/jquery.countdown.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/jquery.countdown-ru.js"></script>
-
 <title>no title</title>
 </head>
 <style>
@@ -53,5 +52,7 @@
 		</table>
 	</div>	
 	<jsp:doBody/>
+	
+
 </body>
 </html>

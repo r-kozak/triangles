@@ -18,10 +18,28 @@
 	text-align: right;
 }
 .container {
-	margin-top:70;
+	margin-top: 70;
 }
 .page-header {
 	text-align: center;
+}
+#info>a {
+	text-decoration: none;
+	padding: 6px 55px;
+	border: 2px solid;
+	color: #B8860B;
+	font-size: 16;
+}
+#info>a:hover {
+	color: #DD8400;
+}
+#info {
+	margin-top: 6;
+	text-align: center;
+	font-size: 13;
+}
+#info>p {
+	margin-bottom: 12;
 }
 </style>
 
@@ -31,7 +49,7 @@
 		<div class="container">
 			<h3 class="page-header">Контрольная панель</h3>
 			<div class="row">
-			
+
 				<div class="col-md-4">
 					<div class="block_title text-center">
 						<a href="${pageContext.request.contextPath}/property/r-e-market" class="btn"><span
@@ -48,7 +66,7 @@
 						</tr>
 					</table>
 				</div>
-				
+
 				<div class="col-md-4">
 					<div class="block_title text-center">
 						<a href="${pageContext.request.contextPath}/loto" class="btn"><span
@@ -61,7 +79,7 @@
 						</tr>
 					</table>
 				</div>
-				
+
 				<div class="col-md-4">
 					<div class="block_title text-center">
 						<a href="${pageContext.request.contextPath}/property/commerc-pr" class="btn"><span
@@ -110,71 +128,75 @@
 						</c:choose>
 					</table>
 				</div>
-				
+
 			</div>
-				<h3 class="page-header">Статистика</h3>
-				<div class="col-md-6">
-					<table class="table table-compact">
-						<tr class="success text-success"><td colspan=2 align=center>Приход</td></tr>
-						<tr>
-							<td class="tableTd1">Всего заработано, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitSum}" /></td>
-						</tr>
-						<tr>
-							<td class="tableTd1">Прибыль с имущества, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitFromProp}" /></td>
-						</tr>
-						<tr>
-							<td class="tableTd1">Продажа имущества, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitFromPropSell}" /></td>
-						</tr>
-						<tr>
-							<td class="tableTd1">Ежедневный бонус, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitDB}" /></td>
-						</tr>
-						<tr>
-							<td class="tableTd1">Депозиты, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitDep}" /></td>
-						</tr>
-					</table>
-				</div>
-				<div class="col-md-6">
-					<table class="table table-compact">
-						<tr class="danger text-warning"><td colspan=2 align=center>Расход</td></tr>
-						<tr>
-							<td class="tableTd1">Всего потрачено, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendSum}" /></td>
-						</tr>
-						<tr>
-							<td class="tableTd1">На покупку имущества, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendBuyPr}" /></td>
-						</tr>
-						<tr>
-							<td class="tableTd1">На повышение уровня имущества, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendUpLevel}" /></td>
-						</tr>
-						<tr>
-							<td class="tableTd1">На повышение уровня кассы, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendUpCash}" /></td>
-						</tr>
-						<tr>
-							<td class="tableTd1">Ремонт имущества, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendRepair}" /></td>
-						</tr>
-						<tr>
-							<td class="tableTd1">Выплата зарплат, &tridot;</td>
-							<td class="tableTd2">-</td>
-						</tr>
-						<tr>
-							<td class="tableTd1">Кредиты, &tridot;</td>
-							<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendCr}" /></td>
-						</tr>
-						<tr>
-							<td class="tableTd1">Покупка лицензий на строительство, &tridot;</td>
-							<td class="tableTd2">-</td>
-						</tr>
-					</table>
-				</div>
+			<h3 class="page-header">Статистика</h3>
+			<div class="col-md-6">
+				<table class="table table-compact">
+					<tr class="success text-success">
+						<td colspan=2 align=center>Приход</td>
+					</tr>
+					<tr>
+						<td class="tableTd1">Всего заработано, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitSum}" /></td>
+					</tr>
+					<tr>
+						<td class="tableTd1">Прибыль с имущества, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitFromProp}" /></td>
+					</tr>
+					<tr>
+						<td class="tableTd1">Продажа имущества, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitFromPropSell}" /></td>
+					</tr>
+					<tr>
+						<td class="tableTd1">Ежедневный бонус, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitDB}" /></td>
+					</tr>
+					<tr>
+						<td class="tableTd1">Депозиты, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitDep}" /></td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<table class="table table-compact">
+					<tr class="danger text-warning">
+						<td colspan=2 align=center>Расход</td>
+					</tr>
+					<tr>
+						<td class="tableTd1">Всего потрачено, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendSum}" /></td>
+					</tr>
+					<tr>
+						<td class="tableTd1">На покупку имущества, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendBuyPr}" /></td>
+					</tr>
+					<tr>
+						<td class="tableTd1">На повышение уровня имущества, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendUpLevel}" /></td>
+					</tr>
+					<tr>
+						<td class="tableTd1">На повышение уровня кассы, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendUpCash}" /></td>
+					</tr>
+					<tr>
+						<td class="tableTd1">Ремонт имущества, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendRepair}" /></td>
+					</tr>
+					<tr>
+						<td class="tableTd1">Выплата зарплат, &tridot;</td>
+						<td class="tableTd2">-</td>
+					</tr>
+					<tr>
+						<td class="tableTd1">Кредиты, &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendCr}" /></td>
+					</tr>
+					<tr>
+						<td class="tableTd1">Покупка лицензий на строительство, &tridot;</td>
+						<td class="tableTd2">-</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 	</div>
 </t:template>

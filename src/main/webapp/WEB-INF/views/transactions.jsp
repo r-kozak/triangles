@@ -110,6 +110,9 @@
 							<c:when test="${transac.articleCashFlow == 'UP_PROP_LEVEL'}">
 								<td style="text-align:left">Улучшение имущества</td>
 							</c:when>
+							<c:when test="${transac.articleCashFlow == 'DOMINANT_TO_TRIAN'}">
+								<td style="text-align:left">Обмен доминантности</td>
+							</c:when>
 							<c:otherwise>
 								<td>${transac.articleCashFlow}</td>
 							</c:otherwise>
@@ -146,7 +149,6 @@
 	</c:if>
 </div> <!-- tranBlock -->
 </div> <!-- content -->
-
 
 <script type="text/javascript" src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
@@ -201,20 +203,20 @@ $(document).ready(function(){
 				        		'<div id="errorMessg">');
 				$(messageBlock).html(data.message);
 				
-				$('#modalWindowTitle').html('Покупка triangles'); // задать заголовок модального окна
+				$('#modalWindowTitle').html('Покупка triangles').removeClass('text-danger'); // задать заголовок модального окна, удалить класс text-danger, если он есть 
 				$('#text_modal_confirm').html('<span class="glyphicon glyphicon-shopping-cart"></span>'); // текст для кнопки подтверждения
 
 				$('#modal_confirm').unbind('click'); // удалим все обработчики события 'click' у элемента modal_confirm
 		    	if (!data.domiEnough) { // не хватает доминантности на покупку
 					$('#modal_confirm').attr('disabled', true);
+					$('#modalWindowTitle').html('Ошибка').addClass('text-danger'); // установить заголовок модального окна, добавить класс text-danger
+					$('#modalWindowBody').html(data.message);
 				} else {
 					// назначить обработчик кнопке modal_confirm (кнопка модального окна)
+			    	$('#modal_confirm').attr('disabled', false);
 					$('#modal_confirm').on('click', function() {
 					    	$('#modalWindow').modal('hide'); // скрыть модальное окно
-					    	$('#modal_confirm').attr('disabled', false);
-					    	if (!data.zeroSolvency) { // хватает денег
-						     	confirmBuyTriangles(count_);
-							}
+						    confirmBuyTriangles(count_); //отправить запрос подтверждения
 					  }
 					);
 				}
@@ -233,7 +235,7 @@ $(document).ready(function(){
   		  dataType: "json",
   		  async:true
   		}).done(function(data) {
-				
+  			window.location.replace('${pageContext.request.contextPath}/transactions');
   		});
       	return false;
     }

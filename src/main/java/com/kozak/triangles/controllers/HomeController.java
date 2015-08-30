@@ -57,12 +57,13 @@ public class HomeController {
             return "redirect:/";
         }
         User currUser = userRep.getCurrentUserByLogin(user.getLogin().toLowerCase());
+        model.addAttribute("user", currUser); // чтобы в след. действиях был уже юзер со всеми полями
+
         // set currUser lastEnter
         currUser.setLastEnter(new Date());
         userRep.updateUser(currUser);
 
         int userId = currUser.getId();
-        user.setId(userId);
 
         buildDataInit(); // инициализируем данные по строениям для каждого типа
         checkFirstTime(currUser); // проверка, первый ли вход в игру (вообще)

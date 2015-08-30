@@ -13,7 +13,7 @@ public class SignupValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-	return User.class.equals(clazz);
+        return User.class.equals(clazz);
     }
 
     @Override
@@ -22,15 +22,15 @@ public class SignupValidator implements Validator {
     }
 
     public void validate(Object obj, Errors errors, List<User> userList) {
-	User user = (User) obj;
-	if (!user.getPassword().equals(user.getConfirmPassword())) {
-	    errors.rejectValue("confirmPassword", "confirmPassword.passwordDontMatch", "Passwords don't match.");
-	}
+        User user = (User) obj;
+        if (!user.getPassword().equals(user.getConfirmPassword())) {
+            errors.rejectValue("confirmPassword", "confirmPassword.passwordDontMatch", "Пароли не совпадают!");
+        }
 
-	for (User u : userList) {
-	    if (u.getLogin().equalsIgnoreCase(user.getLogin())) {
-		errors.rejectValue("login", "login.alreadyExist", "User with this login already exists!");
-	    }
-	}
+        for (User u : userList) {
+            if (u.getLogin().equalsIgnoreCase(user.getLogin())) {
+                errors.rejectValue("login", "login.alreadyExist", "Пользователь с таким логином уже существует!");
+            }
+        }
     }
 }
