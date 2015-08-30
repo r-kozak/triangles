@@ -1,8 +1,8 @@
 .lsForm {
 	margin-top: 150px;
-	width: auto;
-	margin-left: auto;
-	margin-right: auto;
+	/*width: auto;*/
+	margin-left: auto !important;
+	margin-right: auto !important;
 }
 
 .lsForm a {
@@ -27,7 +27,7 @@
 }
 
 #i_logo {
-	margin:0 63 20; 
+	margin:0 0 25; 
 	width:70; 
 	height:70;
 }

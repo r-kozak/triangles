@@ -91,6 +91,7 @@ public class HomeController {
         model.addAttribute("profitFromPropSell", trRep.getSumByAcf(userId, ArticleCashFlowT.SELL_PROPERTY));
         model.addAttribute("profitDB", trRep.getSumByAcf(userId, ArticleCashFlowT.DAILY_BONUS));
         model.addAttribute("profitDep", trRep.getSumByAcf(userId, ArticleCashFlowT.DEPOSIT));
+        model.addAttribute("profitDomi", trRep.getSumByAcf(userId, ArticleCashFlowT.DOMINANT_TO_TRIAN));
 
         model.addAttribute("spendSum", trRep.getSumByTransfType(userId, TransferT.SPEND)); // расход всего
         model.addAttribute("spendCr", trRep.getSumByAcf(userId, ArticleCashFlowT.CREDIT));
@@ -144,6 +145,9 @@ public class HomeController {
         model.addAttribute("kdr", Consts.K_DECREASE_REPAIR);
         model.addAttribute("kdp", Consts.K_DECREASE_PROP_L);
         model.addAttribute("kdc", Consts.K_DECREASE_CASH_L);
+        // максимальные уровни имущества и кассы
+        model.addAttribute("max_prop_lev", Consts.MAX_PROP_LEVEL);
+        model.addAttribute("max_cash_lev", Consts.MAX_CASH_LEVEL);
         return "wiki";
     }
 

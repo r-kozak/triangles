@@ -16,24 +16,34 @@
         <a href="${pageContext.request.contextPath}/"><img src="${pageContext.request.contextPath}/resources/img/logo.png" align="middle"></a>
     </div>
     
-<form:form class="lsForm" action="signup" commandName="user" method="post" role="form">
-	<div class="form-group">
-		<img id="i_logo" src="${pageContext.request.contextPath}/resources/img/i_logo.png">
-	
-	    <form:input path="login" class="form-control"  type="text" placeholder="Username" required="true" autofocus="true"/>
-	    <p class="help-block"><form:errors path="login"/></p>
-	     
-	    <form:input path="email" class="form-control" type="text" placeholder="E-mail" required="true" />
-	    <p class="help-block"><form:errors path="email"/></p>
-	     
-	    <form:input path="password" class="form-control" type="password" placeholder="Password" required="true" />
-	    <p class="help-block"><form:errors path="password"/></p>
-	     
-	    <form:input path="confirmPassword" class="form-control"  type="password" placeholder="Confirm password" required="true" />
-	    <p class="help-block"><form:errors path="confirmPassword"/></p>
-	    
-	    <button id="subm" type="submit" class="btn btn-success">Регистрация</button>
-    </div>
-</form:form>
+    <div class="container">
+    	<div class="row">
+    		<div class="col-md-4 text-center"></div>
+    		
+    		<div class="col-md-4 text-center">
+				<form:form class="lsForm" action="signup" commandName="user" method="post" role="form">
+					<div class="form-group">
+						<img id="i_logo" src="${pageContext.request.contextPath}/resources/img/i_logo.png">
+					
+					    <form:input path="login" class="form-control"  type="text" placeholder="Ваш логин" required="true" autofocus="true"/>
+					    <p class="help-block"><form:errors path="login"/></p>
+					     
+					    <form:input path="email" class="form-control" type="text" placeholder="E-mail" required="true" />
+					    <p class="help-block"><form:errors path="email"/></p>
+					     
+					    <form:input path="password" class="form-control" type="password" placeholder="Ваш пароль" required="true" />
+					    <p class="help-block"><form:errors path="password"/></p>
+					     
+					    <form:input path="confirmPassword" class="form-control"  type="password" placeholder="Еще раз пароль" required="true" />
+					    <p class="help-block"><form:errors path="confirmPassword"/></p>
+					    
+					    <button id="subm" type="submit" class="btn btn-success">Регистрация</button>
+				    </div>
+				</form:form>
+			</div>
+			
+			<div class="col-md-4 text-center"></div>
+		</div>
+	</div>
 </body>
 </html>

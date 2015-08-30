@@ -21,6 +21,7 @@ import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
+import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
@@ -42,9 +43,9 @@ public class MoneyController {
      * функция обмена доминантности на деньги
      * 
      * @param count
-     *            - количество
+     *            - количество [500, 5000]
      * @param action
-     *            - [info, confirm]
+     *            - [info, confirm] - получение информации или подтверждение обмена
      * @return json строку с
      */
     @SuppressWarnings("unchecked")
@@ -54,20 +55,16 @@ public class MoneyController {
 
         JSONObject resultJson = new JSONObject();
 
-        // проверка правильности запроса
-        boolean isRequestCorrect = false;
-        if (action.equals("info") || action.equals("confirm")) {
-            if (count == 500 || count == 5000) {
-                isRequestCorrect = true;
-            }
-        }
+        // признаки правильности запроса
+        boolean correctAction = action.equals("info") || action.equals("confirm"); // корректное действие
+        boolean correctCount = count == 500 || count == 5000; // корректное количество для обмена
 
-        if (!isRequestCorrect) {
+        if (!correctAction || !correctCount) {
             putErrorMsg(resultJson, "Ошибка запроса :(");
         } else {
             int userId = user.getId();
             int userDomi = userRep.getUserDomi(userId);
-            int needDomi = count / 500; // сколько нужно доминантности для обмена
+            int needDomi = count / Consts.DOMI_PRICE; // сколько нужно доминантности для обмена
 
             if (userDomi < needDomi) {
                 putErrorMsg(resultJson,

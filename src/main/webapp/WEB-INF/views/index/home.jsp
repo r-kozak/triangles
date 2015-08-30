@@ -156,6 +156,10 @@
 						<td class="tableTd1">Депозиты, &tridot;</td>
 						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitDep}" /></td>
 					</tr>
+					<tr>
+						<td class="tableTd1">Обмен доминантности на &tridot;</td>
+						<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitDomi}" /></td>
+					</tr>
 				</table>
 			</div>
 			<div class="col-md-6">
