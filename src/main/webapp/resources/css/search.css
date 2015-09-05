@@ -3,7 +3,7 @@
 	margin-top: 10px; 
 }
 #searchForm {
-	margin-top: 50;
+	margin-top: 40;
 }
 #searchEl{
 	margin-top:5;
@@ -26,11 +26,12 @@
 	display: inline-block;
 }
 #searchSubmit {
-  width: 82%;
+  width: 79%;
 }
-.submClear {
-	 width: 18% !important;
+#submClear {
+	 width: 18%;
 	 vertical-align: bottom;
+	 float: right;
 }
 .submClear:hover {
 	 color: red !important;

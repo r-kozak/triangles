@@ -7,13 +7,26 @@
 <title>${prop.name}</title>
 
 <style>
-#defaultCountdown {
-  width: 200;
-  margin-left:auto;
-  margin-right: auto;
-}
 .table tr td {
 	text-align: center !important;
+}
+/*кнопка повышения уровня лицензии*/
+.btn-license_up {
+	width: 100%;
+	margin-top: 13px;
+    background-color: #A7B3CB !important;
+    border-color: #A7B3CB !important;
+}
+/*блок с информацией о лицензиях, таймером и кнопками*/
+.license-block{
+	border-top: #EEEEEE 1px solid;
+    border-bottom: #EEEEEE 1px solid;
+}
+/*блок с кнопками повышения уровня лицензии*/
+.license-btn-block{
+	background:#4F5A6E; 
+	color:#A7B3CB;
+	padding-bottom: 13px;
 }
 </style>
 <t:template>
@@ -23,7 +36,59 @@
 <div class="container">
 	<div class="row">
 		<t:menu/>
+			
+		<div class="col-md-9">
+			<h3 class="page-header" align=center>Стройка</h3>
+			
+			<h4 class="page-header" align=center>Лицензии</h4>
+			
+			<div class="row license-block">
+			
+				<div class="col-md-2 text-center" style="background:#4F5A6E; color:#A7B3CB; padding:15">
+					<div>Лицензия</div>
+					<div style="font-size:72">3</div>
+					<div>уровень</div>
+				</div>
 				
+				<div class="col-md-8 text-center text-danger" style="padding-top:20">
+					<div style="font-size:20">Срок действия заканчивается через:</div>
+					<div style="padding-top:35; padding-bottom:35;">
+						<script>
+							$(function() {
+								var austDay = new Date(parseInt("<c:out value='${nextProfit.time}'/>"));
+								$('#licenseCountdown').countdown({
+									until : austDay,
+									expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
+								});
+							});
+						</script>
+						<div id="licenseCountdown"></div>
+					</div>
+				</div>
+				
+				<div class="col-md-2 text-center license-btn-block">
+					<div>
+						<button class="btn btn-default btn-lg btn-license_up" title="Купить лицензию уровня 2" data-toggle="tooltip">
+										<span class="glyphicon glyphicon-arrow-up">2</span></button>
+					</div>
+					<div>
+						<button class="btn btn-default btn-lg btn-license_up" title="Купить лицензию уровня 3" data-toggle="tooltip">
+										<span class="glyphicon glyphicon-arrow-up">3</span></button>
+					</div>
+					<div>
+						<button class="btn btn-default btn-lg btn-license_up" title="Купить лицензию уровня 4" data-toggle="tooltip">
+										<span class="glyphicon glyphicon-arrow-up">4</span></button>
+					</div>
+				</div>
+				
+			</div>
+ 		</div> <!-- container.row.col-md-9 - лицензии-->
+ 		
+ 		<div class="col-md-12">
+ 		
+ 			<h4 class="page-header" align=center>В процессе постройки</h4>
+ 			
+ 		</div>
 	</div>
 </div>
 

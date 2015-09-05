@@ -51,7 +51,7 @@
 					<a href="${pageContext.request.contextPath}/property/r-e-market" class="btn"><span
 						class="glyphicon glyphicon-shopping-cart text-danger"> Рынок коммерческого имущества</span></a>
 				</div>
-				<table class="table table-compact">
+				<table class="table">
 					<tr>
 						<td class="tableTd1">Предложений всего</td>
 						<td class="tableTd2">${rePrCo}</td>
@@ -68,7 +68,7 @@
 					<a href="${pageContext.request.contextPath}/loto" class="btn"><span
 						class="glyphicon glyphicon-gift text-danger"> Лотерея</span></a>
 				</div>
-				<table class="table table-compact">
+				<table class="table">
 					<tr>
 						<td class="tableTd1">Билетов</td>
 						<td class="tableTd2">-</td>
@@ -81,7 +81,7 @@
 					<a href="${pageContext.request.contextPath}/property/commerc-pr" class="btn"><span
 						class="glyphicon glyphicon-piggy-bank text-danger"> Коммерческое имущество</span></a>
 				</div>
-				<table class="table table-compact">
+				<table class="table">
 					<c:choose>
 						<c:when test="${comPrCount > 0}">
 							<c:choose>
@@ -94,19 +94,18 @@
 								<c:otherwise>
 									<tr>
 										<td class="tableTd1">До ближайшего сбора</td>
-										<td class="tableTd2"><script>
-											$(function() {
-												var austDay = new Date(
-														parseInt("<c:out value='${nextProfit.time}'/>"));
-												$('#defaultCountdown')
-														.countdown(
-																{
-																	until : austDay,
-																	expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
-																});
-											});
-										</script>
-											<div id="defaultCountdown"></div></td>
+										<td class="tableTd2">
+											<script>
+												$(function() {
+													var austDay = new Date(parseInt("<c:out value='${nextProfit.time}'/>"));
+													$('#defaultCountdown').countdown({
+														until : austDay,
+														expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
+													});
+												});
+											</script>
+											<div id="defaultCountdown"></div>
+										</td>
 									</tr>
 								</c:otherwise>
 							</c:choose>
@@ -130,7 +129,7 @@
 					<a href="${pageContext.request.contextPath}/building" class="btn"><span
 						class="glyphicon glyphicon-equalizer text-danger"> Стройка</span></a>
 				</div>
-				<table class="table table-compact">
+				<table class="table">
 					<tr>
 						<td class="tableTd1">Уровень лицензии</td>
 						<td class="tableTd2">-</td>
@@ -149,7 +148,7 @@
 		</div>
 		<h3 class="page-header">Статистика</h3>
 		<div class="col-md-6">
-			<table class="table table-compact">
+			<table class="table">
 				<tr class="success text-success">
 					<td colspan=2 align=center>Приход</td>
 				</tr>
@@ -180,7 +179,7 @@
 			</table>
 		</div>
 		<div class="col-md-6">
-			<table class="table table-compact">
+			<table class="table">
 				<tr class="danger text-warning">
 					<td colspan=2 align=center>Расход</td>
 				</tr>

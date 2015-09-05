@@ -1,13 +1,9 @@
 #menu {
-  margin: 0 7 0;
-  float: left;
-  padding-top: 98; 
-  display: inline-block;
-  width:20%;
+  padding-top: 38; 
 }
 
 #elMenu > a {
-  width: 195;
+  width: 100%;
   display: block;
   padding: 10 0 10 5;
   text-decoration: none;
