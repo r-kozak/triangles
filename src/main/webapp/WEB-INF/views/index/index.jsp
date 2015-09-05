@@ -18,9 +18,7 @@
     
     <div class="container">
     	<div class="row">
-    		<div class="col-md-4 text-center"></div>
-    		
-    		<div class="col-md-4 text-center">
+    		<div class="col-md-3  col-md-offset-4 text-center">
 				<form:form class="lsForm" action="${pageContext.request.contextPath}/login" modelAttribute="user" method="post" role="form">
 					<img id="i_logo" src="${pageContext.request.contextPath}/resources/img/i_logo.png">
 					
@@ -37,8 +35,6 @@
 				   	</div>
 				</form:form>
 			</div>
-			
-			<div class="col-md-4 text-center"></div>
 		</div>
     </div>
 </body>

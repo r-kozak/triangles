@@ -1,8 +1,7 @@
 .lsForm {
 	margin-top: 150px;
-	/*width: auto;*/
-	margin-left: auto !important;
-	margin-right: auto !important;
+	margin-left: 15%;
+	margin-right: -15%;
 }
 
 .lsForm a {
@@ -14,7 +13,7 @@
 .signUpRef {
 	float: right;
 	display:inline;
-	margin:13 12 0 0;
+	margin:7 12 0 0;
 }
 
 .help-block {

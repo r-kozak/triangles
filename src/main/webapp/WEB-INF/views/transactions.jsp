@@ -113,6 +113,9 @@
 							<c:when test="${transac.articleCashFlow == 'DOMINANT_TO_TRIAN'}">
 								<td style="text-align:left">Обмен доминантности</td>
 							</c:when>
+							<c:when test="${transac.articleCashFlow == 'SELL_PROPERTY'}">
+								<td style="text-align:left">Продажа имущества</td>
+							</c:when>
 							<c:otherwise>
 								<td>${transac.articleCashFlow}</td>
 							</c:otherwise>
