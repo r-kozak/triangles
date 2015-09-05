@@ -1,9 +1,9 @@
-
 #menu {
   margin: 0 7 0;
   float: left;
-  padding-top: 105; 
+  padding-top: 98; 
   display: inline-block;
+  width:20%;
 }
 
 #elMenu > a {

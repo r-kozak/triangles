@@ -285,7 +285,7 @@
 					<span class="glyphicon glyphicon-pencil"></span></a></h1>
 				
 				<table class="table table-striped">
-					<tr class="info">
+					<tr class="tableTitleTr">
 						<td>Характеристика</td>
 						<td>Значение</td>
 						<td>Действие</td>

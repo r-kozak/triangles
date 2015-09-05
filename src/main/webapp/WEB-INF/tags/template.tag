@@ -39,13 +39,13 @@
 			<tbody>
 				<tr>
 				  <td>
-					<div class="dominant">Dominant: <span id="domiVal">${domi}</span>&#9813;</div>
+					<div class="dominant">Доминантность: <span id="domiVal">${domi}</span>&#9813;</div>
 				  </td>
 				  <td>
-					<div class="solvency">Solvency: <span id="solvencyVal">${solvency}</span>&tridot;</div>
+					<div class="solvency">Состоятельность: <span id="solvencyVal">${solvency}</span>&tridot;</div>
 				  </td>
 				  <td>
-					<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Balance: <span id="balanceVal">${balance}</span>&tridot;</a></div>
+					<div class="balance"><a href="${pageContext.request.contextPath}/transactions">Баланс: <span id="balanceVal">${balance}</span>&tridot;</a></div>
 				  </td>  
 				</tr>
 			</tbody>

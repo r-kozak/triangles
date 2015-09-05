@@ -1,6 +1,6 @@
 * {
-	margin: 0;
-	-webkit-box-sizing: border-box;
+/* 	margin: 0; */
+/* 	-webkit-box-sizing: border-box; */
 }
 
 body {
@@ -101,13 +101,6 @@ body {
 	margin-top: 40px;
 }
 
-.tranBlock {
-	margin-top: 80px;
-	display: inline-block;
-	min-width: 83%;
-	max-width: 83%;
-}
-
 #balChan {
 	left: 0;
 	background: transparent;
@@ -166,4 +159,19 @@ body {
 	background-color: rgba(1, 1, 1, 0.725);
 	overflow: auto;
 	z-index: 100;
+}
+
+.container {
+	background-color: white;
+	border: 2px solid;
+    border-color: darkturquoise;
+    padding-top:70;
+}
+
+.table{
+	font-size: 13;
+}
+
+.tableTitleTr {
+	background-color: #F2F2F2;	
 }

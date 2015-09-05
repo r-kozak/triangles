@@ -139,168 +139,170 @@
 	</script>
 </head>
 <t:template>
-<div class="content">
-<t:menu>
-	<form:form id="searchForm" method="GET" commandName="reps">
-		<div id="searchWrap">
-		<div id="menuTitle">Поиск</div>
-			<fieldset id = "searchBlock">
-			<legend>Разм. начало</legend>
-				<div id="searchEl">
-					<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="appearDateFrom"/>
-				</div>
-				<div id="searchEl">
-					<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="appearDateTo"/>
-				</div>
-			</fieldset>
-			
-			<fieldset id = "searchBlock">
-			<legend>Разм. конец</legend>
-				<div id="searchEl">
-					<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="lossDateFrom"/>
-				</div>
-				<div id="searchEl">
-					<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="lossDateTo"/>
-				</div>
-			</fieldset>
-			
-			<fieldset id = "searchBlock"> 
-			<legend>Район</legend>
-				<div id="searchEl">
-					<form:checkboxes path="areas" items="${areas}"/>      
-				</div>
-			</fieldset>
-			
-			<fieldset id = "searchBlock"> 
-			<legend>Тип</legend>
-				<div id="searchEl">
-					<form:checkboxes path="types" items="${types}"/>      
-				</div>
-			</fieldset>
-			
-			<fieldset id = "searchBlock">
-			<legend>Цена, &tridot;</legend>
-				<div id="searchEl">
-					<input type="text" class="value_lab" id="pr_lab_fr" readonly>
-					<input type="text" class="value_lab" id="pr_lab_to" readonly style="float:right; text-align:right">
-					<div class="slider" id="price-slider"></div>
+<div class="container">
+	<div class="row">
+		<t:menu>
+			<form:form id="searchForm" method="GET" commandName="reps">
+				<div id="searchWrap">
+				<div id="menuTitle">Поиск</div>
+					<fieldset id = "searchBlock">
+					<legend>Разм. начало</legend>
+						<div id="searchEl">
+							<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="appearDateFrom"/>
+						</div>
+						<div id="searchEl">
+							<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="appearDateTo"/>
+						</div>
+					</fieldset>
 					
-					<form:input id="pr_from" class="textInp2" hidden="true" path="priceFrom"></form:input>
-					<form:input id="pr_to" class="textInp2"  hidden="true" path="priceTo"></form:input>
-				</div>
-			</fieldset>
-
-			<form:checkbox id="needClear" path="needClear" hidden="true"/>
-			<input id="page" path="page" name="page" value="1" hidden="true" >
-		</div>
-		<div id="searchEl">
-			<button id="searchSubmit" class="btn btn-primary btn-sm" type="submit" name="submit1">Искать</button>
-			<input id="submClear" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Очистить фильтр"  type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
-		</div>
-	</form:form>
-</t:menu>
-
-		<div class="tranBlock">
-			<h3 class="page-header" align=center>Рынок недвижимости</h3>
-
-			<c:if test="${empty proposals && marketEmpty}">
-				<div class="noData">
-					Предложений нет. Вернитесь домой и приходите через минуту. 
-					<a href="${pageContext.request.contextPath}/home">ДОМОЙ</a>
-				</div>
-			</c:if>
-			<c:if test="${empty proposals && !marketEmpty}">
-				<div class = "noData">Поиск не дал результатов. Попробуйте задать другие параметры.</div>
-			</c:if>
-
-			<c:if test="${!empty proposals}">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-				    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip"  data-toggle="collapse" data-target="#pr_descr" 
-				     title="Показать или скрыть подробное описание раздела Рынок имущества"><span class="glyphicon glyphicon-info-sign"></span></button>
-				</div>
-				<div class="panel-body collapse" id="pr_descr">
-					<p><a href="${pageContext.request.contextPath}/wiki#pr.ma">Рынок имущества</a> - это раздел, где можно купить коммерческое
-					имущество (магазины, супермаркеты, заводы, фабрики и т.д.). Рынок является глобальным, если вы купили имущество, для других
-					игроков оно станет недоступным.</p>	
-				</div>
-			</div>
-				<table id="prop_table" class="table table-striped">
-					<thead>
-						<tr class="info" style="font-weight:bold">
-							<td>Тип</td>
-							<td>Район города</td>
-							<td>Размещение</td>
-							<td>Конец размещения</td>
-							<td>Уровень</td>
-							<td>Уровень кассы</td>
-							<td>Износ, %</td>
-							<td>Цена, &tridot;</td>
-							<td>Купить</td>
-						</tr>
-					</thead>
-					<tbody>
-				<c:forEach items="${proposals}" var="prop">
-						<c:choose>
-							<c:when test="${prop.usedId != 0}">
-								<tr class="warning text-danger">
-							</c:when>
-							<c:otherwise>
-								<tr>
-							</c:otherwise>
-						</c:choose>
+					<fieldset id = "searchBlock">
+					<legend>Разм. конец</legend>
+						<div id="searchEl">
+							<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="lossDateFrom"/>
+						</div>
+						<div id="searchEl">
+							<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="lossDateTo"/>
+						</div>
+					</fieldset>
+					
+					<fieldset id = "searchBlock"> 
+					<legend>Район</legend>
+						<div id="searchEl">
+							<form:checkboxes path="areas" items="${areas}"/>      
+						</div>
+					</fieldset>
+					
+					<fieldset id = "searchBlock"> 
+					<legend>Тип</legend>
+						<div id="searchEl">
+							<form:checkboxes path="types" items="${types}"/>      
+						</div>
+					</fieldset>
+					
+					<fieldset id = "searchBlock">
+					<legend>Цена, &tridot;</legend>
+						<div id="searchEl">
+							<input type="text" class="value_lab" id="pr_lab_fr" readonly>
+							<input type="text" class="value_lab" id="pr_lab_to" readonly style="float:right; text-align:right">
+							<div class="slider" id="price-slider"></div>
 							
-						<c:choose>
-							<c:when test="${prop.commBuildingType == 'STALL'}">
-								<td>Киоск</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
-								<td>Сельский магазин</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
-								<td>Магазин канцтоваров</td>
-							</c:when>
-							<c:otherwise>
-								<td>${prop.commBuildingType}</td>
-							</c:otherwise>
-						</c:choose>
-
-						<c:choose>
-							<c:when test="${prop.cityArea == 'GHETTO'}">
-								<td>Гетто</td>
-							</c:when>
-							<c:when test="${prop.cityArea == 'OUTSKIRTS'}">
-								<td>Окраина</td>
-							</c:when>
-							<c:when test="${prop.cityArea == 'CHINATOWN'}">
-								<td>Чайнатаун</td>
-							</c:when>
-							<c:when test="${prop.cityArea == 'CENTER'}">
-								<td>Центр</td>
-							</c:when>
-							<c:otherwise>
-								<td>${prop.cityArea}</td>
-							</c:otherwise>
-						</c:choose>
-
-						<td><fmt:formatDate value="${prop.appearDate}" pattern="dd-MM-yyyy HH:mm" /></td>
-						<td><fmt:formatDate value="${prop.lossDate}" pattern="dd-MM-yyyy HH:mm" /></td>
-						<td>${prop.propLevel}</td>
-						<td>${prop.cashLevel}</td>
-						<td>${prop.depreciation}</td>
-						<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.purchasePrice}" /></td>
-						<td align="center">
-							<button id=${prop.id} class="btn btn-danger btn-lg buy_btn" title="Купить имущество" data-toggle="tooltip">
-							    <span class="glyphicon glyphicon-shopping-cart"></span></button>
-						</td>
-					</tr>
-				</c:forEach>
-				</tbody>
-			</table>
-			</c:if>
-		</div>
-	</div>
-
+							<form:input id="pr_from" class="textInp2" hidden="true" path="priceFrom"></form:input>
+							<form:input id="pr_to" class="textInp2"  hidden="true" path="priceTo"></form:input>
+						</div>
+					</fieldset>
+		
+					<form:checkbox id="needClear" path="needClear" hidden="true"/>
+					<input id="page" path="page" name="page" value="1" hidden="true" >
+				</div>
+				<div id="searchEl">
+					<button id="searchSubmit" class="btn btn-primary btn-sm" type="submit" name="submit1">Искать</button>
+					<input id="submClear" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Очистить фильтр"  type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
+				</div>
+			</form:form>
+		</t:menu>
+	
+			<div class="col-md-9">
+				<h3 class="page-header" align=center>Рынок недвижимости</h3>
+	
+				<c:if test="${empty proposals && marketEmpty}">
+					<div class="noData">
+						Предложений нет. Вернитесь домой и приходите через минуту. 
+						<a href="${pageContext.request.contextPath}/home">ДОМОЙ</a>
+					</div>
+				</c:if>
+				<c:if test="${empty proposals && !marketEmpty}">
+					<div class = "noData">Поиск не дал результатов. Попробуйте задать другие параметры.</div>
+				</c:if>
+	
+				<c:if test="${!empty proposals}">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+					    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip"  data-toggle="collapse" data-target="#pr_descr" 
+					     title="Показать или скрыть подробное описание раздела Рынок имущества"><span class="glyphicon glyphicon-info-sign"></span></button>
+					</div>
+					<div class="panel-body collapse" id="pr_descr">
+						<p><a href="${pageContext.request.contextPath}/wiki#pr.ma">Рынок имущества</a> - это раздел, где можно купить коммерческое
+						имущество (магазины, супермаркеты, заводы, фабрики и т.д.). Рынок является глобальным, если вы купили имущество, для других
+						игроков оно станет недоступным.</p>	
+					</div>
+				</div>
+					<table id="prop_table" class="table table-striped">
+						<thead>
+							<tr class="tableTitleTr" style="font-weight:bold">
+								<td>Тип</td>
+								<td>Район города</td>
+								<td>Размещение</td>
+								<td>Конец размещения</td>
+								<td>Уровень</td>
+								<td>Уровень кассы</td>
+								<td>Износ, %</td>
+								<td>Цена, &tridot;</td>
+								<td>Купить</td>
+							</tr>
+						</thead>
+						<tbody>
+					<c:forEach items="${proposals}" var="prop">
+							<c:choose>
+								<c:when test="${prop.usedId != 0}">
+									<tr class="warning text-danger">
+								</c:when>
+								<c:otherwise>
+									<tr>
+								</c:otherwise>
+							</c:choose>
+								
+							<c:choose>
+								<c:when test="${prop.commBuildingType == 'STALL'}">
+									<td>Киоск</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
+									<td>Сельский магазин</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
+									<td>Магазин канцтоваров</td>
+								</c:when>
+								<c:otherwise>
+									<td>${prop.commBuildingType}</td>
+								</c:otherwise>
+							</c:choose>
+	
+							<c:choose>
+								<c:when test="${prop.cityArea == 'GHETTO'}">
+									<td>Гетто</td>
+								</c:when>
+								<c:when test="${prop.cityArea == 'OUTSKIRTS'}">
+									<td>Окраина</td>
+								</c:when>
+								<c:when test="${prop.cityArea == 'CHINATOWN'}">
+									<td>Чайнатаун</td>
+								</c:when>
+								<c:when test="${prop.cityArea == 'CENTER'}">
+									<td>Центр</td>
+								</c:when>
+								<c:otherwise>
+									<td>${prop.cityArea}</td>
+								</c:otherwise>
+							</c:choose>
+	
+							<td><fmt:formatDate value="${prop.appearDate}" pattern="dd-MM-yyyy HH:mm" /></td>
+							<td><fmt:formatDate value="${prop.lossDate}" pattern="dd-MM-yyyy HH:mm" /></td>
+							<td>${prop.propLevel}</td>
+							<td>${prop.cashLevel}</td>
+							<td>${prop.depreciation}</td>
+							<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.purchasePrice}" /></td>
+							<td align="center">
+								<button id=${prop.id} class="btn btn-danger btn-lg buy_btn" title="Купить имущество" data-toggle="tooltip">
+								    <span class="glyphicon glyphicon-shopping-cart"></span></button>
+							</td>
+						</tr>
+					</c:forEach>
+					</tbody>
+				</table>
+				</c:if>
+			</div>
+	</div>	
+</div> <!-- container -->
+	
 	<div id="balChan">
 		<c:if test="${changeBal.length() > 0}">
 			${changeBal}&tridot;
