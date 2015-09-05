@@ -24,18 +24,14 @@ import com.kozak.triangles.validators.LoginValidator;
 @SessionAttributes("user")
 @Controller
 public class LoginController {
+    @Autowired
+    private LoginValidator loginValidator;
+    @Autowired
+    private UserRep userRepository;
+
     @ModelAttribute("user")
     public User getUser() {
         return new User();
-    }
-
-    private LoginValidator loginValidator;
-    private UserRep userRepository;
-
-    @Autowired
-    public LoginController(LoginValidator loginValidator, UserRep userRepository) {
-        this.loginValidator = loginValidator;
-        this.userRepository = userRepository;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)

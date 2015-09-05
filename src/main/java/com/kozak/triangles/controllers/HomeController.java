@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +23,6 @@ import com.kozak.triangles.enums.TransferT;
 import com.kozak.triangles.enums.buildings.BuildingsT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 import com.kozak.triangles.interfaces.Consts;
-import com.kozak.triangles.repositories.BuildingDataRep;
-import com.kozak.triangles.repositories.PropertyRep;
-import com.kozak.triangles.repositories.ReProposalRep;
-import com.kozak.triangles.repositories.TransactionRep;
-import com.kozak.triangles.repositories.UserRep;
-import com.kozak.triangles.repositories.VmapRep;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.ProposalGenerator;
 import com.kozak.triangles.utils.SingletonData;
@@ -37,19 +30,7 @@ import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @Controller
-public class HomeController {
-    @Autowired
-    private UserRep userRep;
-    @Autowired
-    private TransactionRep trRep;
-    @Autowired
-    private BuildingDataRep buiDataRep;
-    @Autowired
-    private VmapRep vmRep;
-    @Autowired
-    private ReProposalRep rePrRep;
-    @Autowired
-    private PropertyRep prRep;
+public class HomeController extends BaseController {
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     String homeGET(User user, Model model) throws InterruptedException {

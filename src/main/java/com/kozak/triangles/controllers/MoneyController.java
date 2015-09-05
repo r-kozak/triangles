@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +21,6 @@ import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
 import com.kozak.triangles.interfaces.Consts;
-import com.kozak.triangles.repositories.PropertyRep;
-import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.search.TransactSearch;
@@ -31,13 +28,7 @@ import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @Controller
-public class MoneyController {
-    @Autowired
-    private TransactionRep trRep;
-    @Autowired
-    private PropertyRep prRep;
-    @Autowired
-    private UserRep userRep;
+public class MoneyController extends BaseController {
 
     /**
      * функция обмена доминантности на деньги

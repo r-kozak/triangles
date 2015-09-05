@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +31,6 @@ import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
 import com.kozak.triangles.interfaces.Consts;
-import com.kozak.triangles.repositories.BuildingDataRep;
-import com.kozak.triangles.repositories.PropertyRep;
-import com.kozak.triangles.repositories.ReProposalRep;
-import com.kozak.triangles.repositories.TransactionRep;
-import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.search.CommPropSearch;
 import com.kozak.triangles.search.RealEstateProposalsSearch;
 import com.kozak.triangles.search.SearchCollections;
@@ -47,17 +41,8 @@ import com.kozak.triangles.utils.Util;
 @SessionAttributes("user")
 @RequestMapping(value = "/property")
 @Controller
-public class PropertyController {
-    @Autowired
-    private TransactionRep trRep;
-    @Autowired
-    private BuildingDataRep buiDataRep;
-    @Autowired
-    private PropertyRep prRep;
-    @Autowired
-    private ReProposalRep rePrRep;
-    @Autowired
-    private UserRep userRep;
+public class PropertyController extends BaseController {
+
     private int domiAmount;
 
     /**

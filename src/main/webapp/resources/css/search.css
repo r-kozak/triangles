@@ -60,8 +60,7 @@ fieldset {
 		font-weight:bold;
 	}
 	.slider {
-		margin: 0 0 10 7;
-		width: 171;
+		margin: 10 10;
 	}
 	.ui-state-default, .ui-widget-content .ui-state-default{
 		border: 1px solid #00CED1 !important;
