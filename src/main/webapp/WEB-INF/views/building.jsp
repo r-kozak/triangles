@@ -115,9 +115,11 @@
 							<td>Район</td>
 							<td>Кто строит</td>
 							<td>До эксплуатации</td>
+							<td>Построено, %</td>
 							<td>Принять</td>
 						</tr>
 						<tr>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -148,9 +150,73 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
 });
 
+// по клику на кнопку СТРОИТЬ
 $('#build_btn').on('click', function() {
-	$('#modalBuildTypes').modal();
+	$('#modalBuildTypes').modal(); // показать модальное окно с выбором типа постройки
+
+	//по клику на кнопки выбора конкретного типа имущества для стройки (кнопки в модальном окне)
+	$('.btn_build_info').on('click', function() {
+		var bui_type = $(this).closest('tr').find('.bui_type').attr('id'); // тип постройки
+		$.ajax({
+	  		  type: 'POST',
+	  		  url: "${pageContext.request.contextPath}/building/pre-build",
+	  		  data:  { buiType: bui_type },
+	  		  dataType: "json",
+	  		  async:true
+	  		}).done(function(data) {
+				if (data.error) {
+					// показать сообщение с ошибкой
+					$('#modalErrorBody').html(data.message);
+					$('#modalError').modal();
+				} else {
+					// показать сообщение с вопросом
+					$('#modalQuesTitle').html('<b>Вы хотите построить ' + data.buiType + '?</b>');
+					
+					// сформировать тело модального окна
+					$('#modalQuesBody').html('<div class="text-danger">Выберите район: ' + data.cityAreaTag + '</div> <br/>' +
+							'<div>' + data.price + '</div> <br/>' +
+							'<div>' + data.balanceAfter + '</div> <br/>' +
+							'<div>' + data.exploitation + '</div>');
+							
+					//назначить обработчик на клик кнопки Подтверждения стройки
+					$('#modal_ques_confirm').unbind('click');
+					
+					$('#modal_ques_confirm').on('click', function() {
+						var city_area = $('#city_area').val();
+						confirmBuild(bui_type, city_area); // функция подтверждения покупки
+					});
+					
+					$('#modalQues').modal();
+				}
+	   		}).fail(function(jqXHR, textStatus, errorThrown) {
+	  			alert(jqXHR.status + " " + jqXHR.statusText);
+	  		});
+	});
 });
+
+// функция подтверждения постройки имущества (тип имущества, район города)
+function confirmBuild(bui_type, city_area) {
+	$.ajax({
+		  type: 'POST',
+		  url: "${pageContext.request.contextPath}/building/confirm-build",
+		  data:  { buiType: bui_type, cityArea: city_area },
+		  dataType: "json",
+		  async:true
+		}).done(function(data) {
+			if (data.error) {
+				// показать сообщение с ошибкой
+				$('#modalQues').modal('hide');
+				$('#modalErrorBody').html(data.message);
+				$('#modalError').modal();
+			} else {
+				// перезагрузить страницу
+				window.location.replace('${pageContext.request.contextPath}/building');
+			}
+ 		}).fail(function(jqXHR, textStatus, errorThrown) {
+			alert(jqXHR.status + " " + jqXHR.statusText);
+		});
+}
+
 </script>
 
 <!-- модальное окно с выбором типов зданий -->
@@ -173,25 +239,27 @@ $('#build_btn').on('click', function() {
 				<tr>
 					<c:choose>
 						<c:when test="${cbdata.commBuildType == 'STALL'}">
-							<td>Киоск</td>
+							<td class="bui_type" id="${cbdata.commBuildType}">Киоск</td>
 						</c:when>
 						<c:when test="${cbdata.commBuildType == 'VILLAGE_SHOP'}">
-							<td>Сельский магазин</td>
+							<td class="bui_type" id="${cbdata.commBuildType}">Сельский магазин</td>
 						</c:when>
 						<c:when test="${cbdata.commBuildType == 'STATIONER_SHOP'}">
-							<td>Магазин канцтоваров</td>
+							<td class="bui_type" id="${cbdata.commBuildType}">Магазин канцтоваров</td>
 						</c:when>
 					</c:choose>
 					<td>${cbdata.buildTime}</td>
 					<td>${cbdata.purchasePriceMin}</td>
-					<td></td>
+					<td>
+						<button class="btn btn-success btn_build_info" title="Строить" data-toggle="tooltip">
+										<span class="glyphicon glyphicon-equalizer"></span></button>
+					</td>
 				</tr>
 			</c:forEach>
 		</table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-<!--         <button id="modal_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Подтвердить</span></button> кнопка подтверждения улучшения имущ. или кассы -->
       </div>
     </div>
   </div>
@@ -203,11 +271,32 @@ $('#build_btn').on('click', function() {
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalErrorTitle">Ошибка</h4>
+        <h4 class="modal-title text-danger" id="modalErrorTitle">Ошибка</h4>
       </div>
-				<div class="modal-body" id="modalErrorBody">Тело</div>
-				<div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Ок</button>
+      
+	  <div class="modal-body" id="modalErrorBody">Тело</div>
+	  
+	  <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ок :(</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- модальное окно для отображения вопросов -->
+<div class="modal fade" id="modalQues" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalQuesTitle">Заголовок</h4>
+      </div>
+      
+	  <div class="modal-body" id="modalQuesBody">Тело</div>
+	  
+	  <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+		<button id="modal_ques_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Да</span></button>
       </div>
     </div>
   </div>

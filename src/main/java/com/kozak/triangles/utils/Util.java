@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import org.json.simple.JSONObject;
 import org.springframework.ui.Model;
 
 import com.kozak.triangles.entities.CommBuildData;
@@ -163,4 +164,12 @@ public class Util {
         prRep.updateProperty(p);
     }
 
+    /**
+     * добавление сообщения об ошибке в JSON
+     */
+    @SuppressWarnings("unchecked")
+    public static void putErrorMsg(JSONObject resultJson, String msg) {
+        resultJson.put("error", true);
+        resultJson.put("message", msg);
+    }
 }

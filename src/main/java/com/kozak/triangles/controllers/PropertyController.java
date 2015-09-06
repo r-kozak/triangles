@@ -115,12 +115,12 @@ public class PropertyController extends BaseController {
         long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 
         if (prop == null) {
-            putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
+            Util.putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
         } else if (!prop.isValid()) {
-            putErrorMsg(resultJson,
+            Util.putErrorMsg(resultJson,
                     "Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
         } else if (userSolvency < prop.getPurchasePrice()) {
-            putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам купить это имущество. "
+            Util.putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам купить это имущество. "
                     + "Ваш максимум = <b>" + Util.moneyFormat(userSolvency) + "&tridot;</b>");
         } else {
             long newBalance = userMoney - prop.getPurchasePrice(); // balance after purchase
@@ -366,7 +366,7 @@ public class PropertyController extends BaseController {
         Property prop = prRep.getSpecificProperty(userId, propId);
 
         if (prop == null) {
-            putErrorMsg(resultJson, "Произошла ошибка (код: 1)!");
+            Util.putErrorMsg(resultJson, "Произошла ошибка (код: 1)!");
         } else {
             double pdp = prop.getDepreciationPercent(); // текущий процент износа
 
@@ -388,21 +388,20 @@ public class PropertyController extends BaseController {
 
             if (type.equals("repair")) {
                 if (userSolvency <= 0) {
-                    putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
+                    Util.putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
                 } else {
                     repair(resultJson, prop, newDeprPerc, newSellingPrice, userMoney, repairSum, userId);
                 }
             } else if (type.equals("info")) {
                 if (userSolvency <= 0) {
                     resultJson.put("zeroSolvency", true);
-                    putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
+                    Util.putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
                 } else {
-                    putErrorMsg(
+                    Util.putErrorMsg(
                             resultJson,
                             String.format(
                                     "Сумма ремонта:<b> %s&tridot;</b> <br/> Процент износа после ремонта: <b> %.2f%% </b>",
-                                    repairSum,
-                                    newDeprPerc));
+                                    repairSum, newDeprPerc));
                 }
             }
         }
@@ -432,7 +431,7 @@ public class PropertyController extends BaseController {
         Property prop = prRep.getSpecificProperty(userId, propId);
 
         if (prop == null) {
-            putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
+            Util.putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
         } else {
             long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 
@@ -440,7 +439,7 @@ public class PropertyController extends BaseController {
                 int nCashLevel = prop.getCashLevel() + 1; // уровень, к которому будем повышать
 
                 if (nCashLevel > Consts.MAX_CASH_LEVEL) { // отправить сообщение, что достигли последнего уровня
-                    putErrorMsg(resultJson, "Достигнут последний уровень.");
+                    Util.putErrorMsg(resultJson, "Достигнут последний уровень.");
                 } else { // повысить уровень или просто получить сумму повышения
                     doActionsForCashLevelUp(resultJson, prop, nCashLevel, action, userSolvency, userId, obj);
                 }
@@ -448,7 +447,7 @@ public class PropertyController extends BaseController {
                 int nPropLevel = prop.getLevel() + 1; // уровень, к которому будем повышать
 
                 if (nPropLevel > Consts.MAX_PROP_LEVEL) { // отправить сообщение, что достигли последнего уровня
-                    putErrorMsg(resultJson, "Достигнут последний уровень.");
+                    Util.putErrorMsg(resultJson, "Достигнут последний уровень.");
                 } else { // повысить уровень или просто получить сумму повышения
                     doActionsForPropLevelUp(resultJson, prop, nPropLevel, action, userSolvency, userId, obj);
                 }
@@ -483,7 +482,7 @@ public class PropertyController extends BaseController {
         Property prop = prRep.getSpecificProperty(userId, propId);
 
         if (prop == null) {
-            putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
+            Util.putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
         } else {
             if (action.equals("info")) {
                 resultJson.put("onSale", prop.isOnSale());
@@ -599,15 +598,6 @@ public class PropertyController extends BaseController {
     }
 
     /**
-     * добавление сообщения об ошибке в JSON
-     */
-    @SuppressWarnings("unchecked")
-    private void putErrorMsg(JSONObject resultJson, String msg) {
-        resultJson.put("error", true);
-        resultJson.put("message", msg);
-    }
-
-    /**
      * делает действия для повышения уровня кассы
      * 
      * @param prop
@@ -671,7 +661,7 @@ public class PropertyController extends BaseController {
     @SuppressWarnings("unchecked")
     private void levelUpGetSumAction(JSONObject resultJson, long userSolvency, long sum) {
         if (userSolvency < sum) {
-            putErrorMsg(resultJson, "Не хватает денег. Нужно: " + sum);
+            Util.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + sum);
         } else {
             resultJson.put("nextSum", sum);
         }
@@ -695,7 +685,7 @@ public class PropertyController extends BaseController {
             MoneyController.upUserDomi(domiAmount, userId, userRep); // повышение доминантности
             resultJson.put("newDomi", userRep.find(userId).getDomi()); // новая доминантность
         } else { // состоятельность < суммы улучшения
-            putErrorMsg(resultJson, "Не хватает денег. Нужно: " + sum);
+            Util.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + sum);
         }
     }
 
@@ -740,9 +730,9 @@ public class PropertyController extends BaseController {
         resultJson.put("cashCap", nCashCapacity); // new cash capacity для отображения
 
         if (nCashLevel == Consts.MAX_CASH_LEVEL) {
-            putErrorMsg(resultJson, "Достигнут последний уровень.");
+            Util.putErrorMsg(resultJson, "Достигнут последний уровень.");
         } else if (userSolvency < nextSum) {
-            putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
+            Util.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
         }
 
         addBalanceData(resultJson, sum, currBal, userId);
@@ -789,9 +779,9 @@ public class PropertyController extends BaseController {
         resultJson.put("upped", true); // уровень был поднят
 
         if (nPropLevel == Consts.MAX_CASH_LEVEL) {
-            putErrorMsg(resultJson, "Достигнут последний уровень.");
+            Util.putErrorMsg(resultJson, "Достигнут последний уровень.");
         } else if (userSolvency < nextSum) {
-            putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
+            Util.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
         }
 
         addBalanceData(resultJson, sum, currBal, userId);

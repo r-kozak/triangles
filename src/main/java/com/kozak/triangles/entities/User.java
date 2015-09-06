@@ -2,10 +2,12 @@ package com.kozak.triangles.entities;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -55,6 +57,10 @@ public class User {
     @Column(name = "encr_login")
     private String encrLogin;
     // /////////////////
+
+    // лицензии юзера
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserLicense userLicense;
 
     @Transient
     private String confirmPassword;
@@ -144,6 +150,14 @@ public class User {
 
     public int getDomi() {
         return domi;
+    }
+
+    public UserLicense getUserLicense() {
+        return userLicense;
+    }
+
+    public void setUserLicense(UserLicense userLicense) {
+        this.userLicense = userLicense;
     }
 
     public void setDomi(int domi) {

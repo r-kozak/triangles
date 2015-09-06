@@ -51,14 +51,14 @@ public class MoneyController extends BaseController {
         boolean correctCount = count == 500 || count == 5000; // корректное количество для обмена
 
         if (!correctAction || !correctCount) {
-            putErrorMsg(resultJson, "Ошибка запроса :(");
+            Util.putErrorMsg(resultJson, "Ошибка запроса :(");
         } else {
             int userId = user.getId();
             int userDomi = userRep.getUserDomi(userId);
             int needDomi = count / Consts.DOMI_PRICE; // сколько нужно доминантности для обмена
 
             if (userDomi < needDomi) {
-                putErrorMsg(resultJson,
+                Util.putErrorMsg(resultJson,
                         String.format("Ошибка. Не хватает очков доминантности для обмена (остаток: %s).", userDomi));
             } else {
                 if (action.equals("info")) {
@@ -87,15 +87,6 @@ public class MoneyController extends BaseController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Content-Type", "application/json; charset=utf-8");
         return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
-    }
-
-    /**
-     * добавление сообщения об ошибке в JSON
-     */
-    @SuppressWarnings("unchecked")
-    private void putErrorMsg(JSONObject resultJson, String msg) {
-        resultJson.put("error", true);
-        resultJson.put("message", msg);
     }
 
     @SuppressWarnings("unchecked")

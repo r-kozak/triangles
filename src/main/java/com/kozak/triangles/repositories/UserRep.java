@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +85,20 @@ public class UserRep {
      */
     public int getUserDomi(int userId) {
         return find(userId).getDomi();
+    }
+
+    /**
+     * Получает уровень лицензии на постройку имущества. Лицензия конкретного пользователя.
+     * 
+     * @param userId
+     *            - ID пользователя
+     * @return уровень лицензии
+     */
+    public byte getUserLicenseLevel(int userId) {
+        User user = em.find(User.class, userId);
+        Hibernate.initialize(user.getUserLicense());
+
+        return user.getUserLicense().getLicenseLevel();
     }
 
 }

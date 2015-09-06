@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.kozak.triangles.entities.User;
+import com.kozak.triangles.entities.UserLicense;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.utils.Encryptor;
 import com.kozak.triangles.validators.SignupValidator;
@@ -50,9 +51,15 @@ public class SignupController {
         // шифруем логин (нужно для куки)
         String encrLogin = Encryptor.toMD5(user.getLogin());
         user.setEncrLogin(encrLogin);
-        // шифруем пароль и добавляем юзера
+
+        // шифруем пароль и присваиваем юзеру
         String encrPass = Encryptor.toMD5(user.getPassword());
         user.setPassword(encrPass);
+
+        // присвоить юзеру лицензии на строительство
+        UserLicense license = new UserLicense();
+        user.setUserLicense(license);
+
         userRepository.addUser(user);
 
         mAndView.addObject("user", user);
