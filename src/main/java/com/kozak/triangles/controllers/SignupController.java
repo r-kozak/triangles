@@ -1,5 +1,6 @@
 package com.kozak.triangles.controllers;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,20 +17,18 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.kozak.triangles.entities.User;
+import com.kozak.triangles.entities.UserLicense;
 import com.kozak.triangles.repositories.UserRep;
+import com.kozak.triangles.utils.Encryptor;
 import com.kozak.triangles.validators.SignupValidator;
 
 @SessionAttributes("user")
 @Controller
 public class SignupController {
-    private SignupValidator signupValidator;
-    private UserRep userRepository;
-
     @Autowired
-    public SignupController(SignupValidator signupValidator, UserRep userRepository) {
-        this.signupValidator = signupValidator;
-        this.userRepository = userRepository;
-    }
+    private SignupValidator signupValidator;
+    @Autowired
+    private UserRep userRepository;
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signup(Model model) {
@@ -38,7 +37,8 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public ModelAndView toHome(@Valid @ModelAttribute("user") User user, BindingResult bindResult) {
+    public ModelAndView toHome(@Valid @ModelAttribute("user") User user, BindingResult bindResult)
+            throws NoSuchAlgorithmException {
 
         ModelAndView mAndView = new ModelAndView();
 
@@ -48,6 +48,18 @@ public class SignupController {
             mAndView.setViewName("index/signup");
             return mAndView;
         }
+        // шифруем логин (нужно для куки)
+        String encrLogin = Encryptor.toMD5(user.getLogin());
+        user.setEncrLogin(encrLogin);
+
+        // шифруем пароль и присваиваем юзеру
+        String encrPass = Encryptor.toMD5(user.getPassword());
+        user.setPassword(encrPass);
+
+        // присвоить юзеру лицензии на строительство
+        UserLicense license = new UserLicense();
+        user.setUserLicense(license);
+
         userRepository.addUser(user);
 
         mAndView.addObject("user", user);

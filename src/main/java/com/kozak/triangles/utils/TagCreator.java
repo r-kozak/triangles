@@ -1,69 +1,34 @@
 package com.kozak.triangles.utils;
 
+import java.util.List;
+
+import com.kozak.triangles.enums.CityAreasT;
+import com.kozak.triangles.search.SearchCollections;
+
 /**
  * Created by Roman on 07.04.2015 19:42.
  */
 
 public class TagCreator {
 
-    public static String tagNav(int lastPageNumber, int currPage) {
-	StringBuilder sb = new StringBuilder();
-	if (lastPageNumber < 12) {
-	    for (int i = 1; i <= lastPageNumber; i++) {
-		sb = generateTagNav(sb, currPage, i);
-	    }
-	} else if (currPage <= 5) {
-	    for (int i = 1; i <= currPage + 2; i++) {
-		sb = generateTagNav(sb, currPage, i);
-	    }
-	    sb.append(" ... ");
-	    for (int i = lastPageNumber - 2; i <= lastPageNumber; i++) {
-		sb = generateTagNav(sb, currPage, i);
-	    }
-	} else if (currPage > 5 && currPage <= lastPageNumber - 5) {
-	    for (int i = 1; i <= 3; i++) {
-		sb = generateTagNav(sb, currPage, i);
-	    }
-	    sb.append(" ... ");
-	    for (int i = currPage - 1; i <= currPage + 1; i++) {
-		sb = generateTagNav(sb, currPage, i);
-	    }
-	    sb.append(" ... ");
-	    for (int i = lastPageNumber - 2; i <= lastPageNumber; i++) {
-		sb = generateTagNav(sb, currPage, i);
-	    }
-	} else if (currPage > lastPageNumber - 5) {
-	    for (int i = 1; i <= 3; i++) {
-		sb = generateTagNav(sb, currPage, i);
-	    }
-	    sb.append(" ... ");
-	    for (int i = (3 + currPage) / 2 - 1; i <= (3 + currPage) / 2 + 1; i++) {
-		sb = generateTagNav(sb, currPage, i);
-	    }
-	    sb.append(" ... ");
-	    for (int i = lastPageNumber - 4; i <= lastPageNumber; i++) {
-		sb = generateTagNav(sb, currPage, i);
-	    }
-	}
+    /**
+     * Формирование тега <select> для выбора пользователем района города перед началом постройки здания. Тег формируется
+     * в зависимости от уровня лицензии пользователя.
+     * 
+     * @param userLicenseLevel
+     *            - уровень лицензии пользователя на стройку имущества
+     * @return тег
+     */
+    public static String cityAreaTag(byte userLicenseLevel) {
+        String result = "<select id=\"city_area\" class=\"form-control\">";
 
-	return sb.toString();
-    }
-
-    private static StringBuilder generateTagNav(StringBuilder sb, int currPage, int i) {
-	sb.append("<li>");
-
-	sb.append("<a href");
-	if (i == currPage) {
-	    sb.append(" class=\"whitesquareactive\"");
-	} else {
-	    sb.append(" class=\"whitesquare\"");
-	}
-	sb.append("onclick=\"setPage(this); return false;\" value=\"" + i + "\"");
-	sb.append(">");
-	sb.append(i);
-	sb.append("</a>");
-
-	sb.append("</li>");
-	return sb;
+        List<CityAreasT> areas = SearchCollections.getCityAreas();
+        for (int i = 0; i < areas.size(); i++) {
+            if (userLicenseLevel - 1 >= i) {
+                result += "<option selected=\"selected\">" + areas.get(i) + "</option>";
+            }
+        }
+        result += "</select>";
+        return result;
     }
 }

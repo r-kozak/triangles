@@ -1,10 +1,7 @@
 .lsForm {
-	margin-top: 200px;
-	width: 300px;
-	height: 165px;
-	padding: 2px;
-	margin-left: auto;
-	margin-right: auto;
+	margin-top: 150px;
+	margin-left: 15%;
+	margin-right: -15%;
 }
 
 .lsForm a {
@@ -13,29 +10,23 @@
 	font-size: 15;
 }
 
-input {
-	border: 1px solid white;
-	padding: 12px;
-	width: 294px;
-	margin-bottom: 5px;
-	border: 1px solid darkturquoise;
-}
-
-input:focus {
-	outline: none;
-}
-
-.subm {
-	border: darkturquoise solid 2px;
-	background: none;
-	font-size: 20;
-	color: darkturquoise;
-	padding: 9px;
-	cursor: pointer;
-}
-
 .signUpRef {
-	text-align: right;
-	margin-top: -3px;
-	margin-right: 3px;
+	float: right;
+	display:inline;
+	margin:7 12 0 0;
+}
+
+.help-block {
+	color:red !important;
+	text-align:center;
+}
+
+#subm {
+	float:right;
+}
+
+#i_logo {
+	margin:0 0 25; 
+	width:70; 
+	height:70;
 }

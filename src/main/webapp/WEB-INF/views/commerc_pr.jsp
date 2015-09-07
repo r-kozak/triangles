@@ -52,58 +52,59 @@
 
 <title>Коммерческое имущество</title>
 <t:template>
-<div class="content">
-<t:menu>
-	<form:form id="searchForm" method="GET" commandName="cps">
-		<div id="searchWrap">
-		<div id="menuTitle">Поиск</div>
-			<fieldset id = "searchBlock">
-				<form:input class="textInp" type="text" path="name" placeholder="Наименование"></form:input>
-			</fieldset>
-			
-			<fieldset id = "searchBlock"> 
-			<legend>Тип</legend>
-				<div id="searchEl">
-					<form:checkboxes path="types" items="${types}"/>      
-				</div>
-			</fieldset>
-			
-			<fieldset id = "searchBlock">
-			<legend>Цена продажи, &tridot;</legend>
-				<div id="searchEl">
-					<input type="text" class="value_lab" id="sell_pr_lab_fr" readonly>
-					<input type="text" class="value_lab" id="sell_pr_lab_to" readonly style="float:right; text-align:right">
-					<div class="slider" id="sell_price-slider"></div>
+<div class="container">
+	<div class="row">
+		<t:menu>
+			<form:form id="searchForm" method="GET" commandName="cps">
+				<div id="searchWrap">
+				<div id="menuTitle">Поиск</div>
+					<fieldset id = "searchBlock">
+						<form:input class="textInp" type="text" path="name" placeholder="Наименование"></form:input>
+					</fieldset>
 					
-					<form:input id="sell_pr_from" class="textInp2" hidden="true" path="sellPriceFrom"></form:input>
-					<form:input id="sell_pr_to" class="textInp2"  hidden="true" path="sellPriceTo"></form:input>
-				</div>
-			</fieldset>
-			
-			<fieldset id = "searchBlock">
-			<legend>Износ, %</legend>
-				<div id="searchEl">
-					<input type="text" class="value_lab" id="depr_lab_fr" readonly>
-					<input type="text" class="value_lab" id="depr_lab_to" readonly style="float:right; text-align:right">
-					<div class="slider" id="depreciation-slider"></div>
+					<fieldset id = "searchBlock"> 
+					<legend>Тип</legend>
+						<div id="searchEl">
+							<form:checkboxes path="types" items="${types}"/>      
+						</div>
+					</fieldset>
 					
-					<form:input id="depr_from" hidden="true" path="depreciationFrom"></form:input>
-					<form:input id="depr_to" hidden="true" path="depreciationTo"></form:input>
+					<fieldset id="searchBlock">
+					<legend>Цена продажи, &tridot;</legend>
+						<div id="searchEl">
+							<input type="text" class="value_lab" id="sell_pr_lab_fr" readonly>
+							<input type="text" class="value_lab" id="sell_pr_lab_to" readonly style="float:right; text-align:right">
+							<div class="slider" id="sell_price-slider"></div>
+							
+							<form:input id="sell_pr_from" class="textInp2" hidden="true" path="sellPriceFrom"></form:input>
+							<form:input id="sell_pr_to" class="textInp2"  hidden="true" path="sellPriceTo"></form:input>
+						</div>
+					</fieldset>
+					
+					<fieldset id="searchBlock">
+					<legend>Износ, %</legend>
+						<div id="searchEl">
+							<input type="text" class="value_lab" id="depr_lab_fr" readonly>
+							<input type="text" class="value_lab" id="depr_lab_to" readonly style="float:right; text-align:right">
+							<div class="slider" id="depreciation-slider"></div>
+							
+							<form:input id="depr_from" hidden="true" path="depreciationFrom"></form:input>
+							<form:input id="depr_to" hidden="true" path="depreciationTo"></form:input>
+						</div>
+					</fieldset>
+			
+					<form:checkbox id="needClear" path="needClear" hidden="true"/>
+					<input id="page" path="page" name="page" value="1" hidden="true" >
 				</div>
-			</fieldset>
+				<div id="searchEl">
+					<button id="searchSubmit" class="btn btn-primary btn-sm" type="submit" name="submit1">Искать</button>
+					<input id="submClear" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Очистить фильтр"  type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
+				</div>
+			</form:form>
+		</t:menu>
 
-			<form:checkbox id="needClear" path="needClear" hidden="true"/>
-			<input id="page" path="page" name="page" value="1" hidden="true" >
-		</div>
-		<div id="searchEl">
-			<button id="searchSubmit" class="btn btn-primary btn-sm" type="submit" name="submit1">Искать</button>
-			<input id="submClear" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Очистить фильтр"  type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
-		</div>
-	</form:form>
-</t:menu>
-
-<div class="tranBlock">
-			<h1 align="center">Коммерческое имущество</h1>
+		<div class="col-md-9">
+			<h3 class="page-header" align=center>Коммерческое имущество</h3>
 			<c:if test="${empty comProps && !userHaveProps}">
 				<div class = "noData">У вас нет имущества. Его можно купить на рынке. <a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a></div>
 			</c:if>
@@ -114,8 +115,8 @@
 			<c:if test="${!empty comProps}">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-					     <a id="profit_from_all_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Собрать прибыль со всего имущества" 
-					     	href="${pageContext.request.contextPath}/property/get-cash/0"><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span></a>
+					     <button id="profit_from_all_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Собрать прибыль со всего имущества" >
+					     <span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span></button>
 					     	
 					    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip" data-toggle="collapse" data-target="#pr_descr" 
 					     title="Показать или скрыть подробное описание раздела Коммерческое имущество"><span class="glyphicon glyphicon-info-sign"></span></button>
@@ -129,7 +130,7 @@
 				</div>
 				<table class="table table-striped" id="prop_table">
 				<thead>
-					<tr class="info">
+					<tr class="tableTitleTr">
 						<td style="text-align:center">Тип</td>
 						<td style="text-align:center">Наименование</td>
 						<td style="text-align:center">Уровень</td>
@@ -138,12 +139,21 @@
 						<td style="text-align:center">Цена продажи, &tridot;</td>
 						<td style="text-align:center">Износ, %</td>
 						<td style="text-align:center">Касса, &tridot;</td>
+						<td style="text-align:center" hidden="true">След. прибыль</td>
 						<td style="text-align:center">Собрать прибыль</td>
 					</tr>
 				<thead>
 				<tbody>
 					<c:forEach items="${comProps}" var="prop">
-						<tr>
+							<c:choose>
+								<c:when test="${prop.onSale}">
+									<tr class="warning text-danger">
+								</c:when>
+								<c:otherwise>
+									<tr>
+								</c:otherwise>
+							</c:choose>
+							
 							<c:choose>
 								<c:when test="${prop.commBuildingType == 'STALL'}">
 									<td style="text-align:left">Киоск</td>
@@ -200,10 +210,14 @@
 								  		style="width: ${prop.cash / prop.cashCapacity * 100}%;"></div> 
 								</div>
 							</td>
+							<td style="text-align:center" hidden="true">
+								<fmt:formatDate value="${prop.nextProfit}" pattern="dd-MM-yyyy HH:mm:ss" />
+							</td>
 							<td style="text-align:center">
 								<c:if test="${prop.cash > 0}">
-										<a class="btn btn-danger btn-lg" title="Собрать прибыль" data-toggle="tooltip" 
-										href="${pageContext.request.contextPath}/property/get-cash/${prop.id}"><span class="glyphicon glyphicon-piggy-bank"></span></a>
+										<button class="btn btn-danger btn-lg" title="Собрать прибыль" data-toggle="tooltip" 
+										onclick="window.location.replace('${pageContext.request.contextPath}/property/get-cash/${prop.id}')">
+										<span class="glyphicon glyphicon-piggy-bank"></span></button>
 								</c:if>
 							</td>
 						</tr>
@@ -213,19 +227,24 @@
 			</c:if>
 		</div>
 	</div>
-	<div id="balChan">
-		<c:choose>
-			<c:when test="${changeBal.length() > 0}">
-				${changeBal}&tridot;
-				<script>
-					popUp("<c:out value='${changeBal}'/>", "#balChan");
-				</script>
-			</c:when>
-		</c:choose>
-	</div>
+</div>
+<div id="balChan">
+	<c:choose>
+		<c:when test="${changeBal.length() > 0}">
+			${changeBal}&tridot;
+			<script>
+				popUp("<c:out value='${changeBal}'/>", "#balChan");
+			</script>
+		</c:when>
+	</c:choose>
+</div>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+
+<!-- Сортировка даты -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables-plugins/1.10.7/sorting/datetime-moment.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -238,18 +257,29 @@ $(document).ready(function(){
     			$("#pr_descr").collapse('toggle');
     		}
     	);
-     
+    
+    // по клику на кнопку Собрать всё - пройти по ссылке
+    $("#profit_from_all_btn").on('click', function() {
+    	window.location.replace("${pageContext.request.contextPath}/property/get-cash/0");
+    });
+    
+    $.fn.dataTable.moment('DD-MM-YYYY HH:mm:ss'); // сортировка даты в табличке
+    
     //если нет имущества с НЕ собранным доходом - сделать кнопку "Собрать всё" не активной
     var noReady = ${ready <= 0};
     if (noReady == true) {
 		$("#profit_from_all_btn").attr('disabled', true);
-		$("#profit_from_all_btn").attr('href', "#");
+		
+	    //красивая табличка
+	    $('#prop_table').dataTable( { // сделать сортировку, пагинацию, поиск
+	        "order": [[ 8, "asc" ]] // сортировка по след. прибыли
+	    });
+	} else {
+	    //красивая табличка
+	    $('#prop_table').dataTable( { // сделать сортировку, пагинацию, поиск
+	        "order": [[ 7, "desc" ]] // сортировка по деньгам в кассе
+	    });
 	}
-    
-    //красивая табличка
-    $('#prop_table').dataTable( { // сделать сортировку, пагинацию, поиск
-        "order": [[ 7, "desc" ]] // сортировка по деньгам в кассе
-    } );
 });
 </script>
 

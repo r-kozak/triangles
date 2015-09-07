@@ -66,7 +66,7 @@ public class TransactionRep {
 
     public String getUserBalance(int userId) {
 	Query query = em.createQuery(
-		"Select balance from Transac as tr where tr.userId = :userId order by transactDate DESC").setParameter(
+		"Select balance from Transac as tr where tr.userId = :userId order by id DESC").setParameter(
 		"userId", userId);
 	query.setMaxResults(1);
 	return query.getSingleResult().toString();

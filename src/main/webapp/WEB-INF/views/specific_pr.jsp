@@ -7,54 +7,6 @@
 <title>${prop.name}</title>
 
 <style>
-.messagepop {
-  background-color:#FFFFFF;
-  border:1px solid #999999;
-  cursor:default;
-  display:none;
-  margin-top: 15px;
-  margin-left: -300;
-  position:absolute;
-  text-align:center;
-  width:360;
-  z-index:50;
-  padding: 25px 25px 20px;
-}
-
-.variant{
-	display: inline-block;
-	border: 1px solid;
-	margin: 0;
-	width: 90;
-	text-align: center;
-	padding: 10;
-	margin: 10 5 5 5;
-	cursor: pointer;
-}
-#repair {
-	background-color: rgb(168, 255, 168);
-}
-
-#cancel{
-	background-color: rgb(255, 190, 190);
-}
-
-#repair:hover {
-	background-color: rgb(0, 242, 0);
-}
-
-#cancel:hover{
-	background-color: rgb(255, 113, 113);
-}
-
-#infoMessg {
-	color:green;
-	font-size: 12;
-}
-#errorMessg {
-	color:red;
-	font-size: 14;
-}
 #defaultCountdown {
   width: 200;
   margin-left:auto;
@@ -62,6 +14,9 @@
 }
 .table tr td {
 	text-align: center !important;
+}
+#modalWindowBody {
+	font-size: 16px;
 }
 </style>
 <script>
@@ -99,49 +54,35 @@
 	        		  dataType: "json",
 	        		  async:true
 	        		}).done(function(data) {
-	        			  console.log(data);
-	        			  
-	        			  var zS = (!data.zeroSolvency) ? '<div id="repair" class="variant">Ремонт</div>' : "";
-	        			  var messageBlock = (!data.zeroSolvency) ? '#infoMessg' : '#errorMessg';
-	        			  $("#repairBut").addClass("selected").parent().append('<div class="messagepop pop">'+
-	        	            		'<form method="post" id="repair_variants" action="/messages">' +
-	        	            		'<h2>Ремонт</h2>' + 
-	        	            		'<div id="infoMessg"></div>'+
-	        	            		'<div id="errorMessg"></div>'+
-	        	            		'<div id="all_variants">'+
-	        	            		zS +
-	        	            		'<div id="cancel" class="variant">Закрыть</div></div>'+
-	        	            		'</form></div>');
-	        			  $(messageBlock).html(data.message);
-	        			  
-	      	            $(".pop").slideFadeToggle();
-	    	            $("#repairBut").hide();
-	    	            
-	    	            $('#cancel').on('click', function() {
-	    		            $(".pop").slideFadeToggle();
-	    		            $("#repairBut").removeClass("selected");
-	    		            $("#repairBut").show();
-	    		            $(".pop").remove();
-	    		            return false;
-	    		        });
-	    	            
-	    	            $('#repair').on('click', function() {
-	    		            sendPost("repair");
-	    		            return false;
-	    		        });
+	  					var messageBlock = (!data.zeroSolvency) ? '#infoMessg' : '#errorMessg';
+	  					
+						$('#modalWindowBody').html('<div id="infoMessg"></div>'+
+						        		'<div id="errorMessg">');
+						$(messageBlock).html(data.message);
+						
+						$('#modalWindowTitle').html('Ремонт имущества'); // задать заголовок модального окна
+						$('#text_modal_confirm').html('Ремонт'); // текст для кнопки подтверждения
+				    	if (data.zeroSolvency) { // не хватает денег ремонтировать
+							$('#modal_confirm').attr('disabled', true);
+						}
+						$('#modalWindow').modal(); // показать модальное окно
+						    
+						$('#modal_confirm').unbind('click'); // удалим все обработчики события 'click' у элемента modal_confirm
+						// назначить обработчик кнопке modal_confirm (кнопка модального окна)
+						    $('#modal_confirm').on('click', function() {
+						    	$('#modalWindow').modal('hide'); // скрыть модальное окно
+						    	$('#modal_confirm').attr('disabled', false);
+						    	if (!data.zeroSolvency) { // хватает денег
+							     	sendPost("repair");
+								}
+						  });
 	        		});
-	        	
 	            return false;
 	        });
-	        
 	    });
-
-	    $.fn.slideFadeToggle = function(easing, callback) {
-	        return this.animate({ opacity: 'toggle', height: 'toggle' }, "fast", easing, callback);
-	    };
 	    
-	    //level-up for cash
-	    //получение суммы повышения уровня кассы имущества и назначение обработчика на клик по кнопке cashUpBut
+	    //level-up for prop
+	    //получение суммы повышения уровня имущества и назначение обработчика на клик по кнопке propUpBut
 	    $.ajax({
        		  type: 'POST',
        		  url: "${pageContext.request.contextPath}/property/level-up",
@@ -155,14 +96,30 @@
        				$("#propUpBut").attr("data-original-title", 'Улучшить. Сумма: ' + data.nextSum);
        				 
        				$('#propUpBut').on('click', function() {
-    		            sendPostLevelUp("up", "prop");
+       					var propName = "<c:out value='${prop.name}'/>"; // имя имущества
+       					var currLevel = parseInt($('#prop_level_td').html()); // текущий уровень
+       					var nextSum = $(this).attr('data-original-title').substring(17);
+       					
+       			    	$('#modalWindowTitle').html('Поднятие уровня имущества'); // задать заголовок модального окна
+       			    	$('#text_modal_confirm').html('Улучшить'); // текст для кнопки подтверждения
+       			    	$('#modalWindowBody').html('Вы точно хотите поднять уровень имущества <b>' + propName + '</b>? </br>' + 
+       			    			'Сумма: <b><div>' + nextSum + '&tridot;</b> </br>' +
+       			    			'Будет достигнут уровень: <b>' + (currLevel + 1) + '</b>'); // задать тело модального окна
+       					$('#modalWindow').modal(); // показать модальное окно
+       			    		
+		    			$('#modal_confirm').unbind('click'); // удалим все обработчики события 'click' у элемента modal_confirm
+    			  		// назначить обработчик кнопке modal_confirm (кнопка модального окна)
+		    			$('#modal_confirm').on('click', function() {
+			            	$('#modalWindow').modal('hide'); // скрыть модальное окно
+			            	sendPostLevelUp("up", "prop") // повысить уровень
+	  			    	});
     		            return false;
     		        });
        			}
        		}); 
 	    
-		//level-up for prop
-		//получение суммы повышения уровня имущества и назначение обработчика на клик по кнопке propUpBut
+		//level-up for cash
+		//получение суммы повышения уровня кассы имущества и назначение обработчика на клик по кнопке cashUpBut
 		$.ajax({
 		  		  type: 'POST',
 		  		  url: "${pageContext.request.contextPath}/property/level-up",
@@ -176,19 +133,47 @@
 		  				$("#cashUpBut").attr("data-original-title", 'Улучшить. Сумма: ' + data.nextSum);
 		  				
 		  				$('#cashUpBut').on('click', function() {
-			            sendPostLevelUp("up", "cash");
-			            return false;
-			        });
+		  					var propName = "<c:out value='${prop.name}'/>"; // имя имущества
+		  					var currLevel = parseInt($('#cash_level_td').html()); // текущий уровень
+		  					var nextSum = $(this).attr('data-original-title').substring(17);
+		  					
+	       			    	$('#modalWindowTitle').html('Поднятие уровня кассы'); // задать заголовок модального окна
+	       			    	$('#text_modal_confirm').html('Улучшить'); // текст для кнопки подтверждения
+	       			    	$('#modalWindowBody').html('Вы точно хотите поднять уровень кассы имущества <b>' + propName + '</b>? </br>' + 
+	       			    			'Сумма: <b>' + nextSum + '&tridot;</b> </br>' +
+	       			    			'Будет достигнут уровень: <b>' + (currLevel + 1) + '</b>'); // задать тело модального окна
+	       					$('#modalWindow').modal(); // показать модальное окно
+	       			    			
+	       			    	// удалим все обработчики события 'click' у элемента modal_confirm 
+	       			    	$('#modal_confirm').unbind('click'); 
+	       			  		// назначить обработчик кнопке modal_confirm (кнопка модального окна)
+		       				$('#modal_confirm').on('click', function() {
+				            	$('#modalWindow').modal('hide'); // скрыть модальное окно
+				            	sendPostLevelUp("up", "cash"); // повысить уровень
+		  			    	});
+	    		            return false;
+			        	});
 		  			}
 		  		}); 
-	}; //windows.onload()
+		
+		//послать пост запрос на получении информации о имуществе (на продаже или нет)
+		//также назначить обработчик при клике мышей по кнопке Продать
+		$.post(
+				  "${pageContext.request.contextPath}/property/sell",
+				  { propId: <c:out value='${prop.id}'/>, action: "info" },
+				  function(data) { 
+					  sellProperty(data);
+					  $('#propSellBut').on('click', function() {
+						  sendSellPost(); // послать запрос чтобы продать или отменить продажу
+						  $('#'+$('#propSellBut').attr('aria-describedby')).remove(); // удаление подсказки
+					  });
+				  	}
+				);
+	}; //window.onload()
 	
 	
     //отправка запроса на повышение уровня кассы или имущества
     function sendPostLevelUp(action0, obj0) {
-    	var o = (obj0 == "cash") ? "кассы?" : "имущества?";
-		var question = "Вы точно хотите повысить уровень " + o;
-    	if(confirm(question)) {
 	    	$.ajax({
 	       		  type: 'POST',
 	       		  url: "${pageContext.request.contextPath}/property/level-up",
@@ -219,7 +204,6 @@
 	       				}
 	       			} 
 	       	}); 
-    	}
     }
     
 	//отправка запроса на ремонт имущества
@@ -234,6 +218,7 @@
 						    $('#deprVal').attr("aria-valuenow", data.percAfterRepair); // прогресс-бар - текущее значение 
 						    $('#deprVal').attr("style", "width: " + data.percAfterRepair + "%"); // показать заполненность прогрессбара
 						    $('#deprBlock').html(Number(data.percAfterRepair) + "%");
+						    $('#sellPriceVal').html(data.propSellingPrice);
 						    changeBal(data);
 						    $('#cancel').trigger('click');
 						    if (data.percAfterRepair == 0) {
@@ -244,12 +229,39 @@
 				);
 	}
 	
-	function changeBal(data) {
-	    $('#balChan').html(data.changeBal + "&tridot;"); //блок с балансом для движения вверх
-	    popUp(data.changeBal, "#balChan"); //движение вверх блока с балансом
-	    $('#balanceVal').html(data.newBalance); //новое значение баланса
-	    $('#solvencyVal').html(data.newSolvency); //новое значение состоятельности
+	//отправка запроса на продажу / отмену продажи имущества
+	function sendSellPost() {
+		$.post(
+				  "${pageContext.request.contextPath}/property/sell",
+				  { propId: <c:out value='${prop.id}'/>, action: "sell" },
+				  function(data) {
+					  if (!data.error) {
+						sellProperty(data);		  
+					  } else {
+						  $('#modalErrorBody').html('Ошибка! Нельзя отменить. Возможно имущество уже купили. Проверьте ' + 
+								  '<a href="${pageContext.request.contextPath}/transactions" target="_blank">транзакции.</a>' + 
+								  'Или сразу идите <a href="${pageContext.request.contextPath}/home">домой</a>, потому что сдесь уже делать нечего...');
+						  $('#modalError').modal();
+					  }
+				  	}
+				);
 	}
+	
+	// функция вызывается при загрузке страницы - для показа кнопки "Продать"
+	// и при нажатии кнопки "Продать" для перерисовки
+	function sellProperty(data) {
+		if (data.onSale) {
+		  $('#propSellBut').html('<span class="glyphicon glyphicon-remove-circle"></span>');
+		  $('#propSellBut').attr("data-original-title", 'Отмена продажи');
+		  $('#endSaleDateVal').html('<span class="text-danger">Дата продажи:<br/>' + data.endSaleDate + '</span>');
+	 	} else {
+		  $('#propSellBut').html('<span class="glyphicon glyphicon-briefcase"></span>');
+		  $('#propSellBut').attr("data-original-title", 'Продать');
+		  $('#endSaleDateVal').html('');
+	  	}
+	}
+	
+
    
 </script>
 <t:template>
@@ -273,7 +285,7 @@
 					<span class="glyphicon glyphicon-pencil"></span></a></h1>
 				
 				<table class="table table-striped">
-					<tr class="info">
+					<tr class="tableTitleTr">
 						<td>Характеристика</td>
 						<td>Значение</td>
 						<td>Действие</td>
@@ -411,9 +423,10 @@
 					</tr>
 					<tr>
 						<td>Стоимость продажи</td>
-						<td><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
+						<td id="sellPriceVal"><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
 						<td>
-								<a id="cashUpBut" class="btn btn-danger" data-toggle="tooltip" title="Продать" href="#"><span class="glyphicon glyphicon-briefcase"></span></a>
+							<a id="propSellBut" class="btn btn-danger" data-toggle="tooltip"></a>
+							<div id="endSaleDateVal"></div>
 						</td>
 					</tr>
 				</table>
@@ -437,4 +450,41 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
 });
 </script>
+
+<!-- модальное окно повышения уровня имущества или кассы -->
+<div class="modal fade" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalWindowTitle">Заголовок</h4>
+      </div>
+      <div class="modal-body" id="modalWindowBody">
+        Тело
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+        <button id="modal_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Подтвердить</span></button> <!-- кнопка подтверждения улучшения имущ. или кассы -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- модальное окно для отображения ошибки -->
+<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalErrorTitle">Ошибка</h4>
+      </div>
+      <div class="modal-body" id="modalErrorBody">
+        Тело
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ок</button>
+      </div>
+    </div>
+  </div>
+</div>
 </t:template>
