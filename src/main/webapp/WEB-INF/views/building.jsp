@@ -14,9 +14,6 @@
 .btn-license_up {
 	width: 100%;
 	margin-top: 13px;
-    background-color: #A7B3CB !important;
-    border-color: #A7B3CB !important;
-    color:#4F5A6E !important;
 }
 /*блок с информацией о лицензиях, таймером и кнопками*/
 .license-block{
@@ -25,14 +22,26 @@
 }
 /*блок с кнопками повышения уровня лицензии и кнопкой СТРОИТЬ*/
 .license-btn-block{
-	background:#4F5A6E; 
-	color:#A7B3CB;
+	background:#dff0d8; 
 	padding-bottom: 13px;
 }
 </style>
 <t:template>
 	<!-- Задний прозрачный фон-->
 	<div id="wrap"></div>
+
+<script>
+	window.onload = function(){ 
+		// по клику на кнопку Принять из строительства
+		$('.from-constr-btn').on('click', function() {
+			buildFromConstruct(this);
+		});
+		// по клику на кнопку Покупки лицензии
+		$('.license-block').on('click', '.btn-license_up', function() {
+			buyLicense(this);
+		});
+	}
+</script>
 
 <div class="container">
 	<div class="row">
@@ -42,9 +51,9 @@
 			<h3 class="page-header" align=center>Стройка</h3>
 			
 			<div class="row">
-				<div class="col-md-12 license-btn-block">
+				<div class="col-md-12 bg-info license-btn-block">
 					<div>
-						<button id="build_btn" class="btn btn-default btn-lg btn-license_up" title="Построить имущество" data-toggle="tooltip">
+						<button id="build_btn" class="btn btn-info btn-lg btn-license_up" title="Построить имущество" data-toggle="tooltip">
 									<span class="glyphicon glyphicon-equalizer"> СТРОИТЬ</span></button>
 					</div>
 				</div>
@@ -54,10 +63,10 @@
 			
 			<div class="row license-block">
 			
-				<div class="col-md-2 text-center" style="background:#4F5A6E; color:#A7B3CB; padding:15; cursor:default">
-					<div style="font-size:20">Лицензия</div>
-					<div style="font-size:72">3</div>
-					<div>уровень</div>
+				<div class="col-md-2 text-center" style="background:#dff0d8; color:#4cae4c; padding:15; cursor:default">
+					<div style="font-size:17">Лицензия</div>
+					<div style="font-size:70">${licenseLevel}</div>
+					<div style="font-size:13">уровень</div>
 				</div>
 				
 				<div class="col-md-8 text-center text-danger" style="padding-top:20">
@@ -65,7 +74,7 @@
 					<div style="padding-top:35; padding-bottom:35;">
 						<script>
 							$(function() {
-								var austDay = new Date(parseInt("<c:out value='${nextProfit.time}'/>"));
+								var austDay = new Date(parseInt("<c:out value='${licenseExpire.time}'/>"));
 								$('#licenseCountdown').countdown({
 									until : austDay,
 									expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
@@ -78,15 +87,15 @@
 				
 				<div class="col-md-2 text-center license-btn-block">
 					<div>
-						<button class="btn btn-default btn-lg btn-license_up" title="Купить лицензию уровня 2" data-toggle="tooltip">
+						<button id="buy_2" class="btn btn-success btn-lg btn-license_up" title="Купить лицензию уровня 2" data-toggle="tooltip">
 										<span class="glyphicon glyphicon-arrow-up">2</span></button>
 					</div>
 					<div>
-						<button class="btn btn-default btn-lg btn-license_up" title="Купить лицензию уровня 3" data-toggle="tooltip">
+						<button id="buy_3" class="btn btn-success btn-lg btn-license_up" title="Купить лицензию уровня 3" data-toggle="tooltip">
 										<span class="glyphicon glyphicon-arrow-up">3</span></button>
 					</div>
 					<div>
-						<button class="btn btn-default btn-lg btn-license_up" title="Купить лицензию уровня 4" data-toggle="tooltip">
+						<button id="buy_4" class="btn btn-success btn-lg btn-license_up" title="Купить лицензию уровня 4" data-toggle="tooltip">
 										<span class="glyphicon glyphicon-arrow-up">4</span></button>
 					</div>
 				</div>
@@ -114,18 +123,67 @@
 							<td>Тип</td>
 							<td>Район</td>
 							<td>Кто строит</td>
-							<td>До эксплуатации</td>
-							<td>Построено, %</td>
+							<td>Дата начала</td>
+							<td class="hidden-sm">До эксплуатации</td>
+							<td>Завершено, %</td>
 							<td>Принять</td>
 						</tr>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
+						<c:forEach items="${constrProjects}" var="constrProject">
+							<tr>
+								<c:choose>
+									<c:when test="${constrProject.buildingType == 'STALL'}">
+										<td>Киоск</td>
+									</c:when>
+									<c:when test="${constrProject.buildingType == 'VILLAGE_SHOP'}">
+										<td>Сельский магазин</td>
+									</c:when>
+									<c:when test="${constrProject.buildingType == 'STATIONER_SHOP'}">
+										<td>Магазин канцтоваров</td>
+									</c:when>
+								</c:choose>
+
+								<td>${constrProject.cityArea}</td>
+
+								<c:choose>
+									<c:when test="${constrProject.buildersType == 'GASTARBEITER'}">
+										<td>Гастарбайтеры</td>
+									</c:when>
+									<c:when test="${constrProject.buildersType == 'GERMANY_BUILDER'}">
+										<td>Немцы</td>
+									</c:when>
+									<c:when test="${constrProject.buildersType == 'UKRAINIAN_BUILDER'}">
+										<td>Украинцы</td>
+									</c:when>
+								</c:choose>
+					
+								<td><fmt:formatDate value="${constrProject.startDate}" pattern="dd-MM-yyyy HH:mm"/></td>
+								<td class="hidden-sm" style="width:25%">
+									<script>
+										$(function() {
+											var austDay = new Date(parseInt("<c:out value='${constrProject.finishDate.time}'/>"));
+											$('#countdown_'+ "<c:out value='${constrProject.id}'/>").countdown({
+												until : austDay,
+												expiryUrl: "${requestScope['javax.servlet.forward.request_uri']}"
+											});
+										});
+									</script>
+									<div id='countdown_${constrProject.id}'></div>
+								</td>
+								<td>
+									${constrProject.completePerc}
+									<div class="progress">
+										<div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="${constrProject.completePerc}" 
+											aria-valuemin="0" aria-valuemax="100" style="width: ${constrProject.completePerc}%;"></div>
+									</div>
+								</td>
+								<td>
+									<c:if test="${constrProject.completePerc == 100}">
+										<button id="${constrProject.id}" class="btn btn-danger btn-lg from-constr-btn" 
+											title="Принять объект из строительства" data-toggle="tooltip"> <span class="glyphicon glyphicon-ok"></span></button>
+									</c:if>
+								</td>
+							</tr>
+						</c:forEach>
 					</table>
  				</c:otherwise>
  			</c:choose>
@@ -133,15 +191,6 @@
  	</div>
 </div> <!-- container -->
 
-<div id="balChan">
-	<c:if test="${changeBal.length() > 0}">
-		${changeBal}&tridot;
-		<script>
-			popUp("<c:out value='${changeBal}'/>", "#balChan");
-		</script>
-	</c:if>
-</div>
-	
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
 
@@ -215,8 +264,90 @@ function confirmBuild(bui_type, city_area) {
  		}).fail(function(jqXHR, textStatus, errorThrown) {
 			alert(jqXHR.status + " " + jqXHR.statusText);
 		});
+	
 }
 
+//по нажатию на кнопку Принять из строительства
+function buildFromConstruct(btn_from_constr) {
+	$.ajax({
+		  type: 'POST',
+		  url: "${pageContext.request.contextPath}/building/from-construct",
+		  data:  { id: btn_from_constr.id },
+		  dataType: "json",
+		  async:true
+		}).done(function(data) {
+			if (data.error) {
+				// показать сообщение с ошибкой
+				$('#modalErrorBody').html(data.message);
+				$('#modalError').modal();
+			} else {
+				btn_from_constr.closest('tr').remove(); // удалить строку с данными
+			}
+ 		}).fail(function(jqXHR, textStatus, errorThrown) {
+			alert(jqXHR.status + " " + jqXHR.statusText);
+		});
+}
+
+// по нажатию кнопки Купить лицензию
+function buyLicense(btnBuy) {
+	var buyLevel = btnBuy.id.substring(4);
+	
+	$.ajax({
+		  type: 'POST',
+		  url: "${pageContext.request.contextPath}/building/license-buy-info",
+		  data:  { level: buyLevel },
+		  dataType: "json",
+		  async:true
+		}).done(function(data) {
+			if (data.error) {
+				// показать сообщение с ошибкой
+				$('#modalErrorBody').html(data.message);
+				$('#modalError').modal();
+			} else {
+				// показать сообщение с вопросом
+				$('#modalQuesTitle').html('<b>Вы хотите купить лицензию?</b>');
+				
+				// сформировать тело модального окна
+				$('#modalQuesBody').html('<div>' + data.licenseLevel + '</div> <br/>' +
+						'<div>' + data.licensePrice + '</div> <br/>' +
+						'<div>' + data.balAfter + '</div> <br/>' +
+						'<div>' + data.licenseTerm + '</div>');
+						
+				//назначить обработчик на клик кнопки Подтверждения покупки лицензии
+				$('#modal_ques_confirm').unbind('click');
+				
+				$('#modal_ques_confirm').on('click', function() {
+					confirmBuyLicense(buyLevel); // функция подтверждения покупки лицензии
+				});
+				
+				$('#modalQues').modal();
+			}
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			alert(jqXHR.status + " " + jqXHR.statusText);
+		});
+}
+
+// функция подтверждения покупки лицензии
+function confirmBuyLicense(buyLevel) {
+	$.ajax({
+		  type: 'POST',
+		  url: "${pageContext.request.contextPath}/building/license-buy",
+		  data:  { level: buyLevel },
+		  dataType: "json",
+		  async:true
+		}).done(function(data) {
+			if (data.error) {
+				// показать сообщение с ошибкой
+				$('#modalErrorBody').html(data.message);
+				$('#modalError').modal();
+			} else {
+				// перезагрузить страницу
+				window.location.replace('${pageContext.request.contextPath}/building');
+			}
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			alert(jqXHR.status + " " + jqXHR.statusText);
+		});
+}
 </script>
 
 <!-- модальное окно с выбором типов зданий -->

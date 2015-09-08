@@ -13,18 +13,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entities.CommBuildData;
+import com.kozak.triangles.entities.ConstructionProject;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
+import com.kozak.triangles.entities.UserLicense;
 import com.kozak.triangles.entities.Vmap;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
 import com.kozak.triangles.enums.buildings.BuildingsT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
-import com.kozak.triangles.interfaces.Consts;
+import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.ProposalGenerator;
+import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.Util;
 
@@ -56,6 +59,16 @@ public class HomeController extends BaseController {
         levyOnProperty(userId); // сбор средств с имущества, где есть кассир
         salaryPayment(userId); // выдача зп работникам
 
+        // начислить проценты завершенности для всех объектов строительства
+        List<ConstructionProject> constrProjects = consProjectRep.getUserConstructProjects(userId);
+        BuildingController.computeAndSetCompletePercent(constrProjects, consProjectRep);
+
+        // проверить окончилась ли лицензия
+        User userWithLicense = userRep.getUserWithLicense(userId); // пользователь с лицензиями
+        UserLicense userLicense = userWithLicense.getUserLicense();
+        Date licenseExpireDate = userLicense.getLossDate(); // дата окончания лицензии
+        BuildingController.checkLicenseExpire(licenseExpireDate, userRep, userId); // если кончилась - назначить новую
+
         // статистика
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
@@ -66,6 +79,8 @@ public class HomeController extends BaseController {
         model.addAttribute("comPrCount", prRep.allPrCount(userId, false, false)); // всего имущества
         model.addAttribute("nextProfit", prRep.getMinNextProfit(userId)); // дата следующей прибыли
         model.addAttribute("needRepair", prRep.allPrCount(userId, false, true)); // скольким имуществам нужен ремонт
+        model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии
+        model.addAttribute("licenseExpire", licenseExpireDate); // окончание лицензии
 
         model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
         model.addAttribute("profitFromProp", trRep.getSumByAcf(userId, ArticleCashFlowT.LEVY_ON_PROPERTY));
@@ -107,16 +122,10 @@ public class HomeController extends BaseController {
         model.addAttribute("chp", Consts.CHINA_P);
         model.addAttribute("cep", Consts.CENTER_P);
         // проценты типов строителей
-        model.addAttribute("gabu", Consts.GASTARBEITER_B);
-        model.addAttribute("uabu", Consts.UKRAINIAN_B);
-        model.addAttribute("gebu", Consts.GERMANY_B);
+        model.addAttribute("builders", Consts.BUILDERS_COEF);
         // цены и сроки лицензий на строительство
-        model.addAttribute("prc2", Consts.LI_PR_2);
-        model.addAttribute("prc3", Consts.LI_PR_3);
-        model.addAttribute("prc4", Consts.LI_PR_4);
-        model.addAttribute("literm2", Consts.LI_TERM_2);
-        model.addAttribute("literm3", Consts.LI_TERM_3);
-        model.addAttribute("literm4", Consts.LI_TERM_4);
+        model.addAttribute("licPrice", Consts.LICENSE_PRICE);
+        model.addAttribute("licTerm", Consts.LICENSE_TERM);
         // ставки кредита и депозита
         model.addAttribute("cr_rate", Consts.CREDIT_RATE);
         model.addAttribute("dep_rate", Consts.DEPOSIT_RATE);
@@ -146,7 +155,7 @@ public class HomeController extends BaseController {
         // получить валидное имущество пользователя, у которого nD <= тек.дата
         ArrayList<Property> properties = (ArrayList<Property>) prRep.getPropertyListForProfit(userId, false);
         // генератор
-        ProposalGenerator pg = new ProposalGenerator();
+        Random rand = new Random();
 
         // для каждого имущества
         for (Property p : properties) {
@@ -163,13 +172,13 @@ public class HomeController extends BaseController {
 
             for (int i = 0; i < calcC; i++) {
                 // будем (+ || -) доп. процент износа
-                boolean plus = (pg.generateRandNum(0, 1) == 0) ? true : false;
+                boolean plus = (rand.generateRandNum(0, 1) == 0) ? true : false;
 
                 // ОСНОВНОЙ % за неделю
                 double mainPerc = 100 / data.getUsefulLife();
 
                 // ДОП % (расч. от основного)
-                double additPerc = mainPerc * (int) pg.generateRandNum(1, 30) / 100;
+                double additPerc = mainPerc * (int) rand.generateRandNum(1, 30) / 100;
 
                 // приплюсовать или отминусовать ПР от ПИ
                 if (plus)
@@ -183,7 +192,7 @@ public class HomeController extends BaseController {
             }
 
             // установить новые значения
-            p.setNextDepreciation(DateUtils.getPlusDay(new Date(), 7 - (dayBetw % 7)));
+            p.setNextDepreciation(DateUtils.addDays(new Date(), 7 - (dayBetw % 7)));
             p.setSellingPrice(p.getSellingPrice() - deprSum);
             p.setDepreciationPercent(Util.numberRound(p.getDepreciationPercent() + deprPerc, 2));
             prRep.updateProperty(p);

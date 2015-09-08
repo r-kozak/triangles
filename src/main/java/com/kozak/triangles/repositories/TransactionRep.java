@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
-import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.search.TransactSearch;
+import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.DateUtils;
 
 @Repository

@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import com.kozak.triangles.enums.buildings.BuildingsT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
-import com.kozak.triangles.interfaces.Consts;
+import com.kozak.triangles.utils.Consts;
 
 /**
  * Данные вида имущества

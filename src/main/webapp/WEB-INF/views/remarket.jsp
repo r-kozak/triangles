@@ -146,7 +146,7 @@
 				<div id="searchWrap">
 				<div id="menuTitle">Поиск</div>
 					<fieldset id = "searchBlock">
-					<legend>Разм. начало</legend>
+					<legend>Размещение начало</legend>
 						<div id="searchEl">
 							<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="appearDateFrom"/>
 						</div>
@@ -156,7 +156,7 @@
 					</fieldset>
 					
 					<fieldset id = "searchBlock">
-					<legend>Разм. конец</legend>
+					<legend>Размещение конец</legend>
 						<div id="searchEl">
 							<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="lossDateFrom"/>
 						</div>

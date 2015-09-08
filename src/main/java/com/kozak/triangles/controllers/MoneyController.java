@@ -20,10 +20,10 @@ import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
-import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.search.TransactSearch;
+import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
@@ -169,13 +169,11 @@ public class MoneyController extends BaseController {
      */
     private static void changeUserDomi(int count, int userId, UserRep userRep, boolean isUpDomi) {
         User user = userRep.find(userId);
-        int newDomi = 0;
         if (isUpDomi) {
-            newDomi = user.getDomi() + count;
+            user.setDomi(user.getDomi() + count);
         } else {
-            newDomi = user.getDomi() - count;
+            user.setDomi(user.getDomi() - count);
         }
-        user.setDomi(newDomi);
         userRep.updateUser(user);
     }
 }

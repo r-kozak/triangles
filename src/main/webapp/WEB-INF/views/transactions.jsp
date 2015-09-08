@@ -117,6 +117,12 @@
 									<c:when test="${transac.articleCashFlow == 'SELL_PROPERTY'}">
 										<td style="text-align:left">Продажа имущества</td>
 									</c:when>
+									<c:when test="${transac.articleCashFlow == 'BUY_LICENSE'}">
+										<td style="text-align:left">Покупка лицензий</td>
+									</c:when>
+									<c:when test="${transac.articleCashFlow == 'CONSTRUCTION_PROPERTY'}">
+										<td style="text-align:left">Постройка имущества</td>
+									</c:when>
 									<c:otherwise>
 										<td>${transac.articleCashFlow}</td>
 									</c:otherwise>

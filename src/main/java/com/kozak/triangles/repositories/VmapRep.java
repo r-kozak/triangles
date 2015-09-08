@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Vmap;
-import com.kozak.triangles.interfaces.Consts;
+import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.DateUtils;
 
 @Repository

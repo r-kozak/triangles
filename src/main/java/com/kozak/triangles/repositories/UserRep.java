@@ -88,17 +88,15 @@ public class UserRep {
     }
 
     /**
-     * Получает уровень лицензии на постройку имущества. Лицензия конкретного пользователя.
+     * Получает пользователя по ID и инициализирует лицензии
      * 
      * @param userId
-     *            - ID пользователя
-     * @return уровень лицензии
+     * @return
      */
-    public byte getUserLicenseLevel(int userId) {
+    public User getUserWithLicense(int userId) {
         User user = em.find(User.class, userId);
         Hibernate.initialize(user.getUserLicense());
-
-        return user.getUserLicense().getLicenseLevel();
+        return user;
     }
 
 }

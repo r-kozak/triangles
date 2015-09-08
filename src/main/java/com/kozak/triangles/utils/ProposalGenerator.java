@@ -1,6 +1,5 @@
 package com.kozak.triangles.utils;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Map;
 import com.kozak.triangles.entities.CommBuildData;
 import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.enums.CityAreasT;
-import com.kozak.triangles.interfaces.Consts;
 
 /**
  * генератор предложений на рынке имущества (RealEstateProposal)
@@ -16,6 +14,8 @@ import com.kozak.triangles.interfaces.Consts;
  * @author Roman: 21 июня 2015 г. 15:08:20
  */
 public class ProposalGenerator {
+
+    private Random random = null; // класс Рандома
 
     /**
      * количество предложений расчитывается от количества активных пользователей
@@ -27,14 +27,14 @@ public class ProposalGenerator {
         ArrayList<RealEstateProposal> result = new ArrayList<RealEstateProposal>();
 
         // коэф. колво имуществ на одного пользователя
-        int k = (int) generateRandNum(1, 4);
+        int k = (int) getRandom().generateRandNum(1, 4);
 
         int propCount = usersCount * k;
         for (int i = 0; i < propCount; i++) {
             CommBuildData bd = null;
 
             // бросок кости
-            int rd = diceRoll();
+            int rd = getRandom().diceRoll();
 
             switch (rd) {
             case 7:
@@ -57,44 +57,6 @@ public class ProposalGenerator {
     }
 
     /**
-     * генератор случайного числа
-     * 
-     * @param aStart
-     *            - начало диапазона
-     * @param aEnd
-     *            - конец диапазона
-     * @return случайное число из диапазона
-     */
-    public long generateRandNum(Number start, Number end) {
-        long aStart = start.longValue();
-        long aEnd = end.longValue();
-        if (aStart > aEnd) {
-            throw new IllegalArgumentException("Start cannot exceed End.");
-        }
-        aStart *= 100;
-        aEnd = aEnd * 100 + 100;
-
-        SecureRandom random = new SecureRandom();
-        // get the range, casting to long to avoid overflow problems
-        long range = (long) aEnd - (long) aStart + 1;
-        // compute a fraction of the range, 0 <= frac < range
-        long fraction = (long) (range * random.nextDouble());
-        long randomNumber = (fraction + aStart);
-
-        return randomNumber / 100;
-    }
-
-    /**
-     * бросок костей
-     */
-    private int diceRoll() {
-        long a = generateRandNum(1, 6);
-        long b = generateRandNum(1, 6);
-
-        return (int) (a + b);
-    }
-
-    /**
      * генерирует предложение имущества на рынке
      * 
      * @param bd
@@ -104,13 +66,12 @@ public class ProposalGenerator {
     private RealEstateProposal generateProposal(CommBuildData bd) {
         // generate lossDate
         Calendar lossDate = Calendar.getInstance();
-        lossDate.add(Calendar.DATE, (int) generateRandNum(bd.getRemTermMin(), bd.getRemTermMax()));
+        lossDate.add(Calendar.DATE, (int) getRandom().generateRandNum(bd.getRemTermMin(), bd.getRemTermMax()));
 
-        long price = generateRandNum(bd.getPurchasePriceMin(), bd.getPurchasePriceMax());
+        long price = getRandom().generateRandNum(bd.getPurchasePriceMin(), bd.getPurchasePriceMax());
 
         // генерируем район города и увеличиваем цену в зависимости от района
-        // бросок кости
-        int rd = diceRoll();
+        int rd = getRandom().diceRoll();// бросок кости
         CityAreasT area = null;
 
         switch (rd) {
@@ -145,11 +106,21 @@ public class ProposalGenerator {
      * @return возвращает следующую дату в виде строки для последующей вставки в Vmap модель и обновления модели
      */
     public String generateNEXT_RE_PROPOSE() {
-        int countToAdd = (int) generateRandNum(Consts.FREQ_RE_PROP_MIN, Consts.FREQ_RE_PROP_MAX);
+        int countToAdd = (int) getRandom().generateRandNum(Consts.FREQ_RE_PROP_MIN, Consts.FREQ_RE_PROP_MAX);
 
         Calendar now = Calendar.getInstance();
         now.add(Calendar.DATE, countToAdd);
 
         return DateUtils.dateToString(now.getTime());
+    }
+
+    /**
+     * @return экземпляр класса Рандом
+     */
+    private Random getRandom() {
+        if (random == null) {
+            random = new Random();
+        }
+        return random;
     }
 }

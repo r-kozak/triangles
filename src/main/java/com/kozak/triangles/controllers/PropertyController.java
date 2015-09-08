@@ -30,10 +30,10 @@ import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.TransferT;
-import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.search.CommPropSearch;
 import com.kozak.triangles.search.RealEstateProposalsSearch;
 import com.kozak.triangles.search.SearchCollections;
+import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.Util;
@@ -153,7 +153,8 @@ public class PropertyController extends BaseController {
                                 propName);
                         prRep.addProperty(newProp);
 
-                        MoneyController.upUserDomi(Consts.K_DOMI_BUY_PROP, userId, userRep); // повысить доминантность
+                        MoneyController.upUserDomi(Consts.K_DOMI_BUY_BUI_PROP, userId, userRep); // повысить
+                                                                                                 // доминантность
                     } else {
                         // покупка б/у имущества
                         Util.buyUsedProperty(prop, purchDate, userId, propName, prRep, trRep);
@@ -288,8 +289,7 @@ public class PropertyController extends BaseController {
      */
     @RequestMapping(value = "operations/{prId}", method = RequestMethod.POST)
     public String propertyOperations(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
-            @ModelAttribute("newName") String newName, User user, Model model, HttpServletRequest request,
-            RedirectAttributes ra) {
+            @ModelAttribute("newName") String newName, User user, Model model, RedirectAttributes ra) {
 
         int userId = user.getId();
         // получить конкретное имущество текущего пользоватетя
@@ -541,8 +541,8 @@ public class PropertyController extends BaseController {
         // nextProfit = tomorrow
         // nextDepreciation = next week
         if (!prop.isValid()) {
-            prop.setNextProfit(DateUtils.getPlusDay(new Date(), 1));
-            prop.setNextDepreciation(DateUtils.getPlusDay(new Date(), 7));
+            prop.setNextProfit(DateUtils.addDays(new Date(), 1));
+            prop.setNextDepreciation(DateUtils.addDays(new Date(), 7));
         }
         prRep.updateProperty(prop);
 

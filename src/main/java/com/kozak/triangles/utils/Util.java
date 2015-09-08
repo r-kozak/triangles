@@ -17,7 +17,6 @@ import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.TransferT;
-import com.kozak.triangles.interfaces.Consts;
 import com.kozak.triangles.repositories.BuildingDataRep;
 import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
@@ -75,7 +74,7 @@ public class Util {
         // получить всё валидное имущество, nextProfit которого < тек. даты
         ArrayList<Property> properties = (ArrayList<Property>) prRep.getPropertyListForProfit(userId, true);
         // генератор
-        ProposalGenerator pg = new ProposalGenerator();
+        Random rand = new Random();
 
         // для каждого имущества
         for (Property p : properties) {
@@ -96,7 +95,7 @@ public class Util {
 
             for (int i = 0; i < calcC; i++) {
                 // згенерить и приплюсовать к кассе значение прибыли !!! учитывая район и уровень имущества!!!
-                long gen = Math.round(pg.generateRandNum(pMin, pMax) * Consts.UNIVERS_K[pLevel]); // коэф. уровня
+                long gen = Math.round(rand.generateRandNum(pMin, pMax) * Consts.UNIVERS_K[pLevel]); // коэф. уровня
                 gen += Math.round(gen * Util.getAreaPercent(p.getCityArea()) / 100); // процент района
                 cash += gen;
             }
@@ -114,7 +113,7 @@ public class Util {
             // установить значение кассы и дату nextProfit
             p.setCash(cash);
 
-            p.setNextProfit(DateUtils.getPlusDay(dateFrom, countOfDay));
+            p.setNextProfit(DateUtils.addDays(dateFrom, countOfDay));
 
             prRep.updateProperty(p);// обновить имущество
         }

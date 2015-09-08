@@ -3,6 +3,7 @@ package com.kozak.triangles.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.kozak.triangles.repositories.BuildingDataRep;
+import com.kozak.triangles.repositories.ConstructionProjectRep;
 import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.ReProposalRep;
 import com.kozak.triangles.repositories.TransactionRep;
@@ -22,4 +23,6 @@ public abstract class BaseController {
     protected ReProposalRep rePrRep;
     @Autowired
     protected PropertyRep prRep;
+    @Autowired
+    protected ConstructionProjectRep consProjectRep;
 }

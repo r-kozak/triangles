@@ -100,7 +100,7 @@ public class RealEstateProposal {
         this.commBuildingType = prop.getCommBuildingType();
         this.appearDate = new Date();
 
-        this.lossDate = DateUtils.getPlusDay(new Date(), countDaysOnMarket);
+        this.lossDate = DateUtils.addDays(new Date(), countDaysOnMarket);
         this.purchasePrice = prop.getSellingPrice();
         this.cityArea = prop.getCityArea();
         this.usedId = prop.getId();
