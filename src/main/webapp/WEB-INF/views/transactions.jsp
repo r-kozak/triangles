@@ -152,7 +152,7 @@
 					<div class="panel-body">
 					    <p class="text-right">Общая сумма операций по выбранным фильтрам: <b><fmt:formatNumber type="number" maxFractionDigits="3" 
 					    value="${totalSum}"/>&tridot;</b></p>
-					    <p class="text-right text-danger"><b>Расхождение прибыль - расход = баланс: ${profit - spend + (-userBal)}</b></p>
+<%-- 					    <p class="text-right text-danger"><b>Расхождение прибыль - расход = баланс: ${profit - spend + (-userBal)}</b></p> --%>
 					</div>
 				</div>
 				

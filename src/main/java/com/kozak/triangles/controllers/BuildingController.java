@@ -97,7 +97,9 @@ public class BuildingController extends BaseController {
         } else {
             long priceOfBuilt = dataOfBuilding.getPurchasePriceMin(); // цена постройки = минимальная цена покупки
             if (userSolvency < priceOfBuilt) { // не хватает денег
-                Util.putErrorMsg(resultJson, "Не хватает денег на постройку. Ваш максимум: <b>" + userSolvency + "</b>");
+                Util.putErrorMsg(resultJson,
+                        "Не хватает денег на постройку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency)
+                                + "&tridot;</b>");
             } else {
                 Date exploitation = DateUtils.addDays(new Date(), dataOfBuilding.getBuildTime());
 
@@ -142,7 +144,9 @@ public class BuildingController extends BaseController {
         } else {
             long priceOfBuilt = dataOfBuilding.getPurchasePriceMin(); // цена постройки = минимальная цена покупки
             if (userSolvency < priceOfBuilt) { // не хватает денег
-                Util.putErrorMsg(resultJson, "Не хватает денег на постройку. Ваш максимум: <b>" + userSolvency + "</b>");
+                Util.putErrorMsg(resultJson,
+                        "Не хватает денег на постройку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency)
+                                + "&tridot;</b>");
             } else {
                 // проверка можно ли строить в районе, что выбрал пользователь
                 boolean cityAreaError = userLicenseLevel - 1 < CityAreasT.valueOf(cityArea).ordinal();
@@ -237,16 +241,16 @@ public class BuildingController extends BaseController {
             Util.putErrorMsg(resultJson, "Нет такого уровня лицензии.");
         } else {
             int licensePrice = Consts.LICENSE_PRICE[level];
-            if (userSolvency < licensePrice) { // не хватает денег
-                Util.putErrorMsg(resultJson, "Не хватает денег на покупку. Ваш максимум: <b>" + userSolvency
-                        + "</b> <br/> "
-                        + "Цена покупки: <b>" + licensePrice + "</b>");
+            if (userSolvency < licensePrice) { // не хватает денег Util.moneyFormat(userSolvency) + "&tridot;</b>");
+                Util.putErrorMsg(resultJson,
+                        "Не хватает денег на покупку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency)
+                                + "&tridot;</b> <br/> " + "Цена покупки: <b>" + licensePrice + "</b>");
             } else {
-                resultJson.put("licenseLevel", "Вы покупаете лицензию уровня: <b>" + level + "</b>");
-                resultJson.put("licensePrice", "Стоимость покупки лицензии: <b>" + licensePrice + "</b>");
-                resultJson.put("balAfter", "Баланс после покупки: <b>" + (userMoney - licensePrice) + "</b>");
+                resultJson.put("licenseLevel", "Вы покупаете лицензию уровня: <b>" + level + ".</b>");
+                resultJson.put("licensePrice", "Стоимость покупки лицензии: <b>" + licensePrice + "&tridot;</b>");
+                resultJson.put("balAfter", "Баланс после покупки: <b>" + (userMoney - licensePrice) + "&tridot;</b>");
                 resultJson.put("licenseTerm", "Срок действия лицензии, недель: <b>" + Consts.LICENSE_TERM[level]
-                        + "</b>");
+                        + ".</b>");
             }
         }
 
@@ -271,7 +275,8 @@ public class BuildingController extends BaseController {
         } else {
             int licensePrice = Consts.LICENSE_PRICE[level];
             if (userSolvency < licensePrice) { // не хватает денег
-                Util.putErrorMsg(resultJson, "Не хватает денег на покупку. Ваш максимум: <b>" + userSolvency + "</b>");
+                Util.putErrorMsg(resultJson, "Не хватает денег на покупку. Ваш максимум: <b>"
+                        + Util.moneyFormat(userSolvency) + "&tridot;</b>");
             } else {
                 // установить новую лицензию пользователю
                 BuildingController.setNewLicenseToUser(userRep, userId, level);

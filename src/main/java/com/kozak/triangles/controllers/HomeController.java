@@ -81,6 +81,7 @@ public class HomeController extends BaseController {
         model.addAttribute("needRepair", prRep.allPrCount(userId, false, true)); // скольким имуществам нужен ремонт
         model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии
         model.addAttribute("licenseExpire", licenseExpireDate); // окончание лицензии
+        model.addAttribute("toExploitation", consProjectRep.getNextExploitation(userId)); // до ближайшей эксплуатации
 
         model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
         model.addAttribute("profitFromProp", trRep.getSumByAcf(userId, ArticleCashFlowT.LEVY_ON_PROPERTY));
@@ -95,6 +96,7 @@ public class HomeController extends BaseController {
         model.addAttribute("spendRepair", trRep.getSumByAcf(userId, ArticleCashFlowT.PROPERTY_REPAIR));
         model.addAttribute("spendUpCash", trRep.getSumByAcf(userId, ArticleCashFlowT.UP_CASH_LEVEL));
         model.addAttribute("spendUpLevel", trRep.getSumByAcf(userId, ArticleCashFlowT.UP_PROP_LEVEL));
+        model.addAttribute("spendLicenseBuy", trRep.getSumByAcf(userId, ArticleCashFlowT.BUY_LICENSE));
 
         return "index/home";
     }

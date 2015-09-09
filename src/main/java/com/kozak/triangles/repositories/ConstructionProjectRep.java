@@ -1,5 +1,6 @@
 package com.kozak.triangles.repositories;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -41,11 +42,19 @@ public class ConstructionProjectRep {
      */
     @SuppressWarnings("unchecked")
     public List<ConstructionProject> getUserConstructProjects(int userId) {
-        String hql = "from ConstructionProject where userId = :userId";
+        String hql = "from ConstructionProject where userId = :userId ORDER BY finishDate ASC";
         Query query = em.createQuery(hql).setParameter("userId", userId);
         return query.getResultList();
     }
 
+    /**
+     * получить конкретный строительный проект пользователя по ID
+     * 
+     * @param id
+     *            - ID проекта
+     * @param userId
+     *            - ID пользователя
+     */
     public ConstructionProject getUserConstrProjectById(int id, int userId) {
         String hql = "from ConstructionProject WHERE id = ?0 AND userId = ?1";
         Query query = em.createQuery(hql);
@@ -67,5 +76,22 @@ public class ConstructionProjectRep {
      */
     public void removeConstrProject(ConstructionProject constrProject) {
         em.remove(em.find(ConstructionProject.class, constrProject.getId()));
+    }
+
+    /**
+     * получает ближайшую дату принятия строения в эксплуатацию
+     * 
+     * @param userId
+     */
+    public Date getNextExploitation(int userId) {
+        String hql = "SELECT finishDate FROM ConstructionProject WHERE userId = ?0 ORDER BY finishDate ASC";
+        Query query = em.createQuery(hql).setParameter(0, userId);
+        query.setMaxResults(1);
+
+        try {
+            return (Date) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

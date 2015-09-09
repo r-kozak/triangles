@@ -98,13 +98,13 @@
 											<script>
 												$(function() {
 													var austDay = new Date(parseInt("<c:out value='${nextProfit.time}'/>"));
-													$('#defaultCountdown').countdown({
+													$('#nextProfitCountdown').countdown({
 														until : austDay,
 														expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
 													});
 												});
 											</script>
-											<div id="defaultCountdown"></div>
+											<div id="nextProfitCountdown"></div>
 										</td>
 									</tr>
 								</c:otherwise>
@@ -132,15 +132,44 @@
 				<table class="table">
 					<tr>
 						<td class="tableTd1">Уровень лицензии</td>
-						<td class="tableTd2">-</td>
+						<td class="tableTd2">${licenseLevel}</td>
 					</tr>
 					<tr>
 						<td class="tableTd1">До окончания лицензии</td>
-						<td class="tableTd2">-</td>
+						<td class="tableTd2">
+							<script>
+								$(function() {
+									var austDay = new Date(parseInt("<c:out value='${licenseExpire.time}'/>"));
+									$('#licenseExpireCountdown').countdown({
+										until : austDay,
+										expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
+									});
+								});
+							</script>
+							<div id="licenseExpireCountdown"></div>
+						</td>
 					</tr>
 					<tr>
 						<td class="tableTd1">До принятия в эксплуатацию</td>
-						<td class="tableTd2">-</td>
+						<td class="tableTd2">
+							<c:choose>
+								<c:when test="${toExploitation != null}">
+									<script>
+										$(function() {
+											var austDay = new Date(parseInt("<c:out value='${toExploitation.time}'/>"));
+											$('#toExploitationCountdown').countdown({
+												until : austDay,
+												expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
+											});
+										});
+									</script>
+									<div id="toExploitationCountdown"></div>
+								</c:when>
+								<c:otherwise>
+									нет проектов
+								</c:otherwise>
+							</c:choose>
+						</td>
 					</tr>
 				</table>
 			</div>
@@ -204,16 +233,12 @@
 					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendRepair}" /></td>
 				</tr>
 				<tr>
-					<td class="tableTd1">Выплата зарплат, &tridot;</td>
-					<td class="tableTd2">-</td>
-				</tr>
-				<tr>
 					<td class="tableTd1">Кредиты, &tridot;</td>
 					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendCr}" /></td>
 				</tr>
 				<tr>
 					<td class="tableTd1">Покупка лицензий на строительство, &tridot;</td>
-					<td class="tableTd2">-</td>
+					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendLicenseBuy}" /></td>
 				</tr>
 			</table>
 		</div>
