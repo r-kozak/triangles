@@ -115,10 +115,13 @@
 							</tr>
 						</c:when>
 						<c:otherwise>
-							<div id="info">
-								<p>Нет имущества</p>
-								<a href="${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a>
-							</div>
+							<tr>
+								<td id="info">
+									<p>Нет имущества</p>
+									<a href="${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a>
+								</td>
+							</tr>
+							<tr><td></td></tr>
 						</c:otherwise>
 					</c:choose>
 				</table>

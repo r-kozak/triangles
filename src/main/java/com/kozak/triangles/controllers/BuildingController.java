@@ -330,14 +330,16 @@ public class BuildingController extends BaseController {
      *            - дата окончания лицензии
      * @param userRep
      * @param userId
+     * @return
      */
-    public static void checkLicenseExpire(Date licenseExpireDate, UserRep userRep, int userId) {
+    public static Date checkLicenseExpire(Date licenseExpireDate, UserRep userRep, int userId) {
         // если лицензия закончилась
         if (new Date().after(licenseExpireDate)) {
             byte newLevel = 1;
             // установить новую лицензию пользователю
-            BuildingController.setNewLicenseToUser(userRep, userId, newLevel);
+            return BuildingController.setNewLicenseToUser(userRep, userId, newLevel);
         }
+        return licenseExpireDate;
     }
 
     /**
@@ -347,7 +349,7 @@ public class BuildingController extends BaseController {
      * @param userId
      * @param level
      */
-    private static void setNewLicenseToUser(UserRep userRep, int userId, byte level) {
+    private static Date setNewLicenseToUser(UserRep userRep, int userId, byte level) {
         Date nextExpireDate = DateUtils.addDays(new Date(), 7 * Consts.LICENSE_TERM[level]); // сейчас + Х недель
 
         User user = userRep.getUserWithLicense(userId);
@@ -357,6 +359,8 @@ public class BuildingController extends BaseController {
 
         user.setUserLicense(license);
         userRep.updateUser(user);
+
+        return nextExpireDate;
     }
 
     /**

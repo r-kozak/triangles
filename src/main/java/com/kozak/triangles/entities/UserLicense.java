@@ -17,11 +17,11 @@ public class UserLicense {
 
     // уровень лицензии
     @Column(name = "license_level")
-    private byte licenseLevel;
+    private byte licenseLevel = 1;
 
     // дата окончания лицензии
     @Column(name = "loss_date")
-    private Date lossDate;
+    private Date lossDate = new Date();
 
     public UserLicense() {
     }

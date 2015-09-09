@@ -67,7 +67,8 @@ public class HomeController extends BaseController {
         User userWithLicense = userRep.getUserWithLicense(userId); // пользователь с лицензиями
         UserLicense userLicense = userWithLicense.getUserLicense();
         Date licenseExpireDate = userLicense.getLossDate(); // дата окончания лицензии
-        BuildingController.checkLicenseExpire(licenseExpireDate, userRep, userId); // если кончилась - назначить новую
+        // если кончилась - назначить новую и получить ее
+        licenseExpireDate = BuildingController.checkLicenseExpire(licenseExpireDate, userRep, userId);
 
         // статистика
         String userBalance = trRep.getUserBalance(userId);
