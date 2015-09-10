@@ -550,6 +550,9 @@ public class PropertyController extends BaseController {
                 prop.getUserId(), userMoney - repairSum, ArticleCashFlowT.PROPERTY_REPAIR);
         trRep.addTransaction(t);
 
+        // изменить значения цены продажи и процента износа у предложения на рынке, если имущество на продаже
+        changeSellingPriceAndDeprecPercent(prop);
+
         resultJson.put("error", false);
         resultJson.put("percAfterRepair", deprPercent);
         resultJson.put("propSellingPrice", Util.moneyFormat(sellPrice));
@@ -740,6 +743,17 @@ public class PropertyController extends BaseController {
         resultJson.put("nextSum", nextSum); // сумма след. повышения
     }
 
+    /**
+     * Если имущество продается, то повышении уровня имущества или уровня его кассы метод измененяет значения уровня
+     * имущества или кассы имущества у соответствующего предложения на рынке коммерческого имущества
+     * 
+     * @param obj
+     *            - признак того, уровень чего нужно изменить (prop, cash)
+     * @param prop
+     *            - имущество, у которого повысился уровень кассы или его уровень
+     * @param levelVal
+     *            - новое значение уровня
+     */
     private void changeReProposalLevels(String obj, Property prop, int levelVal) {
         if (prop.isOnSale()) {
             RealEstateProposal rePr = rePrRep.getProposalByUsedId(prop.getId());
@@ -748,6 +762,22 @@ public class PropertyController extends BaseController {
             } else if (obj.equals("prop")) {
                 rePr.setPropLevel(levelVal);
             }
+            rePrRep.updateREproposal(rePr);
+        }
+    }
+
+    /**
+     * Если имущество на продаже, тогда при его ремонте, у соответствующего предложения на рынке коммерческого имущества
+     * меняются значения цены продажи и процента износа
+     * 
+     * @param prop
+     *            - имущество, у которого производился ремонт
+     */
+    private void changeSellingPriceAndDeprecPercent(Property prop) {
+        if (prop.isOnSale()) {
+            RealEstateProposal rePr = rePrRep.getProposalByUsedId(prop.getId());
+            rePr.setPurchasePrice(prop.getSellingPrice());
+            rePr.setDepreciation(prop.getDepreciationPercent());
             rePrRep.updateREproposal(rePr);
         }
     }

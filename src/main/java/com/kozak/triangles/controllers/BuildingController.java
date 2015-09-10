@@ -209,7 +209,7 @@ public class BuildingController extends BaseController {
                 // получить данные всех коммерческих строений
                 HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
                 // данные конкретного типа имущества (здания)
-                CommBuildData dataOfBuilding = mapData.get(constrProject.getBuildingType());
+                CommBuildData dataOfBuilding = mapData.get(constrProject.getBuildingType().name());
 
                 // добавить имущество
                 Property property = new Property(dataOfBuilding, userId, constrProject.getCityArea(), new Date(),

@@ -106,7 +106,9 @@
 		<div class="col-md-9">
 			<h3 class="page-header" align=center>Коммерческое имущество</h3>
 			<c:if test="${empty comProps && !userHaveProps}">
-				<div class = "noData">У вас нет имущества. Его можно купить на рынке. <a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a></div>
+				<div class = "noData">У вас нет имущества. Его можно купить на рынке (или построить на стройке). 
+					<a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a>
+				</div>
 			</c:if>
 			<c:if test="${empty comProps && userHaveProps}">
 				<div class = "noData">Поиск не дал результатов. Попробуйте задать другие параметры.</div>
@@ -123,9 +125,12 @@
 					</div>
 					<div class="panel-body collapse" id="pr_descr">
 						<p><a href="${pageContext.request.contextPath}/wiki#pr">Коммерческое имущество</a> - это раздел, где можно посмотреть всё коммерческое
-						имущество, которое принадлежит вам. Коммерческое имущество можно купить на <a href="${pageContext.request.contextPath}/r-e-market">рынке.</a>
+						имущество, которое принадлежит вам. Коммерческое имущество можно купить на <a href="${pageContext.request.contextPath}/r-e-market">рынке</a>
+						или построить на  <a href="${pageContext.request.contextPath}/building">стройке.</a>
 						Каждые сутки по каждому имуществу насчитывается <a href="${pageContext.request.contextPath}/wiki#pr.co.pr">прибыль</a>. 
-						Каждую неделю насчитывается <a href="${pageContext.request.contextPath}/wiki#pr.co.de">износ</a>.</p>	
+						Каждую неделю насчитывается <a href="${pageContext.request.contextPath}/wiki#pr.co.de">износ</a>.
+						У имущества или у его кассы можно <a href="${pageContext.request.contextPath}/wiki#lu">повышать уровень</a>, а также
+						<a href="${pageContext.request.contextPath}/wiki#pr.co.re">ремонтировать</a></p>
 					</div>
 				</div>
 				<table class="table table-striped" id="prop_table">

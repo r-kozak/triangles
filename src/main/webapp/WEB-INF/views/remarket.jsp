@@ -223,7 +223,9 @@
 					<div class="panel-body collapse" id="pr_descr">
 						<p><a href="${pageContext.request.contextPath}/wiki#pr.ma">Рынок имущества</a> - это раздел, где можно купить коммерческое
 						имущество (магазины, супермаркеты, заводы, фабрики и т.д.). Рынок является глобальным, если вы купили имущество, для других
-						игроков оно станет недоступным.</p>	
+						игроков оно станет недоступным.
+						При покупке, кроме добавления имущества в ваш список, также начисляются очки <a href="${pageContext.request.contextPath}/wiki#do">доминантности.</a>
+						</p>	
 					</div>
 				</div>
 					<table id="prop_table" class="table table-striped">

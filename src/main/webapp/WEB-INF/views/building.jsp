@@ -12,19 +12,15 @@
 }
 /*кнопка повышения уровня лицензии и кн. СТРОИТЬ */
 .btn-license_up {
-	width: 100%;
-	margin-top: 13px;
+	width: 100%;	margin-top: 13px;
 }
 /*блок с информацией о лицензиях, таймером и кнопками*/
-.license-block{
-	border-top: #EEEEEE 1px solid;
-    border-bottom: #EEEEEE 1px solid;
-    margin-right: 0px !important;
+.license-block {
+    border-top: #EEEEEE 1px solid;    border-bottom: #EEEEEE 1px solid;    margin-right: 0px !important;    margin-left: 0px !important;
 }
 /*блок с кнопками повышения уровня лицензии и кнопкой СТРОИТЬ*/
 .license-btn-block{
-	background:#dff0d8; 
-	padding-bottom: 13px;
+	background:#dff0d8;		padding-bottom: 13px;
 }
 </style>
 <t:template>
