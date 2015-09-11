@@ -18,7 +18,7 @@
 			<a href="${pageContext.request.contextPath}/building">Стройка</a>
 		</div>
 		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/loto">Лотерея</a>
+			<a href="${pageContext.request.contextPath}/lottery">Лотерея</a>
 		</div>
 		
 		<jsp:doBody/>

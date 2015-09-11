@@ -65,7 +65,7 @@
 
 			<div class="col-md-4">
 				<div class="block_title text-center">
-					<a href="${pageContext.request.contextPath}/loto" class="btn"><span
+					<a href="${pageContext.request.contextPath}/lottery" class="btn"><span
 						class="glyphicon glyphicon-gift text-danger"> Лотерея</span></a>
 				</div>
 				<table class="table">

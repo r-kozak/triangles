@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<title>${prop.name}</title>
+<title>Стройка</title>
 
 <style>
 .table tr td {
@@ -24,9 +24,6 @@
 }
 </style>
 <t:template>
-	<!-- Задний прозрачный фон-->
-	<div id="wrap"></div>
-
 <script>
 	window.onload = function(){ 
 		// по клику на кнопку Принять из строительства

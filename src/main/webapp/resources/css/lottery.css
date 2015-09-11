@@ -1,0 +1,66 @@
+.table tr td {
+	text-align: center !important;
+}
+/* блок с покупками билетов */
+.buy_block {
+	color: #4cae4c;
+	background-color: #dff0d8;
+	padding: 20 0;
+}
+.buy_label {
+	font-size: 70;
+	margin-top: 5;
+	border: 1px solid rgba(111, 197, 76, 0.53);
+	cursor: pointer;
+}
+.buy_label_no_handlers {
+	font-size: 70;
+	margin-top: 5;
+}
+.buy_label:hover {
+	border: 1px solid rgb(55, 165, 10);
+	cursor: pointer;
+}
+
+/* блок с игровыми кнопками */
+.play_block {
+	color: #FF8300;
+	background-color: #fcf8e3;
+	padding: 20 0;
+}
+
+.play_label {
+	font-size: 70;
+	margin-top: 5;
+	border: 1px solid rgba(204, 105, 0, 0.53);
+	cursor: pointer;
+}
+.play_label:hover {
+	border: 1px solid rgb(255, 94, 0);
+	cursor: pointer;
+}
+.play_little_label {
+	font-size: 11px;
+	margin-top: 5;
+}
+
+/* блок с плюшками */
+.plushki_block {
+	color: #489FBB;
+	background-color: rgb(206, 238, 255);
+	padding: 20 0;
+}
+.plushki_label, .plushki_label_lic {
+	font-size: 69;
+	margin-top: 5;
+	border: 1px solid #489FBB;
+	cursor: pointer;
+}
+.plushki_label:hover, .plushki_label_lic:hover {
+	border: 1px solid #001A9A;
+	cursor: pointer;
+}
+.plushki_label_lic {
+	font-size: 1.4em;
+	padding: 0 0;
+}
