@@ -149,9 +149,13 @@
 					<legend>Размещение начало</legend>
 						<div id="searchEl">
 							<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="appearDateFrom"/>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('appearDateFrom', true)">←</button>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('appearDateFrom', false)">→</button>
 						</div>
 						<div id="searchEl">
 							<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="appearDateTo"/>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('appearDateTo', true)">←</button>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('appearDateTo', false)">→</button>
 						</div>
 					</fieldset>
 					
@@ -159,9 +163,13 @@
 					<legend>Размещение конец</legend>
 						<div id="searchEl">
 							<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="lossDateFrom"/>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('lossDateFrom', true)">←</button>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('lossDateFrom', false)">→</button>
 						</div>
 						<div id="searchEl">
 							<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="lossDateTo"/>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('lossDateTo', true)">←</button>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('lossDateTo', false)">→</button>
 						</div>
 					</fieldset>
 					

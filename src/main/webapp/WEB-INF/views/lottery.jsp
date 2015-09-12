@@ -106,9 +106,13 @@
 						<legend>Период</legend>
 							<div id="searchEl">
 <%-- 								<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="dateFrom"/> --%>
+								<button class="btn btn-default btn-xs" onclick="setDateValue('dateFrom', true)">←</button>
+								<button class="btn btn-default btn-xs" onclick="setDateValue('dateFrom', false)">→</button>
 							</div>
 							<div id="searchEl">
 <%-- 								<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="dateTo"/> --%>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('dateTo', true)">←</button>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('dateTo', false)">→</button>
 							</div>
 						</fieldset>
 			
@@ -124,7 +128,8 @@
 					</div>
 					<div id="searchEl">
 						<button id="searchSubmit" class="btn btn-primary btn-sm" type="submit" name="submit1">Искать</button>
-						<input id="submClear" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Очистить фильтр"  type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
+						<input id="submClear" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Очистить фильтр"  
+						    type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
 					</div>
 				</form:form>
 			</div>
@@ -134,9 +139,11 @@
 				<tr class="tableTitleTr">
 					<td>Дата</td>
 					<td>Статья выигрыша</td>
+					<td>Описание</td>
 				</tr>
 				<c:forEach items="${lotteryStory}" var="lotterySt">
 					<tr>
+						<td></td>
 						<td></td>
 						<td></td>
 					</tr>

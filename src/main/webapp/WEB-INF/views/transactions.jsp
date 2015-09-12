@@ -17,9 +17,13 @@
 					<legend>Период</legend>
 						<div id="searchEl">
 							<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="dateFrom"/>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('dateFrom', true)">←</button>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('dateFrom', false)">→</button>
 						</div>
 						<div id="searchEl">
 							<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="dateTo"/>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('dateTo', true)">←</button>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('dateTo', false)">→</button>
 						</div>
 					</fieldset>
 		
