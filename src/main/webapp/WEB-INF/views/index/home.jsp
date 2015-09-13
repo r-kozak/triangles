@@ -71,7 +71,7 @@
 				<table class="table">
 					<tr>
 						<td class="tableTd1">Билетов</td>
-						<td class="tableTd2">-</td>
+						<td class="tableTd2">${ticketsCount}</td>
 					</tr>
 				</table>
 			</div>

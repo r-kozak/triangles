@@ -26,7 +26,7 @@
 			<div class="col-md-12 text-center buy_block">
 				<div class="col-md-3">
 					<div>Билеты</div>
-					<div class="buy_label_no_handlers">--</div>
+					<div class="buy_label_no_handlers">${ticketsCount}</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>

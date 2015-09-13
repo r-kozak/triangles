@@ -83,6 +83,7 @@ public class HomeController extends BaseController {
         model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии
         model.addAttribute("licenseExpire", licenseExpireDate); // окончание лицензии
         model.addAttribute("toExploitation", consProjectRep.getNextExploitation(userId)); // до ближайшей эксплуатации
+        model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
 
         model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
         model.addAttribute("profitFromProp", trRep.getSumByAcf(userId, ArticleCashFlowT.LEVY_ON_PROPERTY));
