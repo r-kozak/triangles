@@ -31,14 +31,17 @@
 				<div class="col-md-3">
 					<div>Купить</div>
 					<div class="buy_label">1</div>
+					<div class="little_label">500&tridot; за 1 билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>
 					<div class="buy_label">10</div>
+					<div class="little_label">475&tridot; за 1 билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>
 					<div class="buy_label">50</div>
+					<div class="little_label">450&tridot; за 1 билет</div>
 				</div>
 			</div>
 			<div class="row"></div> <!-- разделитель -->
@@ -49,22 +52,22 @@
 				<div class="col-md-3">
 					<div>Играть на</div>
 					<div class="play_label">1</div>
-					<div class="play_little_label">билет</div>
+					<div class="little_label">билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
 					<div class="play_label">5</div>
-					<div class="play_little_label">билетов</div>
+					<div class="little_label">билетов</div>
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
 					<div class="play_label">10</div>
-					<div class="play_little_label">билетов</div>
+					<div class="little_label">билетов</div>
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
 					<div class="play_label">ВСЕ</div>
-					<div class="play_little_label">билеты</div>
+					<div class="little_label">билеты</div>
 				</div>
 			</div>
 			<div class="row"></div> <!-- разделитель -->
@@ -91,65 +94,64 @@
 					<div class="plushki_label"><span class="glyphicon glyphicon-certificate" style="font-size:98; color:#FFCACA"></span></div>
 				</div>
 			</div>
-			<div class="row"></div> <!-- разделитель -->
+		</div>
 	</div> <!-- container.row - строка с лотерейными действиями -->
 	
 	<div class="row"> 		
- 		<div class="col-md-12">
- 			<h4 class="page-header" align=center>История выигрышей</h4>
-			
-			<div class="col-md-3">
-				<form:form id="searchForm" name="searchForm" method="GET" commandName="ls" style="margin-top:0;">
-					<div id="searchWrap">
-					<div id="menuTitle">Поиск</div>
-						<fieldset id = "searchBlock">
-						<legend>Период</legend>
-							<div id="searchEl">
-<%-- 								<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="dateFrom"/> --%>
-								<button class="btn btn-default btn-xs" onclick="setDateValue('dateFrom', true)">←</button>
-								<button class="btn btn-default btn-xs" onclick="setDateValue('dateFrom', false)">→</button>
-							</div>
-							<div id="searchEl">
-<%-- 								<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="dateTo"/> --%>
-							<button class="btn btn-default btn-xs" onclick="setDateValue('dateTo', true)">←</button>
-							<button class="btn btn-default btn-xs" onclick="setDateValue('dateTo', false)">→</button>
-							</div>
-						</fieldset>
-			
-						<fieldset id="searchBlock">
-						<legend>Статья удачи</legend>
-							<div id="searchEl">
-<%-- 								<form:checkboxes path="articles" items="${articles}"/>       --%>
-							</div>
-						</fieldset>
-			
-<%-- 						<form:checkbox id="needClear" path="needClear" hidden="true"/> --%>
-<!-- 						<input id="page" path="page" name="page" value="1" hidden="true"> -->
-					</div>
-					<div id="searchEl">
-						<button id="searchSubmit" class="btn btn-primary btn-sm" type="submit" name="submit1">Искать</button>
-						<input id="submClear" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Очистить фильтр"  
-						    type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
-					</div>
-				</form:form>
-			</div>
-			
-			<div class="col-md-9">
-				<table class="table">
-				<tr class="tableTitleTr">
-					<td>Дата</td>
-					<td>Статья выигрыша</td>
-					<td>Описание</td>
+			<h4 class="page-header" align=center>История выигрышей</h4>
+		
+		<div class="col-md-3">
+			<form:form id="searchForm" name="searchForm" method="GET" commandName="ls" style="margin-top:0;">
+				<div id="searchWrap">
+				<div id="menuTitle">Поиск</div>
+					<fieldset id = "searchBlock">
+					<legend>Период</legend>
+						<div id="searchEl">
+							<div id="nadp">Начало:</div> <form:input class="dateEl" type="date" path="dateFrom"/>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('dateFrom', true)">←</button>
+							<button class="btn btn-default btn-xs" onclick="setDateValue('dateFrom', false)">→</button>
+						</div>
+						<div id="searchEl">
+							<div id="nadp">Конец:</div> <form:input class="dateEl" type="date" path="dateTo"/>
+						<button class="btn btn-default btn-xs" onclick="setDateValue('dateTo', true)">←</button>
+						<button class="btn btn-default btn-xs" onclick="setDateValue('dateTo', false)">→</button>
+						</div>
+					</fieldset>
+		
+					<fieldset id="searchBlock">
+					<legend>Статья удачи</legend>
+						<div id="searchEl">
+							<form:checkboxes path="articles" items="${articles}"/>      
+						</div>
+					</fieldset>
+		
+					<form:checkbox id="needClear" path="needClear" hidden="true"/>
+					<input id="page" path="page" name="page" value="1" hidden="true">
+				</div>
+				<div id="searchEl">
+					<button id="searchSubmit" class="btn btn-primary btn-sm" type="submit" name="submit1">Искать</button>
+					<input id="submClear" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Очистить фильтр"  
+					    type="button" value="&#10008;" onclick="document.getElementById('needClear').checked = true; document.getElementById('searchForm').submit();"/>
+				</div>
+			</form:form>
+		</div>
+		
+		<div class="col-md-9">
+			<table class="table">
+			<tr class="tableTitleTr">
+				<td>Дата</td>
+				<td>Статья выигрыша</td>
+				<td>Описание</td>
+			</tr>
+			<c:forEach items="${lotteryStory}" var="lotterySt">
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr>
-				<c:forEach items="${lotteryStory}" var="lotterySt">
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</c:forEach>
-				</table>
-			</div>
+			</c:forEach>
+			</table>
+		</div>
 	</div> <!-- container.row -->
 </div> <!-- container -->
 

@@ -125,9 +125,9 @@ public class MoneyController extends BaseController {
         model.addAttribute("transfers", SearchCollections.getTransferTypes());
         model.addAttribute("totalSum", totalSum);
 
-        model.addAttribute("userBal", Long.parseLong(userBalance)); // прибыль всего
-        model.addAttribute("profit", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
-        model.addAttribute("spend", trRep.getSumByTransfType(userId, TransferT.SPEND)); // расход всего
+        // model.addAttribute("userBal", Long.parseLong(userBalance)); // прибыль всего
+        // model.addAttribute("profit", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
+        // model.addAttribute("spend", trRep.getSumByTransfType(userId, TransferT.SPEND)); // расход всего
 
         return "transactions";
     }

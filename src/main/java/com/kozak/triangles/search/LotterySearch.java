@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.kozak.triangles.enums.LotteryArticles;
 
-public class CopyOfTransactSearch extends AbstractSearch {
+public class LotterySearch extends AbstractSearch {
 
     private String dateFrom = "";
     private String dateTo = "";

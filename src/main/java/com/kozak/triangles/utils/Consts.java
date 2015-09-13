@@ -38,8 +38,8 @@ public final class Consts {
     // цены лицензий на строительство
     public static final int[] LICENSE_PRICE = { 0, 0, 16000, 32000, 64000 };
 
-    // сроки действия лицензий на строительство, недель
-    public static final int[] LICENSE_TERM = { 0, 12, 8, 4, 2 };
+    // сроки действия лицензий на строительство, дней
+    public static final int[] LICENSE_TERM = { 0, 10, 7, 4, 2 };
 
     public static final int K_DECREASE_REPAIR = 2; // коэф. уменьшения суммы ремонта
     public static final int K_DECREASE_CASH_L = 10; // коэф. уменьшения суммы поднятия уровня кассы
@@ -55,4 +55,8 @@ public final class Consts {
 
     // цена одного очка доминантности (учавствует при обмене на деньги)
     public static final int DOMI_PRICE = 500;
+    public static final int DAILY_TICKETS_FROM_DOMI_K = 20; // сколько очков доминантности стоит один лотерейный билет
+
+    // цены на лотерейные билеты, в зависимости от покупаемого количества
+    public static final int[] LOTTERY_TICKETS_PRICE = { 500, 475, 450 };
 }

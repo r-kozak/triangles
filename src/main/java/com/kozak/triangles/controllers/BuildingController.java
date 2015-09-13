@@ -249,7 +249,7 @@ public class BuildingController extends BaseController {
                 resultJson.put("licenseLevel", "Вы покупаете лицензию уровня: <b>" + level + ".</b>");
                 resultJson.put("licensePrice", "Стоимость покупки лицензии: <b>" + licensePrice + "&tridot;</b>");
                 resultJson.put("balAfter", "Баланс после покупки: <b>" + (userMoney - licensePrice) + "&tridot;</b>");
-                resultJson.put("licenseTerm", "Срок действия лицензии, недель: <b>" + Consts.LICENSE_TERM[level]
+                resultJson.put("licenseTerm", "Срок действия лицензии, дней: <b>" + Consts.LICENSE_TERM[level]
                         + ".</b>");
             }
         }
@@ -350,7 +350,7 @@ public class BuildingController extends BaseController {
      * @param level
      */
     private static Date setNewLicenseToUser(UserRep userRep, int userId, byte level) {
-        Date nextExpireDate = DateUtils.addDays(new Date(), 7 * Consts.LICENSE_TERM[level]); // сейчас + Х недель
+        Date nextExpireDate = DateUtils.addDays(new Date(), Consts.LICENSE_TERM[level]); // сейчас + Х дней
 
         User user = userRep.getUserWithLicense(userId);
         UserLicense license = user.getUserLicense();

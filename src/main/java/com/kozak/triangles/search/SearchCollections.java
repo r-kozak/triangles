@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.CityAreasT;
+import com.kozak.triangles.enums.LotteryArticles;
 import com.kozak.triangles.enums.TransferT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 
@@ -38,6 +39,15 @@ public class SearchCollections {
     public static List<CityAreasT> getCityAreas() {
         List<CityAreasT> types = new ArrayList<CityAreasT>();
         for (CityAreasT a : CityAreasT.values()) {
+            types.add(a);
+        }
+        return types;
+    }
+
+    // lottery search
+    public static List<LotteryArticles> getLotteryArticles() {
+        List<LotteryArticles> types = new ArrayList<LotteryArticles>();
+        for (LotteryArticles a : LotteryArticles.values()) {
             types.add(a);
         }
         return types;

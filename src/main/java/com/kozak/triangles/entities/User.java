@@ -62,6 +62,10 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     private UserLicense userLicense;
 
+    // количество лотерейных билетов у пользователя
+    @Column(name = "lottery_tickets")
+    private int lotteryTickets;
+
     @Transient
     private String confirmPassword;
 
@@ -162,5 +166,13 @@ public class User {
 
     public void setDomi(int domi) {
         this.domi = domi;
+    }
+
+    public int getLotteryTickets() {
+        return lotteryTickets;
+    }
+
+    public void setLotteryTickets(int lotteryTickets) {
+        this.lotteryTickets = lotteryTickets;
     }
 }

@@ -51,7 +51,7 @@ public class HomeController extends BaseController {
 
         buildDataInit(); // инициализируем данные по строениям для каждого типа
         checkFirstTime(currUser); // проверка, первый ли вход в игру (вообще)
-        giveDailyBonus(currUser); // начисление ежедневного бонуса
+        giveDailyBonusAndLotteryTickets(currUser); // начисление ежедневного бонуса
         giveCreditDeposit(userId); // начисление кредита/депозита
         manageREMarketProposals(userId); // очистить-добавить предложения на глобальный рынок недвижимости
         Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
@@ -354,7 +354,7 @@ public class HomeController extends BaseController {
      * 
      * @param currUserId
      */
-    private void giveDailyBonus(User user) {
+    private void giveDailyBonusAndLotteryTickets(User user) {
         // максимальный номер дня при начислении бонуса
         final int MAX_DAY_NUMBER = Consts.DAILY_BONUS_SUM.length - 1;
 
@@ -380,6 +380,10 @@ public class HomeController extends BaseController {
             Transaction t = new Transaction(description, new Date(), bonusSum, TransferT.PROFIT, user.getId(),
                     oldBalance + bonusSum, ArticleCashFlowT.DAILY_BONUS);
             trRep.addTransaction(t);
+
+            // ежедневное начисление бесплатных лотерейных билетов
+            int dailyTicketsCount = user.getDomi() / Consts.DAILY_TICKETS_FROM_DOMI_K; // сколько начислить билетов
+            user.setLotteryTickets(user.getLotteryTickets() + dailyTicketsCount);
 
             // обновляем данные юзера
             user.setLastBonus(new Date());
