@@ -53,7 +53,8 @@ public class SignupController {
         user.setEncrLogin(encrLogin);
 
         // шифруем пароль и присваиваем юзеру
-        String encrPass = Encryptor.toMD5(user.getPassword());
+        String originPass = user.getPassword();
+        String encrPass = Encryptor.toMD5(originPass);
         user.setPassword(encrPass);
 
         // присвоить юзеру лицензии на строительство
@@ -62,6 +63,7 @@ public class SignupController {
 
         userRepository.addUser(user);
 
+        user.setPassword(originPass); // устанавливаем обратно оригинальный пароль
         mAndView.addObject("user", user);
         RedirectView rv = new RedirectView("");
         mAndView.setView(rv);

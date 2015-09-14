@@ -12,7 +12,10 @@
 
 <script>
 	window.onload = function(){ 
-		
+		//
+		$('.buy_label').on('click', function() {
+			buyTickets(this);
+		});
 	}
 </script>
 
@@ -26,21 +29,21 @@
 			<div class="col-md-12 text-center buy_block">
 				<div class="col-md-3">
 					<div>Билеты</div>
-					<div class="buy_label_no_handlers">${ticketsCount}</div>
+					<div id="tickets_count" class="buy_label_no_handlers">${ticketsCount}</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>
-					<div class="buy_label">1</div>
+					<div class="buy_label" id="buy_1">1</div>
 					<div class="little_label">500&tridot; за 1 билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>
-					<div class="buy_label">10</div>
+					<div class="buy_label" id="buy_10">10</div>
 					<div class="little_label">475&tridot; за 1 билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>
-					<div class="buy_label">50</div>
+					<div class="buy_label" id="buy_50">50</div>
 					<div class="little_label">450&tridot; за 1 билет</div>
 				</div>
 			</div>
@@ -56,12 +59,12 @@
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
-					<div class="play_label">5</div>
+					<div class="play_label">≤5</div>
 					<div class="little_label">билетов</div>
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
-					<div class="play_label">10</div>
+					<div class="play_label">≤10</div>
 					<div class="little_label">билетов</div>
 				</div>
 				<div class="col-md-3">
@@ -200,4 +203,61 @@ $(document).ready(function(){
     </div>
   </div>
 </div>
+
+	<div id="balChan">
+		<c:if test="${changeBal.length() > 0}">
+			${changeBal}&tridot;
+			<script>
+				popUp("<c:out value='${changeBal}'/>", "#balChan");
+			</script>
+		</c:if>
+	</div>
+
+<script>
+// функция при нажатии на кнопки покупки билетов
+function buyTickets(buy_btn) {
+	var count = buy_btn.id.substring(4); 
+	$.ajax({
+		  type: 'GET',
+		  url: "${pageContext.request.contextPath}/lottery/buy-tickets",
+		  data:  { count: count },
+		  dataType: "json",
+		  async:true
+		}).done(function(data) {
+			if(data.error) {
+				// показать сообщение с ошибкой
+				$('#modalErrorBody').html(data.message);
+				$('#modalError').modal();
+			} else {
+				changeBal(data);
+				$('#tickets_count').html(data.ticketsValue);
+			}
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		alert(jqXHR.status + " " + jqXHR.statusText);
+	});
+}
+
+// функция игры в лото
+function playLoto(play_btn) {
+	var count = buy_btn.id.substring(5);
+	$.ajax({
+		  type: 'GET',
+		  url: "${pageContext.request.contextPath}/lottery/play-loto",
+		  data:  { count: count },
+		  dataType: "json",
+		  async:true
+		}).done(function(data) {
+			if(data.error) {
+				// показать сообщение с ошибкой
+				$('#modalErrorBody').html(data.message);
+				$('#modalError').modal();
+			} else {
+				changeBal(data);
+				$('#tickets_count').html(data.ticketsValue);
+			}
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		alert(jqXHR.status + " " + jqXHR.statusText);
+	});
+}
+</script>
 </t:template>

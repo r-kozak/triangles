@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.json.simple.JSONObject;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +30,7 @@ import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.Random;
+import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
@@ -114,12 +113,7 @@ public class BuildingController extends BaseController {
                                 + "</b>");
             }
         }
-        System.err.println(resultJson.toJSONString());
-        String json = resultJson.toJSONString();
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+        return ResponseUtil.getResponseEntity(resultJson);
     }
 
     @RequestMapping(value = "/confirm-build", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
@@ -184,21 +178,16 @@ public class BuildingController extends BaseController {
                 }
             }
         }
-        System.err.println(resultJson.toJSONString());
-        String json = resultJson.toJSONString();
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+        return ResponseUtil.getResponseEntity(resultJson);
     }
 
     @RequestMapping(value = "/from-construct", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
-    public @ResponseBody ResponseEntity<String> propertyFromConstruct(@RequestParam("id") int id, User user) {
+    public @ResponseBody ResponseEntity<String> propertyFromConstruct(@RequestParam("constrId") int constrId, User user) {
 
         JSONObject resultJson = new JSONObject();
         int userId = user.getId();
 
-        ConstructionProject constrProject = consProjectRep.getUserConstrProjectById(id, userId);
+        ConstructionProject constrProject = consProjectRep.getUserConstrProjectById(constrId, userId);
 
         if (constrProject == null) {
             Util.putErrorMsg(resultJson, "У вас нет такого имущества.");
@@ -220,12 +209,7 @@ public class BuildingController extends BaseController {
                 consProjectRep.removeConstrProject(constrProject);
             }
         }
-        System.err.println(resultJson.toJSONString());
-        String json = resultJson.toJSONString();
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+        return ResponseUtil.getResponseEntity(resultJson);
     }
 
     @SuppressWarnings("unchecked")
@@ -253,13 +237,7 @@ public class BuildingController extends BaseController {
                         + ".</b>");
             }
         }
-
-        System.err.println(resultJson.toJSONString());
-        String json = resultJson.toJSONString();
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+        return ResponseUtil.getResponseEntity(resultJson);
     }
 
     @RequestMapping(value = "/license-buy", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
@@ -289,13 +267,7 @@ public class BuildingController extends BaseController {
                 trRep.addTransaction(tr);
             }
         }
-
-        System.err.println(resultJson.toJSONString());
-        String json = resultJson.toJSONString();
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+        return ResponseUtil.getResponseEntity(resultJson);
     }
 
     /**

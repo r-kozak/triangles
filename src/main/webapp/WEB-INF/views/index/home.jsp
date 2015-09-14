@@ -43,7 +43,7 @@
 <title>Home</title>
 <t:template>
 	<div class="container">
-		<h3 class="page-header">Контрольная панель</h3>
+		<h3 class="page-header">Панель управления</h3>
 		<div class="row">
 
 			<div class="col-md-4">

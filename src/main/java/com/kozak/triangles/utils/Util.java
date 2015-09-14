@@ -171,4 +171,18 @@ public class Util {
         resultJson.put("error", true);
         resultJson.put("message", msg);
     }
+
+    /**
+     * добавляет информацию о балансе в модель JSON
+     * 
+     * @param sum
+     *            - сумма операции
+     */
+    @SuppressWarnings("unchecked")
+    public static void addBalanceData(JSONObject resultJson, long sum, long userMoney, int userId, PropertyRep prRep) {
+        resultJson.put("changeBal", "-" + sum);
+        resultJson.put("newBalance", Util.moneyFormat(userMoney - sum));
+        resultJson.put("newSolvency",
+                Util.moneyFormat(Util.getSolvency(String.valueOf(userMoney - sum), prRep, userId)));
+    }
 }

@@ -265,7 +265,7 @@ function buildFromConstruct(btn_from_constr) {
 	$.ajax({
 		  type: 'POST',
 		  url: "${pageContext.request.contextPath}/building/from-construct",
-		  data:  { id: btn_from_constr.id },
+		  data:  { constrId: btn_from_constr.id },
 		  dataType: "json",
 		  async:true
 		}).done(function(data) {

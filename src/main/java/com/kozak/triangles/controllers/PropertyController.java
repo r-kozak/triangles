@@ -9,8 +9,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.JSONObject;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +33,7 @@ import com.kozak.triangles.search.RealEstateProposalsSearch;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.DateUtils;
+import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.Util;
 
@@ -170,17 +169,12 @@ public class PropertyController extends BaseController {
                             TransferT.SPEND, userId, userMoney - price, ArticleCashFlowT.BUY_PROPERTY);
                     trRep.addTransaction(t);
 
-                    addBalanceData(resultJson, prop.getPurchasePrice(), userMoney, userId);
+                    Util.addBalanceData(resultJson, prop.getPurchasePrice(), userMoney, userId, prRep);
                     resultJson.put("newDomi", userRep.getUserDomi(userId)); // информация для обновления значения домин.
                 }
             }
         }
-        System.err.println(resultJson.toJSONString());
-        String json = resultJson.toJSONString();
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+        return ResponseUtil.getResponseEntity(resultJson);
     }
 
     /**
@@ -405,13 +399,7 @@ public class PropertyController extends BaseController {
                 }
             }
         }
-
-        System.err.println(resultJson.toJSONString());
-        String json = resultJson.toJSONString();
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+        return ResponseUtil.getResponseEntity(resultJson);
     }
 
     /**
@@ -453,12 +441,7 @@ public class PropertyController extends BaseController {
                 }
             }
         }
-        System.err.println(resultJson.toJSONString());
-        String json = resultJson.toJSONString();
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+        return ResponseUtil.getResponseEntity(resultJson);
     }
 
     /**
@@ -508,12 +491,7 @@ public class PropertyController extends BaseController {
                 resultJson.put("onSale", prop.isOnSale());
             }
         }
-        System.err.println(resultJson.toJSONString());
-        String json = resultJson.toJSONString();
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+        return ResponseUtil.getResponseEntity(resultJson);
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////// PRIVATE
@@ -556,7 +534,7 @@ public class PropertyController extends BaseController {
         resultJson.put("error", false);
         resultJson.put("percAfterRepair", deprPercent);
         resultJson.put("propSellingPrice", Util.moneyFormat(sellPrice));
-        addBalanceData(resultJson, repairSum, userMoney, userId);
+        Util.addBalanceData(resultJson, repairSum, userMoney, userId, prRep);
     }
 
     /**
@@ -584,20 +562,6 @@ public class PropertyController extends BaseController {
             return cash;
         }
         return 0;
-    }
-
-    /**
-     * добавляет информацию о балансе в модель JSON
-     * 
-     * @param sum
-     *            - сумма операции
-     */
-    @SuppressWarnings("unchecked")
-    private void addBalanceData(JSONObject resultJson, long sum, long userMoney, int userId) {
-        resultJson.put("changeBal", "-" + sum);
-        resultJson.put("newBalance", Util.moneyFormat(userMoney - sum));
-        resultJson.put("newSolvency",
-                Util.moneyFormat(Util.getSolvency(String.valueOf(userMoney - sum), prRep, userId)));
     }
 
     /**
@@ -738,7 +702,7 @@ public class PropertyController extends BaseController {
             Util.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
         }
 
-        addBalanceData(resultJson, sum, currBal, userId);
+        Util.addBalanceData(resultJson, sum, currBal, userId, prRep);
         resultJson.put("currLevel", nCashLevel);
         resultJson.put("nextSum", nextSum); // сумма след. повышения
     }
@@ -814,7 +778,7 @@ public class PropertyController extends BaseController {
             Util.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
         }
 
-        addBalanceData(resultJson, sum, currBal, userId);
+        Util.addBalanceData(resultJson, sum, currBal, userId, prRep);
         resultJson.put("currLevel", nPropLevel);
         resultJson.put("nextSum", nextSum); // сумма след. повышения
     }
