@@ -30,7 +30,7 @@ public class LotteryInfo {
 
     // описание выигрыша
     @Column(name = "DESCRIPTION")
-    private int description;
+    private String description;
 
     // дата операции
     @Column(name = "DATE")
@@ -45,18 +45,26 @@ public class LotteryInfo {
     @Column(name = "COUNT")
     private int count;
 
-    // валидная запись или нет (если юзер забрал выигрыш)
-    @Column(name = "VALID")
-    private boolean valid;
+    // количество потраченных билетов на это
+    @Column(name = "TICKET_COUNT")
+    private int ticketCount;
+
+    // количество, которое осталось от выигрыша к получению (еще можно взять)
+    @Column(name = "REMAINING_AMOUNT")
+    private int remainingAmount;
 
     public LotteryInfo() {
     }
 
-    public LotteryInfo(int userId, int description, LotteryArticles article, int count) {
+    public LotteryInfo(int userId, String description, LotteryArticles article, int count, int ticketCount,
+            int remainingAmount) {
+
         this.userId = userId;
         this.description = description;
         this.article = article;
         this.count = count;
+        this.ticketCount = ticketCount;
+        this.remainingAmount = remainingAmount;
     }
 
     public int getId() {
@@ -75,11 +83,11 @@ public class LotteryInfo {
         this.userId = userId;
     }
 
-    public int getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(int description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -107,12 +115,20 @@ public class LotteryInfo {
         this.count = count;
     }
 
-    public boolean isValid() {
-        return valid;
+    public int getTicketCount() {
+        return ticketCount;
     }
 
-    public void setValid(boolean valid) {
-        this.valid = valid;
+    public void setTicketCount(int ticketCount) {
+        this.ticketCount = ticketCount;
+    }
+
+    public int getRemainingAmount() {
+        return remainingAmount;
+    }
+
+    public void setRemainingAmount(int remainingAmount) {
+        this.remainingAmount = remainingAmount;
     }
 
 }

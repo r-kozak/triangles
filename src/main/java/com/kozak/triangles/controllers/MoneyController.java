@@ -24,6 +24,7 @@ import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.search.TransactSearch;
 import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
@@ -51,14 +52,14 @@ public class MoneyController extends BaseController {
         boolean correctCount = count == 500 || count == 5000; // корректное количество для обмена
 
         if (!correctAction || !correctCount) {
-            Util.putErrorMsg(resultJson, "Ошибка запроса :(");
+            ResponseUtil.putErrorMsg(resultJson, "Ошибка запроса :(");
         } else {
             int userId = user.getId();
             int userDomi = userRep.getUserDomi(userId);
             int needDomi = count / Consts.DOMI_PRICE; // сколько нужно доминантности для обмена
 
             if (userDomi < needDomi) {
-                Util.putErrorMsg(resultJson,
+                ResponseUtil.putErrorMsg(resultJson,
                         String.format("Ошибка. Не хватает очков доминантности для обмена (остаток: %s).", userDomi));
             } else {
                 if (action.equals("info")) {

@@ -3,6 +3,7 @@ package com.kozak.triangles.controllers;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import org.json.simple.JSONObject;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.kozak.triangles.entities.LotteryInfo;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.entities.WinningsData;
@@ -40,14 +42,30 @@ public class LotteryController extends BaseController {
      * @author Roman: 14 вер. 2015 21:49:39
      */
     private static class WinGroup {
-        // количество билетов - например, 8 билетов.
+        // общее количество билетов - например, 8 билетов.
         private int ticketsCount;
-        // количество выигранных сущностей по конкретной статье затрат. Например, 10 киосков (получено за 8 билетов).
+        /*
+         * общее количество выигранных сущностей по конкретной статье затрат. Например, 10 киосков (получено за 8
+         * билетов).
+         */
         private int entitiesCount;
+        /*
+         * Карта <Возможное количество что можно выиграть, Количество билетов потраченное на это количество>
+         * например, статья затрат TRIANGLES
+         */
+        HashMap<Integer, Integer> countMap = new HashMap<Integer, Integer>();
 
         public void addToGroup(int entCount) {
-            ticketsCount++;
-            entitiesCount += entCount;
+            ticketsCount++; // общее колво билетов
+            entitiesCount += entCount; // общее колво сущностей по данной статье
+
+            // количество в разрезе возможного количества выигрышей по статье (можно выиграть 2 киоска, а можно 3 шт.)
+            Integer c = countMap.get(entCount);
+            if (c == null) {
+                countMap.put(entitiesCount, 1);
+            } else {
+                countMap.put(entCount, ++c);
+            }
         }
     }
 
@@ -86,7 +104,7 @@ public class LotteryController extends BaseController {
 
         // проверки на правильность количества покупаемых билетов
         if (count != 1 && count != 10 && count != 50) {
-            Util.putErrorMsg(resultJson, "Такое количество недоступно для покупок.");
+            ResponseUtil.putErrorMsg(resultJson, "Такое количество недоступно для покупок.");
         } else {
             // цена за один
             int priceToOneTicket = 0;
@@ -103,7 +121,7 @@ public class LotteryController extends BaseController {
 
             // не хватает денег
             if (userSolvency < purchaseSum) {
-                Util.putErrorMsg(resultJson, "Сумма покупки <b>(" + purchaseSum
+                ResponseUtil.putErrorMsg(resultJson, "Сумма покупки <b>(" + purchaseSum
                         + "&tridot;)</b> слишком большая. Вам не хватает денег.");
             } else {
                 // установка пользователю нового количества лотерейных билетов
@@ -119,7 +137,7 @@ public class LotteryController extends BaseController {
                 trRep.addTransaction(tr);
 
                 // добавить информацию о новом значении баланса, состоятельности, количества билетов
-                Util.addBalanceData(resultJson, purchaseSum, userMoney, userId, prRep);
+                ResponseUtil.addBalanceData(resultJson, purchaseSum, userMoney, userId, prRep);
                 resultJson.put("ticketsValue", user.getLotteryTickets());
             }
         }
@@ -135,7 +153,6 @@ public class LotteryController extends BaseController {
      * @param count
      *            - количество для игры (1, 5 - ≤5, 10 - ≤10, 0 - на все)
      */
-    @SuppressWarnings("unchecked")
     @RequestMapping(value = "/play-loto", method = RequestMethod.GET, produces = { "application/json; charset=UTF-8" })
     public @ResponseBody ResponseEntity<String> playLoto(@RequestParam("count") int count, User user) {
 
@@ -145,9 +162,10 @@ public class LotteryController extends BaseController {
 
         // проверки на правильность количества покупаемых билетов
         if (count != 1 && count != 5 && count != 10 && count != 0) {
-            Util.putErrorMsg(resultJson, "Игра в лото на такое количество билетов недоступна.");
+            ResponseUtil.putErrorMsg(resultJson, "Игра в лото на такое количество билетов недоступна.");
         } else if (userTickets == 0) {
-            Util.putErrorMsg(resultJson, "У вас нет билетов. Купите или ждите зачисления за очки доминантности.");
+            ResponseUtil.putErrorMsg(resultJson,
+                    "У вас нет билетов. Купите или ждите зачисления за очки доминантности.");
         } else {
             int gamesCount = computeGamesCount(userTickets, count); // вычислить количество игр
 
@@ -156,8 +174,74 @@ public class LotteryController extends BaseController {
 
             // TODO взять сгруппированный результат и добавить выигранное пользователю
             // (сформировать транзакции, добавить имущество, предсказания и пр.)
+            for (Map.Entry<LotteryArticles, WinGroup> lotoRes : lotoResult.entrySet()) {
+                LotteryArticles article = lotoRes.getKey();
+                WinGroup groupedRes = lotoRes.getValue();
+
+                if (article.equals(LotteryArticles.TRIANGLES)) {
+                    giveMoneyToUser(groupedRes, userId); // начислить пользователю деньги, что он выиграл
+                } else if (article.equals(LotteryArticles.PROPERTY_UP) ||
+                        article.equals(LotteryArticles.CASH_UP) ||
+                        article.equals(LotteryArticles.LICENSE_2) ||
+                        article.equals(LotteryArticles.LICENSE_3) ||
+                        article.equals(LotteryArticles.LICENSE_4)) {
+
+                    handleCommonArticle(groupedRes, userId, article);
+                } else if (article.equals(LotteryArticles.STALL) ||
+                        article.equals(LotteryArticles.VILLAGE_SHOP) ||
+                        article.equals(LotteryArticles.STATIONER_SHOP)) {
+
+                    handlePropertyArticle(groupedRes, userId, article);
+                } else if (article.equals(LotteryArticles.PREDICTION)) {
+                    givePredictionToUser(userId);
+                } else {
+                    ResponseUtil.putErrorMsg(resultJson,
+                            "Возникла ошибка! Одна из статьей выигрыша не была обработана!");
+                }
+            }
         }
         return ResponseUtil.getResponseEntity(resultJson);
+    }
+
+    private void handlePropertyArticle(WinGroup groupedRes, int userId, LotteryArticles article) {
+        // TODO Auto-generated method stub
+
+    }
+
+    private void handleCommonArticle(WinGroup groupedRes, int userId, LotteryArticles article) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Открыть пользователю мудрость или дать предсказание.
+     */
+    private void givePredictionToUser(int userId) {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * Начислить пользователю деньги на счет, а также добавить информацию о выигрыше в таблицу с информацией о лотерее.
+     * 
+     * @param groupedRes
+     *            - сгруппированный результат по выигрышу
+     */
+    private void giveMoneyToUser(WinGroup groupedRes, int userId) {
+        // добавить транзакцию
+        long userMoney = Long.parseLong(trRep.getUserBalance(userId));
+
+        String descr = String.format("Выигрыш в лотерею за %s билетов", groupedRes.ticketsCount);
+        int sum = groupedRes.entitiesCount;
+        Transaction tr = new Transaction(descr, new Date(), sum, TransferT.PROFIT, userId, userMoney + sum,
+                ArticleCashFlowT.LOTTERY_WINNINGS);
+        trRep.addTransaction(tr);
+
+        // добавить информацию в таблицу с лотерейными выигрышами
+        String description = "Деньги [&tridot; × Кол-во билетов]. ["
+                + groupedRes.countMap.entrySet().toString().replace("=", "×") + "]";
+        LotteryInfo lInfo = new LotteryInfo(userId, description, LotteryArticles.TRIANGLES, sum,
+                groupedRes.ticketsCount, 0);
+        lotteryRep.addLotoInfo(lInfo);
     }
 
     /**
@@ -204,10 +288,16 @@ public class LotteryController extends BaseController {
             int flKey = winningsData.floorKey(ticRes); // ближайший нижный ключ в дереве
             tempWinData = winningsData.get(flKey); // данные о выигрыше
 
-            // если выиграл предсказание и есть непросмотренные - не считать этот розыгрыш
-            if (userHasPrediction && tempWinData.getArticle().equals(LotteryArticles.PREDICTION)) {
-                i--;
-                continue;
+            // если выиграл предсказание
+            if (tempWinData.getArticle().equals(LotteryArticles.PREDICTION)) {
+                // если есть непросмотренные предсказания - не считать этот розыгрыш
+                if (userHasPrediction) {
+                    i--;
+                    continue;
+                } else {
+                    // иначе - посчитать этот розыгрыш, но теперь у юзера уже есть непросмотренные предсказания
+                    userHasPrediction = true;
+                }
             }
             // сгруппировать данный результат розыгрыша
             groupTicketResult(tempWinData, groupResult);
