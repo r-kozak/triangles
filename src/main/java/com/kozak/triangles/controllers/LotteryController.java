@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.kozak.triangles.entities.CommBuildData;
 import com.kozak.triangles.entities.LotteryInfo;
+import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.entities.WinningsData;
 import com.kozak.triangles.enums.ArticleCashFlowT;
+import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.LotteryArticles;
 import com.kozak.triangles.enums.TransferT;
 import com.kozak.triangles.search.LotterySearch;
@@ -28,6 +31,7 @@ import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
+import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
@@ -50,8 +54,8 @@ public class LotteryController extends BaseController {
          */
         private int entitiesCount;
         /*
-         * Карта <Возможное количество что можно выиграть, Количество билетов потраченное на это количество>
-         * например, статья затрат TRIANGLES
+         * Карта <Возможное количество что можно выиграть, Количество билетов потраченное на это количество> например,
+         * статья затрат TRIANGLES
          */
         HashMap<Integer, Integer> countMap = new HashMap<Integer, Integer>();
 
@@ -132,8 +136,8 @@ public class LotteryController extends BaseController {
                 String descr = String.format("Покупка лотерейных билетов, %s шт.", count);
                 long newBalance = userMoney - purchaseSum;
 
-                Transaction tr = new Transaction(descr, new Date(), purchaseSum, TransferT.SPEND, userId,
-                        newBalance, ArticleCashFlowT.LOTTERY_TICKETS_BUY);
+                Transaction tr = new Transaction(descr, new Date(), purchaseSum, TransferT.SPEND, userId, newBalance,
+                        ArticleCashFlowT.LOTTERY_TICKETS_BUY);
                 trRep.addTransaction(tr);
 
                 // добавить информацию о новом значении баланса, состоятельности, количества билетов
@@ -145,9 +149,9 @@ public class LotteryController extends BaseController {
     }
 
     /**
-     * Метод игры в лото. Позволяет сыграть в лотерею на выбранное пользователем количество билетов.
-     * Если пользователь выбирает игру на 5 билетов, а у него лишь 3, то будет игра на 3 билета, ошибки при этом не
-     * будет. Если он выберет игру на 10, а у него 9, то игра будет на 9.
+     * Метод игры в лото. Позволяет сыграть в лотерею на выбранное пользователем количество билетов. Если пользователь
+     * выбирает игру на 5 билетов, а у него лишь 3, то будет игра на 3 билета, ошибки при этом не будет. Если он выберет
+     * игру на 10, а у него 9, то игра будет на 9.
      * 
      * 
      * @param count
@@ -180,16 +184,13 @@ public class LotteryController extends BaseController {
 
                 if (article.equals(LotteryArticles.TRIANGLES)) {
                     giveMoneyToUser(groupedRes, userId); // начислить пользователю деньги, что он выиграл
-                } else if (article.equals(LotteryArticles.PROPERTY_UP) ||
-                        article.equals(LotteryArticles.CASH_UP) ||
-                        article.equals(LotteryArticles.LICENSE_2) ||
-                        article.equals(LotteryArticles.LICENSE_3) ||
-                        article.equals(LotteryArticles.LICENSE_4)) {
+                } else if (article.equals(LotteryArticles.PROPERTY_UP) || article.equals(LotteryArticles.CASH_UP)
+                        || article.equals(LotteryArticles.LICENSE_2) || article.equals(LotteryArticles.LICENSE_3)
+                        || article.equals(LotteryArticles.LICENSE_4)) {
 
                     handleCommonArticle(groupedRes, userId, article);
-                } else if (article.equals(LotteryArticles.STALL) ||
-                        article.equals(LotteryArticles.VILLAGE_SHOP) ||
-                        article.equals(LotteryArticles.STATIONER_SHOP)) {
+                } else if (article.equals(LotteryArticles.STALL) || article.equals(LotteryArticles.VILLAGE_SHOP)
+                        || article.equals(LotteryArticles.STATIONER_SHOP)) {
 
                     handlePropertyArticle(groupedRes, userId, article);
                 } else if (article.equals(LotteryArticles.PREDICTION)) {
@@ -203,21 +204,92 @@ public class LotteryController extends BaseController {
         return ResponseUtil.getResponseEntity(resultJson);
     }
 
+    /**
+     * Вводит в эксплуатацию один из видов коммерческого имущества (в зависимости от стастьи выигрыша в лотерею). Все
+     * имущество, которое выигрывается в лотерею, находится в районе Гетто, имеет минимальную цену для данного вида
+     * имущества.
+     * 
+     * @param groupedRes
+     *            - сгруппированный результат по статье
+     * @param userId
+     * @param article
+     *            - статья выигрыша (STALL, VILLAGE_SHOP, ...)
+     */
     private void handlePropertyArticle(WinGroup groupedRes, int userId, LotteryArticles article) {
-        // TODO Auto-generated method stub
 
+        // получить данные всех коммерческих строений
+        HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+
+        // ввести в эксплуатацию все выигранное имущество
+        int countOfProperties = groupedRes.entitiesCount;
+        // данные конкретного имущества
+        CommBuildData buildData = mapData.get(article.name());
+        for (int i = 0; i < countOfProperties; i++) {
+            String name = "property-" + new Random().getHash(5); // имя нового имущества
+            long price = buildData.getPurchasePriceMin(); // цена нового имущества (всегда минимальная)
+
+            Property prop = new Property(buildData, userId, CityAreasT.GHETTO, new Date(), price, name);
+            prRep.addProperty(prop);
+        }
+
+        // внести информацию о выигрыше
+        String description = "Имущество [Кол-во имущества × Кол-во билетов]. ["
+                + groupedRes.countMap.entrySet().toString().replace("=", "×") + "]";
+        LotteryInfo lInfo = new LotteryInfo(userId, description, article, groupedRes.entitiesCount,
+                groupedRes.ticketsCount, 0);
+        lotteryRep.addLotoInfo(lInfo);
     }
 
+    /**
+     * Обработка общих статтей выигрыша, таких как повышение уровня имущества или выигрыш лицензий на строительство. Это
+     * те статьи, выигрыш которых зачисляется не сразу, а накапливается и пользователь может забрать выигрыш позже.
+     * 
+     * @param groupedRes
+     *            - сгруппированный результат по статье
+     * @param userId
+     * @param article
+     *            - сама статья выигрыша
+     */
     private void handleCommonArticle(WinGroup groupedRes, int userId, LotteryArticles article) {
-        // TODO Auto-generated method stub
+        // внести информацию о выигрыше
+        String descrPref = "";
+        if (article.equals(LotteryArticles.PROPERTY_UP)) {
+            descrPref = "Повышение уровня имущества [Кол-во повышений ×";
+        } else if (article.equals(LotteryArticles.CASH_UP)) {
+            descrPref = "Повышение уровня кассы [Кол-во повышений ×";
+        } else if (article.equals(LotteryArticles.LICENSE_2) || article.equals(LotteryArticles.LICENSE_3)
+                || article.equals(LotteryArticles.LICENSE_4)) {
 
+            String artcNm = article.name();// название статьи выигрыша
+            int artcNmL = artcNm.length(); // длина названия статьи выигрыша
+            descrPref = String.format("Лицензии на строительство, ур.%s [Кол-во лицензий ×",
+                    artcNm.substring(artcNmL - 1));
+        }
+        String description = descrPref + " Кол-во билетов]. ["
+                + groupedRes.countMap.entrySet().toString().replace("=", "×") + "]";
+        LotteryInfo lInfo = new LotteryInfo(userId, description, article, groupedRes.entitiesCount,
+                groupedRes.ticketsCount, groupedRes.entitiesCount);
+        lotteryRep.addLotoInfo(lInfo);
     }
 
     /**
      * Открыть пользователю мудрость или дать предсказание.
      */
     private void givePredictionToUser(int userId) {
-        // TODO Auto-generated method stub
+        List<Integer> allPredIDs = lotteryRep.getAllPredictionIDs(); // все ID предсказаний
+        int lastPredId = allPredIDs.get(allPredIDs.size() - 1); // последний ID из предсказаний
+
+        // cгенерить ID предсказания (мудрости)
+        Random r = new Random();
+        int predictionId = (int) r.generateRandNum(1, lastPredId); // сгенерить ID
+        while (!allPredIDs.contains(predictionId)) {
+            predictionId = (int) r.generateRandNum(1, lastPredId); // получить ID
+        }
+
+        // добавить предсказание
+        LotteryInfo lInfo = new LotteryInfo(userId, "Ты получил мудрость от всезнающего. Вникай.",
+                LotteryArticles.PREDICTION, predictionId, 1, 1);
+        lotteryRep.addLotoInfo(lInfo);
     }
 
     /**

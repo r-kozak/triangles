@@ -49,4 +49,12 @@ public class LotteryRep {
         byte countOfPredictions = (byte) query.getSingleResult();
         return countOfPredictions > 0;
     }
+
+    /**
+     * @return все ID c таблицы предсказаний
+     */
+    @SuppressWarnings("unchecked")
+    public List<Integer> getAllPredictionIDs() {
+        return em.createQuery("SELECT id FROM Predictions ORDER BY id ASC").getResultList();
+    }
 }

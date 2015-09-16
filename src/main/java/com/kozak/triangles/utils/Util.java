@@ -1,6 +1,5 @@
 package com.kozak.triangles.utils;
 
-import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -116,18 +115,6 @@ public class Util {
 
             prRep.updateProperty(p);// обновить имущество
         }
-    }
-
-    public static String getHash(int length) {
-        char[] chars = "0123456789abcdefghijklmnopqrstuvwxyz".toCharArray();
-        StringBuilder sb = new StringBuilder();
-        SecureRandom random = new SecureRandom();
-        for (int i = 0; i < length; i++) {
-            char c = chars[random.nextInt(chars.length)];
-            sb.append(c);
-        }
-        String output = sb.toString();
-        return output;
     }
 
     public static long getSolvency(TransactionRep trRep, PropertyRep prRep, int userId) {

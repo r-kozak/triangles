@@ -33,6 +33,7 @@ import com.kozak.triangles.search.RealEstateProposalsSearch;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.DateUtils;
+import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.Util;
@@ -145,7 +146,7 @@ public class PropertyController extends BaseController {
                     Date purchDate = new Date();
                     long price = prop.getPurchasePrice();
 
-                    String propName = "property-" + Util.getHash(5); // новое имя имущества
+                    String propName = "property-" + new Random().getHash(5); // новое имя имущества
                     // если имущ. новое - добавить новое имущество пользователю, иначе - изменить владельца у б/у
                     if (prop.getUsedId() == 0) {
                         Property newProp = new Property(buildData, userId, prop.getCityArea(), purchDate, price,
@@ -382,20 +383,20 @@ public class PropertyController extends BaseController {
 
             if (type.equals("repair")) {
                 if (userSolvency <= 0) {
-                    ResponseUtil.putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
+                    ResponseUtil.putErrorMsg(resultJson,
+                            "Ваша состоятельность не позволяет вам ремонтировать имущество!");
                 } else {
                     repair(resultJson, prop, newDeprPerc, newSellingPrice, userMoney, repairSum, userId);
                 }
             } else if (type.equals("info")) {
                 if (userSolvency <= 0) {
                     resultJson.put("zeroSolvency", true);
-                    ResponseUtil.putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
+                    ResponseUtil.putErrorMsg(resultJson,
+                            "Ваша состоятельность не позволяет вам ремонтировать имущество!");
                 } else {
-                    ResponseUtil.putErrorMsg(
-                            resultJson,
-                            String.format(
-                                    "Сумма ремонта:<b> %s&tridot;</b> <br/> Процент износа после ремонта: <b> %.2f%% </b>",
-                                    repairSum, newDeprPerc));
+                    ResponseUtil.putErrorMsg(resultJson, String.format(
+                            "Сумма ремонта:<b> %s&tridot;</b> <br/> Процент износа после ремонта: <b> %.2f%% </b>",
+                            repairSum, newDeprPerc));
                 }
             }
         }

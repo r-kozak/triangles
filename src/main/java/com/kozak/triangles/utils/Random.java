@@ -40,4 +40,21 @@ public class Random {
 
         return (int) (a + b);
     }
+
+    /**
+     * генерирует строку со случайным набором символов
+     * 
+     * @param length
+     */
+    public String getHash(int length) {
+        char[] chars = "0123456789abcdefghijklmnopqrstuvwxyz".toCharArray();
+        StringBuilder sb = new StringBuilder();
+        SecureRandom random = new SecureRandom();
+        for (int i = 0; i < length; i++) {
+            char c = chars[random.nextInt(chars.length)];
+            sb.append(c);
+        }
+        String output = sb.toString();
+        return output;
+    }
 }

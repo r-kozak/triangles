@@ -41,7 +41,7 @@ public class LotteryInfo {
     @Enumerated(EnumType.STRING)
     private LotteryArticles article;
 
-    // количество выигранного
+    // количество выигранного ИЛИ id предсказания (мудрости)
     @Column(name = "COUNT")
     private int count;
 

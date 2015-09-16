@@ -15,7 +15,7 @@ import javax.persistence.TemporalType;
 import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.buildings.BuildersT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
-import com.kozak.triangles.utils.Util;
+import com.kozak.triangles.utils.Random;
 
 /**
  * Объект строительства
@@ -72,7 +72,7 @@ public class ConstructionProject {
     public ConstructionProject(CommBuildingsT commBuildingType, Date finishDate, CityAreasT cityArea,
             BuildersT buildersType, int userId) {
         this.startDate = new Date();
-        this.name = "property-" + Util.getHash(5);
+        this.name = "property-" + new Random().getHash(5);
 
         this.buildingType = commBuildingType;
         this.finishDate = finishDate;
