@@ -46,7 +46,7 @@ public class LotteryRep {
         query.setParameter(0, userId);
         query.setParameter(1, LotteryArticles.PREDICTION);
 
-        byte countOfPredictions = (byte) query.getSingleResult();
+        long countOfPredictions = (long) query.getSingleResult();
         return countOfPredictions > 0;
     }
 
@@ -56,5 +56,14 @@ public class LotteryRep {
     @SuppressWarnings("unchecked")
     public List<Integer> getAllPredictionIDs() {
         return em.createQuery("SELECT id FROM Predictions ORDER BY id ASC").getResultList();
+    }
+
+    /**
+     * Получает информацию о всех выигрышах пользователя.
+     */
+    @SuppressWarnings("unchecked")
+    public List<LotteryInfo> getLotteryStory(int userId) {
+        String hql = "FROM LotteryInfo WHERE userId = ?0 ORDER BY id DESC";
+        return em.createQuery(hql).setParameter(0, userId).getResultList();
     }
 }

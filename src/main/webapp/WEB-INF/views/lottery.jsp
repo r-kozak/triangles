@@ -12,9 +12,14 @@
 
 <script>
 	window.onload = function(){ 
-		//
+		// при нажатии на одну из кнопок покупки билетов
 		$('.buy_label').on('click', function() {
 			buyTickets(this);
+		});
+		
+		//
+		$('.play_label').on('click', function() {
+			playLoto(this);
 		});
 	}
 </script>
@@ -54,22 +59,22 @@
 			<div class="col-md-12 text-center play_block">
 				<div class="col-md-3">
 					<div>Играть на</div>
-					<div class="play_label">1</div>
+					<div class="play_label" id="play_1">1</div>
 					<div class="little_label">билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
-					<div class="play_label">≤5</div>
+					<div class="play_label" id="play_5">≤5</div>
 					<div class="little_label">билетов</div>
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
-					<div class="play_label">≤10</div>
+					<div class="play_label" id="play_10">≤10</div>
 					<div class="little_label">билетов</div>
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
-					<div class="play_label">ВСЕ</div>
+					<div class="play_label" id="play_0">ВСЕ</div>
 					<div class="little_label">билеты</div>
 				</div>
 			</div>
@@ -80,20 +85,20 @@
 			<div class="col-md-12 text-center plushki_block">
 				<div class="col-md-3">
 					<div>Повышение уровня имущества</div>
-					<div class="plushki_label">х</div>
+					<div class="plushki_label">×</div>
 				</div>
 				<div class="col-md-3">
 					<div>Повышение уровня кассы имущества</div>
-					<div class="plushki_label">x</div>
+					<div class="plushki_label">×</div>
 				</div>
 				<div class="col-md-3">
 					<div>Лицензии на строительство</div>
-					<div class="plushki_label_lic">уровень 2: x</div>
-					<div class="plushki_label_lic">уровень 3: x</div>
-					<div class="plushki_label_lic">уровень 4: x</div>
+					<div class="plushki_label_lic">уровень 2: ×</div>
+					<div class="plushki_label_lic">уровень 3: ×</div>
+					<div class="plushki_label_lic">уровень 4: ×</div>
 				</div>
 				<div class="col-md-3">
-					<div>Загадочные предсказания и странные фразы<br/></div>
+					<div>Мудрость всезнающего<br/><br/></div>
 					<div class="plushki_label"><span class="glyphicon glyphicon-certificate" style="font-size:98; color:#FFCACA"></span></div>
 				</div>
 			</div>
@@ -145,12 +150,16 @@
 				<td>Дата</td>
 				<td>Статья выигрыша</td>
 				<td>Описание</td>
+				<td>Кол-во выиграно</td>
+				<td>Билетов потрачено</td>
 			</tr>
 			<c:forEach items="${lotteryStory}" var="lotterySt">
 				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
+					<td><fmt:formatDate value="${lotterySt.date}" pattern="dd-MM-yyyy HH:mm"/></td>
+					<td>${lotterySt.article}</td>
+					<td style="text-align:left!important">${lotterySt.description}</td>
+					<td>${lotterySt.count}</td>
+					<td>${lotterySt.ticketCount}</td>
 				</tr>
 			</c:forEach>
 			</table>
@@ -239,7 +248,7 @@ function buyTickets(buy_btn) {
 
 // функция игры в лото
 function playLoto(play_btn) {
-	var count = buy_btn.id.substring(5);
+	var count = play_btn.id.substring(5);
 	$.ajax({
 		  type: 'GET',
 		  url: "${pageContext.request.contextPath}/lottery/play-loto",
@@ -252,8 +261,9 @@ function playLoto(play_btn) {
 				$('#modalErrorBody').html(data.message);
 				$('#modalError').modal();
 			} else {
-				changeBal(data);
-				$('#tickets_count').html(data.ticketsValue);
+				//changeBal(data);
+				//$('#tickets_count').html(data.ticketsValue);
+				location = location;
 			}
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 		alert(jqXHR.status + " " + jqXHR.statusText);

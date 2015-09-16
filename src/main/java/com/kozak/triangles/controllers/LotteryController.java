@@ -66,7 +66,7 @@ public class LotteryController extends BaseController {
             // количество в разрезе возможного количества выигрышей по статье (можно выиграть 2 киоска, а можно 3 шт.)
             Integer c = countMap.get(entCount);
             if (c == null) {
-                countMap.put(entitiesCount, 1);
+                countMap.put(entCount, 1);
             } else {
                 countMap.put(entCount, ++c);
             }
@@ -85,6 +85,7 @@ public class LotteryController extends BaseController {
         model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
         model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
         model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
+        model.addAttribute("lotteryStory", lotteryRep.getLotteryStory(userId)); // информация о розыгрышах
 
         return "lottery";
     }
@@ -172,34 +173,38 @@ public class LotteryController extends BaseController {
                     "У вас нет билетов. Купите или ждите зачисления за очки доминантности.");
         } else {
             int gamesCount = computeGamesCount(userTickets, count); // вычислить количество игр
+            Date date = new Date(); // дата игры
 
             // сгруппированный результат игры на все билеты
             HashMap<LotteryArticles, WinGroup> lotoResult = playLotoAndGetResult(gamesCount, userId);
 
-            // TODO взять сгруппированный результат и добавить выигранное пользователю
+            // взять сгруппированный результат и добавить выигранное пользователю
             // (сформировать транзакции, добавить имущество, предсказания и пр.)
             for (Map.Entry<LotteryArticles, WinGroup> lotoRes : lotoResult.entrySet()) {
                 LotteryArticles article = lotoRes.getKey();
                 WinGroup groupedRes = lotoRes.getValue();
 
                 if (article.equals(LotteryArticles.TRIANGLES)) {
-                    giveMoneyToUser(groupedRes, userId); // начислить пользователю деньги, что он выиграл
+                    giveMoneyToUser(groupedRes, userId, date); // начислить пользователю деньги, что он выиграл
                 } else if (article.equals(LotteryArticles.PROPERTY_UP) || article.equals(LotteryArticles.CASH_UP)
                         || article.equals(LotteryArticles.LICENSE_2) || article.equals(LotteryArticles.LICENSE_3)
                         || article.equals(LotteryArticles.LICENSE_4)) {
 
-                    handleCommonArticle(groupedRes, userId, article);
+                    handleCommonArticle(groupedRes, userId, article, date);
                 } else if (article.equals(LotteryArticles.STALL) || article.equals(LotteryArticles.VILLAGE_SHOP)
                         || article.equals(LotteryArticles.STATIONER_SHOP)) {
 
-                    handlePropertyArticle(groupedRes, userId, article);
+                    handlePropertyArticle(groupedRes, userId, article, date);
                 } else if (article.equals(LotteryArticles.PREDICTION)) {
-                    givePredictionToUser(userId);
+                    givePredictionToUser(userId, date);
                 } else {
                     ResponseUtil.putErrorMsg(resultJson,
                             "Возникла ошибка! Одна из статьей выигрыша не была обработана!");
                 }
             }
+            // снять билеты пользователя
+            user.setLotteryTickets(userTickets - gamesCount);
+            userRep.updateUser(user);
         }
         return ResponseUtil.getResponseEntity(resultJson);
     }
@@ -214,8 +219,9 @@ public class LotteryController extends BaseController {
      * @param userId
      * @param article
      *            - статья выигрыша (STALL, VILLAGE_SHOP, ...)
+     * @param date
      */
-    private void handlePropertyArticle(WinGroup groupedRes, int userId, LotteryArticles article) {
+    private void handlePropertyArticle(WinGroup groupedRes, int userId, LotteryArticles article, Date date) {
 
         // получить данные всех коммерческих строений
         HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
@@ -233,10 +239,10 @@ public class LotteryController extends BaseController {
         }
 
         // внести информацию о выигрыше
-        String description = "Имущество [Кол-во имущества × Кол-во билетов]. ["
-                + groupedRes.countMap.entrySet().toString().replace("=", "×") + "]";
+        String mapDataStr = groupedRes.countMap.entrySet().toString().replace("=", "×");
+        String description = "Имущество [Кол-во имущества × Кол-во билетов]. " + mapDataStr;
         LotteryInfo lInfo = new LotteryInfo(userId, description, article, groupedRes.entitiesCount,
-                groupedRes.ticketsCount, 0);
+                groupedRes.ticketsCount, 0, date);
         lotteryRep.addLotoInfo(lInfo);
     }
 
@@ -249,8 +255,9 @@ public class LotteryController extends BaseController {
      * @param userId
      * @param article
      *            - сама статья выигрыша
+     * @param date
      */
-    private void handleCommonArticle(WinGroup groupedRes, int userId, LotteryArticles article) {
+    private void handleCommonArticle(WinGroup groupedRes, int userId, LotteryArticles article, Date date) {
         // внести информацию о выигрыше
         String descrPref = "";
         if (article.equals(LotteryArticles.PROPERTY_UP)) {
@@ -265,17 +272,19 @@ public class LotteryController extends BaseController {
             descrPref = String.format("Лицензии на строительство, ур.%s [Кол-во лицензий ×",
                     artcNm.substring(artcNmL - 1));
         }
-        String description = descrPref + " Кол-во билетов]. ["
-                + groupedRes.countMap.entrySet().toString().replace("=", "×") + "]";
+        String mapDataStr = groupedRes.countMap.entrySet().toString().replace("=", "×");
+        String description = descrPref + " Кол-во билетов]. " + mapDataStr;
         LotteryInfo lInfo = new LotteryInfo(userId, description, article, groupedRes.entitiesCount,
-                groupedRes.ticketsCount, groupedRes.entitiesCount);
+                groupedRes.ticketsCount, groupedRes.entitiesCount, date);
         lotteryRep.addLotoInfo(lInfo);
     }
 
     /**
      * Открыть пользователю мудрость или дать предсказание.
+     * 
+     * @param date
      */
-    private void givePredictionToUser(int userId) {
+    private void givePredictionToUser(int userId, Date date) {
         List<Integer> allPredIDs = lotteryRep.getAllPredictionIDs(); // все ID предсказаний
         int lastPredId = allPredIDs.get(allPredIDs.size() - 1); // последний ID из предсказаний
 
@@ -288,7 +297,7 @@ public class LotteryController extends BaseController {
 
         // добавить предсказание
         LotteryInfo lInfo = new LotteryInfo(userId, "Ты получил мудрость от всезнающего. Вникай.",
-                LotteryArticles.PREDICTION, predictionId, 1, 1);
+                LotteryArticles.PREDICTION, predictionId, 1, 1, date);
         lotteryRep.addLotoInfo(lInfo);
     }
 
@@ -297,22 +306,23 @@ public class LotteryController extends BaseController {
      * 
      * @param groupedRes
      *            - сгруппированный результат по выигрышу
+     * @param date
      */
-    private void giveMoneyToUser(WinGroup groupedRes, int userId) {
+    private void giveMoneyToUser(WinGroup groupedRes, int userId, Date date) {
         // добавить транзакцию
         long userMoney = Long.parseLong(trRep.getUserBalance(userId));
 
-        String descr = String.format("Выигрыш в лотерею за %s билетов", groupedRes.ticketsCount);
+        String descr = String.format("Выигрыш в лотерею за %s бил.", groupedRes.ticketsCount);
         int sum = groupedRes.entitiesCount;
-        Transaction tr = new Transaction(descr, new Date(), sum, TransferT.PROFIT, userId, userMoney + sum,
+        Transaction tr = new Transaction(descr, date, sum, TransferT.PROFIT, userId, userMoney + sum,
                 ArticleCashFlowT.LOTTERY_WINNINGS);
         trRep.addTransaction(tr);
 
         // добавить информацию в таблицу с лотерейными выигрышами
-        String description = "Деньги [&tridot; × Кол-во билетов]. ["
-                + groupedRes.countMap.entrySet().toString().replace("=", "×") + "]";
+        String mapDataStr = groupedRes.countMap.entrySet().toString().replace("=", "×");
+        String description = "Деньги [&tridot; × Кол-во билетов]. " + mapDataStr;
         LotteryInfo lInfo = new LotteryInfo(userId, description, LotteryArticles.TRIANGLES, sum,
-                groupedRes.ticketsCount, 0);
+                groupedRes.ticketsCount, 0, date);
         lotteryRep.addLotoInfo(lInfo);
     }
 

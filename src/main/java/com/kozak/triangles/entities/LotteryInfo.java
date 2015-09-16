@@ -34,7 +34,7 @@ public class LotteryInfo {
 
     // дата операции
     @Column(name = "DATE")
-    private Date date = new Date();
+    private Date date;
 
     // статья выигрыша (деньги, повышение уровня, предсказание, имущество...)
     @Column(name = "ARTICLE")
@@ -57,7 +57,7 @@ public class LotteryInfo {
     }
 
     public LotteryInfo(int userId, String description, LotteryArticles article, int count, int ticketCount,
-            int remainingAmount) {
+            int remainingAmount, Date date) {
 
         this.userId = userId;
         this.description = description;
@@ -65,6 +65,7 @@ public class LotteryInfo {
         this.count = count;
         this.ticketCount = ticketCount;
         this.remainingAmount = remainingAmount;
+        this.date = date;
     }
 
     public int getId() {
