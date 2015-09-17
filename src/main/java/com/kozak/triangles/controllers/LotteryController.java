@@ -32,6 +32,7 @@ import com.kozak.triangles.enums.TransferT;
 import com.kozak.triangles.search.LotterySearch;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.SingletonData;
@@ -77,7 +78,7 @@ public class LotteryController extends BaseController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String buildingPage(Model model, User user, LotterySearch ls) {
+    public String lotteryPage(Model model, User user, LotterySearch ls) {
         if (ls.isNeedClear())
             ls.clear();
         model.addAttribute("ls", ls);
@@ -88,8 +89,8 @@ public class LotteryController extends BaseController {
         long upPropCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
         long upCashCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.CASH_UP);
         long lic2Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_2);
-        long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
-        long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
+        long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
+        long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
 
         model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
         model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
@@ -224,6 +225,9 @@ public class LotteryController extends BaseController {
         return ResponseUtil.getResponseEntity(resultJson);
     }
 
+    /**
+     * Отдает предсказания пользователя, если оно у него есть.
+     */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/get-predict", method = RequestMethod.GET, produces = { "application/json; charset=UTF-8" })
     public @ResponseBody ResponseEntity<String> getPredict(User user) {
@@ -267,7 +271,7 @@ public class LotteryController extends BaseController {
             } else {
                 // назначить лицензию пользователю
                 Date licExpire = BuildingController.setNewLicenseToUser(userRep, userId, licLevel);
-                resultJson.put("licExpire", licExpire);
+                resultJson.put("licExpire", DateUtils.dateToString(licExpire));
 
                 // изменить количество оставшихся лицензий
                 licenses.setRemainingAmount(licenses.getRemainingAmount() - 1);

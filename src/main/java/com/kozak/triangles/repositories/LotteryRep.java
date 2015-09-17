@@ -88,7 +88,11 @@ public class LotteryRep {
         query.setParameter(0, userId);
         query.setParameter(1, article);
 
-        return (long) query.getSingleResult();
+        try {
+            return (long) query.getSingleResult();
+        } catch (NullPointerException e) {
+            return 0;
+        }
     }
 
     /**

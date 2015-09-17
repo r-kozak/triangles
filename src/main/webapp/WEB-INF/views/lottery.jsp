@@ -23,7 +23,7 @@
 		});
 		
 		// получение мудрости
-		$('.predictDiv').on('click', function() {
+		$('#predictBlock').on('click', '.predictDiv', function() {
 			getPredict();
 		});
 		
@@ -103,35 +103,37 @@
 				</div>
 				<div class="col-md-3">
 					<div>Лицензии на строительство</div>
-					<div id="useLic2" class="plushki_label_lic">уровень 2: ×<div id="lic2CountVal">${lic2Count}</div></div>
-					<div id="useLic3" class="plushki_label_lic">уровень 3: ×<div id="lic3CountVal">${lic3Count}</div></div>
-					<div id="useLic4" class="plushki_label_lic">уровень 4: ×<div id="lic4CountVal">${lic4Count}</div></div>
+					<div id="useLic2" class="plushki_label_lic">ур. 2: ×<span id="lic2CountVal">${lic2Count}</span></div>
+					<div id="useLic3" class="plushki_label_lic">ур. 3: ×<span id="lic3CountVal">${lic3Count}</span></div>
+					<div id="useLic4" class="plushki_label_lic">ур. 4: ×<span id="lic4CountVal">${lic4Count}</span></div>
 				</div>
 				<div class="col-md-3">
 					<div>Мудрость всезнающего<br/><br/></div>
-					<c:choose>
-						<c:when test="${isPredictionAvailable}">
-							<div class="plushki_label"><span id="predictSign" class="glyphicon glyphicon-certificate" 
-								style="font-size:98; color:#FFCACA"></span></div>
-						</c:when>
-						<c:otherwise>
-							<div class="plushki_label predictDiv"><span id="predictSign" class="glyphicon glyphicon-certificate" 
-								style="font-size:98; color:#F35A30"></span></div>
-							<script>
-								var i = 0;
-							 	while (i < 1800) {
-								  $( "#predictSign" ).animate({
-								    backgroundColor: "#F35A30",
-								  }, 2500 );
-							
-								  $( "#predictSign" ).animate({
-								    backgroundColor: "#FFCACA",
-								  }, 5000 );
-								  i++;
-								}
- 						</script>
-						</c:otherwise>
-					</c:choose>
+					<div id="predictBlock">
+						<c:choose>
+							<c:when test="${!isPredictionAvailable}">
+								<div class="plushki_label predictDiv"><span class="glyphicon glyphicon-certificate" 
+									style="font-size:98; color:#FFCACA"></span></div>
+							</c:when>
+							<c:otherwise>
+								<div class="plushki_label predictDiv"><span id="predictSign" class="glyphicon glyphicon-certificate" 
+									style="font-size:98; color:#F35A30"></span></div>
+								<script>
+									var i = 0;
+								 	while (i < 1800) {
+							 			$( "#predictSign" ).animate({
+										    color: "#F35A30",
+										}, 3000 );
+									
+										$( "#predictSign" ).animate({
+										  color: "#FFCACA",
+										}, 3000 );
+										i++;
+									}
+	 						</script>
+							</c:otherwise>
+						</c:choose>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -190,7 +192,14 @@
 					<td><fmt:formatDate value="${lotterySt.date}" pattern="dd-MM-yyyy HH:mm"/></td>
 					<td>${lotterySt.article}</td>
 					<td style="text-align:left!important">${lotterySt.description}</td>
-					<td>${lotterySt.count}</td>
+					<c:choose>
+						<c:when test="${lotterySt.article == 'PREDICTION'}">
+							<td>1</td>					
+						</c:when>
+						<c:otherwise>
+							<td>${lotterySt.count}</td>
+						</c:otherwise>
+					</c:choose>
 					<td>${lotterySt.ticketCount}</td>
 				</tr>
 			</c:forEach>
@@ -238,8 +247,7 @@ $(document).ready(function(){
 	  <div class="modal-body" id="modalForInfoBody">Тело</div>
 	  
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
-		<button id="modal_ques_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Да</span></button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Ок :)</button>
       </div>
     </div>
   </div>
@@ -293,8 +301,6 @@ function playLoto(play_btn) {
 				$('#modalErrorBody').html(data.message);
 				$('#modalError').modal();
 			} else {
-				//changeBal(data);
-				//$('#tickets_count').html(data.ticketsValue);
 				location = location;
 			}
 	}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -307,12 +313,16 @@ function getPredict() {
 	$.get( "${pageContext.request.contextPath}/lottery/get-predict", function(data) {
 			if(data.error) {
 				// показать сообщение с ошибкой
-				$('#modalErrorBody').html(data.message);
-				$('#modalError').modal();
+				$('#modalForInfoTitle').html("Мудрость еще не постигнута");
+				$('#modalForInfoBody').html(data.message);
+				$('#modalForInfo').modal();
 			} else {
 				$('#modalForInfoTitle').html("Мудрость №" + data.predictId);
 				$('#modalForInfoBody').html(data.predictText);
 				$('#modalForInfo').modal();
+
+				$('#predictBlock').html('<div class="plushki_label predictDiv"><span class="glyphicon glyphicon-certificate"' + 
+					'style="font-size:98; color:#FFCACA"></span></div>');
 			}
 		}).fail(function() {
 			alert(jqXHR.status + " " + jqXHR.statusText);
@@ -321,7 +331,7 @@ function getPredict() {
 
 // применение лицензий разных уровней
 function useLicense(id) {
-	var level = id.substring(7);
+	var level = id.substring(6);
 	$.get( "${pageContext.request.contextPath}/lottery/use-license", { licLevel: level } )
 	  .done(function( data ) {
 		  if(data.error) {
@@ -331,8 +341,11 @@ function useLicense(id) {
 		  } else {
 			$('#modalForInfoTitle').html("Получена лицензия");
 			$('#modalForInfoBody').html('Получена лицензия уровня: <b>' + level + "</b><br/>" +
-					'Дата окончания лицензии: </b><fmt:formatDate value=' + data.licExpire + ' pattern="dd-MM-yyyy HH:mm:ss"/></b>');
+					'Дата окончания лицензии: </b>' + data.licExpire + '</b>');
 			$('#modalForInfo').modal();
+			
+			var currAm = parseInt($('#lic' + level + 'CountVal').text()); // текущее количество
+			$('#lic' + level + 'CountVal').html(currAm - 1);
 		  }
 	}).fail(function() {
 		alert(jqXHR.status + " " + jqXHR.statusText);
