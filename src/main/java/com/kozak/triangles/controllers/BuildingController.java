@@ -253,8 +253,9 @@ public class BuildingController extends BaseController {
         } else {
             int licensePrice = Consts.LICENSE_PRICE[level];
             if (userSolvency < licensePrice) { // не хватает денег
-                ResponseUtil.putErrorMsg(resultJson, "Не хватает денег на покупку. Ваш максимум: <b>"
-                        + Util.moneyFormat(userSolvency) + "&tridot;</b>");
+                ResponseUtil.putErrorMsg(resultJson,
+                        "Не хватает денег на покупку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency)
+                                + "&tridot;</b>");
             } else {
                 // установить новую лицензию пользователю
                 BuildingController.setNewLicenseToUser(userRep, userId, level);
@@ -321,7 +322,7 @@ public class BuildingController extends BaseController {
      * @param userId
      * @param level
      */
-    private static Date setNewLicenseToUser(UserRep userRep, int userId, byte level) {
+    static Date setNewLicenseToUser(UserRep userRep, int userId, byte level) {
         Date nextExpireDate = DateUtils.addDays(new Date(), Consts.LICENSE_TERM[level]); // сейчас + Х дней
 
         User user = userRep.getUserWithLicense(userId);

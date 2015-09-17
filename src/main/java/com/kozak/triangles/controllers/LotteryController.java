@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.persistence.NoResultException;
+
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entities.CommBuildData;
 import com.kozak.triangles.entities.LotteryInfo;
+import com.kozak.triangles.entities.Predictions;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
@@ -82,10 +85,22 @@ public class LotteryController extends BaseController {
         int userId = user.getId();
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
+        long upPropCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
+        long upCashCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.CASH_UP);
+        long lic2Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_2);
+        long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
+        long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
+
         model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
         model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
         model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
         model.addAttribute("lotteryStory", lotteryRep.getLotteryStory(userId)); // информация о розыгрышах
+        model.addAttribute("upPropCount", upPropCount); // количество доступных повышений имуществ
+        model.addAttribute("upCashCount", upCashCount); // количество доступных повышений кассы
+        model.addAttribute("lic2Count", lic2Count); // количество лицензий 2 ур
+        model.addAttribute("lic3Count", lic3Count); // количество лицензий 3 ур
+        model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
+        model.addAttribute("isPredictionAvailable", lotteryRep.isUserHasPrediction(userId)); // есть ли предсказание
 
         return "lottery";
     }
@@ -205,6 +220,59 @@ public class LotteryController extends BaseController {
             // снять билеты пользователя
             user.setLotteryTickets(userTickets - gamesCount);
             userRep.updateUser(user);
+        }
+        return ResponseUtil.getResponseEntity(resultJson);
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/get-predict", method = RequestMethod.GET, produces = { "application/json; charset=UTF-8" })
+    public @ResponseBody ResponseEntity<String> getPredict(User user) {
+
+        JSONObject resultJson = new JSONObject();
+        int userId = user.getId();
+        try {
+            LotteryInfo userPrediction = lotteryRep.getUserPrediction(userId);
+            resultJson.put("predictId", userPrediction.getCount()); // ID предсказания
+
+            Predictions predict = lotteryRep.getPredictionById(userPrediction.getCount());
+            resultJson.put("predictText", predict.getPrediction()); // текст предсказания
+
+            userPrediction.setRemainingAmount(0);
+            lotteryRep.updateLotoInfo(userPrediction);
+        } catch (NoResultException e) {
+            ResponseUtil.putErrorMsg(resultJson, "Работа всезнающего - мыслить, ваша работа - играть в лотерею.");
+        }
+        return ResponseUtil.getResponseEntity(resultJson);
+    }
+
+    /**
+     * Берет выигранные лицензии и устанавливает пользователю, если он забирает выигрыш.
+     * 
+     * @param licLevel
+     *            - уровень, который выбрал user
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/use-license", method = RequestMethod.GET, produces = { "application/json; charset=UTF-8" })
+    public @ResponseBody ResponseEntity<String> useLicense(@RequestParam("licLevel") byte licLevel, User user) {
+
+        JSONObject resultJson = new JSONObject();
+        int userId = user.getId();
+
+        LotteryArticles levelArticle = LotteryArticles.valueOf("LICENSE_" + licLevel);
+        if (levelArticle != null) {
+            LotteryInfo licenses = lotteryRep.getUserLicenses(userId, levelArticle);
+            if (licenses == null) {
+                ResponseUtil.putErrorMsg(resultJson,
+                        String.format("У вас нет лицензий уровня %s. Нужно больше играть в лотерею.", licLevel));
+            } else {
+                // назначить лицензию пользователю
+                Date licExpire = BuildingController.setNewLicenseToUser(userRep, userId, licLevel);
+                resultJson.put("licExpire", licExpire);
+
+                // изменить количество оставшихся лицензий
+                licenses.setRemainingAmount(licenses.getRemainingAmount() - 1);
+                lotteryRep.updateLotoInfo(licenses);
+            }
         }
         return ResponseUtil.getResponseEntity(resultJson);
     }

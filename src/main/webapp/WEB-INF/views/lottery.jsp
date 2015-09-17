@@ -17,9 +17,19 @@
 			buyTickets(this);
 		});
 		
-		//
+		// при клике на одну из кнопок игры
 		$('.play_label').on('click', function() {
 			playLoto(this);
+		});
+		
+		// получение мудрости
+		$('.predictDiv').on('click', function() {
+			getPredict();
+		});
+		
+		// получить лицензию на строительство
+		$('.plushki_label_lic').on('click', function() {
+			useLicense(this.id);
 		});
 	}
 </script>
@@ -85,21 +95,43 @@
 			<div class="col-md-12 text-center plushki_block">
 				<div class="col-md-3">
 					<div>Повышение уровня имущества</div>
-					<div class="plushki_label">×</div>
+					<div id="upPropBtn" class="plushki_label">×${upPropCount}</div>
 				</div>
 				<div class="col-md-3">
 					<div>Повышение уровня кассы имущества</div>
-					<div class="plushki_label">×</div>
+					<div id="upCashBtn" class="plushki_label">×${upCashCount}</div>
 				</div>
 				<div class="col-md-3">
 					<div>Лицензии на строительство</div>
-					<div class="plushki_label_lic">уровень 2: ×</div>
-					<div class="plushki_label_lic">уровень 3: ×</div>
-					<div class="plushki_label_lic">уровень 4: ×</div>
+					<div id="useLic2" class="plushki_label_lic">уровень 2: ×<div id="lic2CountVal">${lic2Count}</div></div>
+					<div id="useLic3" class="plushki_label_lic">уровень 3: ×<div id="lic3CountVal">${lic3Count}</div></div>
+					<div id="useLic4" class="plushki_label_lic">уровень 4: ×<div id="lic4CountVal">${lic4Count}</div></div>
 				</div>
 				<div class="col-md-3">
 					<div>Мудрость всезнающего<br/><br/></div>
-					<div class="plushki_label"><span class="glyphicon glyphicon-certificate" style="font-size:98; color:#FFCACA"></span></div>
+					<c:choose>
+						<c:when test="${isPredictionAvailable}">
+							<div class="plushki_label"><span id="predictSign" class="glyphicon glyphicon-certificate" 
+								style="font-size:98; color:#FFCACA"></span></div>
+						</c:when>
+						<c:otherwise>
+							<div class="plushki_label predictDiv"><span id="predictSign" class="glyphicon glyphicon-certificate" 
+								style="font-size:98; color:#F35A30"></span></div>
+							<script>
+								var i = 0;
+							 	while (i < 1800) {
+								  $( "#predictSign" ).animate({
+								    backgroundColor: "#F35A30",
+								  }, 2500 );
+							
+								  $( "#predictSign" ).animate({
+								    backgroundColor: "#FFCACA",
+								  }, 5000 );
+								  i++;
+								}
+ 						</script>
+						</c:otherwise>
+					</c:choose>
 				</div>
 			</div>
 		</div>
@@ -194,16 +226,16 @@ $(document).ready(function(){
   </div>
 </div>
 
-<!-- модальное окно для отображения вопросов -->
-<div class="modal fade" id="modalQues" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!-- модальное окно для отображения информации -->
+<div class="modal fade" id="modalForInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalQuesTitle">Заголовок</h4>
+        <h4 class="modal-title" id="modalForInfoTitle">Заголовок</h4>
       </div>
       
-	  <div class="modal-body" id="modalQuesBody">Тело</div>
+	  <div class="modal-body" id="modalForInfoBody">Тело</div>
 	  
 	  <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
@@ -213,14 +245,14 @@ $(document).ready(function(){
   </div>
 </div>
 
-	<div id="balChan">
-		<c:if test="${changeBal.length() > 0}">
-			${changeBal}&tridot;
-			<script>
-				popUp("<c:out value='${changeBal}'/>", "#balChan");
-			</script>
-		</c:if>
-	</div>
+<div id="balChan">
+	<c:if test="${changeBal.length() > 0}">
+		${changeBal}&tridot;
+		<script>
+			popUp("<c:out value='${changeBal}'/>", "#balChan");
+		</script>
+	</c:if>
+</div>
 
 <script>
 // функция при нажатии на кнопки покупки билетов
@@ -266,6 +298,61 @@ function playLoto(play_btn) {
 				location = location;
 			}
 	}).fail(function(jqXHR, textStatus, errorThrown) {
+		alert(jqXHR.status + " " + jqXHR.statusText);
+	});
+}
+
+//функция получения предсказания
+function getPredict() {
+	$.get( "${pageContext.request.contextPath}/lottery/get-predict", function(data) {
+			if(data.error) {
+				// показать сообщение с ошибкой
+				$('#modalErrorBody').html(data.message);
+				$('#modalError').modal();
+			} else {
+				$('#modalForInfoTitle').html("Мудрость №" + data.predictId);
+				$('#modalForInfoBody').html(data.predictText);
+				$('#modalForInfo').modal();
+			}
+		}).fail(function() {
+			alert(jqXHR.status + " " + jqXHR.statusText);
+		});
+}
+
+// применение лицензий разных уровней
+function useLicense(id) {
+	var level = id.substring(7);
+	$.get( "${pageContext.request.contextPath}/lottery/use-license", { licLevel: level } )
+	  .done(function( data ) {
+		  if(data.error) {
+			// показать сообщение с ошибкой
+			$('#modalErrorBody').html(data.message);
+			$('#modalError').modal();
+		  } else {
+			$('#modalForInfoTitle').html("Получена лицензия");
+			$('#modalForInfoBody').html('Получена лицензия уровня: <b>' + level + "</b><br/>" +
+					'Дата окончания лицензии: </b><fmt:formatDate value=' + data.licExpire + ' pattern="dd-MM-yyyy HH:mm:ss"/></b>');
+			$('#modalForInfo').modal();
+		  }
+	}).fail(function() {
+		alert(jqXHR.status + " " + jqXHR.statusText);
+	});
+}
+
+// показать доступное имущество для повышения уровня
+function showPropertiesToLevelUp() {
+	$.get( "${pageContext.request.contextPath}/lottery/prop-level-up")
+	  .done(function( data ) {
+		  if(data.error) {
+			// показать сообщение с ошибкой
+			$('#modalErrorBody').html(data.message);
+			$('#modalError').modal();
+		  } else {
+			$('#modalForInfoTitle').html("Имущество для повышения уровня");
+			$('#modalForInfoBody').html();
+			$('#modalForInfo').modal();
+		  }
+	}).fail(function() {
 		alert(jqXHR.status + " " + jqXHR.statusText);
 	});
 }
