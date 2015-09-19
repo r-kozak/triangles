@@ -97,9 +97,11 @@ public class MoneyController extends BaseController {
             ts.clear();
         model.addAttribute("ts", ts);
 
+        int userId = user.getId();
+
         int page = Integer.parseInt(ts.getPage());
         // результат с БД [количество всего; транзакции с учетом пагинации]
-        List<Object> dbResult = trRep.transList(page, user.getId(), ts, /* ts.isShowAll() */true);
+        List<Object> dbResult = trRep.transList(page, userId, ts, /* ts.isShowAll() */true);
 
         // Long transCount = Long.valueOf(dbResult.get(0).toString());
 
@@ -116,7 +118,6 @@ public class MoneyController extends BaseController {
             totalSum += tr.getSum();
         }
 
-        int userId = user.getId();
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
         model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);

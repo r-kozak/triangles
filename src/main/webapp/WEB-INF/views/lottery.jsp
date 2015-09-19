@@ -33,12 +33,12 @@
 		});
 		
 		// при клике на плюшку повышения уровня имущества
-		$('#upPropBtn').on('click', function() {
+		$('#up_prop_btn').on('click', function() {
 			getPropForLevelUp("prop");
 		});
 		
 		// при клике на плюшку повышения уровня кассы имущества
-		$('#upCashBtn').on('click', function() {
+		$('#up_cash_btn').on('click', function() {
 			getPropForLevelUp("cash");
 		});
 		
@@ -46,6 +46,10 @@
 		$('body').on('click', '.confirm_up_btn', function() {
 	 		confirmUpLevel(this);
 	 	});
+		
+		if (${ls.page > 1}) {
+			$('body, html').scrollTop($(document).height());
+		}
 	}
 </script>
 
@@ -110,11 +114,11 @@
 			<div class="col-md-12 text-center plushki_block">
 				<div class="col-md-3">
 					<div>Повышение уровня имущества</div>
-					<div id="upPropBtn" class="plushki_label">×${upPropCount}</div>
+					<div id="up_prop_btn" class="plushki_label">×${upPropCount}</div>
 				</div>
 				<div class="col-md-3">
 					<div>Повышение уровня кассы имущества</div>
-					<div id="upCashBtn" class="plushki_label">×${upCashCount}</div>
+					<div id="up_cash_btn" class="plushki_label">×${upCashCount}</div>
 				</div>
 				<div class="col-md-3">
 					<div>Лицензии на строительство</div>
@@ -221,6 +225,10 @@
 			</table>
 		</div>
 	</div> <!-- container.row -->
+    
+    <ul class="pagination" style="float:right">
+        ${paginationTag}
+    </ul>
 </div> <!-- container -->
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -400,19 +408,30 @@ function getPropForLevelUp(obj) {
 // obj - объект ('property' || 'cash')
 // prop_id - id имущества, чей уровень или уровень кассы повышать
 function confirmUpLevel(clickedBtn) {
-	var obj = this.id.substring(0, 4);
-	var prop_id = this.id.substring(5);
+	var obj = clickedBtn.id.substring(0, 4);
+	var prop_id = clickedBtn.id.substring(5);
 	
 	$.post("${pageContext.request.contextPath}/lottery/confirm-level-up", { obj: obj, propId: prop_id })
 		.done(function(data) {
 			if(data.error) {
 				showErrorMsg(data); // показать сообщение с ошибкой
+				$('#modalForInfo').modal('hide');
 			} else {
+				// обновить значение уровня в той строке, где была нажата кнопка повышения уровня
 				$(clickedBtn).closest('tr').find('.' + obj + 'LevelVal').html(data.currLevel);
 				
+				// если достигнут последний уровень - убрать кнопку и написать, что достигли последнего
 				if(data.currLevel == data.maxLevel) {
-					clickedBtn.closest("td").html("Посл. уровень");
+					$(clickedBtn).closest('td').html('Посл. уровень');
 				}
+				
+				// изменить значение плюшки
+				var currPljushkaVal = parseInt($('#up_' + obj + '_btn').text().substring(1));
+				
+				console.log('currPljushkaVal=' + currPljushkaVal);
+				console.log('obj=' + obj);
+				console.log('$(#up_ + obj + _btn).html()=' + $('#up_' + obj + '_btn').html());
+				$('#up_' + obj + '_btn').html('×' + (currPljushkaVal - 1));
 			}
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 		alert(jqXHR.status + " " + jqXHR.statusText);
@@ -436,7 +455,7 @@ function createTableContent(data, obj) {
 		tableContent += '<tr><td><a href="${pageContext.request.contextPath}/property/' + props[i].id + '">' + props[i].name + '<a/></td>' + 
 		'<td class="propLevelVal">' + props[i].level + '</td>' +
 		'<td class="cashLevelVal">' + props[i].cashLevel + '</td>' + 
-		'<td><button id="prop_' + props[i].id +  '" class="btn btn-success confirm_up_btn" title="Повысить уровень ' + objName + '" data-toggle="tooltip">' +
+		'<td><button id="' + obj + '_' + props[i].id +  '" class="btn btn-success confirm_up_btn" title="Повысить уровень ' + objName + '" data-toggle="tooltip">' +
 			'<span class="glyphicon glyphicon-chevron-up"></span></button></td></tr>'
 	}
 	tableContent += '</table>';

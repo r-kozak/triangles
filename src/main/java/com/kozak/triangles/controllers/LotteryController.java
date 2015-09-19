@@ -1,5 +1,6 @@
 package com.kozak.triangles.controllers;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.SingletonData;
+import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
@@ -82,12 +85,21 @@ public class LotteryController extends BaseController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String lotteryPage(Model model, User user, LotterySearch ls) {
+    public String lotteryPage(Model model, User user, LotterySearch ls, HttpServletRequest req) throws ParseException {
         if (ls.isNeedClear())
             ls.clear();
         model.addAttribute("ls", ls);
 
         int userId = user.getId();
+
+        List<Object> fromDB = lotteryRep.getLotteryStory(userId, ls);
+        long itemsCount = (long) fromDB.get(0);
+        int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE)
+                + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+
+        int currPage = Integer.parseInt(ls.getPage());
+        String paginationTag = TagCreator.paginationTag(totalPages, currPage, req);
+
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
         long upPropCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
@@ -99,13 +111,14 @@ public class LotteryController extends BaseController {
         model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
         model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
         model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
-        model.addAttribute("lotteryStory", lotteryRep.getLotteryStory(userId)); // информация о розыгрышах
+        model.addAttribute("lotteryStory", fromDB.get(1)); // информация о розыгрышах
         model.addAttribute("upPropCount", upPropCount); // количество доступных повышений имуществ
         model.addAttribute("upCashCount", upCashCount); // количество доступных повышений кассы
         model.addAttribute("lic2Count", lic2Count); // количество лицензий 2 ур
         model.addAttribute("lic3Count", lic3Count); // количество лицензий 3 ур
         model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
         model.addAttribute("isPredictionAvailable", lotteryRep.isUserHasPrediction(userId)); // есть ли предсказание
+        model.addAttribute("paginationTag", paginationTag);
 
         return "lottery";
     }
@@ -304,7 +317,7 @@ public class LotteryController extends BaseController {
             String objName = (String) countAndName[1];
 
             if (pljushkiCount <= 0) {
-                String msg = String.format("У вас нет бесплатных плюшей для повышения уровня %s.", objName);
+                String msg = String.format("У вас нет бесплатных плюшек для повышения уровня %s.", objName);
                 ResponseUtil.putErrorMsg(resultJson, msg);
             } else {
                 /*
@@ -327,7 +340,7 @@ public class LotteryController extends BaseController {
      * @return
      */
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/confirm-level-up", method = RequestMethod.GET, produces = { "application/json; charset=UTF-8" })
+    @RequestMapping(value = "/confirm-level-up", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
     public @ResponseBody ResponseEntity<String> confirmLevelUp(@RequestParam("obj") String obj,
             @RequestParam("propId") int propId, User user) {
 
@@ -340,13 +353,14 @@ public class LotteryController extends BaseController {
             String objName = (String) countAndName[1];
 
             if (pljushkiCount <= 0) {
-                String msg = String.format("У вас нет бесплатных плюшей для повышения уровня %s.", objName);
+                String msg = String.format("У вас нет бесплатных плюшек для повышения уровня %s.", objName);
                 ResponseUtil.putErrorMsg(resultJson, msg);
             } else {
                 Property prop = prRep.getSpecificProperty(userId, propId);
                 if (prop == null) {
                     ResponseUtil.putErrorMsg(resultJson, "У вас нет такого имущества!");
                 } else {
+                    LotteryInfo lInfo = null;
                     if (obj.equals("cash")) { // если это повышение для кассы
                         int nCashLevel = prop.getCashLevel() + 1; // уровень, к которому будем повышать
 
@@ -355,6 +369,8 @@ public class LotteryController extends BaseController {
                         } else { // повысить уровень или просто получить сумму повышения
                             propertyController.upCashLevel(resultJson, prop, nCashLevel, userId, 0, false);
                             resultJson.put("maxLevel", Consts.MAX_CASH_LEVEL);
+
+                            lInfo = lotteryRep.getUserUpCashLevel(userId);
                         }
                     } else if (obj.equals("prop")) {
                         int nPropLevel = prop.getLevel() + 1; // уровень, к которому будем повышать
@@ -364,8 +380,13 @@ public class LotteryController extends BaseController {
                         } else { // повысить уровень или просто получить сумму повышения
                             propertyController.upPropLevel(resultJson, prop, nPropLevel, userId, 0, false);
                             resultJson.put("maxLevel", Consts.MAX_PROP_LEVEL);
+
+                            lInfo = lotteryRep.getUserUpPropLevel(userId);
                         }
                     }
+                    // обновление оставшегося количества плюшек по статье повышения уровня кассы или имущества
+                    lInfo.setRemainingAmount(lInfo.getRemainingAmount() - 1);
+                    lotteryRep.updateLotoInfo(lInfo);
                 }
             }
         } else {
@@ -377,7 +398,7 @@ public class LotteryController extends BaseController {
     private Object[] getPljushkiCountAndNameForLevelUp(String obj, int userId) {
         Object[] result = new Object[2];
 
-        // проверить остаток бесплатных плюшей повышения уровня
+        // проверить остаток бесплатных плюшек повышения уровня
         if (obj.equals("prop")) {
             result[0] = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
             result[1] = "имущества";
