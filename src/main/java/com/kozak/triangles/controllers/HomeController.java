@@ -56,8 +56,6 @@ public class HomeController extends BaseController {
         manageREMarketProposals(userId); // очистить-добавить предложения на глобальный рынок недвижимости
         Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
         propertyDepreciation(userId); // начисление амортизации
-        levyOnProperty(userId); // сбор средств с имущества, где есть кассир
-        salaryPayment(userId); // выдача зп работникам
 
         // начислить проценты завершенности для всех объектов строительства
         List<ConstructionProject> constrProjects = consProjectRep.getUserConstructProjects(userId);
@@ -83,7 +81,7 @@ public class HomeController extends BaseController {
         model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии
         model.addAttribute("licenseExpire", licenseExpireDate); // окончание лицензии
         model.addAttribute("toExploitation", consProjectRep.getNextExploitation(userId)); // до ближайшей эксплуатации
-        model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
+        model.addAttribute("ticketsCount", currUser.getLotteryTickets()); // количество лотерейных билетов
 
         model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
         model.addAttribute("profitFromProp", trRep.getSumByAcf(userId, ArticleCashFlowT.LEVY_ON_PROPERTY));
@@ -445,18 +443,4 @@ public class HomeController extends BaseController {
             }
         }
     }
-
-    private void salaryPayment(int currUserId) {
-        // TODO Auto-generated method stub
-
-        // выдача зарплаты кассирам, продавцам
-    }
-
-    private void levyOnProperty(int currUserId) {
-        // TODO Auto-generated method stub
-
-        // для каждого коммерческого имущества юзера
-        // если у имущества есть кассир - тогда собираем прибыль
-    }
-
 }

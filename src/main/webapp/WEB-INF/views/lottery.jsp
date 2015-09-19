@@ -31,6 +31,21 @@
 		$('.plushki_label_lic').on('click', function() {
 			useLicense(this.id);
 		});
+		
+		// при клике на плюшку повышения уровня имущества
+		$('#upPropBtn').on('click', function() {
+			getPropForLevelUp("prop");
+		});
+		
+		// при клике на плюшку повышения уровня кассы имущества
+		$('#upCashBtn').on('click', function() {
+			getPropForLevelUp("cash");
+		});
+		
+		// при клике на подтверждение повышения уровня имущества или кассы
+		$('body').on('click', '.confirm_up_btn', function() {
+	 		confirmUpLevel(this);
+	 	});
 	}
 </script>
 
@@ -263,6 +278,12 @@ $(document).ready(function(){
 </div>
 
 <script>
+// функция показа ошибки
+function showErrorMsg(data) {
+	$('#modalErrorBody').html(data.message);
+	$('#modalError').modal();
+}
+
 // функция при нажатии на кнопки покупки билетов
 function buyTickets(buy_btn) {
 	var count = buy_btn.id.substring(4); 
@@ -274,9 +295,7 @@ function buyTickets(buy_btn) {
 		  async:true
 		}).done(function(data) {
 			if(data.error) {
-				// показать сообщение с ошибкой
-				$('#modalErrorBody').html(data.message);
-				$('#modalError').modal();
+				showErrorMsg(data); // показать сообщение с ошибкой
 			} else {
 				changeBal(data);
 				$('#tickets_count').html(data.ticketsValue);
@@ -297,9 +316,7 @@ function playLoto(play_btn) {
 		  async:true
 		}).done(function(data) {
 			if(data.error) {
-				// показать сообщение с ошибкой
-				$('#modalErrorBody').html(data.message);
-				$('#modalError').modal();
+				showErrorMsg(data); // показать сообщение с ошибкой
 			} else {
 				location = location;
 			}
@@ -324,7 +341,7 @@ function getPredict() {
 				$('#predictBlock').html('<div class="plushki_label predictDiv"><span class="glyphicon glyphicon-certificate"' + 
 					'style="font-size:98; color:#FFCACA"></span></div>');
 			}
-		}).fail(function() {
+		}).fail(function(jqXHR, textStatus, errorThrown) {
 			alert(jqXHR.status + " " + jqXHR.statusText);
 		});
 }
@@ -335,9 +352,7 @@ function useLicense(id) {
 	$.get( "${pageContext.request.contextPath}/lottery/use-license", { licLevel: level } )
 	  .done(function( data ) {
 		  if(data.error) {
-			// показать сообщение с ошибкой
-			$('#modalErrorBody').html(data.message);
-			$('#modalError').modal();
+			  showErrorMsg(data); // показать сообщение с ошибкой
 		  } else {
 			$('#modalForInfoTitle').html("Получена лицензия");
 			$('#modalForInfoBody').html('Получена лицензия уровня: <b>' + level + "</b><br/>" +
@@ -347,27 +362,88 @@ function useLicense(id) {
 			var currAm = parseInt($('#lic' + level + 'CountVal').text()); // текущее количество
 			$('#lic' + level + 'CountVal').html(currAm - 1);
 		  }
-	}).fail(function() {
+	}).fail(function(jqXHR, textStatus, errorThrown) {
 		alert(jqXHR.status + " " + jqXHR.statusText);
 	});
 }
 
-// показать доступное имущество для повышения уровня
-function showPropertiesToLevelUp() {
-	$.get( "${pageContext.request.contextPath}/lottery/prop-level-up")
-	  .done(function( data ) {
-		  if(data.error) {
-			// показать сообщение с ошибкой
-			$('#modalErrorBody').html(data.message);
-			$('#modalError').modal();
-		  } else {
-			$('#modalForInfoTitle').html("Имущество для повышения уровня");
-			$('#modalForInfoBody').html();
-			$('#modalForInfo').modal();
-		  }
-	}).fail(function() {
+// показать доступное имущество для повышения уровня или уровня кассы
+function getPropForLevelUp(obj) {
+	$.ajax({
+		  type: 'GET',
+		  url: "${pageContext.request.contextPath}/lottery/level-up",
+		  data:  { reqObj: obj },
+		  dataType: "json",
+		  async:true
+		}).done(function(data) {
+			 if(data.error) {
+				  showErrorMsg(data); // показать сообщение с ошибкой
+			  } else {
+				var table = createTableContent(data, obj);
+				
+				var objName = "";
+				if (obj == 'prop') {
+					objName = "Имущество";
+				} else if (obj == 'cash') {
+					objName = "Кассы";
+				}
+				$('#modalForInfoTitle').html(objName + " для повышения уровня");
+				$('#modalForInfoBody').html(table);			
+				$('#modalForInfo').modal();
+			  }
+	}).fail(function(jqXHR, textStatus, errorThrown) {
 		alert(jqXHR.status + " " + jqXHR.statusText);
 	});
 }
+
+// функция подтверждения повышения уровня имущества или кассы
+// obj - объект ('property' || 'cash')
+// prop_id - id имущества, чей уровень или уровень кассы повышать
+function confirmUpLevel(clickedBtn) {
+	var obj = this.id.substring(0, 4);
+	var prop_id = this.id.substring(5);
+	
+	$.post("${pageContext.request.contextPath}/lottery/confirm-level-up", { obj: obj, propId: prop_id })
+		.done(function(data) {
+			if(data.error) {
+				showErrorMsg(data); // показать сообщение с ошибкой
+			} else {
+				$(clickedBtn).closest('tr').find('.' + obj + 'LevelVal').html(data.currLevel);
+				
+				if(data.currLevel == data.maxLevel) {
+					clickedBtn.closest("td").html("Посл. уровень");
+				}
+			}
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		alert(jqXHR.status + " " + jqXHR.statusText);
+	});
+}
+
+// функция формирования контента диалогового окна при повышении уровня имущества или кассы
+function createTableContent(data, obj) {
+	var objName = "";
+	if (obj == 'prop') {
+		objName = "имущества";
+	} else if (obj == 'cash') {
+		objName = "кассы";
+	}
+	var tableTitle = '<table class="table"><tr class="tableTitleTr">' +
+	'<td>Наименование</td><td>Ур. имущества</td><td>Ур. кассы</td><td>Повысить ур.</td></tr>';
+	
+	var tableContent = "";
+	var props = data.properties;
+	for (var i = 0; i < props.length; i++) {
+		tableContent += '<tr><td><a href="${pageContext.request.contextPath}/property/' + props[i].id + '">' + props[i].name + '<a/></td>' + 
+		'<td class="propLevelVal">' + props[i].level + '</td>' +
+		'<td class="cashLevelVal">' + props[i].cashLevel + '</td>' + 
+		'<td><button id="prop_' + props[i].id +  '" class="btn btn-success confirm_up_btn" title="Повысить уровень ' + objName + '" data-toggle="tooltip">' +
+			'<span class="glyphicon glyphicon-chevron-up"></span></button></td></tr>'
+	}
+	tableContent += '</table>';
+	
+	var table = tableTitle + tableContent;
+	return table;
+}
+	
 </script>
 </t:template>

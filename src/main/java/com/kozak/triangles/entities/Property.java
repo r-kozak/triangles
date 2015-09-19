@@ -12,6 +12,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.json.simple.JSONAware;
+import org.json.simple.JSONObject;
+
 import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 import com.kozak.triangles.utils.DateUtils;
@@ -38,7 +41,7 @@ import com.kozak.triangles.utils.DateUtils;
 
 @Entity
 @Table(name = "Property")
-public class Property {
+public class Property implements JSONAware {
 
     @Id
     @Column(name = "id")
@@ -261,5 +264,15 @@ public class Property {
 
     public void setOnSale(boolean onSale) {
         this.onSale = onSale;
+    }
+
+    @SuppressWarnings("unchecked")
+    public String toJSONString() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("name", name);
+        obj.put("level", level);
+        obj.put("cashLevel", cashLevel);
+        return obj.toString();
     }
 }

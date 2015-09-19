@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import javax.persistence.NoResultException;
 
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,6 +43,9 @@ import com.kozak.triangles.utils.Util;
 @Controller
 @RequestMapping(value = "/lottery")
 public class LotteryController extends BaseController {
+    @Autowired
+    PropertyController propertyController;
+
     private static TreeMap<Integer, WinningsData> winningsData = null;
 
     /**
@@ -279,6 +283,109 @@ public class LotteryController extends BaseController {
             }
         }
         return ResponseUtil.getResponseEntity(resultJson);
+    }
+
+    /**
+     * Метод получения списка имущества, уровень которого можно повысить или уровень кассы которого можно повысить.
+     * 
+     * @param obj
+     *            - объект для повышения уровня [prop, cash]
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/level-up", method = RequestMethod.GET, produces = { "application/json; charset=UTF-8" })
+    public @ResponseBody ResponseEntity<String> levelUp(@RequestParam("reqObj") String obj, User user) {
+
+        JSONObject resultJson = new JSONObject();
+        int userId = user.getId();
+
+        if (obj.equals("prop") || obj.equals("cash")) {
+            Object[] countAndName = getPljushkiCountAndNameForLevelUp(obj, userId);
+            long pljushkiCount = (long) countAndName[0];
+            String objName = (String) countAndName[1];
+
+            if (pljushkiCount <= 0) {
+                String msg = String.format("У вас нет бесплатных плюшей для повышения уровня %s.", objName);
+                ResponseUtil.putErrorMsg(resultJson, msg);
+            } else {
+                /*
+                 * получить список имущества, уровень которого нужно повысить. Или уровень кассы которого нужно повысить
+                 * obj - [prop || cash] (имущество или касса)
+                 */
+                List<Property> properties = prRep.getToLevelUpForPljushki(obj, userId); // список имущества
+                resultJson.put("properties", properties);
+            }
+        } else {
+            ResponseUtil.putErrorMsg(resultJson, "Нет таких объектов.");
+        }
+        return ResponseUtil.getResponseEntity(resultJson);
+    }
+
+    /**
+     * Подтверждает повышение уровня имущества
+     * 
+     * @param obj
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/confirm-level-up", method = RequestMethod.GET, produces = { "application/json; charset=UTF-8" })
+    public @ResponseBody ResponseEntity<String> confirmLevelUp(@RequestParam("obj") String obj,
+            @RequestParam("propId") int propId, User user) {
+
+        JSONObject resultJson = new JSONObject();
+        int userId = user.getId();
+
+        if (obj.equals("prop") || obj.equals("cash")) {
+            Object[] countAndName = getPljushkiCountAndNameForLevelUp(obj, userId);
+            long pljushkiCount = (long) countAndName[0];
+            String objName = (String) countAndName[1];
+
+            if (pljushkiCount <= 0) {
+                String msg = String.format("У вас нет бесплатных плюшей для повышения уровня %s.", objName);
+                ResponseUtil.putErrorMsg(resultJson, msg);
+            } else {
+                Property prop = prRep.getSpecificProperty(userId, propId);
+                if (prop == null) {
+                    ResponseUtil.putErrorMsg(resultJson, "У вас нет такого имущества!");
+                } else {
+                    if (obj.equals("cash")) { // если это повышение для кассы
+                        int nCashLevel = prop.getCashLevel() + 1; // уровень, к которому будем повышать
+
+                        if (nCashLevel > Consts.MAX_CASH_LEVEL) { // отправить сообщение, что достигли последнего уровня
+                            ResponseUtil.putErrorMsg(resultJson, "Достигнут последний уровень.");
+                        } else { // повысить уровень или просто получить сумму повышения
+                            propertyController.upCashLevel(resultJson, prop, nCashLevel, userId, 0, false);
+                            resultJson.put("maxLevel", Consts.MAX_CASH_LEVEL);
+                        }
+                    } else if (obj.equals("prop")) {
+                        int nPropLevel = prop.getLevel() + 1; // уровень, к которому будем повышать
+
+                        if (nPropLevel > Consts.MAX_PROP_LEVEL) { // отправить сообщение, что достигли последнего уровня
+                            ResponseUtil.putErrorMsg(resultJson, "Достигнут последний уровень.");
+                        } else { // повысить уровень или просто получить сумму повышения
+                            propertyController.upPropLevel(resultJson, prop, nPropLevel, userId, 0, false);
+                            resultJson.put("maxLevel", Consts.MAX_PROP_LEVEL);
+                        }
+                    }
+                }
+            }
+        } else {
+            ResponseUtil.putErrorMsg(resultJson, "Нет таких объектов.");
+        }
+        return ResponseUtil.getResponseEntity(resultJson);
+    }
+
+    private Object[] getPljushkiCountAndNameForLevelUp(String obj, int userId) {
+        Object[] result = new Object[2];
+
+        // проверить остаток бесплатных плюшей повышения уровня
+        if (obj.equals("prop")) {
+            result[0] = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
+            result[1] = "имущества";
+        } else {
+            result[0] = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.CASH_UP);
+            result[1] = "кассы";
+        }
+        return result;
     }
 
     /**

@@ -14,7 +14,7 @@ public class ResponseUtil {
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.OK);
     }
 
     /**

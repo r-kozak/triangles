@@ -80,7 +80,7 @@ window.onload = function(){
       			    	$('#modalWindowTitle').html('Поднятие уровня имущества'); // задать заголовок модального окна
       			    	$('#text_modal_confirm').html('Улучшить'); // текст для кнопки подтверждения
       			    	$('#modalWindowBody').html('Вы точно хотите поднять уровень имущества <b>' + propName + '</b>? </br>' + 
-      			    			'Сумма: <b><div>' + nextSum + '&tridot;</b> </br>' +
+      			    			'Сумма: <b>' + nextSum + '&tridot;</b> </br>' +
       			    			'Будет достигнут уровень: <b>' + (currLevel + 1) + '</b>'); // задать тело модального окна
       					$('#modalWindow').modal(); // показать модальное окно
       			    		

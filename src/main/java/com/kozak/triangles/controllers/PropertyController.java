@@ -644,10 +644,10 @@ public class PropertyController extends BaseController {
         if (userSolvency >= sum) {
             domiAmount = 0;
             if (obj.equals("cash")) {
-                upCashLevel(resultJson, prop, nLevel, userId, sum); // повысить уровень кассы
+                upCashLevel(resultJson, prop, nLevel, userId, sum, true); // повысить уровень кассы
                 domiAmount = nLevel;
             } else if (obj.equals("prop")) {
-                upPropLevel(resultJson, prop, nLevel, userId, sum); // повысить уровень имущества
+                upPropLevel(resultJson, prop, nLevel, userId, sum, true); // повысить уровень имущества
                 domiAmount = (int) Math.round(nLevel * Consts.K_PROP_LEVEL_DOMI);
             }
             MoneyController.upUserDomi(domiAmount, userId, userRep); // повышение доминантности
@@ -666,9 +666,13 @@ public class PropertyController extends BaseController {
      *            уровень, к которому будем повышать
      * @param sum
      *            сумма повышения уровня
+     * @param isPaidUp
+     *            это платное повышение или нет (бесплатное, если за лотерейные плюшки)
      */
     @SuppressWarnings("unchecked")
-    private void upCashLevel(JSONObject resultJson, Property prop, int nCashLevel, int userId, long sum) {
+    void upCashLevel(JSONObject resultJson, Property prop, int nCashLevel, int userId, long sum,
+            boolean isPaidUp) {
+
         // получить данные всех коммерческих строений
         HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
 
@@ -679,33 +683,37 @@ public class PropertyController extends BaseController {
         prop.setCashCapacity(nCashCapacity);
         prRep.updateProperty(prop);
 
-        // снять деньги
-        String descr = String.format("Улучшение кассы до уровня: %s. Касса им-ва: %s", nCashLevel, prop.getName());
-        long currBal = Long.parseLong(trRep.getUserBalance(userId));
-        Transaction tr = new Transaction(descr, new Date(), sum, TransferT.SPEND, userId, currBal - sum,
-                ArticleCashFlowT.UP_CASH_LEVEL);
-        trRep.addTransaction(tr);
-        // //
-
         // если имущество на продаже - изменить уровень кассы у предложения
         changeReProposalLevels("cash", prop, nCashLevel);
 
-        // получить сумму улучшения до след. уровня + 1
-        long nextSum = Math.round(prop.getInitialCost() * Consts.UNIVERS_K[nCashLevel + 1] / Consts.K_DECREASE_CASH_L);
-        long userSolvency = Util.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
-
-        resultJson.put("upped", true); // уровень был поднят
-        resultJson.put("cashCap", nCashCapacity); // new cash capacity для отображения
-
-        if (nCashLevel == Consts.MAX_CASH_LEVEL) {
-            ResponseUtil.putErrorMsg(resultJson, "Достигнут последний уровень.");
-        } else if (userSolvency < nextSum) {
-            ResponseUtil.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
-        }
-
-        ResponseUtil.addBalanceData(resultJson, sum, currBal, userId, prRep);
         resultJson.put("currLevel", nCashLevel);
-        resultJson.put("nextSum", nextSum); // сумма след. повышения
+
+        // если это платное повышение, а не за лотерейные плюшки
+        if (isPaidUp) {
+            // снять деньги
+            String descr = String.format("Улучшение кассы до уровня: %s. Касса им-ва: %s", nCashLevel, prop.getName());
+            long currBal = Long.parseLong(trRep.getUserBalance(userId));
+            Transaction tr = new Transaction(descr, new Date(), sum, TransferT.SPEND, userId, currBal - sum,
+                    ArticleCashFlowT.UP_CASH_LEVEL);
+            trRep.addTransaction(tr);
+            // //
+
+            // получить сумму улучшения до след. уровня + 1
+            long nextSum = Math.round(prop.getInitialCost() * Consts.UNIVERS_K[nCashLevel + 1]
+                    / Consts.K_DECREASE_CASH_L);
+            long userSolvency = Util.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
+
+            if (nCashLevel == Consts.MAX_CASH_LEVEL) {
+                ResponseUtil.putErrorMsg(resultJson, "Достигнут последний уровень.");
+            } else if (userSolvency < nextSum) {
+                ResponseUtil.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
+            }
+
+            ResponseUtil.addBalanceData(resultJson, sum, currBal, userId, prRep);
+            resultJson.put("nextSum", nextSum); // сумма след. повышения
+            resultJson.put("cashCap", nCashCapacity); // new cash capacity для отображения
+            resultJson.put("upped", true); // уровень был поднят
+        }
     }
 
     /**
@@ -748,40 +756,44 @@ public class PropertyController extends BaseController {
     }
 
     @SuppressWarnings("unchecked")
-    private void upPropLevel(JSONObject resultJson, Property prop, int nPropLevel, int userId, long sum) {
+    void upPropLevel(JSONObject resultJson, Property prop, int nPropLevel, int userId, long sum,
+            boolean isPaidUp) {
         // получить данные всех коммерческих строений
         HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
 
         prop.setLevel(nPropLevel);
         prRep.updateProperty(prop);
 
-        // снять деньги
-        String descr = String.format("Улучшение им-ва: %s до уровня: %s", prop.getName(), nPropLevel);
-        long currBal = Long.parseLong(trRep.getUserBalance(userId));
-        Transaction tr = new Transaction(descr, new Date(), sum, TransferT.SPEND, userId, currBal - sum,
-                ArticleCashFlowT.UP_PROP_LEVEL);
-        trRep.addTransaction(tr);
-        // //
-
         // если имущество на продаже - изменить уровень кассы у предложения
         changeReProposalLevels("prop", prop, nPropLevel);
 
-        // получить сумму улучшения до след. уровня + 1
-        long maxPrice = mapData.get(prop.getCommBuildingType().name()).getPurchasePriceMax();
-        long nextSum = Math.round(maxPrice * Consts.UNIVERS_K[nPropLevel + 1] / Consts.K_DECREASE_PROP_L);
-        long userSolvency = Util.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
-
-        resultJson.put("upped", true); // уровень был поднят
-
-        if (nPropLevel == Consts.MAX_CASH_LEVEL) {
-            ResponseUtil.putErrorMsg(resultJson, "Достигнут последний уровень.");
-        } else if (userSolvency < nextSum) {
-            ResponseUtil.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
-        }
-
-        ResponseUtil.addBalanceData(resultJson, sum, currBal, userId, prRep);
         resultJson.put("currLevel", nPropLevel);
-        resultJson.put("nextSum", nextSum); // сумма след. повышения
+
+        if (isPaidUp) {
+            // снять деньги
+            String descr = String.format("Улучшение им-ва: %s до уровня: %s", prop.getName(), nPropLevel);
+            long currBal = Long.parseLong(trRep.getUserBalance(userId));
+            Transaction tr = new Transaction(descr, new Date(), sum, TransferT.SPEND, userId, currBal - sum,
+                    ArticleCashFlowT.UP_PROP_LEVEL);
+            trRep.addTransaction(tr);
+            // //
+
+            // получить сумму улучшения до след. уровня + 1
+            long maxPrice = mapData.get(prop.getCommBuildingType().name()).getPurchasePriceMax();
+            long nextSum = Math.round(maxPrice * Consts.UNIVERS_K[nPropLevel + 1] / Consts.K_DECREASE_PROP_L);
+            long userSolvency = Util.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
+
+            resultJson.put("upped", true); // уровень был поднят
+
+            if (nPropLevel == Consts.MAX_CASH_LEVEL) {
+                ResponseUtil.putErrorMsg(resultJson, "Достигнут последний уровень.");
+            } else if (userSolvency < nextSum) {
+                ResponseUtil.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
+            }
+
+            ResponseUtil.addBalanceData(resultJson, sum, currBal, userId, prRep);
+            resultJson.put("nextSum", nextSum); // сумма след. повышения
+        }
     }
 
     /**

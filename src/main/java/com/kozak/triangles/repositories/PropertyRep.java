@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 import com.kozak.triangles.search.CommPropSearch;
+import com.kozak.triangles.utils.Consts;
 
 /**
  * репозиторий имущества пользователя
@@ -218,5 +219,27 @@ public class PropertyRep {
 
     public Property getPropertyById(int id) {
         return em.find(Property.class, id);
+    }
+
+    /**
+     * @param obj
+     *            - [prop || cash] (имущество или касса)
+     * @return список имущества, уровень которого или уровень кассы которого можно повысить. Можно повысить уровень,
+     *         если его значение меньше, чем максимальная установленая планка
+     */
+    @SuppressWarnings("unchecked")
+    public List<Property> getToLevelUpForPljushki(String obj, int userId) {
+        String field = "";
+        int maxLevel = 0;
+        if (obj.equals("prop")) {
+            field = "level";
+            maxLevel = Consts.MAX_PROP_LEVEL;
+        } else if (obj.equals("cash")) {
+            field = "cashLevel";
+            maxLevel = Consts.MAX_CASH_LEVEL;
+        }
+        String hql = String.format("FROM Property WHERE userId = ?0 AND %s < %s", field, maxLevel);
+
+        return em.createQuery(hql).setParameter(0, userId).getResultList();
     }
 }
