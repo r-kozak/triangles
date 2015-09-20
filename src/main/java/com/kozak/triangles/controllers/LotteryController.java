@@ -32,6 +32,7 @@ import com.kozak.triangles.enums.ArticleCashFlowT;
 import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.LotteryArticles;
 import com.kozak.triangles.enums.TransferT;
+import com.kozak.triangles.repositories.LotteryRep;
 import com.kozak.triangles.search.LotterySearch;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.utils.Consts;
@@ -81,6 +82,33 @@ public class LotteryController extends BaseController {
             } else {
                 countMap.put(entCount, ++c);
             }
+        }
+    }
+
+    /**
+     * Всезнающий, живущий в недрах программного кода, который может открыть пользователю свою мудрость
+     * 
+     * @author Roman: 20 вер. 2015 22:56:49
+     */
+    private static class Omniscient {
+        /**
+         * Открыть пользователю мудрость или дать предсказание.
+         */
+        private static void givePredictionToUser(int userId, Date date, LotteryRep lotteryRep) {
+            List<Integer> allPredIDs = lotteryRep.getAllPredictionIDs(); // все ID предсказаний
+            int lastPredId = allPredIDs.get(allPredIDs.size() - 1); // последний ID из предсказаний
+
+            // cгенерить ID предсказания (мудрости)
+            Random r = new Random();
+            int predictionId = (int) r.generateRandNum(1, lastPredId); // сгенерить ID
+            while (!allPredIDs.contains(predictionId)) {
+                predictionId = (int) r.generateRandNum(1, lastPredId); // получить ID
+            }
+
+            // добавить предсказание
+            LotteryInfo lInfo = new LotteryInfo(userId, "Ты получил мудрость от всезнающего. Вникай.",
+                    LotteryArticles.PREDICTION, predictionId, 1, 1, date);
+            lotteryRep.addLotoInfo(lInfo);
         }
     }
 
@@ -232,7 +260,7 @@ public class LotteryController extends BaseController {
 
                     handlePropertyArticle(groupedRes, userId, article, date);
                 } else if (article.equals(LotteryArticles.PREDICTION)) {
-                    givePredictionToUser(userId, date);
+                    Omniscient.givePredictionToUser(userId, date, lotteryRep);
                 } else {
                     ResponseUtil.putErrorMsg(resultJson,
                             "Возникла ошибка! Одна из статьей выигрыша не была обработана!");
@@ -479,28 +507,6 @@ public class LotteryController extends BaseController {
         String description = descrPref + " Кол-во билетов]. " + mapDataStr;
         LotteryInfo lInfo = new LotteryInfo(userId, description, article, groupedRes.entitiesCount,
                 groupedRes.ticketsCount, groupedRes.entitiesCount, date);
-        lotteryRep.addLotoInfo(lInfo);
-    }
-
-    /**
-     * Открыть пользователю мудрость или дать предсказание.
-     * 
-     * @param date
-     */
-    private void givePredictionToUser(int userId, Date date) {
-        List<Integer> allPredIDs = lotteryRep.getAllPredictionIDs(); // все ID предсказаний
-        int lastPredId = allPredIDs.get(allPredIDs.size() - 1); // последний ID из предсказаний
-
-        // cгенерить ID предсказания (мудрости)
-        Random r = new Random();
-        int predictionId = (int) r.generateRandNum(1, lastPredId); // сгенерить ID
-        while (!allPredIDs.contains(predictionId)) {
-            predictionId = (int) r.generateRandNum(1, lastPredId); // получить ID
-        }
-
-        // добавить предсказание
-        LotteryInfo lInfo = new LotteryInfo(userId, "Ты получил мудрость от всезнающего. Вникай.",
-                LotteryArticles.PREDICTION, predictionId, 1, 1, date);
         lotteryRep.addLotoInfo(lInfo);
     }
 
