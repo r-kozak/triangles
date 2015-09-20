@@ -68,6 +68,19 @@ public class HomeController extends BaseController {
         // если кончилась - назначить новую и получить ее
         licenseExpireDate = BuildingController.checkLicenseExpire(licenseExpireDate, userRep, userId);
 
+        // количество завершенных строительных проектов пользователя
+        long countCompletedProj = consProjectRep.getCountOfUserCompletedConstrProject(userId);
+        model.addAttribute("countCompletedProj", countCompletedProj);
+        if (countCompletedProj > 0) {
+            // если есть завершенные, то на домашней странице покажем их количество (напр.: 2/5)
+            long totalProjCount = consProjectRep.getCountOfUserConstrProject(userId);
+
+            model.addAttribute("totalProjCount", totalProjCount);
+        } else {
+            // иначе - покажем таймер, сколько осталось до ближайшей эксплуатации
+            model.addAttribute("toExploitation", consProjectRep.getNextExploitation(userId));
+        }
+
         // статистика
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
@@ -80,7 +93,6 @@ public class HomeController extends BaseController {
         model.addAttribute("needRepair", prRep.allPrCount(userId, false, true)); // скольким имуществам нужен ремонт
         model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии
         model.addAttribute("licenseExpire", licenseExpireDate); // окончание лицензии
-        model.addAttribute("toExploitation", consProjectRep.getNextExploitation(userId)); // до ближайшей эксплуатации
         model.addAttribute("ticketsCount", currUser.getLotteryTickets()); // количество лотерейных билетов
 
         model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
@@ -140,6 +152,8 @@ public class HomeController extends BaseController {
         // максимальные уровни имущества и кассы
         model.addAttribute("max_prop_lev", Consts.MAX_PROP_LEVEL);
         model.addAttribute("max_cash_lev", Consts.MAX_CASH_LEVEL);
+        // цены на лотерейные билеты
+        model.addAttribute("ticketsPrice", Consts.LOTTERY_TICKETS_PRICE);
         return "wiki";
     }
 

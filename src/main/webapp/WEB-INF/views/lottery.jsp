@@ -49,7 +49,7 @@
 		
 		if (${ls.page > 1}) {
 			$('body, html').scrollTop($(document).height());
-		}
+		} 
 	}
 </script>
 
@@ -68,17 +68,17 @@
 				<div class="col-md-3">
 					<div>Купить</div>
 					<div class="buy_label" id="buy_1">1</div>
-					<div class="little_label">500&tridot; за 1 билет</div>
+					<div class="little_label">${ticketsPrice[0]}&tridot; за 1 билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>
 					<div class="buy_label" id="buy_10">10</div>
-					<div class="little_label">475&tridot; за 1 билет</div>
+					<div class="little_label">${ticketsPrice[1]}&tridot; за 1 билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>
 					<div class="buy_label" id="buy_50">50</div>
-					<div class="little_label">450&tridot; за 1 билет</div>
+					<div class="little_label">${ticketsPrice[2]}&tridot; за 1 билет</div>
 				</div>
 			</div>
 			<div class="row"></div> <!-- разделитель -->
@@ -338,7 +338,8 @@ function getPredict() {
 	$.get( "${pageContext.request.contextPath}/lottery/get-predict", function(data) {
 			if(data.error) {
 				// показать сообщение с ошибкой
-				$('#modalForInfoTitle').html("Мудрость еще не постигнута");
+				var ref = "${pageContext.request.contextPath}/wiki#lo.ap.wi";
+				$('#modalForInfoTitle').html('<a href="' + ref + '" target="_blank">Мудрость</a> еще не постигнута');
 				$('#modalForInfoBody').html(data.message);
 				$('#modalForInfo').modal();
 			} else {
@@ -452,7 +453,7 @@ function createTableContent(data, obj) {
 	var tableContent = "";
 	var props = data.properties;
 	for (var i = 0; i < props.length; i++) {
-		tableContent += '<tr><td><a href="${pageContext.request.contextPath}/property/' + props[i].id + '">' + props[i].name + '<a/></td>' + 
+		tableContent += '<tr><td><a href="${pageContext.request.contextPath}/property/' + props[i].id + '" target="_blank">' + props[i].name + '<a/></td>' + 
 		'<td class="propLevelVal">' + props[i].level + '</td>' +
 		'<td class="cashLevelVal">' + props[i].cashLevel + '</td>' + 
 		'<td><button id="' + obj + '_' + props[i].id +  '" class="btn btn-success confirm_up_btn" title="Повысить уровень ' + objName + '" data-toggle="tooltip">' +

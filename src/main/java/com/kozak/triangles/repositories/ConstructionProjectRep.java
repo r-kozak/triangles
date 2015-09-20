@@ -28,16 +28,6 @@ public class ConstructionProjectRep {
     }
 
     /**
-     * @return все проекты строительства в процессе стройки
-     */
-    @SuppressWarnings("unchecked")
-    public List<ConstructionProject> getAllConstructProjects() {
-        String hql = "from ConstructionProject";
-        Query query = em.createQuery(hql);
-        return query.getResultList();
-    }
-
-    /**
      * @return все проекты строительства в процессе стройки конкретного пользователя
      */
     @SuppressWarnings("unchecked")
@@ -93,5 +83,25 @@ public class ConstructionProjectRep {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    /**
+     * @param userId
+     * @return общее количество строительных проектов пользователя
+     */
+    public long getCountOfUserConstrProject(int userId) {
+        String hql = "SELECT count(id) FROM ConstructionProject WHERE userId = ?0";
+        Query query = em.createQuery(hql).setParameter(0, userId);
+        return (long) query.getSingleResult();
+    }
+
+    /**
+     * @param userId
+     * @return количество завершенных строительных проектов пользователя
+     */
+    public long getCountOfUserCompletedConstrProject(int userId) {
+        String hql = "SELECT count(id) FROM ConstructionProject WHERE userId = ?0 AND completePerc >= 100";
+        Query query = em.createQuery(hql).setParameter(0, userId);
+        return (long) query.getSingleResult();
     }
 }

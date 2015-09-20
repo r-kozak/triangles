@@ -98,7 +98,10 @@ public class LotteryController extends BaseController {
                 + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 
         int currPage = Integer.parseInt(ls.getPage());
-        String paginationTag = TagCreator.paginationTag(totalPages, currPage, req);
+        if (totalPages > 1) {
+            String paginationTag = TagCreator.paginationTag(totalPages, currPage, req);
+            model.addAttribute("paginationTag", paginationTag);
+        }
 
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
@@ -118,7 +121,7 @@ public class LotteryController extends BaseController {
         model.addAttribute("lic3Count", lic3Count); // количество лицензий 3 ур
         model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
         model.addAttribute("isPredictionAvailable", lotteryRep.isUserHasPrediction(userId)); // есть ли предсказание
-        model.addAttribute("paginationTag", paginationTag);
+        model.addAttribute("ticketsPrice", Consts.LOTTERY_TICKETS_PRICE); // цены на билеты
 
         return "lottery";
     }

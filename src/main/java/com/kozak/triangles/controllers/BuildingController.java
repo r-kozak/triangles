@@ -181,6 +181,13 @@ public class BuildingController extends BaseController {
         return ResponseUtil.getResponseEntity(resultJson);
     }
 
+    /**
+     * Принятие имущества в эксплуатацию
+     * 
+     * @param constrId
+     *            - ID проекта
+     * @param user
+     */
     @RequestMapping(value = "/from-construct", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
     public @ResponseBody ResponseEntity<String> propertyFromConstruct(@RequestParam("constrId") int constrId, User user) {
 
@@ -200,9 +207,9 @@ public class BuildingController extends BaseController {
                 // данные конкретного типа имущества (здания)
                 CommBuildData dataOfBuilding = mapData.get(constrProject.getBuildingType().name());
 
-                // добавить имущество
+                // добавить имущество (принять в эксплуатацию)
                 Property property = new Property(dataOfBuilding, userId, constrProject.getCityArea(), new Date(),
-                        dataOfBuilding.getPurchasePriceMin(), constrProject.getName());
+                        dataOfBuilding.getPurchasePriceMax(), constrProject.getName());
                 prRep.addProperty(property);
 
                 // удалить строительный проект

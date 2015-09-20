@@ -54,11 +54,11 @@
 				<table class="table">
 					<tr>
 						<td class="tableTd1">Предложений всего</td>
-						<td class="tableTd2">${rePrCo}</td>
+						<td class="tableTd2"><span class="badge">${rePrCo}</span></td>
 					</tr>
 					<tr>
 						<td class="tableTd1">Новых предложений</td>
-						<td class="tableTd2">${newRePrCo}</td>
+						<td class="tableTd2"><span class="badge">${newRePrCo}</span></td>
 					</tr>
 				</table>
 			</div>
@@ -71,7 +71,7 @@
 				<table class="table">
 					<tr>
 						<td class="tableTd1">Билетов</td>
-						<td class="tableTd2">${ticketsCount}</td>
+						<td class="tableTd2"><span class="badge">${ticketsCount}</span></td>
 					</tr>
 				</table>
 			</div>
@@ -88,7 +88,7 @@
 								<c:when test="${ready > 0}">
 									<tr>
 										<td class="tableTd1">Готовых к сбору дохода</td>
-										<td class="tableTd2">${ready}</td>
+										<td class="tableTd2"><span class="badge">${ready}</span></td>
 									</tr>
 								</c:when>
 								<c:otherwise>
@@ -111,7 +111,7 @@
 							</c:choose>
 							<tr>
 								<td class="tableTd1">Нужен ремонт для</td>
-								<td class="tableTd2">${needRepair}/${comPrCount}</td>
+								<td class="tableTd2"><span class="badge">${needRepair}/${comPrCount}</span></td>
 							</tr>
 						</c:when>
 						<c:otherwise>
@@ -153,26 +153,34 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="tableTd1">До принятия в эксплуатацию</td>
-						<td class="tableTd2">
-							<c:choose>
-								<c:when test="${toExploitation != null}">
-									<script>
-										$(function() {
-											var austDay = new Date(parseInt("<c:out value='${toExploitation.time}'/>"));
-											$('#toExploitationCountdown').countdown({
-												until : austDay,
-												expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
-											});
-										});
-									</script>
-									<div id="toExploitationCountdown"></div>
-								</c:when>
-								<c:otherwise>
-									нет проектов
-								</c:otherwise>
-							</c:choose>
-						</td>
+						<c:choose>
+							<c:when test="${countCompletedProj > 0}">
+								<td class="tableTd1">Завершенных проектов</td>
+								<td class="tableTd2"><span class="badge">${countCompletedProj}/${totalProjCount}</span></td>
+							</c:when>
+							<c:otherwise>
+								<td class="tableTd1">До принятия в эксплуатацию</td>
+								<td class="tableTd2">
+									<c:choose>
+										<c:when test="${toExploitation != null}">
+											<script>
+												$(function() {
+													var austDay = new Date(parseInt("<c:out value='${toExploitation.time}'/>"));
+													$('#toExploitationCountdown').countdown({
+														until : austDay,
+														expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
+													});
+												});
+											</script>
+											<div id="toExploitationCountdown"></div>
+										</c:when>
+										<c:otherwise>
+											нет проектов
+										</c:otherwise>
+									</c:choose>
+								</td>
+							</c:otherwise>
+						</c:choose>
 					</tr>
 				</table>
 			</div>
