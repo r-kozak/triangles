@@ -267,6 +267,7 @@ public class LotteryController extends BaseController {
                 }
             }
             // снять билеты пользователя
+            user = userRep.find(userId);
             user.setLotteryTickets(userTickets - gamesCount);
             userRep.updateUser(user);
         }

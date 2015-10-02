@@ -79,7 +79,6 @@ public class LotteryRep {
      * 
      * @throws ParseException
      */
-    @SuppressWarnings("unchecked")
     public List<Object> getLotteryStory(int userId, LotterySearch ls) throws ParseException {
         String hql00 = "SELECT count(id) ";
         String hql0 = "FROM LotteryInfo WHERE userId = :userId";

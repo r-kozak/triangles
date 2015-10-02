@@ -113,6 +113,19 @@ public class HomeController extends BaseController {
         return "index/home";
     }
 
+    @RequestMapping(value = "/rating", method = RequestMethod.GET)
+    String ratingPage(User user, Model model) {
+        int userId = user.getId();
+
+        String userBalance = trRep.getUserBalance(userId);
+        int userDomi = userRep.getUserDomi(userId);
+        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+
+        List<Object[]> users = userRep.getUserRating();
+        model.addAttribute("users", users);
+        return "rating";
+    }
+
     /**
      * wiki
      */

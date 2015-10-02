@@ -99,4 +99,12 @@ public class UserRep {
         return user;
     }
 
+    /**
+     * Получить рейтинг пользователей
+     */
+    @SuppressWarnings("unchecked")
+    public List<Object[]> getUserRating() {
+        String hql = "SELECT login, domi from User ORDER BY Domi DESC";
+        return em.createQuery(hql).getResultList();
+    }
 }
