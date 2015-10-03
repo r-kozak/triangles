@@ -58,11 +58,11 @@
 				<h3 class="page-header" align=center>Транзакции</h3>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<button id="buy_500_tr" class="btn btn-default" data-toggle="tooltip"
-			  				title="Купить 500&tridot; за 1 очко доминантности"> <span style="font-size:125%">+500&tridot;</span>
+						<button id="buy_25_tr" class="btn btn-default" data-toggle="tooltip"
+			  				title="Купить 25&tridot; за 1 очко доминантности"> <span style="font-size:125%">+25&tridot;</span>
 						</button>
-						<button id="buy_5000_tr" class="btn btn-default" data-toggle="tooltip"
-			  				title="Купить 5000&tridot; за 10 очков доминантности"> <span style="font-size:125%">+5000&tridot;</span>
+						<button id="buy_250_tr" class="btn btn-default" data-toggle="tooltip"
+			  				title="Купить 250&tridot; за 10 очков доминантности"> <span style="font-size:125%">+250&tridot;</span>
 						</button>
 					    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip"
 					     	title="Показать или скрыть подробное описание раздела Транзакции"> <span class="glyphicon glyphicon-info-sign"></span>
@@ -185,15 +185,15 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
     $('[data-toggle="collapse"]').collapse(); // свернуть блок с описанием
   
-    // по клику на купить 500 triangles - отправить POST запрос на покупку  
-    $("#buy_500_tr").on("click", function() {
-    		infoBuyTriangles(500);
+    // по клику на купить 25 triangles - отправить POST запрос на покупку  
+    $("#buy_25_tr").on("click", function() {
+    		infoBuyTriangles(25);
         }
     );
     
- 	// по клику на купить 5000 triangles - отправить POST запрос на покупку  
-    $("#buy_5000_tr").on("click", function() {
-    		infoBuyTriangles(5000);
+ 	// по клику на купить 250 triangles - отправить POST запрос на покупку  
+    $("#buy_250_tr").on("click", function() {
+    		infoBuyTriangles(250);
         }
     );
     

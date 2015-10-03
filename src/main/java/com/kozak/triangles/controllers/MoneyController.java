@@ -49,7 +49,7 @@ public class MoneyController extends BaseController {
 
         // признаки правильности запроса
         boolean correctAction = action.equals("info") || action.equals("confirm"); // корректное действие
-        boolean correctCount = count == 500 || count == 5000; // корректное количество для обмена
+        boolean correctCount = count == 25 || count == 250; // корректное количество для обмена
 
         if (!correctAction || !correctCount) {
             ResponseUtil.putErrorMsg(resultJson, "Ошибка запроса :(");

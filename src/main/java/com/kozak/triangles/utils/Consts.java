@@ -54,7 +54,7 @@ public final class Consts {
     public static final int K_DOMI_BUY_BUI_PROP = 10; // коэф. - доминантность при покупке или постройке имущества
 
     // цена одного очка доминантности (учавствует при обмене на деньги)
-    public static final int DOMI_PRICE = 500;
+    public static final int DOMI_PRICE = 25;
     public static final int DAILY_TICKETS_FROM_DOMI_K = 20; // сколько очков доминантности стоит один лотерейный билет
 
     // цены на лотерейные билеты, в зависимости от покупаемого количества
