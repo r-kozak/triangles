@@ -119,6 +119,7 @@ public class LotteryController extends BaseController {
         model.addAttribute("ls", ls);
 
         int userId = user.getId();
+        user = userRep.find(userId);
 
         List<Object> fromDB = lotteryRep.getLotteryStory(userId, ls);
         long itemsCount = (long) fromDB.get(0);
@@ -150,6 +151,7 @@ public class LotteryController extends BaseController {
         model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
         model.addAttribute("isPredictionAvailable", lotteryRep.isUserHasPrediction(userId)); // есть ли предсказание
         model.addAttribute("ticketsPrice", Consts.LOTTERY_TICKETS_PRICE); // цены на билеты
+        model.addAttribute("user", user);
 
         return "lottery";
     }
@@ -270,6 +272,7 @@ public class LotteryController extends BaseController {
             user = userRep.find(userId);
             user.setLotteryTickets(userTickets - gamesCount);
             userRep.updateUser(user);
+
         }
         return ResponseUtil.getResponseEntity(resultJson);
     }
