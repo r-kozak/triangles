@@ -252,21 +252,56 @@ public class HomeController extends BaseController {
         // init STALL
         CommBuildingsT TYPE = CommBuildingsT.STALL;
         if (mapData.get(TYPE.name()) == null) {
-            data = new CommBuildData(3, 6, 4500, 5500, TYPE, superTYPE, 4, 1, 2);
+            data = new CommBuildData(3, 6, 4500, 5500, TYPE, superTYPE, 1, 1, 2);
             buiDataRep.addCommBuildingData(data);
         }
 
         // init VILLAGE_SHOP
         TYPE = CommBuildingsT.VILLAGE_SHOP;
         if (mapData.get(TYPE.name()) == null) {
-            data = new CommBuildData(2, 10, 10000, 15000, TYPE, superTYPE, 6, 2, 3);
+            data = new CommBuildData(2, 10, 10000, 15000, TYPE, superTYPE, 2, 2, 3);
             buiDataRep.addCommBuildingData(data);
         }
 
         // init STATIONER_SHOP
         TYPE = CommBuildingsT.STATIONER_SHOP;
         if (mapData.get(TYPE.name()) == null) {
-            data = new CommBuildData(5, 12, 17000, 30000, TYPE, superTYPE, 7, 1, 4);
+            data = new CommBuildData(5, 12, 17000, 30000, TYPE, superTYPE, 3, 1, 4);
+            buiDataRep.addCommBuildingData(data);
+        }
+
+        // init BOOK_SHOP
+        TYPE = CommBuildingsT.BOOK_SHOP;
+        if (mapData.get(TYPE.name()) == null) {
+            data = new CommBuildData(2, 4, 30000, 40000, TYPE, superTYPE, 4, 1, 2);
+            buiDataRep.addCommBuildingData(data);
+        }
+
+        // init CANDY_SHOP
+        TYPE = CommBuildingsT.CANDY_SHOP;
+        if (mapData.get(TYPE.name()) == null) {
+            data = new CommBuildData(3, 7, 40000, 50000, TYPE, superTYPE, 5, 1, 5);
+            buiDataRep.addCommBuildingData(data);
+        }
+
+        // init LITTLE_SUPERMARKET
+        TYPE = CommBuildingsT.LITTLE_SUPERMARKET;
+        if (mapData.get(TYPE.name()) == null) {
+            data = new CommBuildData(4, 5, 70000, 100000, TYPE, superTYPE, 6, 2, 6);
+            buiDataRep.addCommBuildingData(data);
+        }
+
+        // init MIDDLE_SUPERMARKET
+        TYPE = CommBuildingsT.MIDDLE_SUPERMARKET;
+        if (mapData.get(TYPE.name()) == null) {
+            data = new CommBuildData(5, 7, 120000, 150000, TYPE, superTYPE, 7, 3, 7);
+            buiDataRep.addCommBuildingData(data);
+        }
+
+        // init BIG_SUPERMARKET
+        TYPE = CommBuildingsT.BIG_SUPERMARKET;
+        if (mapData.get(TYPE.name()) == null) {
+            data = new CommBuildData(4, 7, 150000, 200000, TYPE, superTYPE, 8, 4, 8);
             buiDataRep.addCommBuildingData(data);
         }
     }

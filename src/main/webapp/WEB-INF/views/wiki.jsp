@@ -208,6 +208,11 @@ p {
 							<li><a href="#pr.ch.st">Киоск</a></li>
 							<li><a href="#pr.ch.vs">Сельський магазин</a></li>
 							<li><a href="#pr.ch.ss">Магазин канцтоваров</a></li>
+							<li><a href="#pr.ch.bs">Книжный магазин</a></li>
+							<li><a href="#pr.ch.cs">Магазин сладостей</a></li>
+							<li><a href="#pr.ch.ls">Маленький супермаркет</a></li>
+							<li><a href="#pr.ch.ms">Средний супермаркет</a></li>
+							<li><a href="#pr.ch.hs">Большой супермаркет</a></li>
 						</ul>
 						<li><a href="#pr.co">Порядок начислений</a></li>
 						<ul>
@@ -319,8 +324,22 @@ p {
 								<div id="pr.ch.vs" class="sp_point fs3">Сельский магазин</div>
 							</c:when>
 							<c:when test="${cbdata.commBuildType == 'STATIONER_SHOP'}">
-								<div id="pr.ch.ss" class="sp_point fs3">Магазин
-									канцтоваров</div>
+								<div id="pr.ch.ss" class="sp_point fs3">Магазин	канцтоваров</div>
+							</c:when>
+							<c:when test="${cbdata.commBuildType == 'BOOK_SHOP'}">
+								<div id="pr.ch.bs" class="sp_point fs3">Книжный магазин</div>
+							</c:when>
+							<c:when test="${cbdata.commBuildType == 'CANDY_SHOP'}">
+								<div id="pr.ch.cs" class="sp_point fs3">Магазин сладостей</div>
+							</c:when>
+							<c:when test="${cbdata.commBuildType == 'LITTLE_SUPERMARKET'}">
+								<div id="pr.ch.ls" class="sp_point fs3">Маленький супермаркет</div>
+							</c:when>
+							<c:when test="${cbdata.commBuildType == 'MIDDLE_SUPERMARKET'}">
+								<div id="pr.ch.ms" class="sp_point fs3">Средний супермаркет</div>
+							</c:when>
+							<c:when test="${cbdata.commBuildType == 'BIG_SUPERMARKET'}">
+								<div id="pr.ch.hs" class="sp_point fs3">Большой супермаркет</div>
 							</c:when>
 						</c:choose>
 						<ul>

@@ -133,6 +133,24 @@
 									<c:when test="${constrProject.buildingType == 'STATIONER_SHOP'}">
 										<td>Магазин канцтоваров</td>
 									</c:when>
+									<c:when test="${constrProject.buildingType == 'BOOK_SHOP'}">
+										<td>Книжный магазин</td>
+									</c:when>
+									<c:when test="${constrProject.buildingType == 'CANDY_SHOP'}">
+										<td>Магазин сладостей</td>
+									</c:when>
+									<c:when test="${constrProject.buildingType == 'LITTLE_SUPERMARKET'}">
+										<td>Маленький супермаркет</td>
+									</c:when>
+									<c:when test="${constrProject.buildingType == 'MIDDLE_SUPERMARKET'}">
+										<td>Средний супермаркет</td>
+									</c:when>
+									<c:when test="${constrProject.buildingType == 'BIG_SUPERMARKET'}">
+										<td>Большой супермаркет</td>
+									</c:when>
+									<c:otherwise>
+										<td>${constrProject.buildingType}</td> 
+									</c:otherwise>
 								</c:choose>
 
 								<td>${constrProject.cityArea}</td>
@@ -370,6 +388,21 @@ function confirmBuyLicense(buyLevel) {
 						</c:when>
 						<c:when test="${cbdata.commBuildType == 'STATIONER_SHOP'}">
 							<td class="bui_type" id="${cbdata.commBuildType}">Магазин канцтоваров</td>
+						</c:when>
+						<c:when test="${cbdata.commBuildType == 'BOOK_SHOP'}">
+							<td class="bui_type" id="${cbdata.commBuildType}">Книжный магазин</td>
+						</c:when>
+						<c:when test="${cbdata.commBuildType == 'CANDY_SHOP'}">
+							<td class="bui_type" id="${cbdata.commBuildType}">Магазин сладостей</td>
+						</c:when>
+						<c:when test="${cbdata.commBuildType == 'LITTLE_SUPERMARKET'}">
+							<td class="bui_type" id="${cbdata.commBuildType}">Маленький супермаркет</td>
+						</c:when>
+						<c:when test="${cbdata.commBuildType == 'MIDDLE_SUPERMARKET'}">
+							<td class="bui_type" id="${cbdata.commBuildType}">Средний супермаркет</td>
+						</c:when>
+						<c:when test="${cbdata.commBuildType == 'BIG_SUPERMARKET'}">
+							<td class="bui_type" id="${cbdata.commBuildType}">Большой супермаркет</td>
 						</c:when>
 					</c:choose>
 					<td>${cbdata.buildTime}</td>

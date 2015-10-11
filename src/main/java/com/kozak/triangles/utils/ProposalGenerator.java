@@ -7,15 +7,46 @@ import java.util.Map;
 import com.kozak.triangles.entities.CommBuildData;
 import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.enums.CityAreasT;
+import com.kozak.triangles.enums.buildings.CommBuildingsT;
 
 /**
  * генератор предложений на рынке имущества (RealEstateProposal)
+ * 
+ * вероятность выпадения числа:
+ * 
+ * число | комбинации
+ * *** 2 | 1-1
+ * *** 3 | 1-2 2-1
+ * *** 4 | 1-3 3-1 2-2
+ * *** 5 | 2-3 3-2 1-4 4-1
+ * *** 6 | 2-4 4-2 1-5 5-1 3-3
+ * *** 7 | 1-6 6-1 2-5 5-2 3-4 4-3
+ * *** 8 | 2-6 6-2 4-4 3-5 5-3
+ * *** 9 | 3-6 6-3 4-5 5-4
+ * ** 10 | 4-6 6-4 5-5
+ * ** 11 | 5-6 6-5
+ * ** 12 | 6-6
  * 
  * @author Roman: 21 июня 2015 г. 15:08:20
  */
 public class ProposalGenerator {
 
     private Random random = null; // класс Рандома
+
+    // массив с наименованиями имущества на основании вероятность выпадения (описание выше)
+    // 0-й и 1-й элемент никогда не должен заполняться т.к. не могут выпасти 2 кости с такой комбинацией
+    public static final CommBuildingsT[] PROPERTY_PROBABILITY =
+    { null, null, null,
+            CommBuildingsT.CANDY_SHOP,
+            CommBuildingsT.BOOK_SHOP,
+            CommBuildingsT.STATIONER_SHOP,
+            CommBuildingsT.VILLAGE_SHOP,
+            CommBuildingsT.STALL,
+            null, null,
+            CommBuildingsT.LITTLE_SUPERMARKET,
+            CommBuildingsT.MIDDLE_SUPERMARKET,
+            CommBuildingsT.BIG_SUPERMARKET
+    };
 
     /**
      * количество предложений расчитывается от количества активных пользователей
@@ -35,18 +66,8 @@ public class ProposalGenerator {
 
             // бросок кости
             int rd = getRandom().diceRoll();
-
-            switch (rd) {
-            case 7:
-                bd = data.get("STALL"); // build data - get STALL
-                break;
-            case 6:
-                bd = data.get("VILLAGE_SHOP"); // build data - get VILLAGE_SHOP
-                break;
-            case 5:
-                bd = data.get("STATIONER_SHOP"); // build data - get STATIONER_SHOP
-                break;
-            }
+            String buildTypeName = (PROPERTY_PROBABILITY[rd] != null) ? PROPERTY_PROBABILITY[rd].name() : null;
+            bd = data.get(buildTypeName); // build data
 
             if (bd != null) {
                 RealEstateProposal propos = generateProposal(bd);

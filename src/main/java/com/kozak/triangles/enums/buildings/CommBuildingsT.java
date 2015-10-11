@@ -9,5 +9,5 @@ package com.kozak.triangles.enums.buildings;
  * @author Roman: 12 июня 2015 г. 22:39:16
  */
 public enum CommBuildingsT {
-    STALL, VILLAGE_SHOP, STATIONER_SHOP
+    STALL, VILLAGE_SHOP, STATIONER_SHOP, BOOK_SHOP, CANDY_SHOP, LITTLE_SUPERMARKET, MIDDLE_SUPERMARKET, BIG_SUPERMARKET
 }

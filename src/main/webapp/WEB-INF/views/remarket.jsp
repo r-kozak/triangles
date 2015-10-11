@@ -271,6 +271,21 @@
 								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
 									<td>Магазин канцтоваров</td>
 								</c:when>
+								<c:when test="${prop.commBuildingType == 'BOOK_SHOP'}">
+										<td>Книжный магазин</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'CANDY_SHOP'}">
+									<td>Магазин сладостей</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'LITTLE_SUPERMARKET'}">
+									<td>Маленький супермаркет</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'MIDDLE_SUPERMARKET'}">
+									<td>Средний супермаркет</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'BIG_SUPERMARKET'}">
+									<td>Большой супермаркет</td>
+								</c:when>
 								<c:otherwise>
 									<td>${prop.commBuildingType}</td>
 								</c:otherwise>

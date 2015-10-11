@@ -160,19 +160,31 @@
 							</c:choose>
 							
 							<c:choose>
-								<c:when test="${prop.commBuildingType == 'STALL'}">
-									<td style="text-align:left">Киоск</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
-									<td style="text-align:left">Сельский магазин</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
-									<td style="text-align:left">Магазин канцтоваров</td>
-								</c:when>
-								<c:otherwise>
-									<td>${prop.commBuildingType}</td>
-								</c:otherwise>
-							</c:choose>
+							<c:when test="${prop.commBuildingType == 'STALL'}">
+								<td style="text-align:left">Киоск</td>
+							</c:when>
+							<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
+								<td style="text-align:left">Сельский магазин</td>
+							</c:when>
+							<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
+								<td style="text-align:left">Магазин	канцтоваров</td>
+							</c:when>
+							<c:when test="${prop.commBuildingType == 'BOOK_SHOP'}">
+								<td style="text-align:left">Книжный магазин</td>
+							</c:when>
+							<c:when test="${prop.commBuildingType == 'CANDY_SHOP'}">
+								<td style="text-align:left">Магазин сладостей</td>
+							</c:when>
+							<c:when test="${prop.commBuildingType == 'LITTLE_SUPERMARKET'}">
+								<td style="text-align:left">Маленький супермаркет</td>
+							</c:when>
+							<c:when test="${prop.commBuildingType == 'MIDDLE_SUPERMARKET'}">
+								<td style="text-align:left">Средний супермаркет</td>
+							</c:when>
+							<c:when test="${prop.commBuildingType == 'BIG_SUPERMARKET'}">
+								<td style="text-align:left">Большой супермаркет</td>
+							</c:when>
+						</c:choose>
 	
 							<td style="text-align:left"><a class="bg-info" href="${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
 							<td style="text-align:center">${prop.level}</td>

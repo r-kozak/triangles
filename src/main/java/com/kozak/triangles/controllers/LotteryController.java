@@ -257,7 +257,8 @@ public class LotteryController extends BaseController {
                         || article.equals(LotteryArticles.LICENSE_4)) {
 
                     handleCommonArticle(groupedRes, userId, article, date);
-                } else if (article.equals(LotteryArticles.STALL) || article.equals(LotteryArticles.VILLAGE_SHOP)
+                } else if (article.equals(LotteryArticles.STALL)
+                        || article.equals(LotteryArticles.VILLAGE_SHOP)
                         || article.equals(LotteryArticles.STATIONER_SHOP)) {
 
                     handlePropertyArticle(groupedRes, userId, article, date);
@@ -465,6 +466,7 @@ public class LotteryController extends BaseController {
         int countOfProperties = groupedRes.entitiesCount;
         // данные конкретного имущества
         CommBuildData buildData = mapData.get(article.name());
+
         for (int i = 0; i < countOfProperties; i++) {
             String name = "property-" + new Random().getHash(5); // имя нового имущества
             long price = buildData.getPurchasePriceMin(); // цена нового имущества (всегда минимальная)

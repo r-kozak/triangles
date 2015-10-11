@@ -284,19 +284,34 @@ function sellProperty(data) {
 					<tr>
 						<td>Тип</td>
 						<c:choose>
-							<c:when test="${prop.commBuildingType == 'STALL'}">
-								<td>Киоск</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
-								<td>Сельский магазин</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
-								<td>Магазин канцтоваров</td>
-							</c:when>
-							<c:otherwise>
-								<td>${prop.commBuildingType}</td>
-							</c:otherwise>
-						</c:choose>
+								<c:when test="${prop.commBuildingType == 'STALL'}">
+									<td>Киоск</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
+									<td>Сельский магазин</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
+									<td>Магазин канцтоваров</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'BOOK_SHOP'}">
+										<td>Книжный магазин</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'CANDY_SHOP'}">
+									<td>Магазин сладостей</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'LITTLE_SUPERMARKET'}">
+									<td>Маленький супермаркет</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'MIDDLE_SUPERMARKET'}">
+									<td>Средний супермаркет</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'BIG_SUPERMARKET'}">
+									<td>Большой супермаркет</td>
+								</c:when>
+								<c:otherwise>
+									<td>${prop.commBuildingType}</td>
+								</c:otherwise>
+							</c:choose>
 						<td></td>
 					</tr>
 					<tr>
