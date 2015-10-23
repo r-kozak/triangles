@@ -105,7 +105,7 @@ public class LotteryRep {
         ArrayList<Object> result = new ArrayList<Object>();
 
         // подсчет общего количества элементов, учитывая заданные параметры
-        Query query = em.createQuery(hql00 + hql0 + hql1 + hql2);
+        Query query = em.createQuery(hql00 + hql0 + hql1);
         // установка параметров
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());

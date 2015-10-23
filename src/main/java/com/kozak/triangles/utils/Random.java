@@ -2,6 +2,9 @@ package com.kozak.triangles.utils;
 
 import java.security.SecureRandom;
 
+import com.kozak.triangles.enums.CityAreasT;
+import com.kozak.triangles.enums.buildings.CommBuildingsT;
+
 public class Random {
     /**
      * генератор случайного числа включая начальное и конечное число.
@@ -56,5 +59,54 @@ public class Random {
         }
         String output = sb.toString();
         return output;
+    }
+
+    /**
+     * Генерирует новое имя для имущества на основании его типа и района размещения
+     * 
+     * @param commBuildingType
+     *            - тип имущества
+     * @param cityArea
+     *            - район
+     * @return строку с именем
+     */
+    public String generatePropertyName(CommBuildingsT commBuildingType, CityAreasT cityArea) {
+        StringBuffer sb = new StringBuffer();
+
+        if (commBuildingType.equals(CommBuildingsT.STALL)) {
+            sb.append("STL");
+        } else if (commBuildingType.equals(CommBuildingsT.VILLAGE_SHOP)) {
+            sb.append("VSH");
+        } else if (commBuildingType.equals(CommBuildingsT.STATIONER_SHOP)) {
+            sb.append("SSH");
+        } else if (commBuildingType.equals(CommBuildingsT.BOOK_SHOP)) {
+            sb.append("BSH");
+        } else if (commBuildingType.equals(CommBuildingsT.CANDY_SHOP)) {
+            sb.append("CSH");
+        } else if (commBuildingType.equals(CommBuildingsT.LITTLE_SUPERMARKET)) {
+            sb.append("LST");
+        } else if (commBuildingType.equals(CommBuildingsT.MIDDLE_SUPERMARKET)) {
+            sb.append("MST");
+        } else if (commBuildingType.equals(CommBuildingsT.BIG_SUPERMARKET)) {
+            sb.append("BST");
+        } else {
+            sb.append("UNDEF");
+        }
+
+        sb.append("_");
+
+        if (cityArea.equals(CityAreasT.GHETTO)) {
+            sb.append("GH");
+        } else if (cityArea.equals(CityAreasT.OUTSKIRTS)) {
+            sb.append("OT");
+        } else if (cityArea.equals(CityAreasT.CHINATOWN)) {
+            sb.append("CH");
+        } else if (cityArea.equals(CityAreasT.CENTER)) {
+            sb.append("CR");
+        }
+        sb.append("-");
+        sb.append(getHash(5));
+
+        return sb.toString();
     }
 }

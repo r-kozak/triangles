@@ -58,11 +58,11 @@
 				<h3 class="page-header" align=center>Транзакции</h3>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<button id="buy_25_tr" class="btn btn-default" data-toggle="tooltip"
-			  				title="Купить 25&tridot; за 1 очко доминантности"> <span style="font-size:125%">+25&tridot;</span>
+						<button id="buy_100_tr" class="btn btn-default" data-toggle="tooltip"
+			  				title="Купить 100&tridot; за 1 очко доминантности"> <span style="font-size:125%">+100&tridot;</span>
 						</button>
-						<button id="buy_250_tr" class="btn btn-default" data-toggle="tooltip"
-			  				title="Купить 250&tridot; за 10 очков доминантности"> <span style="font-size:125%">+250&tridot;</span>
+						<button id="buy_1000_tr" class="btn btn-default" data-toggle="tooltip"
+			  				title="Купить 1000&tridot; за 10 очков доминантности"> <span style="font-size:125%">+1000&tridot;</span>
 						</button>
 					    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip"
 					     	title="Показать или скрыть подробное описание раздела Транзакции"> <span class="glyphicon glyphicon-info-sign"></span>
@@ -160,14 +160,16 @@
 					  </tbody>
 				</table>
 				
-				<div class="panel panel-default" style="margin-top:5">
+				<div class="panel panel-default" style="margin-bottom:0">
 					<div class="panel-body">
 					    <p class="text-right">Общая сумма операций по выбранным фильтрам: <b><fmt:formatNumber type="number" maxFractionDigits="3" 
 					    value="${totalSum}"/>&tridot;</b></p>
-<%-- 					    <p class="text-right text-danger"><b>Расхождение прибыль - расход = баланс: ${profit - spend + (-userBal)}</b></p> --%>
 					</div>
 				</div>
 				
+				<ul class="pagination" style="float:right">
+        			${paginationTag}
+   				</ul>
 			</c:if>
 		</div> <!-- tranBlock (col-md-9)-->
 	</div> <!-- row  -->
@@ -185,15 +187,15 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
     $('[data-toggle="collapse"]').collapse(); // свернуть блок с описанием
   
-    // по клику на купить 25 triangles - отправить POST запрос на покупку  
-    $("#buy_25_tr").on("click", function() {
-    		infoBuyTriangles(25);
+    // по клику на купить 100 triangles - отправить POST запрос на покупку  
+    $("#buy_100_tr").on("click", function() {
+    		infoBuyTriangles(100);
         }
     );
     
- 	// по клику на купить 250 triangles - отправить POST запрос на покупку  
-    $("#buy_250_tr").on("click", function() {
-    		infoBuyTriangles(250);
+ 	// по клику на купить 1000 triangles - отправить POST запрос на покупку  
+    $("#buy_1000_tr").on("click", function() {
+    		infoBuyTriangles(1000);
         }
     );
     
@@ -202,13 +204,6 @@ $(document).ready(function(){
    			$("#tr_descr").collapse('toggle');
    		}
    	);
-    
-    
-    //красивая табличка
-    $.fn.dataTable.moment('DD-MM-YYYY HH:mm:ss'); // сортировка даты в табличке
-    $('#transTable').dataTable( { // сделать сортировку, пагинацию, поиск
-        "order": [[ 0, "desc" ]]
-    } );
     
     // запрос на получение информации от сервера при покупке triangles
     // count_ - количество для покупки

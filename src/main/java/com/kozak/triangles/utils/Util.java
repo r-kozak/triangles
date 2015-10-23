@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-import org.springframework.ui.Model;
-
 import com.kozak.triangles.entities.CommBuildData;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.RealEstateProposal;
@@ -20,16 +18,6 @@ import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
 
 public class Util {
-    public static Model addMoneyInfoToModel(Model model, String userBalance, Long userSolvency, int userDomi) {
-        String balance = moneyFormat(Long.valueOf(userBalance));
-        String solvency = moneyFormat(userSolvency);
-        String domi = moneyFormat(userDomi);
-        model.addAttribute("solvency", solvency);
-        model.addAttribute("balance", balance);
-        model.addAttribute("domi", domi);
-        return model;
-    }
-
     public static String moneyFormat(Number sum) {
         NumberFormat formatter = NumberFormat.getInstance(new Locale("ru"));
         String result = formatter.format(sum);
@@ -128,8 +116,13 @@ public class Util {
         return Long.valueOf(userMoney) + sellSum;
     }
 
-    public static void buyUsedProperty(RealEstateProposal reProp, Date purchDate, int newOwnerId, String newPropName,
-            PropertyRep prRep, TransactionRep trRep) {
+    /**
+     * Совершает оформление покупки б/у имущества
+     * 
+     * @return имя старого имущества
+     */
+    public static String buyUsedProperty(RealEstateProposal reProp, Date purchDate, int newOwnerId, PropertyRep prRep,
+            TransactionRep trRep) {
 
         // получить имущество и данные бывшего владельца
         Property p = prRep.getPropertyById(reProp.getUsedId());
@@ -142,10 +135,11 @@ public class Util {
                 oldOwnerId, oldOwnerBal + price, ArticleCashFlowT.SELL_PROPERTY);
         trRep.addTransaction(t);
 
-        // изменить у имущества имя и владельца
+        // изменить у имущества владельца
         p.setUserId(newOwnerId);
-        p.setName(newPropName);
         p.setOnSale(false);
         prRep.updateProperty(p);
+
+        return p.getName();
     }
 }

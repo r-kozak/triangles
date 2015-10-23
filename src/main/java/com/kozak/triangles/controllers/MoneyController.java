@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,7 @@ import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.search.TransactSearch;
 import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.ResponseUtil;
+import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
@@ -49,7 +52,7 @@ public class MoneyController extends BaseController {
 
         // признаки правильности запроса
         boolean correctAction = action.equals("info") || action.equals("confirm"); // корректное действие
-        boolean correctCount = count == 25 || count == 250; // корректное количество для обмена
+        boolean correctCount = count == 100 || count == 1000; // корректное количество для обмена
 
         if (!correctAction || !correctCount) {
             ResponseUtil.putErrorMsg(resultJson, "Ошибка запроса :(");
@@ -90,46 +93,32 @@ public class MoneyController extends BaseController {
         return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
     }
 
-    @SuppressWarnings("unchecked")
     @RequestMapping(value = "/transactions", method = RequestMethod.GET)
-    String transactionsGET(Model model, User user, TransactSearch ts) throws ParseException {
+    String transactionsGET(Model model, User user, TransactSearch ts, HttpServletRequest req) throws ParseException {
         if (ts.isNeedClear())
             ts.clear();
         model.addAttribute("ts", ts);
 
         int userId = user.getId();
 
-        int page = Integer.parseInt(ts.getPage());
         // результат с БД [количество всего; транзакции с учетом пагинации]
-        List<Object> dbResult = trRep.transList(page, userId, ts, /* ts.isShowAll() */true);
+        List<Object> dbResult = trRep.transList(userId, ts);
+        long itemsCount = (long) dbResult.get(0);
+        int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE) + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 
-        // Long transCount = Long.valueOf(dbResult.get(0).toString());
-
-        // int lastPageNumber = 1;
-        // if (!ts.isShowAll()) { // если показать транзакции НЕ ВСЕ (с пагинацией_
-        // lastPageNumber = (int) (transCount / Consts.ROWS_ON_PAGE)
-        // + ((transCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
-        // }
-        List<Transaction> transacs = (List<Transaction>) dbResult.get(1);
-
-        // total sum
-        long totalSum = 0;
-        for (Transaction tr : transacs) {
-            totalSum += tr.getSum();
+        if (totalPages > 1) {
+            int currPage = Integer.parseInt(ts.getPage());
+            String paginationTag = TagCreator.paginationTag(totalPages, currPage, req);
+            model.addAttribute("paginationTag", paginationTag);
         }
 
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
-        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
-        model.addAttribute("transacs", transacs);
-        // model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model.addAttribute("totalSum", dbResult.get(1));
+        model.addAttribute("transacs", dbResult.get(2));
         model.addAttribute("articles", SearchCollections.getArticlesCashFlow());
         model.addAttribute("transfers", SearchCollections.getTransferTypes());
-        model.addAttribute("totalSum", totalSum);
-
-        // model.addAttribute("userBal", Long.parseLong(userBalance)); // прибыль всего
-        // model.addAttribute("profit", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
-        // model.addAttribute("spend", trRep.getSumByTransfType(userId, TransferT.SPEND)); // расход всего
 
         return "transactions";
     }

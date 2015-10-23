@@ -51,10 +51,10 @@ public final class Consts {
 
     // коэфициенты доминантности
     public static final double K_PROP_LEVEL_DOMI = 1.5; // коэф. умножения уровня имущества при его повышении
-    public static final int K_DOMI_BUY_BUI_PROP = 10; // коэф. - доминантность при покупке или постройке имущества
+    public static final int K_DOMI_BUY_PROP = 10; // коэф. - доминантность при покупке имущества
 
     // цена одного очка доминантности (учавствует при обмене на деньги)
-    public static final int DOMI_PRICE = 25;
+    public static final int DOMI_PRICE = 100;
     public static final int DAILY_TICKETS_FROM_DOMI_K = 20; // сколько очков доминантности стоит один лотерейный билет
 
     // цены на лотерейные билеты, в зависимости от покупаемого количества
@@ -63,4 +63,9 @@ public final class Consts {
     // нижняя и верхняя граница рандомного числа при генерации лотерейного розыгрыша
     public static final int LOWER_LOTTERY_BOUND = 0;
     public static final int UPPER_LOTTERY_BOUND = 100_000;
+
+    // WORK WITH RECAPTHA
+    public static final String RECAPTHA_URL = "https://www.google.com/recaptcha/api/siteverify";
+    public static final String RECAPTCHA_SECRET = "6LeKaQ8TAAAAAO9mHKXwvoVVor232VnhAaUXlzmy";
+
 }

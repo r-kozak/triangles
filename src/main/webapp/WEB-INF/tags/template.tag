@@ -31,6 +31,7 @@
 			<a href="${pageContext.request.contextPath}/home"><img src="${pageContext.request.contextPath}/resources/img/logo.png" align="middle"></a>
 		</div>
  		<div class="headerNav">
+ 			<a title="Беседка" href="${pageContext.request.contextPath}/arbor"><span class="glyphicon glyphicon glyphicon-bullhorn"></span></a>
  			<a title="Рейтинг" href="${pageContext.request.contextPath}/rating"><span class="glyphicon glyphicon glyphicon-star"></span></a>
  			<a title="wiki" href="${pageContext.request.contextPath}/wiki"><span class="glyphicon glyphicon-question-sign"></span></a>
 			<a title="Выход" href="${pageContext.request.contextPath}/exit"><span class="glyphicon glyphicon-log-out"></span></a>

@@ -27,6 +27,7 @@ import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlowT;
+import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.TransferT;
 import com.kozak.triangles.search.CommPropSearch;
 import com.kozak.triangles.search.RealEstateProposalsSearch;
@@ -77,7 +78,7 @@ public class PropertyController extends BaseController {
 
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
-        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
         model.addAttribute("reps", reps);
         model.addAttribute("types", SearchCollections.getCommBuildTypes());
         model.addAttribute("areas", SearchCollections.getCityAreas());
@@ -146,18 +147,20 @@ public class PropertyController extends BaseController {
                     Date purchDate = new Date();
                     long price = prop.getPurchasePrice();
 
-                    String propName = "property-" + new Random().getHash(5); // новое имя имущества
+                    CityAreasT cityArea = prop.getCityArea();
+                    // новое имя имущества
+                    String propName = new Random().generatePropertyName(buildData.getCommBuildType(), cityArea);
                     // если имущ. новое - добавить новое имущество пользователю, иначе - изменить владельца у б/у
                     if (prop.getUsedId() == 0) {
-                        Property newProp = new Property(buildData, userId, prop.getCityArea(), purchDate, price,
+                        Property newProp = new Property(buildData, userId, cityArea, purchDate, price,
                                 propName);
                         prRep.addProperty(newProp);
 
-                        MoneyController.upUserDomi(Consts.K_DOMI_BUY_BUI_PROP, userId, userRep); // повысить
-                                                                                                 // доминантность
+                        MoneyController.upUserDomi(Consts.K_DOMI_BUY_PROP, userId, userRep); // повысить
+                                                                                             // доминантность
                     } else {
                         // покупка б/у имущества
-                        Util.buyUsedProperty(prop, purchDate, userId, propName, prRep, trRep);
+                        propName = Util.buyUsedProperty(prop, purchDate, userId, prRep, trRep);
                         prop.setUsedId(0);
                     }
 
@@ -228,7 +231,7 @@ public class PropertyController extends BaseController {
         user = userRep.getCurrentUserByLogin(user.getLogin());
 
         String userBalance = trRep.getUserBalance(userId);
-        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
                 user.getDomi());
         model.addAttribute("cps", cps);
         model.addAttribute("comProps", dbResult.get(1)); // все коммерческое имущество юзера
@@ -263,7 +266,7 @@ public class PropertyController extends BaseController {
 
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
-        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
         model.addAttribute("prop", prop);
         // добавим вид деятельности
         // получить данные всех коммерческих строений

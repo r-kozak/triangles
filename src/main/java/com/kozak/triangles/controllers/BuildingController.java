@@ -56,7 +56,7 @@ public class BuildingController extends BaseController {
         Date licenseExpireDate = userLicense.getLossDate(); // дата окончания лицензии
         BuildingController.checkLicenseExpire(licenseExpireDate, userRep, userId); // если кончилась - назначить новую
 
-        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
         model.addAttribute("commBuData", SingletonData.getCommBuildDataArray(buiDataRep)); // данные всех имуществ
         model.addAttribute("constrProjects", consProjectRep.getUserConstructProjects(userId));
         model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии
@@ -174,7 +174,8 @@ public class BuildingController extends BaseController {
                             newBalance, ArticleCashFlowT.CONSTRUCTION_PROPERTY);
                     trRep.addTransaction(tr);
 
-                    MoneyController.upUserDomi(Consts.K_DOMI_BUY_BUI_PROP, userId, userRep); // повысить доминантность
+                    int domiCount = type.ordinal();
+                    MoneyController.upUserDomi(domiCount, userId, userRep); // повысить доминантность
                 }
             }
         }

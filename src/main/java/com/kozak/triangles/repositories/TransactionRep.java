@@ -81,7 +81,9 @@ public class TransactionRep {
      * @return
      * @throws ParseException
      */
-    public List<Object> transList(int page, int userId, TransactSearch ts, boolean showAll) throws ParseException {
+    public List<Object> transList(int userId, TransactSearch ts) throws ParseException {
+        String hql00 = "SELECT count(id) ";
+        String hql01 = "SELECT sum(summa) ";
         String hql0 = "from Transac as tr where tr.userId = :userId";
         String hql1 = "";
         String hql2 = " order by id DESC";
@@ -110,22 +112,36 @@ public class TransactionRep {
             params.put("acf", articles);
         }
 
-        Query query = em.createQuery(hql0 + hql1 + hql2);
+        List<Object> result = new ArrayList<Object>(2); // результат
+
+        // подсчет общего количества элементов, учитывая заданные параметры
+        Query query = em.createQuery(hql00 + hql0 + hql1);
+        // установка параметров
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        result.add(query.getSingleResult());
+
+        // подсчет общей суммы транзакций с заданными параметрами
+        query = em.createQuery(hql01 + hql0 + hql1);
+        // установка параметров
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        result.add(query.getSingleResult());
+
+        // получение транзакций, учитывая параметры и пагинацию
+        query = em.createQuery(hql0 + hql1 + hql2);
         // установка параметров
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
 
-        List<Object> result = new ArrayList<Object>(2); // результат
-        int totalCount = query.getResultList().size();// общее количество транзакций для пагинации
+        int page = Integer.parseInt(ts.getPage());
+        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+        query.setFirstResult(firstResult);
+        query.setMaxResults(Consts.ROWS_ON_PAGE);
 
-        if (!showAll) { // если показывать не все транзакции
-            int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
-            query.setFirstResult(firstResult);
-            query.setMaxResults(Consts.ROWS_ON_PAGE);
-        }
-
-        result.add(totalCount);
         result.add(query.getResultList());
 
         return result;

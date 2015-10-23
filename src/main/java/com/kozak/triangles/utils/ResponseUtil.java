@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 
 import com.kozak.triangles.repositories.PropertyRep;
 
@@ -38,5 +39,15 @@ public class ResponseUtil {
         resultJson.put("newBalance", Util.moneyFormat(userMoney - sum));
         resultJson.put("newSolvency",
                 Util.moneyFormat(Util.getSolvency(String.valueOf(userMoney - sum), prRep, userId)));
+    }
+
+    public static Model addMoneyInfoToModel(Model model, String userBalance, Long userSolvency, int userDomi) {
+        String balance = Util.moneyFormat(Long.valueOf(userBalance));
+        String solvency = Util.moneyFormat(userSolvency);
+        String domi = Util.moneyFormat(userDomi);
+        model.addAttribute("solvency", solvency);
+        model.addAttribute("balance", balance);
+        model.addAttribute("domi", domi);
+        return model;
     }
 }

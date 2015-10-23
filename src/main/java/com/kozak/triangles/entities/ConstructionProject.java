@@ -72,7 +72,7 @@ public class ConstructionProject {
     public ConstructionProject(CommBuildingsT commBuildingType, Date finishDate, CityAreasT cityArea,
             BuildersT buildersType, int userId) {
         this.startDate = new Date();
-        this.name = "property-" + new Random().getHash(5);
+        this.name = new Random().generatePropertyName(commBuildingType, cityArea);
 
         this.buildingType = commBuildingType;
         this.finishDate = finishDate;

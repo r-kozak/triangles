@@ -1,15 +1,19 @@
 package com.kozak.triangles.controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entities.CommBuildData;
@@ -28,12 +32,16 @@ import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.ProposalGenerator;
 import com.kozak.triangles.utils.Random;
+import com.kozak.triangles.utils.RecaptchaVerifier;
+import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @Controller
 public class HomeController extends BaseController {
+
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     String homeGET(User user, Model model) throws InterruptedException {
@@ -84,7 +92,8 @@ public class HomeController extends BaseController {
         // статистика
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
-        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+                userDomi);
         model.addAttribute("rePrCo", rePrRep.allPrCount(false, userId)); // колво предложений на рынке имущества
         model.addAttribute("newRePrCo", rePrRep.allPrCount(true, userId)); // новых предложений на рын.имущ.
         model.addAttribute("ready", prRep.allPrCount(userId, true, false)); // колво готовых к сбору дохода
@@ -119,7 +128,8 @@ public class HomeController extends BaseController {
 
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
-        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+                userDomi);
 
         List<Object[]> users = userRep.getUserRating();
         model.addAttribute("users", users);
@@ -134,7 +144,8 @@ public class HomeController extends BaseController {
         int userId = user.getId();
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
-        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+                userDomi);
 
         // данные имущества
         model.addAttribute("commBuData", buiDataRep.getCommBuildDataList());
@@ -168,6 +179,38 @@ public class HomeController extends BaseController {
         // цены на лотерейные билеты
         model.addAttribute("ticketsPrice", Consts.LOTTERY_TICKETS_PRICE);
         return "wiki";
+    }
+
+    /**
+     * Страница беседки
+     */
+    @RequestMapping(value = "/arbor", method = RequestMethod.GET)
+    String arbor(User user, Model model) {
+        int userId = user.getId();
+        String userBalance = trRep.getUserBalance(userId);
+        int userDomi = userRep.getUserDomi(userId);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+                userDomi);
+
+        return "arbor";
+    }
+
+    /**
+     * Постинг сообщения со страницы беседки
+     * 
+     * @throws IOException
+     */
+    @RequestMapping(value = "/arbor", method = RequestMethod.POST)
+    String postMessage(@RequestParam("message") String message,
+            @RequestParam("g-recaptcha-response") String gRecapResp, User user, Model model) throws IOException {
+
+        logger.debug("message from arbor: {}", message);
+
+        boolean validRecaptcha = RecaptchaVerifier.verify(gRecapResp);
+
+        logger.debug("recaptcha valid: {}", validRecaptcha);
+
+        return "redirect:/arbor";
     }
 
     /**
@@ -363,7 +406,7 @@ public class HomeController extends BaseController {
         for (RealEstateProposal rep : outdated) {
             // если это б/у имущество - начислить деньги продавцу
             if (rep.getUsedId() != 0) {
-                Util.buyUsedProperty(rep, new Date(), 0, "sold", prRep, trRep);
+                Util.buyUsedProperty(rep, new Date(), 0, prRep, trRep);
             }
 
             // rePrRep.removeReProposalByUsedId(rep.getId());
@@ -376,7 +419,6 @@ public class HomeController extends BaseController {
      * проверка, первый ли раз вошли в игру. если первый - добавляем начальные транзакции пользователю
      * 
      * @throws InterruptedException
-     * 
      */
     private void checkFirstTime(User user) throws InterruptedException {
         Date lastBonus = user.getLastBonus();

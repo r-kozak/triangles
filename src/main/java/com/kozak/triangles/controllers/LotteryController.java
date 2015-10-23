@@ -123,11 +123,10 @@ public class LotteryController extends BaseController {
 
         List<Object> fromDB = lotteryRep.getLotteryStory(userId, ls);
         long itemsCount = (long) fromDB.get(0);
-        int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE)
-                + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+        int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE) + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 
-        int currPage = Integer.parseInt(ls.getPage());
         if (totalPages > 1) {
+            int currPage = Integer.parseInt(ls.getPage());
             String paginationTag = TagCreator.paginationTag(totalPages, currPage, req);
             model.addAttribute("paginationTag", paginationTag);
         }
@@ -140,7 +139,7 @@ public class LotteryController extends BaseController {
         long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
         long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
 
-        model = Util.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
         model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
         model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
         model.addAttribute("lotteryStory", fromDB.get(1)); // информация о розыгрышах
@@ -468,7 +467,8 @@ public class LotteryController extends BaseController {
         CommBuildData buildData = mapData.get(article.name());
 
         for (int i = 0; i < countOfProperties; i++) {
-            String name = "property-" + new Random().getHash(5); // имя нового имущества
+            // имя нового имущества
+            String name = new Random().generatePropertyName(buildData.getCommBuildType(), CityAreasT.GHETTO);
             long price = buildData.getPurchasePriceMin(); // цена нового имущества (всегда минимальная)
 
             Property prop = new Property(buildData, userId, CityAreasT.GHETTO, new Date(), price, name);
