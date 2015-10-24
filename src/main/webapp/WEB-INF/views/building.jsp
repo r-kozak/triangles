@@ -222,7 +222,7 @@ $('#build_btn').on('click', function() {
 	  		  url: "${pageContext.request.contextPath}/building/pre-build",
 	  		  data:  { buiType: bui_type },
 	  		  dataType: "json",
-	  		  async:true
+	  		  async:false
 	  		}).done(function(data) {
 				if (data.error) {
 					// показать сообщение с ошибкой
@@ -261,7 +261,7 @@ function confirmBuild(bui_type, city_area) {
 		  url: "${pageContext.request.contextPath}/building/confirm-build",
 		  data:  { buiType: bui_type, cityArea: city_area },
 		  dataType: "json",
-		  async:true
+		  async:false
 		}).done(function(data) {
 			if (data.error) {
 				// показать сообщение с ошибкой
@@ -285,7 +285,7 @@ function buildFromConstruct(btn_from_constr) {
 		  url: "${pageContext.request.contextPath}/building/from-construct",
 		  data:  { constrId: btn_from_constr.id },
 		  dataType: "json",
-		  async:true
+		  async:false
 		}).done(function(data) {
 			if (data.error) {
 				// показать сообщение с ошибкой
@@ -308,7 +308,7 @@ function buyLicense(btnBuy) {
 		  url: "${pageContext.request.contextPath}/building/license-buy-info",
 		  data:  { level: buyLevel },
 		  dataType: "json",
-		  async:true
+		  async:false
 		}).done(function(data) {
 			if (data.error) {
 				// показать сообщение с ошибкой
@@ -345,7 +345,7 @@ function confirmBuyLicense(buyLevel) {
 		  url: "${pageContext.request.contextPath}/building/license-buy",
 		  data:  { level: buyLevel },
 		  dataType: "json",
-		  async:true
+		  async:false
 		}).done(function(data) {
 			if (data.error) {
 				// показать сообщение с ошибкой

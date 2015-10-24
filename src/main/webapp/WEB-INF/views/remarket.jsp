@@ -51,7 +51,7 @@
 	        		  url: "${pageContext.request.contextPath}/property/buy",
 	        		  data:  { propId: propId, action: "info" },
 	        		  dataType: "json",
-	        		  async:true
+	        		  async:false
 	        		}).done(function(data) {
 	        			$('#modal_confirm').unbind('click'); // удалим все обработчики события 'click' у элемента modal_confirm
 	        			
@@ -108,7 +108,7 @@
       		  url: "${pageContext.request.contextPath}/property/buy",
       		  data:  { propId: propId, action: "confirm" },
       		  dataType: "json",
-      		  async:true
+      		  async:false
       		}).done(function(data) {
       			$('#modal_confirm').unbind('click'); // удалим все обработчики события 'click' у элемента modal_confirm
 

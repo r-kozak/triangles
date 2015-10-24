@@ -251,7 +251,7 @@ $(document).ready(function(){
   		  url: "${pageContext.request.contextPath}/buy-triangles",
   		  data:  { count: count_, action: "confirm" },
   		  dataType: "json",
-  		  async:true
+  		  async:false
   		}).done(function(data) {
   			window.location.replace('${pageContext.request.contextPath}/transactions');
   		});

@@ -78,7 +78,8 @@ public class PropertyController extends BaseController {
 
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+                userDomi);
         model.addAttribute("reps", reps);
         model.addAttribute("types", SearchCollections.getCommBuildTypes());
         model.addAttribute("areas", SearchCollections.getCityAreas());
@@ -266,7 +267,8 @@ public class PropertyController extends BaseController {
 
         String userBalance = trRep.getUserBalance(userId);
         int userDomi = userRep.getUserDomi(userId);
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+                userDomi);
         model.addAttribute("prop", prop);
         // добавим вид деятельности
         // получить данные всех коммерческих строений
@@ -389,7 +391,9 @@ public class PropertyController extends BaseController {
                     ResponseUtil.putErrorMsg(resultJson,
                             "Ваша состоятельность не позволяет вам ремонтировать имущество!");
                 } else {
-                    repair(resultJson, prop, newDeprPerc, newSellingPrice, userMoney, repairSum, userId);
+                    if (repairSum > 0) {
+                        repair(resultJson, prop, newDeprPerc, newSellingPrice, userMoney, repairSum, userId);
+                    }
                 }
             } else if (type.equals("info")) {
                 if (userSolvency <= 0) {

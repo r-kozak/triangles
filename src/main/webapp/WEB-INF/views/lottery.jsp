@@ -300,7 +300,7 @@ function buyTickets(buy_btn) {
 		  url: "${pageContext.request.contextPath}/lottery/buy-tickets",
 		  data:  { count: count },
 		  dataType: "json",
-		  async:true
+		  async:false
 		}).done(function(data) {
 			if(data.error) {
 				showErrorMsg(data); // показать сообщение с ошибкой
@@ -321,7 +321,7 @@ function playLoto(play_btn) {
 		  url: "${pageContext.request.contextPath}/lottery/play-loto",
 		  data:  { count: count },
 		  dataType: "json",
-		  async:true
+		  async:false
 		}).done(function(data) {
 			if(data.error) {
 				showErrorMsg(data); // показать сообщение с ошибкой
@@ -383,7 +383,7 @@ function getPropForLevelUp(obj) {
 		  url: "${pageContext.request.contextPath}/lottery/level-up",
 		  data:  { reqObj: obj },
 		  dataType: "json",
-		  async:true
+		  async:false
 		}).done(function(data) {
 			 if(data.error) {
 				  showErrorMsg(data); // показать сообщение с ошибкой
@@ -412,8 +412,13 @@ function confirmUpLevel(clickedBtn) {
 	var obj = clickedBtn.id.substring(0, 4);
 	var prop_id = clickedBtn.id.substring(5);
 	
-	$.post("${pageContext.request.contextPath}/lottery/confirm-level-up", { obj: obj, propId: prop_id })
-		.done(function(data) {
+			$.ajax({
+        		  type: 'POST',
+        		  url: "${pageContext.request.contextPath}/lottery/confirm-level-up",
+        		  data:  { obj: obj, propId: prop_id },
+        		  dataType: "json",
+        		  async:false
+        		}).done(function(data) {
 			if(data.error) {
 				showErrorMsg(data); // показать сообщение с ошибкой
 				$('#modalForInfo').modal('hide');

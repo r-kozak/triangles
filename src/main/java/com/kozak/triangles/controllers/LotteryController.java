@@ -139,7 +139,8 @@ public class LotteryController extends BaseController {
         long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
         long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
 
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+                userDomi);
         model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
         model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
         model.addAttribute("lotteryStory", fromDB.get(1)); // информация о розыгрышах
@@ -228,6 +229,7 @@ public class LotteryController extends BaseController {
 
         JSONObject resultJson = new JSONObject();
         int userId = user.getId();
+        user = userRep.find(userId);
         int userTickets = user.getLotteryTickets();
 
         // проверки на правильность количества покупаемых билетов
@@ -269,7 +271,7 @@ public class LotteryController extends BaseController {
                 }
             }
             // снять билеты пользователя
-            user = userRep.find(userId);
+            // user = userRep.find(userId);
             user.setLotteryTickets(userTickets - gamesCount);
             userRep.updateUser(user);
 

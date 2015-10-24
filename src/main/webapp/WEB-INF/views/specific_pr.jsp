@@ -176,7 +176,7 @@ function sendPostLevelUp(action0, obj0) {
     		  url: "${pageContext.request.contextPath}/property/level-up",
     		  data:  { propId: <c:out value='${prop.id}'/>, action: action0, obj: obj0 },
     		  dataType: "json",
-    		  async:true
+    		  async:false
     		}).done(function(data) {
     			if(data.error) {
     				if(obj0 == "cash") {
@@ -205,43 +205,47 @@ function sendPostLevelUp(action0, obj0) {
    
 //отправка запроса на ремонт имущества
 function sendPost(type1) {
-	$.post(
-			  "${pageContext.request.contextPath}/property/repair",
-			  { propId: <c:out value='${prop.id}'/>, type: type1 },
-			  function(data) {
-				  if (data.error) {
-					 	$('#errorMessg').html(data.message);
-				  } else {
-					    $('#deprVal').attr("aria-valuenow", data.percAfterRepair); // прогресс-бар - текущее значение 
-					    $('#deprVal').attr("style", "width: " + data.percAfterRepair + "%"); // показать заполненность прогрессбара
-					    $('#deprBlock').html(Number(data.percAfterRepair) + "%");
-					    $('#sellPriceVal').html(data.propSellingPrice);
-					    changeBal(data);
-					    $('#cancel').trigger('click');
-					    if (data.percAfterRepair == 0) {
-					    	$('#repair_td').html('<h5>Ремонт не нужен.</h5>');
-					    }
-			  		}
-			  	}
-			);
+		  	$.ajax({
+    		  type: 'POST',
+    		  url: "${pageContext.request.contextPath}/property/repair",
+    		  data:  { propId: <c:out value='${prop.id}'/>, type: type1 },
+    		  dataType: "json",
+    		  async:false
+    		}).done(function(data) {
+			  if (data.error) {
+				 	$('#errorMessg').html(data.message);
+			  } else {
+				    $('#deprVal').attr("aria-valuenow", data.percAfterRepair); // прогресс-бар - текущее значение 
+				    $('#deprVal').attr("style", "width: " + data.percAfterRepair + "%"); // показать заполненность прогрессбара
+				    $('#deprBlock').html(Number(data.percAfterRepair) + "%");
+				    $('#sellPriceVal').html(data.propSellingPrice);
+				    changeBal(data);
+				    $('#cancel').trigger('click');
+				    if (data.percAfterRepair == 0) {
+				    	$('#repair_td').html('<h5>Ремонт не нужен.</h5>');
+				    }
+		  		}
+		  	});
 }
 
 //отправка запроса на продажу / отмену продажи имущества
 function sendSellPost() {
-	$.post(
-			  "${pageContext.request.contextPath}/property/sell",
-			  { propId: <c:out value='${prop.id}'/>, action: "sell" },
-			  function(data) {
-				  if (!data.error) {
-					sellProperty(data);		  
-				  } else {
-					  $('#modalErrorBody').html('Ошибка! Нельзя отменить. Возможно имущество уже купили. Проверьте ' + 
-							  '<a href="${pageContext.request.contextPath}/transactions" target="_blank">транзакции.</a>' + 
-							  'Или сразу идите <a href="${pageContext.request.contextPath}/home">домой</a>, потому что сдесь уже делать нечего...');
-					  $('#modalError').modal();
-				  }
-			  	}
-			);
+		  $.ajax({
+    		  type: 'POST',
+    		  url: "${pageContext.request.contextPath}/property/sell",
+    		  data:  { propId: <c:out value='${prop.id}'/>, action: "sell" },
+    		  dataType: "json",
+    		  async:false
+    		}).done(function(data) {
+			  if (!data.error) {
+				sellProperty(data);		  
+			  } else {
+				  $('#modalErrorBody').html('Ошибка! Нельзя отменить. Возможно имущество уже купили. Проверьте ' + 
+						  '<a href="${pageContext.request.contextPath}/transactions" target="_blank">транзакции.</a>' + 
+						  'Или сразу идите <a href="${pageContext.request.contextPath}/home">домой</a>, потому что сдесь уже делать нечего...');
+				  $('#modalError').modal();
+			  }
+		  	});
 }
 
 // функция вызывается при загрузке страницы - для показа кнопки "Продать"
