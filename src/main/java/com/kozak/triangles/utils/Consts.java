@@ -4,6 +4,9 @@ package com.kozak.triangles.utils;
  * @author Roman: 13 июня 2015 г. 12:18:06
  */
 public final class Consts {
+    // ЛОГИН АДМИНА
+    public static final String ADMIN_LOGIN = "admin";
+
     // кредитные и депозитные ставки (месячная, НЕ %)
     public static final double CREDIT_RATE = 20.0 / 100;
     public static final double DEPOSIT_RATE = 15.0 / 100;
@@ -67,5 +70,8 @@ public final class Consts {
     // WORK WITH RECAPTHA
     public static final String RECAPTHA_URL = "https://www.google.com/recaptcha/api/siteverify";
     public static final String RECAPTCHA_SECRET = "6LeKaQ8TAAAAAO9mHKXwvoVVor232VnhAaUXlzmy";
+
+    // длина сообщения из беседки с погрешностью на пробелы и др. знаки
+    public static final int MSG_LEN = 600;
 
 }

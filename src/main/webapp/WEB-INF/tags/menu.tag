@@ -20,6 +20,9 @@
 		<div id="elMenu">
 			<a href="${pageContext.request.contextPath}/lottery">Лотерея</a>
 		</div>
+		<div id="elMenu">
+			<a href="${pageContext.request.contextPath}/arbor">Беседка</a>
+		</div>
 		
 		<jsp:doBody/>
 </div>

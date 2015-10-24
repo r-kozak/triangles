@@ -1,6 +1,5 @@
 package com.kozak.triangles.controllers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entities.CommBuildData;
@@ -32,7 +30,6 @@ import com.kozak.triangles.utils.Consts;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.ProposalGenerator;
 import com.kozak.triangles.utils.Random;
-import com.kozak.triangles.utils.RecaptchaVerifier;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.Util;
@@ -179,38 +176,6 @@ public class HomeController extends BaseController {
         // цены на лотерейные билеты
         model.addAttribute("ticketsPrice", Consts.LOTTERY_TICKETS_PRICE);
         return "wiki";
-    }
-
-    /**
-     * Страница беседки
-     */
-    @RequestMapping(value = "/arbor", method = RequestMethod.GET)
-    String arbor(User user, Model model) {
-        int userId = user.getId();
-        String userBalance = trRep.getUserBalance(userId);
-        int userDomi = userRep.getUserDomi(userId);
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
-                userDomi);
-
-        return "arbor";
-    }
-
-    /**
-     * Постинг сообщения со страницы беседки
-     * 
-     * @throws IOException
-     */
-    @RequestMapping(value = "/arbor", method = RequestMethod.POST)
-    String postMessage(@RequestParam("message") String message,
-            @RequestParam("g-recaptcha-response") String gRecapResp, User user, Model model) throws IOException {
-
-        logger.debug("message from arbor: {}", message);
-
-        boolean validRecaptcha = RecaptchaVerifier.verify(gRecapResp);
-
-        logger.debug("recaptcha valid: {}", validRecaptcha);
-
-        return "redirect:/arbor";
     }
 
     /**
