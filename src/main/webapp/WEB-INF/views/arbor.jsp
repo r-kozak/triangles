@@ -109,7 +109,8 @@
 					</div>
 				</c:forEach>
 				
-	 		</div> <!-- container.row.col-md-9 - лицензии-->
-		</div> <!-- container.row - строка с кнопкой Строить и с лицензиями-->
+	 		</div> <!-- container.row.col-md-9-->
+		</div> <!-- container.row -->
 	</div> 
+	<t:footer></t:footer>
 </t:template>

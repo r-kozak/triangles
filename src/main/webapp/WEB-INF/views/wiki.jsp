@@ -7,9 +7,6 @@
 
 <title>Wiki</title>
 <style>
-.content {
-	width: 1050 !important;
-}
 #contents {
 	border: 1px solid;
 	width: auto;
@@ -808,4 +805,5 @@ p {
 			<h1>
 		</div>
 	</div>
+	<t:footer></t:footer>
 </t:template>

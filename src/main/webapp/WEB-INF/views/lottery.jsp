@@ -230,6 +230,7 @@
         ${paginationTag}
     </ul>
 </div> <!-- container -->
+<t:footer></t:footer>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>

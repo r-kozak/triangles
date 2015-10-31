@@ -251,6 +251,8 @@
 		</div>
 	</div>
 </div>
+<t:footer></t:footer>
+
 <div id="balChan">
 	<c:choose>
 		<c:when test="${changeBal.length() > 0}">
@@ -322,7 +324,6 @@ $(document).ready(function(){
 		} else {
 			$("#sell_all_btn").attr('disabled', true);
 		}
-		console.log(selected);
     }
     
     $("#sell_all_btn").on('click', function() {

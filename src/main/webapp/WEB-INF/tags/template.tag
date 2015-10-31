@@ -55,7 +55,6 @@
 		</table>
 	</div>	
 	<jsp:doBody/>
-	
-
 </body>
+
 </html>

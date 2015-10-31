@@ -254,4 +254,5 @@
 			</table>
 		</div>
 	</div>
+	<t:footer></t:footer>
 </t:template>

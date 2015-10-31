@@ -56,7 +56,8 @@ public class BuildingController extends BaseController {
         Date licenseExpireDate = userLicense.getLossDate(); // дата окончания лицензии
         BuildingController.checkLicenseExpire(licenseExpireDate, userRep, userId); // если кончилась - назначить новую
 
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+                userDomi);
         model.addAttribute("commBuData", SingletonData.getCommBuildDataArray(buiDataRep)); // данные всех имуществ
         model.addAttribute("constrProjects", consProjectRep.getUserConstructProjects(userId));
         model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии
@@ -108,6 +109,12 @@ public class BuildingController extends BaseController {
                 resultJson.put("price", "Цена постройки: <b>" + priceOfBuilt + "&tridot;</b>"); // цена постройки
                 resultJson.put("balanceAfter", "Баланс после постройки: <b>" + (userMoney - priceOfBuilt)
                         + "&tridot;</b>"); // баланс после постройки
+
+                resultJson.put(
+                        "solvencyAfter",
+                        "Состоятельность после постройки: <b>"
+                                + Util.getSolvency(String.valueOf(userMoney - priceOfBuilt), prRep, userId)
+                                + "&tridot;</b>"); // состоятельность после постройки
                 resultJson.put("exploitation",
                         "Дата приема в эксплуатацию (при скорости 1.0): <b>" + DateUtils.dateToString(exploitation)
                                 + "</b>");
@@ -118,7 +125,7 @@ public class BuildingController extends BaseController {
 
     @RequestMapping(value = "/confirm-build", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
     public @ResponseBody ResponseEntity<String> confirmBuildProperty(@RequestParam("buiType") String buiType,
-            @RequestParam("cityArea") String cityArea, User user) {
+            @RequestParam("cityArea") String cityArea, @RequestParam("count") int count, User user) {
 
         // получить данные всех коммерческих строений
         HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
@@ -126,8 +133,6 @@ public class BuildingController extends BaseController {
         JSONObject resultJson = new JSONObject();
         int userId = user.getId();
 
-        long userMoney = Long.parseLong(trRep.getUserBalance(userId));
-        long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
         User userWithLicense = userRep.getUserWithLicense(userId); // пользователь с лицензиями
         byte userLicenseLevel = userWithLicense.getUserLicense().getLicenseLevel();
 
@@ -137,45 +142,53 @@ public class BuildingController extends BaseController {
             ResponseUtil.putErrorMsg(resultJson, "Нет такого типа имущества.");
         } else {
             long priceOfBuilt = dataOfBuilding.getPurchasePriceMin(); // цена постройки = минимальная цена покупки
-            if (userSolvency < priceOfBuilt) { // не хватает денег
-                ResponseUtil.putErrorMsg(resultJson,
-                        "Не хватает денег на постройку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency)
-                                + "&tridot;</b>");
-            } else {
-                // проверка можно ли строить в районе, что выбрал пользователь
-                boolean cityAreaError = userLicenseLevel - 1 < CityAreasT.valueOf(cityArea).ordinal();
-                if (cityAreaError) {
+
+            for (int i = 0; i < count; i++) {
+                long userMoney = Long.parseLong(trRep.getUserBalance(userId));
+                long userSolvency = Util.getSolvency(String.valueOf(userMoney), prRep, userId); // состоятельность
+
+                if (userSolvency < priceOfBuilt * (count - i)) { // не хватает денег
                     ResponseUtil.putErrorMsg(resultJson,
-                            "Ваша лицензия не позволяет строить в выбранном районе. Уровень лицензии: "
-                                    + userLicenseLevel);
+                            "Не хватает денег на постройку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency)
+                                    + "&tridot;</b>");
+                    break;
                 } else {
+                    // проверка можно ли строить в районе, что выбрал пользователь
+                    boolean cityAreaError = userLicenseLevel - 1 < CityAreasT.valueOf(cityArea).ordinal();
+                    if (cityAreaError) {
+                        ResponseUtil.putErrorMsg(resultJson,
+                                "Ваша лицензия не позволяет строить в выбранном районе. Уровень лицензии: "
+                                        + userLicenseLevel);
+                    } else {
 
-                    // создать модель имущества в процессе стройки
-                    CommBuildingsT type = dataOfBuilding.getCommBuildType(); // тип постройки
-                    CityAreasT cityAreaType = CityAreasT.valueOf(cityArea); // район города
-                    byte indexBuildersType = generateIndexOfBuilders(); // тип строителей числовой
-                    BuildersT buildersType = BuildersT.values()[indexBuildersType];// тип строителей
+                        // создать модель имущества в процессе стройки
+                        CommBuildingsT type = dataOfBuilding.getCommBuildType(); // тип постройки
+                        CityAreasT cityAreaType = CityAreasT.valueOf(cityArea); // район города
+                        byte indexBuildersType = generateIndexOfBuilders(); // тип строителей числовой
+                        BuildersT buildersType = BuildersT.values()[indexBuildersType];// тип строителей
 
-                    // часов на постройку = дней на постройку * 24 часа * коеф. типа строителей
-                    int hoursToConstruct = Math.round((dataOfBuilding.getBuildTime() * 24)
-                            / Consts.BUILDERS_COEF[indexBuildersType]);
+                        // часов на постройку = дней на постройку * 24 часа * коеф. типа строителей
+                        int hoursToConstruct = Math.round((dataOfBuilding.getBuildTime() * 24)
+                                / Consts.BUILDERS_COEF[indexBuildersType]);
 
-                    Date finishDate = DateUtils.addHours(hoursToConstruct); // дата окончания стройки
+                        Date finishDate = DateUtils.addHours(hoursToConstruct); // дата окончания стройки
 
-                    ConstructionProject constructionProject = new ConstructionProject(type, finishDate, cityAreaType,
-                            buildersType, userId);
-                    consProjectRep.addConstructionProject(constructionProject);
+                        ConstructionProject constructionProject = new ConstructionProject(type, finishDate,
+                                cityAreaType,
+                                buildersType, userId);
+                        consProjectRep.addConstructionProject(constructionProject);
 
-                    // снять деньги у юзера
-                    String descr = String.format("Постройка имущества %s", constructionProject.getName());
-                    long newBalance = userMoney - priceOfBuilt;
+                        // снять деньги у юзера
+                        String descr = String.format("Постройка имущества %s", constructionProject.getName());
+                        long newBalance = userMoney - priceOfBuilt;
 
-                    Transaction tr = new Transaction(descr, new Date(), priceOfBuilt, TransferT.SPEND, userId,
-                            newBalance, ArticleCashFlowT.CONSTRUCTION_PROPERTY);
-                    trRep.addTransaction(tr);
+                        Transaction tr = new Transaction(descr, new Date(), priceOfBuilt, TransferT.SPEND, userId,
+                                newBalance, ArticleCashFlowT.CONSTRUCTION_PROPERTY);
+                        trRep.addTransaction(tr);
 
-                    int domiCount = type.ordinal();
-                    MoneyController.upUserDomi(domiCount, userId, userRep); // повысить доминантность
+                        int domiCount = type.ordinal();
+                        MoneyController.upUserDomi(domiCount, userId, userRep); // повысить доминантность
+                    }
                 }
             }
         }

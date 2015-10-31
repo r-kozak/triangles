@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.json.simple.JSONObject;
-import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -68,9 +67,12 @@ public class MessageController extends BaseController {
             logger.debug("message from arbor: {}", message);
 
             // сохранить сообщение
-            if (!user.getLogin().equals(Consts.ADMIN_LOGIN)) {
-                message = Jsoup.parse(message).text(); // убрать html теги, если постит не админ
-            }
+            // if (!user.getLogin().equals(Consts.ADMIN_LOGIN)) {
+            // message = Jsoup.parse(message).text(); // убрать html теги, если постит не админ
+            // }
+            message = message.replaceAll("(\r\n|\n)", "<br/>"); // заменить переносы строки на теги
+            logger.debug("msg to DB: {}", message.replaceAll("(\r\n|\n)", "<br/>"));
+
             Messages msg = new Messages(user.getLogin(), message);
             msgRep.addMsg(msg);
         }

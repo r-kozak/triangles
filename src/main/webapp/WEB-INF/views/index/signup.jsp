@@ -1,10 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <html>
 
 
 <head>
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/ico.ico" type="image/x-icon">
+
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css" type="text/css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/login-sign.css" type="text/css">
 <link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/css/bootstrap.min.css'>
@@ -16,7 +19,7 @@
         <a href="${pageContext.request.contextPath}/"><img src="${pageContext.request.contextPath}/resources/img/logo.png" align="middle"></a>
     </div>
     
-    <div class="container">
+    <div class="container" style="min-height: calc(100vh - 70px);">
     	<div class="row">
     		<div class="col-sm-3  col-sm-offset-4 text-center">
 				<form:form class="lsForm" action="signup" commandName="user" method="post" role="form">
@@ -41,5 +44,7 @@
 			</div>
 		</div>
 	</div>
+	<t:footer></t:footer>
 </body>
+
 </html>

@@ -174,6 +174,7 @@
 		</div> <!-- tranBlock (col-md-9)-->
 	</div> <!-- row  -->
 </div> <!-- container -->
+<t:footer></t:footer>
 
 <script type="text/javascript" src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>

@@ -327,7 +327,8 @@
 			</div>
 	</div>	
 </div> <!-- container -->
-	
+<t:footer></t:footer>
+
 	<div id="balChan">
 		<c:if test="${changeBal.length() > 0}">
 			${changeBal}&tridot;

@@ -201,6 +201,7 @@
  		</div>
  	</div>
 </div> <!-- container -->
+<t:footer></t:footer>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
@@ -234,9 +235,14 @@ $('#build_btn').on('click', function() {
 					
 					// сформировать тело модального окна
 					$('#modalQuesBody').html('<div class="text-danger">Выберите район: ' + data.cityAreaTag + '</div> <br/>' +
-							'<div>' + data.price + '</div> <br/>' +
-							'<div>' + data.balanceAfter + '</div> <br/>' +
-							'<div>' + data.exploitation + '</div>');
+							'<div id="price">' + data.price + '</div> <br/>' +
+							'<div id="balance_after">' + data.balanceAfter + '</div> <br/>' +
+							'<div id="solvency_after">' + data.solvencyAfter + '</div> <br/>' +
+							'<div>' + data.exploitation + '</div> <br/>' +
+							'<div>Количество: ' +
+							'<a id="b_count_down" class="btn btn-default"><span class="glyphicon glyphicon-menu-down"></span></a>' + 
+							'  <span>&nbsp;<b></span><span id="b_count">1</span><span></b>&nbsp;&nbsp;</span>' +
+							'<a id="b_count_up" class="btn btn-default"><span class="glyphicon glyphicon-menu-up"></span></a></div>');
 							
 					//назначить обработчик на клик кнопки Подтверждения стройки
 					$('#modal_ques_confirm').unbind('click');
@@ -245,8 +251,19 @@ $('#build_btn').on('click', function() {
 						var city_area = $('#city_area').val();
 						confirmBuild(bui_type, city_area); // функция подтверждения покупки
 					});
+					$('#modal_ques_confirm').attr('disabled', false);
 					
 					$('#modalQues').modal();
+					
+					var price_str = $('#price').html();
+					var price = parseInt(price_str.substring(19, price_str.length - 5));
+					$('#b_count_down').on('click', function() {
+						changeBcount("down", price);
+					});
+
+					$('#b_count_up').on('click', function() {
+						changeBcount("up", price);
+					});
 				}
 	   		}).fail(function(jqXHR, textStatus, errorThrown) {
 	  			alert(jqXHR.status + " " + jqXHR.statusText);
@@ -254,12 +271,50 @@ $('#build_btn').on('click', function() {
 	});
 });
 
+// изменение количества имуществ к постройке
+function changeBcount(action, price) {
+	var b_count_val = parseInt($("#b_count").html());
+	var new_b_count_val = b_count_val;
+	
+	var curr_balance_str = $('#balance_after').html();
+	var curr_balance_int = curr_balance_str.substring(27, curr_balance_str.length - 5);
+	var curr_solvency_str = $('#solvency_after').html();
+	var curr_solvency_int = curr_solvency_str.substring(36, curr_solvency_str.length - 5);
+	var new_balance;
+	var new_solvency;
+	
+	if (action == "down") {
+		if (b_count_val > 1) {
+			new_b_count_val = b_count_val - 1;
+			new_balance = parseInt(curr_balance_int) + price;
+			new_solvency = parseInt(curr_solvency_int) + price;
+		}
+	} else if (action == "up") {
+		new_b_count_val = b_count_val + 1;
+		new_balance = parseInt(curr_balance_int) - price;
+		new_solvency = parseInt(curr_solvency_int) - price;
+	}
+	if (new_b_count_val != b_count_val) {
+		$("#b_count").html(new_b_count_val);
+		
+		$('#balance_after').html('Баланс после постройки: <b>' + new_balance + '&tridot;</b>');
+		$('#solvency_after').html('Состоятельность после постройки: <b>' + new_solvency + '&tridot;</b>');
+		
+		if (new_solvency < 0) {
+			$('#modal_ques_confirm').attr('disabled', true);
+		} else {
+			$('#modal_ques_confirm').attr('disabled', false);
+		}
+	}
+}
+
 // функция подтверждения постройки имущества (тип имущества, район города)
 function confirmBuild(bui_type, city_area) {
+	var count = parseInt($("#b_count").html());
 	$.ajax({
 		  type: 'POST',
 		  url: "${pageContext.request.contextPath}/building/confirm-build",
-		  data:  { buiType: bui_type, cityArea: city_area },
+		  data:  { buiType: bui_type, cityArea: city_area, count: count },
 		  dataType: "json",
 		  async:false
 		}).done(function(data) {

@@ -211,12 +211,6 @@
 
 	</dependencies>
 
-	<!-- <repositories> -->
-	<!-- <repository> -->
-	<!-- <id>hibernatesqlite-maven</id> -->
-	<!-- <url>https://hibernate-sqlite.googlecode.com/svn/trunk/mavenrepo</url> -->
-	<!-- </repository> -->
-	<!-- </repositories> -->
 	<build>
 		<plugins>
 			<plugin>

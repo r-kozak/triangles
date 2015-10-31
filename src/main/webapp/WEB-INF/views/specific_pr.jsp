@@ -429,6 +429,8 @@ function sellProperty(data) {
 		</div>
 	</div>
 </div>
+<t:footer></t:footer>
+
 	<div id="balChan">
 		<c:if test="${changeBal.length() > 0}">
 			${changeBal}&tridot;
