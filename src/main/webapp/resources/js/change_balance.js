@@ -34,3 +34,25 @@ function setPage(obj) {
     document.getElementById('searchForm').submit();
     return false;
 };
+
+//отправка запроса на продажу / отмену продажи имущества
+function sendSellPost(ids, url, isNeedData) {
+  $.ajax({
+	  type: 'POST',
+	  url: url,
+	  data:  { propIds: JSON.stringify(ids), action: "sell" },
+	  dataType: "json",
+	  async:false
+	}).done(function(data) {
+		if (isNeedData) {
+		  if (!data.error) {
+			sellProperty(data);		  
+		  } else {
+			  $('#modalErrorBody').html('Ошибка! Нельзя отменить. Возможно имущество уже купили. Проверьте ' + 
+					  '<a href="${pageContext.request.contextPath}/transactions" target="_blank">транзакции.</a>' + 
+					  'Или сразу идите <a href="${pageContext.request.contextPath}/home">домой</a>, потому что сдесь уже делать нечего...');
+			  $('#modalError').modal();
+		  }
+		}
+  	});
+}

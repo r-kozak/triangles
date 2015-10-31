@@ -37,6 +37,7 @@ import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.SingletonData;
+import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
@@ -187,18 +188,26 @@ public class PropertyController extends BaseController {
      * 
      */
     @RequestMapping(value = "/commerc-pr", method = RequestMethod.GET)
-    public String userProperty(@ModelAttribute("user") User user, Model model, CommPropSearch cps) {
+    public String userProperty(@ModelAttribute("user") User user, Model model, CommPropSearch cps,
+            HttpServletRequest req) {
 
         if (cps.isNeedClear())
             cps.clear();
-
-        int page = Integer.parseInt(cps.getPage());
 
         int userId = user.getId();
         Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
 
         // результат с БД: количество всего; имущество с учетом пагинации;
-        List<Object> dbResult = prRep.getPropertyList(page, userId, cps);
+        List<Object> dbResult = prRep.getPropertyList(userId, cps);
+
+        long itemsCount = (long) dbResult.get(0);
+        int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE) + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+
+        if (totalPages > 1) {
+            int currPage = Integer.parseInt(cps.getPage());
+            String paginationTag = TagCreator.paginationTag(totalPages, currPage, req);
+            model.addAttribute("paginationTag", paginationTag);
+        }
 
         // результат с БД:
         // [
@@ -207,28 +216,9 @@ public class PropertyController extends BaseController {
         // ]
         List<Object> rangeValues = prRep.getRangeValues(userId);
 
-        // Long propCount = Long.valueOf(dbResult.get(0).toString());
-        // int lastPageNumber = (int) (propCount / Consts.ROWS_ON_PAGE) + ((propCount % Consts.ROWS_ON_PAGE != 0) ? 1 :
-        // 0);
-
         cps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
         cps.setDepreciation(rangeValues.get(2), rangeValues.get(3)); // установка мин и макс износа
 
-        // // пересчитать доминантность
-        // List<Property> allPr = (List<Property>) dbResult.get(1);
-        // int userDomi = 0;
-        // for (Property p : allPr) {
-        // userDomi += 10;
-        // for (int i = 0; i < p.getLevel(); i++) {
-        // userDomi += Math.round((i + 1) * Consts.K_PROP_LEVEL_DOMI);
-        // }
-        // for (int i = 0; i < p.getCashLevel(); i++) {
-        // userDomi += i + 1;
-        // }
-        // }
-        // user.setDomi(userDomi);
-        // userRep.updateUser(user);
-        // //
         user = userRep.getCurrentUserByLogin(user.getLogin());
 
         String userBalance = trRep.getUserBalance(userId);
@@ -236,7 +226,6 @@ public class PropertyController extends BaseController {
                 user.getDomi());
         model.addAttribute("cps", cps);
         model.addAttribute("comProps", dbResult.get(1)); // все коммерческое имущество юзера
-        // model.addAttribute("tagNav", TagCreator.tagNav(lastPageNumber, page));
         model.addAttribute("types", SearchCollections.getCommBuildTypes());
         model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);
         model.addAttribute("ready", prRep.allPrCount(userId, true, false)); // колво готовых к сбору дохода
@@ -465,38 +454,43 @@ public class PropertyController extends BaseController {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/sell", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
-    public @ResponseBody ResponseEntity<String> jquerySellProperty(@RequestParam("propId") Integer propId,
+    public @ResponseBody ResponseEntity<String> jquerySellProperty(@RequestParam("propIds") String[] propIds,
             @RequestParam("action") String action, User user) {
 
         JSONObject resultJson = new JSONObject();
         int userId = user.getId();
-        Property prop = prRep.getSpecificProperty(userId, propId);
 
-        if (prop == null) {
-            ResponseUtil.putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
-        } else {
-            if (action.equals("info")) {
-                resultJson.put("onSale", prop.isOnSale());
-                if (prop.isOnSale()) {
-                    String dateVal = DateUtils.dateToString(rePrRep.getProposalByUsedId(prop.getId()).getLossDate());
-                    resultJson.put("endSaleDate", dateVal);
+        for (String propId : propIds) {
+            propId = propId.replace("[", "").replace("]", "").replace("\"", "");
+            Property prop = prRep.getSpecificProperty(userId, Integer.parseInt(propId));
+
+            if (prop == null) {
+                ResponseUtil.putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
+            } else {
+                if (action.equals("info")) {
+                    resultJson.put("onSale", prop.isOnSale());
+                    if (prop.isOnSale()) {
+                        String dateVal = DateUtils
+                                .dateToString(rePrRep.getProposalByUsedId(prop.getId()).getLossDate());
+                        resultJson.put("endSaleDate", dateVal);
+                    }
+                } else if (action.equals("sell")) {
+                    // установить признак, что имущество на продаже или не на продаже
+                    prop.setOnSale(!prop.isOnSale());
+                    prRep.updateProperty(prop);
+
+                    // сформировать новое предложение о покупке или удалить
+                    if (prop.isOnSale()) {
+                        RealEstateProposal reProp = new RealEstateProposal(prop, buiDataRep);
+                        rePrRep.addREproposal(reProp);
+
+                        String dateVal = DateUtils.dateToString(reProp.getLossDate());
+                        resultJson.put("endSaleDate", dateVal);
+                    } else {
+                        rePrRep.removeReProposalByUsedId(prop.getId());
+                    }
+                    resultJson.put("onSale", prop.isOnSale());
                 }
-            } else if (action.equals("sell")) {
-                // установить признак, что имущество на продаже или не на продаже
-                prop.setOnSale(!prop.isOnSale());
-                prRep.updateProperty(prop);
-
-                // сформировать новое предложение о покупке или удалить
-                if (prop.isOnSale()) {
-                    RealEstateProposal reProp = new RealEstateProposal(prop, buiDataRep);
-                    rePrRep.addREproposal(reProp);
-
-                    String dateVal = DateUtils.dateToString(reProp.getLossDate());
-                    resultJson.put("endSaleDate", dateVal);
-                } else {
-                    rePrRep.removeReProposalByUsedId(prop.getId());
-                }
-                resultJson.put("onSale", prop.isOnSale());
             }
         }
         return ResponseUtil.getResponseEntity(resultJson);

@@ -86,7 +86,8 @@ public class PropertyRep {
      * 
      * @return список имущества пользователя для отображения на странице имущества
      */
-    public List<Object> getPropertyList(int page, int userId, CommPropSearch cps) {
+    public List<Object> getPropertyList(int userId, CommPropSearch cps) {
+        String hql00 = "SELECT count(id) ";
         String hql0 = "FROM Property as pr WHERE pr.userId = :userId";
         String hql1 = "";
         String hql2 = " ORDER BY pr.cash DESC, pr.nextProfit";
@@ -125,21 +126,29 @@ public class PropertyRep {
             params.put("percTo", percTo);
         }
 
-        Query query = em.createQuery(hql0 + hql1 + hql2);
+        List<Object> result = new ArrayList<Object>(2); // результат
+
+        // получение общего кол-ва с заданными параметрами
+        Query query = em.createQuery(hql00 + hql0 + hql1);
+        // установка параметров
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        result.add(query.getSingleResult());
+
+        // получение полного списка
+        query = em.createQuery(hql0 + hql1 + hql2);
         // установка параметров
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
 
-        List<Object> result = new ArrayList<Object>(2); // результат
-        int totalCount = query.getResultList().size();// общее количество имущества для пагинации
+        // пагинация
+        int page = Integer.parseInt(cps.getPage());
+        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+        query.setFirstResult(firstResult);
+        query.setMaxResults(Consts.ROWS_ON_PAGE);
 
-        // пагинация - не нужно, будем возвращать все
-        // int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
-        // query.setFirstResult(firstResult);
-        // query.setMaxResults(Consts.ROWS_ON_PAGE);
-
-        result.add(totalCount);
         result.add(query.getResultList());
 
         return result;

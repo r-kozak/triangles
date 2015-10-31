@@ -118,10 +118,13 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 					     <button id="profit_from_all_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Собрать прибыль со всего имущества" >
-					     <span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span></button>
+					       <span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span></button>
 					     	
-					    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip" data-toggle="collapse" data-target="#pr_descr" 
-					     title="Показать или скрыть подробное описание раздела Коммерческое имущество"><span class="glyphicon glyphicon-info-sign"></span></button>
+					     <button id="sell_all_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Продать или отменить продажу выбранного имущества" >
+					       <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span></button>
+					     	
+					     <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip" data-toggle="collapse" data-target="#pr_descr" 
+					       title="Показать или скрыть подробное описание раздела Коммерческое имущество"><span class="glyphicon glyphicon-info-sign"></span></button>
 					</div>
 					<div class="panel-body collapse" id="pr_descr">
 						<p><a href="${pageContext.request.contextPath}/wiki#pr">Коммерческое имущество</a> - это раздел, где можно посмотреть всё коммерческое
@@ -136,6 +139,7 @@
 				<table class="table table-striped" id="prop_table">
 				<thead>
 					<tr class="tableTitleTr">
+						<td style="text-align:center"><input id="select_all" type="checkbox"></td>
 						<td style="text-align:center">Тип</td>
 						<td style="text-align:center">Наименование</td>
 						<td style="text-align:center">Уровень</td>
@@ -144,7 +148,6 @@
 						<td style="text-align:center">Цена продажи, &tridot;</td>
 						<td style="text-align:center">Износ, %</td>
 						<td style="text-align:center">Касса, &tridot;</td>
-						<td style="text-align:center" hidden="true">След. прибыль</td>
 						<td style="text-align:center">Собрать прибыль</td>
 					</tr>
 				<thead>
@@ -159,32 +162,34 @@
 								</c:otherwise>
 							</c:choose>
 							
+							<td><input id="${prop.id}" class="select_prop" type="checkbox"></td>
+							
 							<c:choose>
-							<c:when test="${prop.commBuildingType == 'STALL'}">
-								<td style="text-align:left">Киоск</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
-								<td style="text-align:left">Сельский магазин</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
-								<td style="text-align:left">Магазин	канцтоваров</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'BOOK_SHOP'}">
-								<td style="text-align:left">Книжный магазин</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'CANDY_SHOP'}">
-								<td style="text-align:left">Магазин сладостей</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'LITTLE_SUPERMARKET'}">
-								<td style="text-align:left">Маленький супермаркет</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'MIDDLE_SUPERMARKET'}">
-								<td style="text-align:left">Средний супермаркет</td>
-							</c:when>
-							<c:when test="${prop.commBuildingType == 'BIG_SUPERMARKET'}">
-								<td style="text-align:left">Большой супермаркет</td>
-							</c:when>
-						</c:choose>
+								<c:when test="${prop.commBuildingType == 'STALL'}">
+									<td style="text-align:left">Киоск</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
+									<td style="text-align:left">Сельский магазин</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
+									<td style="text-align:left">Магазин	канцтоваров</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'BOOK_SHOP'}">
+									<td style="text-align:left">Книжный магазин</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'CANDY_SHOP'}">
+									<td style="text-align:left">Магазин сладостей</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'LITTLE_SUPERMARKET'}">
+									<td style="text-align:left">Маленький супермаркет</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'MIDDLE_SUPERMARKET'}">
+									<td style="text-align:left">Средний супермаркет</td>
+								</c:when>
+								<c:when test="${prop.commBuildingType == 'BIG_SUPERMARKET'}">
+									<td style="text-align:left">Большой супермаркет</td>
+								</c:when>
+							</c:choose>
 	
 							<td style="text-align:left"><a class="bg-info" href="${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
 							<td style="text-align:center">${prop.level}</td>
@@ -227,9 +232,6 @@
 								  		style="width: ${prop.cash / prop.cashCapacity * 100}%;"></div> 
 								</div>
 							</td>
-							<td style="text-align:center" hidden="true">
-								<fmt:formatDate value="${prop.nextProfit}" pattern="dd-MM-yyyy HH:mm:ss" />
-							</td>
 							<td style="text-align:center">
 								<c:if test="${prop.cash > 0}">
 										<button class="btn btn-danger btn-lg" title="Собрать прибыль" data-toggle="tooltip" 
@@ -242,6 +244,10 @@
 				</tbody>
 				</table>
 			</c:if>
+			
+			<ul class="pagination" style="float:right">
+        		${paginationTag}
+   			</ul>
 		</div>
 	</div>
 </div>
@@ -259,12 +265,10 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
 
-<!-- Сортировка даты -->
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables-plugins/1.10.7/sorting/datetime-moment.js"></script>
-
 <script>
 $(document).ready(function(){
+	var selected = new Array();
+	
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
     $('[data-toggle="collapse"]').collapse(); // свернуть блок с описанием
     
@@ -280,23 +284,51 @@ $(document).ready(function(){
     	window.location.replace("${pageContext.request.contextPath}/property/get-cash/0");
     });
     
-    $.fn.dataTable.moment('DD-MM-YYYY HH:mm:ss'); // сортировка даты в табличке
-    
     //если нет имущества с НЕ собранным доходом - сделать кнопку "Собрать всё" не активной
     var noReady = ${ready <= 0};
     if (noReady == true) {
 		$("#profit_from_all_btn").attr('disabled', true);
-		
-	    //красивая табличка
-	    $('#prop_table').dataTable( { // сделать сортировку, пагинацию, поиск
-	        "order": [[ 8, "asc" ]] // сортировка по след. прибыли
-	    });
-	} else {
-	    //красивая табличка
-	    $('#prop_table').dataTable( { // сделать сортировку, пагинацию, поиск
-	        "order": [[ 7, "desc" ]] // сортировка по деньгам в кассе
-	    });
 	}
+    $("#sell_all_btn").attr('disabled', true); // неактивная кнопка 'Продать все'
+    
+    // при нажатии на чекбокс "Выбрать все"
+    $('#select_all').on('change', function() {
+    	var checked = document.getElementById('select_all').checked;
+    	
+    	if (checked) {
+			$('.select_prop').prop('checked', true);
+			refreshSelected();
+		} else {
+			$('.select_prop').prop('checked', false);
+			refreshSelected();
+		}
+    });
+    
+    // при нажатии на один из чекбоксов имущества
+    $('.select_prop').on('change', function() {
+	    refreshSelected();
+    });
+    
+    // обновляет массив в выбранным имуществом
+    function refreshSelected() {
+    	selected = new Array();
+    	var count = 0;
+		$("input:checkbox[class=select_prop]:checked").each(function() {
+	        selected.push($(this).attr('id'));
+	        count++;
+	    });
+		if (count > 0) {
+			$("#sell_all_btn").attr('disabled', false);		
+		} else {
+			$("#sell_all_btn").attr('disabled', true);
+		}
+		console.log(selected);
+    }
+    
+    $("#sell_all_btn").on('click', function() {
+    	sendSellPost(selected, "${pageContext.request.contextPath}/property/sell", false);
+    	window.location.replace('${pageContext.request.contextPath}/property/commerc-pr');
+    });
 });
 </script>
 

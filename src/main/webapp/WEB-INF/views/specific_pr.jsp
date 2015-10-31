@@ -135,17 +135,22 @@ window.onload = function(){
 	
 	//послать пост запрос на получении информации о имуществе (на продаже или нет)
 	//также назначить обработчик при клике мышей по кнопке Продать
-	$.post(
-			  "${pageContext.request.contextPath}/property/sell",
-			  { propId: <c:out value='${prop.id}'/>, action: "info" },
-			  function(data) { 
-				  sellProperty(data);
-				  $('#propSellBut').on('click', function() {
-					  sendSellPost(); // послать запрос чтобы продать или отменить продажу
-					  $('#'+$('#propSellBut').attr('aria-describedby')).remove(); // удаление подсказки
-				  });
-			  	}
-			);
+    var idAr = new Array();
+    idAr.push(<c:out value='${prop.id}'/>);
+    
+    $.ajax({
+  	  type: 'POST',
+  	  url: "${pageContext.request.contextPath}/property/sell",
+  	  data:  { propIds: JSON.stringify(idAr), action: "info" },
+  	  dataType: "json",
+  	  async:false
+  	}).done(function(data) {
+		  sellProperty(data);
+		  $('#propSellBut').on('click', function() {
+			  sendSellPost(idAr, "${pageContext.request.contextPath}/property/sell", true); // послать запрос чтобы продать или отменить продажу
+			  $('#'+$('#propSellBut').attr('aria-describedby')).remove(); // удаление подсказки
+		  });
+	});
 	
 	// при нажатии Переименовать
 	$('#change_name_btn').on('click', function() {
@@ -225,26 +230,6 @@ function sendPost(type1) {
 				    	$('#repair_td').html('<h5>Ремонт не нужен.</h5>');
 				    }
 		  		}
-		  	});
-}
-
-//отправка запроса на продажу / отмену продажи имущества
-function sendSellPost() {
-		  $.ajax({
-    		  type: 'POST',
-    		  url: "${pageContext.request.contextPath}/property/sell",
-    		  data:  { propId: <c:out value='${prop.id}'/>, action: "sell" },
-    		  dataType: "json",
-    		  async:false
-    		}).done(function(data) {
-			  if (!data.error) {
-				sellProperty(data);		  
-			  } else {
-				  $('#modalErrorBody').html('Ошибка! Нельзя отменить. Возможно имущество уже купили. Проверьте ' + 
-						  '<a href="${pageContext.request.contextPath}/transactions" target="_blank">транзакции.</a>' + 
-						  'Или сразу идите <a href="${pageContext.request.contextPath}/home">домой</a>, потому что сдесь уже делать нечего...');
-				  $('#modalError').modal();
-			  }
 		  	});
 }
 
