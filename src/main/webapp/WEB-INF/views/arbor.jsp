@@ -72,7 +72,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<span class="text-success">Сказать пару слов:</span>
-							<textarea id="newMsgText" name="message" class="form-control" wrap="hard" cols="80" rows="5" style="resize:none; 
+							<textarea id="newMsgText" name="message" class="form-control" rows="5" style="resize:none; 
 								font-size:13" maxlength="500"></textarea>
 							<span id="leftSymInfo" class="text-muted" style="font-size:11">Осталось: 500 симв.</span>
 						</div>

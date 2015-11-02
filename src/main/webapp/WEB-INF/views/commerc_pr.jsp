@@ -142,6 +142,12 @@
 					     	
 					     <button id="sell_all_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Продать или отменить продажу выбранного имущества" >
 					       <span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span></button>
+					       
+					     <button id="multiple_level_up_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Повысить уровень до максимально возможного" >
+					       <span class="glyphicon glyphicon-menu-up" aria-hidden="true">И</span></button>
+					       
+					     <button id="multiple_cash_up_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Повысить уровень кассы до максимально возможного" >
+					       <span class="glyphicon glyphicon-menu-up" aria-hidden="true">К</span></button>
 					     	
 					     <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip" data-toggle="collapse" data-target="#pr_descr" 
 					       title="Показать или скрыть подробное описание раздела Коммерческое имущество"><span class="glyphicon glyphicon-info-sign"></span></button>
@@ -311,7 +317,10 @@ $(document).ready(function(){
     if (noReady == true) {
 		$("#profit_from_all_btn").attr('disabled', true);
 	}
+    
     $("#sell_all_btn").attr('disabled', true); // неактивная кнопка 'Продать все'
+    $("#multiple_level_up_btn").attr('disabled', true); // неактивная кнопка 'Повысить уровень имуществ' 
+    $("#multiple_cash_up_btn").attr('disabled', true); // неактивная кнопка 'Повысить уровень касс' 
     
     // при нажатии на чекбокс "Выбрать все"
     $('#select_all').on('change', function() {
@@ -340,9 +349,13 @@ $(document).ready(function(){
 	        count++;
 	    });
 		if (count > 0) {
-			$("#sell_all_btn").attr('disabled', false);		
+			$("#sell_all_btn").attr('disabled', false);	
+			$("#multiple_level_up_btn").attr('disabled', false);
+			$("#multiple_cash_up_btn").attr('disabled', false); 
 		} else {
 			$("#sell_all_btn").attr('disabled', true);
+			$("#multiple_level_up_btn").attr('disabled', true);
+			$("#multiple_cash_up_btn").attr('disabled', true); 
 		}
     }
     
@@ -350,6 +363,28 @@ $(document).ready(function(){
     	sendSellPost(selected, "${pageContext.request.contextPath}/property/sell", false);
     	location = location;
     });
+    
+    $("#multiple_level_up_btn").on('click', function() {
+    	multipleLevelUp('prop');
+    });
+    
+    $("#multiple_cash_up_btn").on('click', function() {
+    	multipleLevelUp('cash');
+    });
+    
+    function multipleLevelUp(obj) {
+		$.ajax({
+			  type: 'GET',
+			  url: "${pageContext.request.contextPath}/property/multiple-level-up",
+			  data:  { propIds: JSON.stringify(selected), obj: obj},
+			  dataType: "json",
+			  async:false
+			}).done(function(data) {
+				location = location;
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				alert(jqXHR.status + " " + jqXHR.statusText);
+			});
+    }
 });
 </script>
 

@@ -443,6 +443,63 @@ public class PropertyController extends BaseController {
     }
 
     /**
+     * Повышение уровня кассы или имущества до максимально возможно и у нескольких имуществ одновременно (одним
+     * запросом)
+     */
+    @RequestMapping(value = "/multiple-level-up", method = RequestMethod.GET, produces = {
+            "application/json; charset=UTF-8" })
+    public @ResponseBody ResponseEntity<String> multipleLevelUp(@RequestParam("propIds") String[] propIds,
+            @RequestParam("obj") String obj, User user) {
+
+        int userId = user.getId();
+        JSONObject resultJson = new JSONObject();
+
+        long userSolvency = Util.getSolvency(trRep, prRep, userId);
+
+        for (String propId : propIds) {
+            if (userSolvency <= 0) {
+                break;
+            }
+
+            propId = propId.replace("[", "").replace("]", "").replace("\"", "");
+            Property prop = prRep.getSpecificProperty(userId, Integer.parseInt(propId));
+
+            if (prop != null) {
+                if (obj.equals("cash")) { // если это повышение для кассы
+                    int nCashLevel = prop.getCashLevel() + 1; // уровень, к которому будем повышать
+
+                    while (true) {
+                        userSolvency = Util.getSolvency(trRep, prRep, userId);
+                        long sum = getSumToCashLevelUp(prop, nCashLevel);
+
+                        if (nCashLevel <= Consts.MAX_CASH_LEVEL && sum <= userSolvency) {
+                            doActionsForCashLevelUp(resultJson, prop, nCashLevel, "up", userSolvency, userId, obj);
+                            nCashLevel++;
+                        } else {
+                            break;
+                        }
+                    }
+                } else if (obj.equals("prop")) {
+                    int nPropLevel = prop.getLevel() + 1; // уровень, к которому будем повышать
+
+                    while (true) {
+                        userSolvency = Util.getSolvency(trRep, prRep, userId);
+                        long sum = getSumToPropLevelUp(prop, nPropLevel);
+
+                        if (nPropLevel <= Consts.MAX_PROP_LEVEL && sum <= userSolvency) {
+                            doActionsForPropLevelUp(resultJson, prop, nPropLevel, "up", userSolvency, userId, obj);
+                            nPropLevel++;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return ResponseUtil.getResponseEntity(resultJson);
+    }
+
+    /**
      * функция продажи имущества возвращает информацию об имуществе или же продает его
      * 
      * @param propId
@@ -585,8 +642,7 @@ public class PropertyController extends BaseController {
             long userSolvency, int userId, String obj) {
 
         // получить сумму повышения уровня
-        // начальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
-        long sum = Math.round(prop.getInitialCost() * Consts.UNIVERS_K[nCashLevel] / Consts.K_DECREASE_CASH_L);
+        long sum = getSumToCashLevelUp(prop, nCashLevel);
 
         // если запросу нужно вернуть сумму улучшения
         if (action.equals("getSum")) {
@@ -594,6 +650,15 @@ public class PropertyController extends BaseController {
         } else if (action.equals("up")) { // если же действие запроса - повысить уровень
             upLevel(resultJson, prop, userSolvency, sum, nCashLevel, userId, obj);
         }
+    }
+
+    /**
+     * возвращает сумму для повышения уровня кассы
+     */
+    private long getSumToCashLevelUp(Property prop, int cashLevel) {
+        // начальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
+        long sum = Math.round(prop.getInitialCost() * Consts.UNIVERS_K[cashLevel] / Consts.K_DECREASE_CASH_L);
+        return sum;
     }
 
     /**
@@ -609,13 +674,8 @@ public class PropertyController extends BaseController {
     private void doActionsForPropLevelUp(JSONObject resultJson, Property prop, int nPropLevel, String action,
             long userSolvency, int userId, String obj) {
 
-        // получить данные всех коммерческих строений
-        HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
-
         // получить сумму повышения уровня
-        // максимальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
-        long maxPrice = mapData.get(prop.getCommBuildingType().name()).getPurchasePriceMax();
-        long sum = Math.round(maxPrice * Consts.UNIVERS_K[nPropLevel] / Consts.K_DECREASE_PROP_L);
+        long sum = getSumToPropLevelUp(prop, nPropLevel);
 
         // если запросу нужно вернуть сумму улучшения
         if (action.equals("getSum")) {
@@ -623,6 +683,20 @@ public class PropertyController extends BaseController {
         } else if (action.equals("up")) { // если же действие запроса - повысить уровень
             upLevel(resultJson, prop, userSolvency, sum, nPropLevel, userId, obj);
         }
+    }
+
+    /**
+     * возвращает сумму для повышения уровня имущества
+     */
+    private long getSumToPropLevelUp(Property prop, int propLevel) {
+        // получить данные всех коммерческих строений
+        HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
+
+        // максимальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
+        long maxPrice = mapData.get(prop.getCommBuildingType().name()).getPurchasePriceMax();
+        long sum = Math.round(maxPrice * Consts.UNIVERS_K[propLevel] / Consts.K_DECREASE_PROP_L);
+
+        return sum;
     }
 
     /**

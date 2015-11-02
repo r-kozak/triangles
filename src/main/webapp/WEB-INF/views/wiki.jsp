@@ -55,7 +55,7 @@
 	width: 55;
 	height: 55;
 	position: fixed;
-	bottom: 50px;
+	bottom: 90px;
 	right: 20px;
 	border-radius: 30px;
 	display: none;
@@ -66,7 +66,7 @@
 	width: 55;
 	height: 55;
 	position: fixed;
-	bottom: 50px;
+	bottom: 90px;
 	right: 20px;
 	border-radius: 30px;
 	display: none;
