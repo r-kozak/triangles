@@ -62,6 +62,9 @@ public class BuildingController extends BaseController {
         model.addAttribute("constrProjects", consProjectRep.getUserConstructProjects(userId));
         model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии
         model.addAttribute("licenseExpire", licenseExpireDate); // окончание лицензии
+        // колво завершенных проектов
+        long countCompletedProj = consProjectRep.getCountOfUserCompletedConstrProject(userId);
+        model.addAttribute("countCompletedProj", countCompletedProj);
 
         return "building";
     }
@@ -208,29 +211,51 @@ public class BuildingController extends BaseController {
         JSONObject resultJson = new JSONObject();
         int userId = user.getId();
 
-        ConstructionProject constrProject = consProjectRep.getUserConstrProjectById(constrId, userId);
-
-        if (constrProject == null) {
-            ResponseUtil.putErrorMsg(resultJson, "У вас нет такого имущества.");
+        if (constrId == 0) {
+            allProjectsFromConstruct(resultJson, userId); // принять все проекты
         } else {
-            if (constrProject.getCompletePerc() < 100) {
+            singleProjectFromConstruct(resultJson, constrId, userId, null); // принять конкретный проект
+        }
+        return ResponseUtil.getResponseEntity(resultJson);
+    }
+
+    private void singleProjectFromConstruct(JSONObject resultJson, int constrId, int userId,
+            ConstructionProject constrProj) {
+
+        // если принимаем одно имущество, тогда проекта у нас нет, мы должны его получить
+        // иначе проект у нас уже есть, т.к. мы его передали сюда из метода принятия всего имущества
+        if (constrProj == null) {
+            constrProj = consProjectRep.getUserConstrProjectById(constrId, userId);
+        }
+
+        if (constrProj == null) {
+            ResponseUtil.putErrorMsg(resultJson, "У вас нет такого имущества. Перезагрузите страницу!");
+        } else {
+            if (constrProj.getCompletePerc() < 100) {
                 ResponseUtil.putErrorMsg(resultJson, "Имущество еще не готово к эксплуатации.");
             } else {
                 // получить данные всех коммерческих строений
                 HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
                 // данные конкретного типа имущества (здания)
-                CommBuildData dataOfBuilding = mapData.get(constrProject.getBuildingType().name());
+                CommBuildData dataOfBuilding = mapData.get(constrProj.getBuildingType().name());
 
                 // добавить имущество (принять в эксплуатацию)
-                Property property = new Property(dataOfBuilding, userId, constrProject.getCityArea(), new Date(),
-                        dataOfBuilding.getPurchasePriceMax(), constrProject.getName());
+                Property property = new Property(dataOfBuilding, userId, constrProj.getCityArea(), new Date(),
+                        dataOfBuilding.getPurchasePriceMax(), constrProj.getName());
                 prRep.addProperty(property);
 
                 // удалить строительный проект
-                consProjectRep.removeConstrProject(constrProject);
+                consProjectRep.removeConstrProject(constrProj);
             }
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+    }
+
+    private void allProjectsFromConstruct(JSONObject resultJson, int userId) {
+        List<ConstructionProject> allCompleted = consProjectRep.getCompletedUserConstructProjects(userId);
+
+        for (ConstructionProject proj : allCompleted) {
+            singleProjectFromConstruct(resultJson, 0, userId, proj);
+        }
     }
 
     @SuppressWarnings("unchecked")

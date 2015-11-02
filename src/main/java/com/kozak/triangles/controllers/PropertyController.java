@@ -225,6 +225,7 @@ public class PropertyController extends BaseController {
         model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
                 user.getDomi());
         model.addAttribute("cps", cps);
+        model.addAttribute("areas", SearchCollections.getCityAreas());
         model.addAttribute("comProps", dbResult.get(1)); // все коммерческое имущество юзера
         model.addAttribute("types", SearchCollections.getCommBuildTypes());
         model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);

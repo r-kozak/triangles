@@ -38,6 +38,16 @@ public class ConstructionProjectRep {
     }
 
     /**
+     * @return все ЗАВЕРШЕННЫЕ проекты строительства конкретного пользователя
+     */
+    @SuppressWarnings("unchecked")
+    public List<ConstructionProject> getCompletedUserConstructProjects(int userId) {
+        String hql = "from ConstructionProject where userId = :userId and completePerc >= 100";
+        Query query = em.createQuery(hql).setParameter("userId", userId);
+        return query.getResultList();
+    }
+
+    /**
      * получить конкретный строительный проект пользователя по ID
      * 
      * @param id

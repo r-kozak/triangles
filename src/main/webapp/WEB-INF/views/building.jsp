@@ -119,8 +119,15 @@
 							<td>Дата начала</td>
 							<td class="hidden-sm">До эксплуатации</td>
 							<td>Завершено, %</td>
-							<td>Принять</td>
+							
+							<c:if test="${countCompletedProj > 0}">
+								<td><button id="0" class="btn btn-danger btn-sm from-constr-btn" 
+										title="Принять всё из строительства" data-toggle="tooltip"> <span class="from_constr_btn_ico">
+										 <span class="glyphicon glyphicon-ok"></span></span></button>
+								</td>
+							</c:if>
 						</tr>
+						
 						<c:forEach items="${constrProjects}" var="constrProject">
 							<tr>
 								<c:choose>
@@ -187,12 +194,16 @@
 											aria-valuemin="0" aria-valuemax="100" style="width: ${constrProject.completePerc}%;"></div>
 									</div>
 								</td>
-								<td>
-									<c:if test="${constrProject.completePerc == 100}">
-										<button id="${constrProject.id}" class="btn btn-danger btn-lg from-constr-btn" 
-											title="Принять объект из строительства" data-toggle="tooltip"> <span class="glyphicon glyphicon-ok"></span></button>
-									</c:if>
-								</td>
+								
+								<c:if test="${countCompletedProj > 0}">
+									<td>
+										<c:if test="${constrProject.completePerc == 100}">
+											<button id="${constrProject.id}" class="btn btn-danger btn-lg from-constr-btn" 
+												title="Принять объект из строительства" data-toggle="tooltip">  <span class="from_constr_btn_ico">
+												<span class="glyphicon glyphicon-ok"></span></span></button>
+										</c:if>
+									</td>
+								</c:if>
 							</tr>
 						</c:forEach>
 					</table>
@@ -335,6 +346,8 @@ function confirmBuild(bui_type, city_area) {
 
 //по нажатию на кнопку Принять из строительства
 function buildFromConstruct(btn_from_constr) {
+	$('.from_constr_btn_ico').html('<span class="glyphicon glyphicon-hourglass"></span>');
+	
 	$.ajax({
 		  type: 'POST',
 		  url: "${pageContext.request.contextPath}/building/from-construct",
@@ -347,7 +360,11 @@ function buildFromConstruct(btn_from_constr) {
 				$('#modalErrorBody').html(data.message);
 				$('#modalError').modal();
 			} else {
+				if (btn_from_constr.id == 0) {
+					location = location;
+				}
 				btn_from_constr.closest('tr').remove(); // удалить строку с данными
+				$('.from_constr_btn_ico').html('<span class="glyphicon glyphicon-ok"></span>');
 			}
  		}).fail(function(jqXHR, textStatus, errorThrown) {
 			alert(jqXHR.status + " " + jqXHR.statusText);

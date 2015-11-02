@@ -7,7 +7,7 @@
 		<img src="${pageContext.request.contextPath}/resources/img/footer.png">
 	</div>
 	
-	<div style="display:inline-block; float:right; text-align: center;">
+	<div style="display:inline-block; float:right;">
 		<div style="width:100%; height:10"></div>
 		
 		<div style="display:inline-block; width:100">
@@ -28,7 +28,7 @@
 		<div style="display:inline-block; font-size:11">
 			Triangles © 2015 <br>
 			e-mail: roman.kozak2085@gmail.com <br>
-			Роман Козак
+			Roman Kozak
 		</div>
 	</div>
   </div>

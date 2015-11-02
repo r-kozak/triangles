@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Property;
+import com.kozak.triangles.enums.CityAreasT;
 import com.kozak.triangles.enums.buildings.CommBuildingsT;
 import com.kozak.triangles.search.CommPropSearch;
 import com.kozak.triangles.utils.Consts;
@@ -101,11 +102,28 @@ public class PropertyRep {
             params.put("name", "%" + cps.getName().toLowerCase() + "%");
         }
 
+        // state filter
+        String state = cps.getState();
+        if (!state.isEmpty()) {
+            if (state.equals("on_sale")) {
+                hql1 += " and onSale = true";
+            } else if (state.equals("not_on_sale")) {
+                hql1 += " and onSale = false";
+            }
+        }
+
         // types filter
         List<CommBuildingsT> types = cps.getTypes(); // типы из формы
         if (types != null && !types.isEmpty()) {
             hql1 += " and pr.commBuildingType IN (:types)";
             params.put("types", types);
+        }
+
+        // area filter
+        List<CityAreasT> areas = cps.getAreas(); // типы из формы
+        if (areas != null && !areas.isEmpty()) {
+            hql1 += " and pr.cityArea IN (:areas)";
+            params.put("areas", areas);
         }
 
         // selling price filter

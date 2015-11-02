@@ -66,13 +66,13 @@ public class MessageController extends BaseController {
         if (validRecaptcha) {
             logger.debug("message from arbor: {}", message);
 
-            // сохранить сообщение
             // if (!user.getLogin().equals(Consts.ADMIN_LOGIN)) {
             // message = Jsoup.parse(message).text(); // убрать html теги, если постит не админ
             // }
             message = message.replaceAll("(\r\n|\n)", "<br/>"); // заменить переносы строки на теги
             logger.debug("msg to DB: {}", message.replaceAll("(\r\n|\n)", "<br/>"));
 
+            // сохранить сообщение
             Messages msg = new Messages(user.getLogin(), message);
             msgRep.addMsg(msg);
         }

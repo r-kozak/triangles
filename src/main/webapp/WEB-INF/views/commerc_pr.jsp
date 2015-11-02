@@ -69,6 +69,26 @@
 						</div>
 					</fieldset>
 					
+					<fieldset id = "searchBlock"> 
+					<legend>Район</legend>
+						<div id="searchEl">
+							<form:checkboxes path="areas" items="${areas}"/>      
+						</div>
+					</fieldset>
+					
+					<fieldset id = "searchBlock"> 
+					<legend>Состояние</legend>
+						<div class="radio">
+							<label><form:radiobutton path="state" value="all"></form:radiobutton>все</label>
+						</div>
+						<div class="radio">
+							<label><form:radiobutton path="state" value="on_sale"></form:radiobutton>на продаже</label>
+						</div>
+						<div class="radio">
+							<label><form:radiobutton path="state" value="not_on_sale"></form:radiobutton>не на продаже</label>
+						</div>
+					</fieldset>
+					
 					<fieldset id="searchBlock">
 					<legend>Цена продажи, &tridot;</legend>
 						<div id="searchEl">
@@ -328,7 +348,7 @@ $(document).ready(function(){
     
     $("#sell_all_btn").on('click', function() {
     	sendSellPost(selected, "${pageContext.request.contextPath}/property/sell", false);
-    	window.location.replace('${pageContext.request.contextPath}/property/commerc-pr');
+    	location = location;
     });
 });
 </script>
