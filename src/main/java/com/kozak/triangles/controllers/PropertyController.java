@@ -166,9 +166,12 @@ public class PropertyController extends BaseController {
                         prop.setUsedId(0);
                     }
 
+                    // удалить предложение с рынка
+                    rePrRep.removeReProposalById(prop.getId());
+
                     // предложение на рынке теперь не валидное
-                    prop.setValid(false);
-                    rePrRep.updateREproposal(prop);
+                    // prop.setValid(false);
+                    // rePrRep.updateREproposal(prop);
 
                     // снять деньги
                     Transaction t = new Transaction("Покупка имущества: " + propName, purchDate, price,

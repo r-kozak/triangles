@@ -43,6 +43,10 @@ public class PropertyRep {
         em.merge(prop);
     }
 
+    public void removeProperty(Property prop) {
+        em.remove(getPropertyById(prop.getId()));
+    }
+
     /**
      * Получает сумму остаточной стоимости всего имущества конкретного пользователя
      * 

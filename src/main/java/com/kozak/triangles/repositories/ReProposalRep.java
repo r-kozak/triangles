@@ -255,4 +255,8 @@ public class ReProposalRep {
 
         return query.getResultList();
     }
+
+    public void removeReProposalById(Integer id) {
+        em.remove(em.find(RealEstateProposal.class, id));
+    }
 }

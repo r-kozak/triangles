@@ -369,10 +369,11 @@ public class HomeController extends BaseController {
             if (rep.getUsedId() != 0) {
                 Util.buyUsedProperty(rep, new Date(), 0, prRep, trRep);
             }
+            // удалить устаревшее, обработанное предложение
+            rePrRep.removeReProposalById(rep.getId());
 
-            // rePrRep.removeReProposalByUsedId(rep.getId());
-            rep.setValid(false);
-            rePrRep.updateREproposal(rep);
+            // rep.setValid(false);
+            // rePrRep.updateREproposal(rep);
         }
     }
 

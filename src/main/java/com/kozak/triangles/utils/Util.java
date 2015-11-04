@@ -126,20 +126,32 @@ public class Util {
 
         // получить имущество и данные бывшего владельца
         Property p = prRep.getPropertyById(reProp.getUsedId());
-        int oldOwnerId = p.getUserId();
-        long oldOwnerBal = Long.parseLong(trRep.getUserBalance(oldOwnerId));
-        long price = p.getSellingPrice();
+        if (p != null) {
 
-        // сформировать транзакцию продавца на получение денег
-        Transaction t = new Transaction("Продажа имущества: " + p.getName(), purchDate, price, TransferT.PROFIT,
-                oldOwnerId, oldOwnerBal + price, ArticleCashFlowT.SELL_PROPERTY);
-        trRep.addTransaction(t);
+            int oldOwnerId = p.getUserId();
 
-        // изменить у имущества владельца
-        p.setUserId(newOwnerId);
-        p.setOnSale(false);
-        prRep.updateProperty(p);
+            // предотвращение бага, где предыдущий юзер был 0, но предложение на рынке было все равно валидным
+            if (oldOwnerId != 0) {
+                long oldOwnerBal = Long.parseLong(trRep.getUserBalance(oldOwnerId));
+                long price = p.getSellingPrice();
+                // сформировать транзакцию продавца на получение денег
+                Transaction t = new Transaction("Продажа имущества: " + p.getName(), purchDate, price,
+                        TransferT.PROFIT,
+                        oldOwnerId, oldOwnerBal + price, ArticleCashFlowT.SELL_PROPERTY);
+                trRep.addTransaction(t);
+            }
 
-        return p.getName();
+            if (newOwnerId == 0) {
+                // если новый пользователь никто - удалить имущество
+                prRep.removeProperty(p);
+            } else {
+                // изменить у имущества владельца
+                p.setUserId(newOwnerId);
+                p.setOnSale(false);
+                prRep.updateProperty(p);
+            }
+            return p.getName();
+        }
+        return "";
     }
 }
