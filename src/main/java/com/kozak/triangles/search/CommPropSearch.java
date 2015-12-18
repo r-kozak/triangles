@@ -8,6 +8,7 @@ import com.kozak.triangles.enums.buildings.CommBuildingsT;
 
 public class CommPropSearch extends AbstractSearch {
     private String name = "";
+    private int rowsOnPage;
     private List<CommBuildingsT> types = new ArrayList<CommBuildingsT>();
     private List<CityAreasT> areas = new ArrayList<CityAreasT>();
     private String state = "all";
@@ -153,5 +154,13 @@ public class CommPropSearch extends AbstractSearch {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public int getRowsOnPage() {
+        return rowsOnPage;
+    }
+
+    public void setRowsOnPage(int rowsOnPage) {
+        this.rowsOnPage = rowsOnPage;
     }
 }

@@ -29,9 +29,9 @@
 		
 					<fieldset id="searchBlock">
 					<legend>Движение</legend>
-						<form:select path="transfer" id="selectEl">    
+						<form:select path="transfer" id="selectEl">
 							<form:option value="NONE" label="--- Выбрать ---"/>
-					   		<form:options items="${transfers}" />
+							<form:options items="${transfers}" />
 						</form:select>
 					</fieldset>
 		

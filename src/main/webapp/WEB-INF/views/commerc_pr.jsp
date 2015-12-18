@@ -57,7 +57,16 @@
 		<t:menu>
 			<form:form id="searchForm" method="GET" commandName="cps">
 				<div id="searchWrap">
+						
 				<div id="menuTitle">Поиск</div>
+					<fieldset id = "searchBlock"> 
+					<legend>Количество на странице</legend>
+					    <form:select path="rowsOnPage">
+							<form:option value="12" label="12"/>
+							<form:options items="${rowsOnPage}" />
+						</form:select>
+					</fieldset>
+						
 					<fieldset id = "searchBlock">
 						<form:input class="textInp" type="text" path="name" placeholder="Наименование"></form:input>
 					</fieldset>

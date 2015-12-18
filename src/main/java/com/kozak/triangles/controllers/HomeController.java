@@ -450,7 +450,8 @@ public class HomeController extends BaseController {
             int dailyTicketsCount = 0;  // сколько начислить билетов
             int userDomi = user.getDomi();
             
-            if (userDomi >= 50000) userDomi = 50000; // ограничение доминантности для начисления билетов
+            if (userDomi >= Consts.DOMI_LIMIT)
+                userDomi = Consts.DOMI_LIMIT; // ограничение доминантности для начисления билетов
                    
             dailyTicketsCount = userDomi / Consts.DAILY_TICKETS_FROM_DOMI_K;
             user.setLotteryTickets(user.getLotteryTickets() + dailyTicketsCount);

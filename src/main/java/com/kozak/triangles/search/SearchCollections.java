@@ -1,6 +1,7 @@
 package com.kozak.triangles.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.kozak.triangles.enums.ArticleCashFlowT;
@@ -51,5 +52,9 @@ public class SearchCollections {
             types.add(a);
         }
         return types;
+    }
+
+    public static Object getRowCount() {
+        return Arrays.asList(25, 50, 100);
     }
 }

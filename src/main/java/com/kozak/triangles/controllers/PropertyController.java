@@ -204,7 +204,12 @@ public class PropertyController extends BaseController {
         List<Object> dbResult = prRep.getPropertyList(userId, cps);
 
         long itemsCount = (long) dbResult.get(0);
-        int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE) + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+
+        int rowsOnPage = cps.getRowsOnPage();
+        if (rowsOnPage <= 0) {
+            rowsOnPage = Consts.ROWS_ON_PAGE;
+        }
+        int totalPages = (int) (itemsCount / rowsOnPage) + ((itemsCount % rowsOnPage != 0) ? 1 : 0);
 
         if (totalPages > 1) {
             int currPage = Integer.parseInt(cps.getPage());
@@ -233,6 +238,7 @@ public class PropertyController extends BaseController {
         model.addAttribute("types", SearchCollections.getCommBuildTypes());
         model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);
         model.addAttribute("ready", prRep.allPrCount(userId, true, false)); // колво готовых к сбору дохода
+        model.addAttribute("rowsOnPage", SearchCollections.getRowCount());
 
         // если собирали наличку с кассы - для информационного popup окна
         String cash = (String) model.asMap().getOrDefault("changeBal", "");

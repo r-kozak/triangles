@@ -74,4 +74,7 @@ public final class Consts {
     // длина сообщения из беседки с погрешностью на пробелы и др. знаки
     public static final int MSG_LEN = 600;
 
+    // лимит доминантности при начислении ежедневных лотерейных билетов
+    public static final int DOMI_LIMIT = 50000;
+
 }

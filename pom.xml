@@ -240,7 +240,7 @@
 				<configuration>
 					<mainClass>org.test.int1.Main</mainClass>
 				</configuration>
-			</plugin>
+			</plugin> 
 		</plugins>
 	</build>
 </project>
