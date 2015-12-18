@@ -447,7 +447,12 @@ public class HomeController extends BaseController {
             trRep.addTransaction(t);
 
             // ежедневное начисление бесплатных лотерейных билетов
-            int dailyTicketsCount = user.getDomi() / Consts.DAILY_TICKETS_FROM_DOMI_K; // сколько начислить билетов
+            int dailyTicketsCount = 0;  // сколько начислить билетов
+            int userDomi = user.getDomi();
+            
+            if (userDomi >= 50000) userDomi = 50000; // ограничение доминантности для начисления билетов
+                   
+            dailyTicketsCount = userDomi / Consts.DAILY_TICKETS_FROM_DOMI_K;
             user.setLotteryTickets(user.getLotteryTickets() + dailyTicketsCount);
 
             // обновляем данные юзера
