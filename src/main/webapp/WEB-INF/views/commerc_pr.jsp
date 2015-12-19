@@ -61,7 +61,7 @@
 				<div id="menuTitle">Поиск</div>
 					<fieldset id = "searchBlock"> 
 					<legend>Количество на странице</legend>
-					    <form:select path="rowsOnPage">
+					    <form:select id="selectEl" path="rowsOnPage" onchange="$('#searchForm').submit()">
 							<form:option value="12" label="12"/>
 							<form:options items="${rowsOnPage}" />
 						</form:select>

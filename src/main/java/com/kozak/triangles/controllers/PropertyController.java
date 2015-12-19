@@ -200,15 +200,17 @@ public class PropertyController extends BaseController {
         int userId = user.getId();
         Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
 
-        // результат с БД: количество всего; имущество с учетом пагинации;
-        List<Object> dbResult = prRep.getPropertyList(userId, cps);
-
-        long itemsCount = (long) dbResult.get(0);
-
+        // количество строк на странице
+        final int MAX_ROWS_COUNT = 100;
         int rowsOnPage = cps.getRowsOnPage();
-        if (rowsOnPage <= 0) {
+        if (rowsOnPage <= 0 || rowsOnPage > MAX_ROWS_COUNT) {
             rowsOnPage = Consts.ROWS_ON_PAGE;
         }
+
+        // результат с БД: количество всего; имущество с учетом пагинации;
+        List<Object> dbResult = prRep.getPropertyList(userId, cps, rowsOnPage);
+
+        long itemsCount = (long) dbResult.get(0);
         int totalPages = (int) (itemsCount / rowsOnPage) + ((itemsCount % rowsOnPage != 0) ? 1 : 0);
 
         if (totalPages > 1) {

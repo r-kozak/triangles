@@ -89,9 +89,10 @@ public class PropertyRep {
 
     /**
      * 
+     * @param rowsOnPage
      * @return список имущества пользователя для отображения на странице имущества
      */
-    public List<Object> getPropertyList(int userId, CommPropSearch cps) {
+    public List<Object> getPropertyList(int userId, CommPropSearch cps, int rowsOnPage) {
         String hql00 = "SELECT count(id) ";
         String hql0 = "FROM Property as pr WHERE pr.userId = :userId";
         String hql1 = "";
@@ -167,9 +168,9 @@ public class PropertyRep {
 
         // пагинация
         int page = Integer.parseInt(cps.getPage());
-        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+        int firstResult = (page - 1) * rowsOnPage;
         query.setFirstResult(firstResult);
-        query.setMaxResults(Consts.ROWS_ON_PAGE);
+        query.setMaxResults(rowsOnPage);
 
         result.add(query.getResultList());
 
