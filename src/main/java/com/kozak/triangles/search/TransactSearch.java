@@ -8,48 +8,49 @@ import com.kozak.triangles.enums.TransferT;
 
 public class TransactSearch extends AbstractSearch {
 
-    private String dateFrom = "";
-    private String dateTo = "";
-    private List<ArticleCashFlowT> articles = new ArrayList<ArticleCashFlowT>();
-    private TransferT transfer;
+	private String dateFrom = "";
+	private String dateTo = "";
+	private List<ArticleCashFlowT> articles = new ArrayList<ArticleCashFlowT>();
+	private TransferT transfer;
 
-    public void clear() {
-	super.clear();
-	this.dateFrom = "";
-	this.dateTo = "";
-	articles = new ArrayList<ArticleCashFlowT>();
-	this.transfer = null;
-    }
+	@Override
+	public void clear() {
+		super.clear();
+		this.dateFrom = "";
+		this.dateTo = "";
+		articles = new ArrayList<ArticleCashFlowT>();
+		this.transfer = null;
+	}
 
-    public String getDateFrom() {
-	return dateFrom;
-    }
+	public String getDateFrom() {
+		return dateFrom;
+	}
 
-    public void setDateFrom(String dateFrom) {
-	this.dateFrom = dateFrom;
-    }
+	public void setDateFrom(String dateFrom) {
+		this.dateFrom = dateFrom;
+	}
 
-    public String getDateTo() {
-	return dateTo;
-    }
+	public String getDateTo() {
+		return dateTo;
+	}
 
-    public void setDateTo(String dateTo) {
-	this.dateTo = dateTo;
-    }
+	public void setDateTo(String dateTo) {
+		this.dateTo = dateTo;
+	}
 
-    public List<ArticleCashFlowT> getArticles() {
-	return articles;
-    }
+	public List<ArticleCashFlowT> getArticles() {
+		return articles;
+	}
 
-    public void setArticles(List<ArticleCashFlowT> articles) {
-	this.articles = articles;
-    }
+	public void setArticles(List<ArticleCashFlowT> articles) {
+		this.articles = articles;
+	}
 
-    public void setTransfer(TransferT transfer) {
-	this.transfer = transfer;
-    }
+	public void setTransfer(TransferT transfer) {
+		this.transfer = transfer;
+	}
 
-    public TransferT getTransfer() {
-	return transfer;
-    }
+	public TransferT getTransfer() {
+		return transfer;
+	}
 }

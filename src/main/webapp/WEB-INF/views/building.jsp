@@ -47,7 +47,8 @@
 			<div class="col-md-12 bg-info license-btn-block">
 				<div>
 					<button id="build_btn" class="btn btn-info btn-lg btn-license_up" title="Построить имущество" data-toggle="tooltip">
-								<span class="glyphicon glyphicon-equalizer"> СТРОИТЬ</span></button>
+							<span class="glyphicon glyphicon-equalizer"> СТРОИТЬ 
+							<span>(сегодня доступно: ${availableForBuild})</span></span></button>
 				</div>
 			</div>
 			<div class="row"></div>

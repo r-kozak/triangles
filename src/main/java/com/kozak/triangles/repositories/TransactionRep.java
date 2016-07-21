@@ -112,7 +112,7 @@ public class TransactionRep {
             params.put("acf", articles);
         }
 
-        List<Object> result = new ArrayList<Object>(2); // результат
+        List<Object> result = new ArrayList<>(3); // результат
 
         // подсчет общего количества элементов, учитывая заданные параметры
         Query query = em.createQuery(hql00 + hql0 + hql1);

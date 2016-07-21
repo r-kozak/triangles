@@ -101,7 +101,7 @@ public class MoneyController extends BaseController {
 
         int userId = user.getId();
 
-        // результат с БД [количество всего; транзакции с учетом пагинации]
+        // результат с БД [количество всего; общая сумма; транзакции с учетом пагинации]
         List<Object> dbResult = trRep.transList(userId, ts);
         long itemsCount = (long) dbResult.get(0);
         int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE) + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);

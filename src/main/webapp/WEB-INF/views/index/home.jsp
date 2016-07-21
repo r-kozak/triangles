@@ -182,6 +182,10 @@
 							</c:otherwise>
 						</c:choose>
 					</tr>
+					<tr>
+						<td class="tableTd1">Начато сегодня</td>
+						<td class="tableTd2"><span class="badge">${startedToConstructToday}/${constructionLimitPerDay}</span></td>
+					</tr>
 				</table>
 			</div>
 			
