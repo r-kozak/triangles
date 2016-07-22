@@ -146,6 +146,9 @@
 			<c:if test="${!empty comProps}">
 				<div class="panel panel-default">
 					<div class="panel-heading">
+						<button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip" data-toggle="collapse" data-target="#pr_descr" 
+					       title="Показать или скрыть подробное описание раздела Коммерческое имущество"><span class="glyphicon glyphicon-info-sign"></span></button>
+					       
 					     <button id="profit_from_all_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Собрать прибыль со всего имущества" >
 					       <span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span></button>
 					     	
@@ -157,9 +160,6 @@
 					       
 					     <button id="multiple_cash_up_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Повысить уровень кассы до максимально возможного" >
 					       <span class="glyphicon glyphicon-menu-up" aria-hidden="true">К</span></button>
-					     	
-					     <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip" data-toggle="collapse" data-target="#pr_descr" 
-					       title="Показать или скрыть подробное описание раздела Коммерческое имущество"><span class="glyphicon glyphicon-info-sign"></span></button>
 					</div>
 					<div class="panel-body collapse" id="pr_descr">
 						<p><a href="${pageContext.request.contextPath}/wiki#pr">Коммерческое имущество</a> - это раздел, где можно посмотреть всё коммерческое

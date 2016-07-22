@@ -58,15 +58,34 @@
 				<h3 class="page-header" align=center>Транзакции</h3>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<button id="buy_100_tr" class="btn btn-default" data-toggle="tooltip"
-			  				title="Купить 100&tridot; за 1 очко доминантности"> <span style="font-size:125%">+100&tridot;</span>
-						</button>
-						<button id="buy_1000_tr" class="btn btn-default" data-toggle="tooltip"
-			  				title="Купить 1000&tridot; за 10 очков доминантности"> <span style="font-size:125%">+1000&tridot;</span>
-						</button>
-					    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip"
-					     	title="Показать или скрыть подробное описание раздела Транзакции"> <span class="glyphicon glyphicon-info-sign"></span>
-					    </button>
+					  <div class="row">
+					 	<div class="col-lg-6">
+						    <button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip"
+						     	title="Показать или скрыть подробное описание раздела Транзакции"> <span class="glyphicon glyphicon-info-sign"></span>
+						    </button>
+							<button id="buy_100_tr" class="btn btn-default" data-toggle="tooltip"
+				  				title="Купить 100&tridot; за 1 очко доминантности"> <span style="font-size:125%">+100&tridot;</span>
+							</button>
+							<button id="buy_1000_tr" class="btn btn-default" data-toggle="tooltip"
+				  				title="Купить 1000&tridot; за 10 очков доминантности"> <span style="font-size:125%">+1000&tridot;</span>
+							</button>
+							<button id="withdraw_money_btn" class="btn btn-default" data-toggle="tooltip"
+				  				title="Вывести средства со счета"> <span style="font-size:125%">Вывод средств</span>
+							</button>
+						</div>
+						
+						<div id="withdraw_block" class="col-lg-6" style="display: none">
+  					        <div class="input-group">
+						      <input id="withdraw_count" type="number" class="form-control" placeholder="Сумма вывода" style="font-size:125%; height:40px">
+						      <span class="input-group-btn">
+						        <button id="withdraw_money_ok_btn" class="btn btn-success" type="button"><span style="font-size:125%">Снять</span></button>
+						      </span>
+						      <span class="input-group-btn">
+						        <button id="withdraw_money_cancel_btn" class="btn btn-danger" type="button"><span style="font-size:125%">Отмена</span></button>
+						      </span>
+						    </div><!-- /input-group -->
+						</div>
+					  </div>
 					</div>
 					<div class="panel-body collapse" id="tr_descr">
 						<p><a href="${pageContext.request.contextPath}/wiki#ba.tr">Транзакции</a> - это раздел, где можно посмотреть все операции, которые 
@@ -176,6 +195,8 @@
 </div> <!-- container -->
 <t:footer></t:footer>
 
+<div id="balChan"></div>
+
 <script type="text/javascript" src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
 
@@ -198,6 +219,47 @@ $(document).ready(function(){
     $("#buy_1000_tr").on("click", function() {
     		infoBuyTriangles(1000);
         }
+    );
+ 	
+ 	// по клику на "Вывод средств" - показать поле ввода числа и кнопку подтверждения и отмены  
+    $('#withdraw_money_btn').on("click", function() {
+    		$('#withdraw_block').show();
+        }
+    );
+ 	
+    $('#withdraw_money_ok_btn').on("click", 
+    	function() {
+	    	var moneyCount = $('#withdraw_count').val();
+	    	if (moneyCount == "") {
+		    	return;
+			}
+	    	// снять деньги со счета
+	    	$.ajax({
+	  		  type: 'POST',
+	  		  url: "${pageContext.request.contextPath}/withdraw-money",
+	  		  data:  { count: moneyCount },
+	  		  dataType: "json",
+	  		  async:false
+	  		}).done(function(data) {
+	  			if (data.error) {
+	  				// показать сообщение с ошибкой
+	  				$('#modal_confirm').attr('disabled', true);
+					$('#modalWindowTitle').html('Ошибка').addClass('text-danger'); // установить заголовок модального окна, добавить класс text-danger
+					$('#modalWindowBody').html(data.message);
+					$('#modalWindow').modal(); // показать модальное окно
+	  			} else {
+	  				$('#withdraw_count').val("");
+	  				changeBal(data);
+	  			}
+	   		}).fail(function(jqXHR, textStatus, errorThrown) {
+	  			alert(jqXHR.status + " " + jqXHR.statusText);
+	  		});
+		}
+	);
+ 	
+    $('#withdraw_money_cancel_btn').on("click", function() {
+    		$('#withdraw_block').hide();
+    	}
     );
     
   	//по клику на кнопку "Описание" - показать или скрыть описание
@@ -258,9 +320,6 @@ $(document).ready(function(){
   		});
       	return false;
     }
-    
-    
-    
 });
 </script>
 

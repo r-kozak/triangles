@@ -7,8 +7,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.JSONObject;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,137 +32,152 @@ import com.kozak.triangles.utils.Util;
 @Controller
 public class MoneyController extends BaseController {
 
-    /**
-     * функция обмена доминантности на деньги
-     * 
-     * @param count
-     *            - количество [500, 5000]
-     * @param action
-     *            - [info, confirm] - получение информации или подтверждение обмена
-     * @return json строку с
-     */
-    @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/buy-triangles", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<String> jqueryBuyTriangles(@RequestParam("count") int count,
-            @RequestParam("action") String action, User user) {
+	/**
+	 * функция обмена доминантности на деньги
+	 * 
+	 * @param count
+	 *            - количество [500, 5000]
+	 * @param action
+	 *            - [info, confirm] - получение информации или подтверждение обмена
+	 * @return json строку с
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/buy-triangles", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> jqueryBuyTriangles(@RequestParam("count") int count,
+			@RequestParam("action") String action, User user) {
 
-        JSONObject resultJson = new JSONObject();
+		JSONObject resultJson = new JSONObject();
 
-        // признаки правильности запроса
-        boolean correctAction = action.equals("info") || action.equals("confirm"); // корректное действие
-        boolean correctCount = count == 100 || count == 1000; // корректное количество для обмена
+		// признаки правильности запроса
+		boolean correctAction = action.equals("info") || action.equals("confirm"); // корректное действие
+		boolean correctCount = count == 100 || count == 1000; // корректное количество для обмена
 
-        if (!correctAction || !correctCount) {
-            ResponseUtil.putErrorMsg(resultJson, "Ошибка запроса :(");
-        } else {
-            int userId = user.getId();
-            int userDomi = userRep.getUserDomi(userId);
-            int needDomi = count / Consts.DOMI_PRICE; // сколько нужно доминантности для обмена
+		if (!correctAction || !correctCount) {
+			ResponseUtil.putErrorMsg(resultJson, "Ошибка запроса :(");
+		} else {
+			int userId = user.getId();
+			int userDomi = userRep.getUserDomi(userId);
+			int needDomi = count / Consts.DOMI_PRICE; // сколько нужно доминантности для обмена
 
-            if (userDomi < needDomi) {
-                ResponseUtil.putErrorMsg(resultJson,
-                        String.format("Ошибка. Не хватает очков доминантности для обмена (остаток: %s).", userDomi));
-            } else {
-                if (action.equals("info")) {
-                    resultJson.put("message", String.format(
-                            "Вы точно желаете обменять %s очков доминантности на %s&tridot;?", needDomi, count));
-                    resultJson.put("domiEnough", true);
-                } else if (action.equals("confirm")) {
-                    // установить новую доминантность
-                    user.setDomi(userDomi - needDomi);
-                    userRep.updateUser(user);
+			if (userDomi < needDomi) {
+				ResponseUtil.putErrorMsg(resultJson,
+						String.format("Ошибка. Не хватает очков доминантности для обмена (остаток: %s).", userDomi));
+			} else {
+				if (action.equals("info")) {
+					resultJson.put("message",
+							String.format("Вы точно желаете обменять %s очков доминантности на %s&tridot;?", needDomi, count));
+					resultJson.put("domiEnough", true);
+				} else if (action.equals("confirm")) {
+					// установить новую доминантность
+					user.setDomi(userDomi - needDomi);
+					userRep.updateUser(user);
 
-                    // начислить деньги за обмен
-                    String desc = String.format("Обмен %s очков доминантности на %s&tridot;", needDomi, count);
-                    long balance = Long.valueOf(trRep.getUserBalance(userId));
+					// начислить деньги за обмен
+					String desc = String.format("Обмен %s очков доминантности на %s&tridot;", needDomi, count);
+					long balance = Long.valueOf(trRep.getUserBalance(userId));
 
-                    Transaction t = new Transaction(desc, new Date(), count, TransferT.PROFIT, userId, balance + count,
-                            ArticleCashFlowT.DOMINANT_TO_TRIAN);
-                    trRep.addTransaction(t);
-                }
-            }
-        }
+					Transaction t = new Transaction(desc, new Date(), count, TransferT.PROFIT, userId, balance + count,
+							ArticleCashFlowT.DOMINANT_TO_TRIAN);
+					trRep.addTransaction(t);
+				}
+			}
+		}
+		return ResponseUtil.getResponseEntity(resultJson);
+	}
 
-        String json = resultJson.toJSONString();
-        System.out.println(json);
+	@RequestMapping(value = "/transactions", method = RequestMethod.GET)
+	String transactionsGET(Model model, User user, TransactSearch ts, HttpServletRequest req) throws ParseException {
+		if (ts.isNeedClear())
+			ts.clear();
+		model.addAttribute("ts", ts);
 
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
-    }
+		int userId = user.getId();
 
-    @RequestMapping(value = "/transactions", method = RequestMethod.GET)
-    String transactionsGET(Model model, User user, TransactSearch ts, HttpServletRequest req) throws ParseException {
-        if (ts.isNeedClear())
-            ts.clear();
-        model.addAttribute("ts", ts);
+		// результат с БД [количество всего; общая сумма; транзакции с учетом пагинации]
+		List<Object> dbResult = trRep.transList(userId, ts);
+		long itemsCount = (long) dbResult.get(0);
+		int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE) + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
 
-        int userId = user.getId();
+		if (totalPages > 1) {
+			int currPage = Integer.parseInt(ts.getPage());
+			String paginationTag = TagCreator.paginationTag(totalPages, currPage, req);
+			model.addAttribute("paginationTag", paginationTag);
+		}
 
-        // результат с БД [количество всего; общая сумма; транзакции с учетом пагинации]
-        List<Object> dbResult = trRep.transList(userId, ts);
-        long itemsCount = (long) dbResult.get(0);
-        int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE) + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+		String userBalance = trRep.getUserBalance(userId);
+		int userDomi = userRep.getUserDomi(userId);
+		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+		model.addAttribute("totalSum", dbResult.get(1));
+		model.addAttribute("transacs", dbResult.get(2));
+		model.addAttribute("articles", SearchCollections.getArticlesCashFlow());
+		model.addAttribute("transfers", SearchCollections.getTransferTypes());
 
-        if (totalPages > 1) {
-            int currPage = Integer.parseInt(ts.getPage());
-            String paginationTag = TagCreator.paginationTag(totalPages, currPage, req);
-            model.addAttribute("paginationTag", paginationTag);
-        }
+		return "transactions";
+	}
 
-        String userBalance = trRep.getUserBalance(userId);
-        int userDomi = userRep.getUserDomi(userId);
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
-        model.addAttribute("totalSum", dbResult.get(1));
-        model.addAttribute("transacs", dbResult.get(2));
-        model.addAttribute("articles", SearchCollections.getArticlesCashFlow());
-        model.addAttribute("transfers", SearchCollections.getTransferTypes());
+	@RequestMapping(value = "/withdraw-money", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> withdrawTriangles(@RequestParam("count") int count, User user) {
+		JSONObject resultJson = new JSONObject();
 
-        return "transactions";
-    }
+		int userId = user.getId();
+		long balance = Long.valueOf(trRep.getUserBalance(userId));
+		if (count > 0 && balance > 0 && count <= balance) {
+			ResponseUtil.addBalanceData(resultJson, count, balance, userId, prRep);
 
-    /**
-     * повышение доминантности пользователя
-     * 
-     * @param count
-     *            - число, на которое нужно повысить доминантность
-     * @param userId
-     *            - id юзера, доминантность которого будет повышаться
-     */
-    public static void upUserDomi(int count, int userId, UserRep userRep) {
-        changeUserDomi(count, userId, userRep, true);
-    }
+			// вывести деньги со счета
+			String desc = String.format("Вывод средств со счета");
+			Transaction t = new Transaction(desc, new Date(), count, TransferT.SPEND, userId, balance - count,
+					ArticleCashFlowT.WITHDRAW);
+			trRep.addTransaction(t);
+		} else {
+			ResponseUtil.putErrorMsg(resultJson,
+					"Сумма вывода и баланс должны быть положительными!<br/> Также сумма вывода должна быть <= суммы баланса!");
+		}
+		return ResponseUtil.getResponseEntity(resultJson);
+	}
 
-    /**
-     * понижение доминантности пользователя
-     * 
-     * @param count
-     *            - число, на которое нужно уменьшить доминантность
-     * @param userId
-     *            - id юзера, доминантность которого будет понижаться
-     */
-    public static void downUserDomi(int count, int userId, UserRep userRep) {
-        changeUserDomi(count, userId, userRep, false);
-    }
+	/**
+	 * повышение доминантности пользователя
+	 * 
+	 * @param count
+	 *            - число, на которое нужно повысить доминантность
+	 * @param userId
+	 *            - id юзера, доминантность которого будет повышаться
+	 */
+	public static void upUserDomi(int count, int userId, UserRep userRep) {
+		changeUserDomi(count, userId, userRep, true);
+	}
 
-    /**
-     * изменение значения доминантности пользователя
-     * 
-     * @param count
-     *            - число, на которое нужно повысить или уменьшить доминантность
-     * @param userId
-     *            - id юзера, доминантность которого будет понижаться
-     * @param userRep
-     * @param isUpDomi
-     *            - это повышение или понижение
-     */
-    private static void changeUserDomi(int count, int userId, UserRep userRep, boolean isUpDomi) {
-        User user = userRep.find(userId);
-        if (isUpDomi) {
-            user.setDomi(user.getDomi() + count);
-        } else {
-            user.setDomi(user.getDomi() - count);
-        }
-        userRep.updateUser(user);
-    }
+	/**
+	 * понижение доминантности пользователя
+	 * 
+	 * @param count
+	 *            - число, на которое нужно уменьшить доминантность
+	 * @param userId
+	 *            - id юзера, доминантность которого будет понижаться
+	 */
+	public static void downUserDomi(int count, int userId, UserRep userRep) {
+		changeUserDomi(count, userId, userRep, false);
+	}
+
+	/**
+	 * изменение значения доминантности пользователя
+	 * 
+	 * @param count
+	 *            - число, на которое нужно повысить или уменьшить доминантность
+	 * @param userId
+	 *            - id юзера, доминантность которого будет понижаться
+	 * @param userRep
+	 * @param isUpDomi
+	 *            - это повышение или понижение
+	 */
+	private static void changeUserDomi(int count, int userId, UserRep userRep, boolean isUpDomi) {
+		User user = userRep.find(userId);
+		if (isUpDomi) {
+			user.setDomi(user.getDomi() + count);
+		} else {
+			user.setDomi(user.getDomi() - count);
+		}
+		userRep.updateUser(user);
+	}
 }
