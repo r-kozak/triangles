@@ -327,12 +327,17 @@ function changeBcount(action, price) {
 		$('#solvency_after').html('Состоятельность после постройки: <b>' + new_solvency + '&tridot;</b>');
 		$('#available_for_build_after').html('Доступно для постойки сегодня после операции: <b>' + new_available_for_build + ' шт.</b>');
 		
-		if (new_solvency < 0 || new_available_for_build < 0) {
-			$('#modal_ques_confirm').attr('disabled', true);
-			$('#available_for_build_after').addClass("text-danger");
-		} else {
+		// если значения состоятельности и доступных для стройки объектов после операции положительные 
+		if (new_solvency >= 0 && new_available_for_build >= 0) {
 			$('#modal_ques_confirm').attr('disabled', false);
 			$('#available_for_build_after').removeClass("text-danger");
+		} else {
+			// если значения состоятельности или доступных для стройки объектов после операции отрицательные
+			$('#modal_ques_confirm').attr('disabled', true);
+		}
+		// если значение доступных для стройки объектов после операции отрицательное
+		if (new_available_for_build < 0) {
+			$('#available_for_build_after').addClass("text-danger");
 		}
 	}
 }
