@@ -135,8 +135,9 @@
 		<div class="col-md-9">
 			<h3 class="page-header" align=center>Коммерческое имущество</h3>
 			<c:if test="${empty comProps && !userHaveProps}">
-				<div class = "noData">У вас нет имущества. Его можно купить на рынке (или построить на стройке). 
+				<div class = "noData">У вас нет имущества. Его можно купить на рынке или построить. 
 					<a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a>
+					<a href = "${pageContext.request.contextPath}/building">СТРОИТЬ</a>
 				</div>
 			</c:if>
 			<c:if test="${empty comProps && userHaveProps}">
