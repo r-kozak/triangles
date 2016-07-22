@@ -104,6 +104,9 @@ public class BuildingController extends BaseController {
 			if (userSolvency < priceOfBuilt) { // не хватает денег
 				ResponseUtil.putErrorMsg(resultJson,
 						"Не хватает денег на постройку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency) + "&tridot;</b>");
+			} else if (availableForBuildToday(userId) <= 0) {
+				ResponseUtil.putErrorMsg(resultJson,
+						"Сегодня уже достигнута верхняя граница лимита на постройку зданий. Повторите попытку завтра.");
 			} else {
 				Date exploitation = DateUtils.addDays(new Date(), dataOfBuilding.getBuildTime());
 
@@ -154,6 +157,9 @@ public class BuildingController extends BaseController {
 					ResponseUtil.putErrorMsg(resultJson,
 							"Не хватает денег на постройку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency) + "&tridot;</b>");
 					break;
+				} else if (availableForBuildToday(userId) <= 0) {
+					ResponseUtil.putErrorMsg(resultJson,
+							"Сегодня уже достигнута верхняя граница лимита на постройку зданий. Повторите попытку завтра.");
 				} else {
 					// проверка можно ли строить в районе, что выбрал пользователь
 					boolean cityAreaError = userLicenseLevel - 1 < CityAreasT.valueOf(cityArea).ordinal();
@@ -389,5 +395,13 @@ public class BuildingController extends BaseController {
 		} else {
 			return 0; // гастарбайтеры
 		}
+	}
+
+	/**
+	 * @return количество зданий доступных для постройки сегодня для конкретного пользователя. Расчитывается исходя из лимита (на
+	 *         день) на постройку зданий и количества уже построенных зданий за день
+	 */
+	private long availableForBuildToday(int userId) {
+		return Consts.CONSTRUCTION_LIMIT_PER_DAY - consProjectRep.getCountOfStartedProjectsToday(userId);
 	}
 }

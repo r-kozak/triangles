@@ -46,9 +46,18 @@
 			
 			<div class="col-md-12 bg-info license-btn-block">
 				<div>
-					<button id="build_btn" class="btn btn-info btn-lg btn-license_up" title="Построить имущество" data-toggle="tooltip">
+					<c:choose>
+						<c:when test="${availableForBuild > 0}">
+							<button id="build_btn" class="btn btn-info btn-lg btn-license_up" title="Построить имущество" data-toggle="tooltip">
 							<span class="glyphicon glyphicon-equalizer"> СТРОИТЬ 
 							<span>(сегодня доступно: ${availableForBuild})</span></span></button>
+						</c:when>
+						<c:otherwise>
+							<button id="build_btn" class="btn btn-info btn-lg btn-license_up" title="Построить имущество" data-toggle="tooltip" disabled=true>
+							<span class="glyphicon glyphicon-equalizer"> СТРОИТЬ 
+							<span>(сегодня недоступно)</span></span></button>
+						</c:otherwise>
+					</c:choose>
 				</div>
 			</div>
 			<div class="row"></div>
@@ -251,6 +260,7 @@ $('#build_btn').on('click', function() {
 							'<div id="balance_after">' + data.balanceAfter + '</div> <br/>' +
 							'<div id="solvency_after">' + data.solvencyAfter + '</div> <br/>' +
 							'<div>' + data.exploitation + '</div> <br/>' +
+							'<div id="available_for_build_after">Доступно для постойки сегодня после операции: <b><c:out value='${availableForBuild - 1}'/> шт.</b></div><br/>' + 
 							'<div>Количество: ' +
 							'<a id="b_count_down" class="btn btn-default"><span class="glyphicon glyphicon-menu-down"></span></a>' + 
 							'  <span>&nbsp;<b></span><span id="b_count">1</span><span></b>&nbsp;&nbsp;</span>' +
@@ -292,30 +302,37 @@ function changeBcount(action, price) {
 	var curr_balance_int = curr_balance_str.substring(27, curr_balance_str.length - 5);
 	var curr_solvency_str = $('#solvency_after').html();
 	var curr_solvency_int = curr_solvency_str.substring(36, curr_solvency_str.length - 5);
+	var curr_available_for_build_int = "<c:out value='${availableForBuild}'/>" - b_count_val;
 	var new_balance;
 	var new_solvency;
+	var new_available_for_build;
 	
 	if (action == "down") {
 		if (b_count_val > 1) {
 			new_b_count_val = b_count_val - 1;
 			new_balance = parseInt(curr_balance_int) + price;
 			new_solvency = parseInt(curr_solvency_int) + price;
+			new_available_for_build = parseInt(curr_available_for_build_int) + 1;
 		}
 	} else if (action == "up") {
 		new_b_count_val = b_count_val + 1;
 		new_balance = parseInt(curr_balance_int) - price;
 		new_solvency = parseInt(curr_solvency_int) - price;
+		new_available_for_build = parseInt(curr_available_for_build_int) - 1;
 	}
 	if (new_b_count_val != b_count_val) {
 		$("#b_count").html(new_b_count_val);
 		
 		$('#balance_after').html('Баланс после постройки: <b>' + new_balance + '&tridot;</b>');
 		$('#solvency_after').html('Состоятельность после постройки: <b>' + new_solvency + '&tridot;</b>');
+		$('#available_for_build_after').html('Доступно для постойки сегодня после операции: <b>' + new_available_for_build + ' шт.</b>');
 		
-		if (new_solvency < 0) {
+		if (new_solvency < 0 || new_available_for_build < 0) {
 			$('#modal_ques_confirm').attr('disabled', true);
+			$('#available_for_build_after').addClass("text-danger");
 		} else {
 			$('#modal_ques_confirm').attr('disabled', false);
+			$('#available_for_build_after').removeClass("text-danger");
 		}
 	}
 }
