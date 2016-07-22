@@ -51,6 +51,13 @@
 			$('body, html').scrollTop($(document).height());
 		} 
 	}
+
+	//функция для анимирования символа "Мудрость всезнающего"
+	function animatePredictSign() {
+		$( "#predictSign" ).animate({ color: "#FFCACA" }, 3000, function() {
+			$( "#predictSign" ).animate({ color: "#F35A30" }, 3000, animatePredictSign())
+		} );
+	}
 </script>
 
 <div class="container">
@@ -138,18 +145,8 @@
 								<div class="plushki_label predictDiv"><span id="predictSign" class="glyphicon glyphicon-certificate" 
 									style="font-size:98; color:#F35A30"></span></div>
 								<script>
-									var i = 0;
-								 	while (i < 1800) {
-							 			$( "#predictSign" ).animate({
-										    color: "#F35A30",
-										}, 3000 );
-									
-										$( "#predictSign" ).animate({
-										  color: "#FFCACA",
-										}, 3000 );
-										i++;
-									}
-	 						</script>
+									animatePredictSign();
+	 							</script>
 							</c:otherwise>
 						</c:choose>
 					</div>
@@ -470,6 +467,5 @@ function createTableContent(data, obj) {
 	var table = tableTitle + tableContent;
 	return table;
 }
-	
 </script>
 </t:template>
