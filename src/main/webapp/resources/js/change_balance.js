@@ -1,8 +1,11 @@
 // функция для движения окна с суммой, на которую изменился баланс после какой-то операции
 function popUp(a, bloc) {
+	var X_BALANCE_POSITION = 87; // percent
+	var winWidth = window.screen.availWidth;
+	var balancePositionFromRight = winWidth - ((winWidth * X_BALANCE_POSITION) / 100);
 	$(bloc).css({
-		"left" : (window.screen.availWidth) - a.length * 30,
-		"top" : (window.screen.availHeight - ((window.screen.availHeight * 73) / 100)) / 2,
+		"left" : winWidth - balancePositionFromRight,
+		"top" : 135,
 		"opacity" : "1"
 	});
 	$(bloc).animate({

@@ -172,6 +172,10 @@ public class HomeController extends BaseController {
 		model.addAttribute("max_cash_lev", Consts.MAX_CASH_LEVEL);
 		// цены на лотерейные билеты
 		model.addAttribute("ticketsPrice", Consts.LOTTERY_TICKETS_PRICE);
+		// лимиты на доминантность и цена билета при ежедневном начислении билетов
+		model.addAttribute("domiTicketPrice", Consts.DAILY_TICKETS_FROM_DOMI_K);
+		model.addAttribute("domiLimit", Consts.DOMI_LIMIT);
+		model.addAttribute("constructionLimit", Consts.CONSTRUCTION_LIMIT_PER_DAY);
 		return "wiki";
 	}
 
