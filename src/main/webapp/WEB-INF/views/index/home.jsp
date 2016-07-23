@@ -220,6 +220,10 @@
 					<td class="tableTd1">Обмен доминантности на &tridot;</td>
 					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitDomi}" /></td>
 				</tr>
+				<tr>
+					<td class="tableTd1">Выиграно в лотерею, &tridot;</td>
+					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitLoto}" /></td>
+				</tr>
 			</table>
 		</div>
 		<div class="col-md-6">
@@ -252,8 +256,20 @@
 					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendCr}" /></td>
 				</tr>
 				<tr>
+					<td class="tableTd1">Покупка лотерейных билетов, &tridot;</td>
+					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendLoto}" /></td>
+				</tr>
+				<tr>
 					<td class="tableTd1">Покупка лицензий на строительство, &tridot;</td>
 					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendLicenseBuy}" /></td>
+				</tr>
+				<tr>
+					<td class="tableTd1">На строительство зданий, &tridot;</td>
+					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendConstructProperty}" /></td>
+				</tr>
+				<tr>
+					<td class="tableTd1">Выведено средств, &tridot;</td>
+					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendWithdraw}" /></td>
 				</tr>
 			</table>
 		</div>

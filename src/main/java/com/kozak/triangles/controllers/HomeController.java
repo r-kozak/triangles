@@ -106,6 +106,7 @@ public class HomeController extends BaseController {
 		model.addAttribute("profitDB", trRep.getSumByAcf(userId, ArticleCashFlowT.DAILY_BONUS));
 		model.addAttribute("profitDep", trRep.getSumByAcf(userId, ArticleCashFlowT.DEPOSIT));
 		model.addAttribute("profitDomi", trRep.getSumByAcf(userId, ArticleCashFlowT.DOMINANT_TO_TRIAN));
+		model.addAttribute("profitLoto", trRep.getSumByAcf(userId, ArticleCashFlowT.LOTTERY_WINNINGS));
 
 		model.addAttribute("spendSum", trRep.getSumByTransfType(userId, TransferT.SPEND)); // расход всего
 		model.addAttribute("spendCr", trRep.getSumByAcf(userId, ArticleCashFlowT.CREDIT));
@@ -113,8 +114,10 @@ public class HomeController extends BaseController {
 		model.addAttribute("spendRepair", trRep.getSumByAcf(userId, ArticleCashFlowT.PROPERTY_REPAIR));
 		model.addAttribute("spendUpCash", trRep.getSumByAcf(userId, ArticleCashFlowT.UP_CASH_LEVEL));
 		model.addAttribute("spendUpLevel", trRep.getSumByAcf(userId, ArticleCashFlowT.UP_PROP_LEVEL));
+		model.addAttribute("spendLoto", trRep.getSumByAcf(userId, ArticleCashFlowT.LOTTERY_TICKETS_BUY));
 		model.addAttribute("spendLicenseBuy", trRep.getSumByAcf(userId, ArticleCashFlowT.BUY_LICENSE));
-
+		model.addAttribute("spendConstructProperty", trRep.getSumByAcf(userId, ArticleCashFlowT.CONSTRUCTION_PROPERTY));
+		model.addAttribute("spendWithdraw", trRep.getSumByAcf(userId, ArticleCashFlowT.WITHDRAW));
 		return "index/home";
 	}
 
