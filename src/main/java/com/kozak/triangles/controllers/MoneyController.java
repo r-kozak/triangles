@@ -24,6 +24,7 @@ import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.search.TransactSearch;
 import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.TagCreator;
 import com.kozak.triangles.utils.Util;
@@ -115,6 +116,7 @@ public class MoneyController extends BaseController {
 		return "transactions";
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/withdraw-money", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<String> withdrawTriangles(@RequestParam("count") int count, User user) {
 		JSONObject resultJson = new JSONObject();
@@ -122,13 +124,17 @@ public class MoneyController extends BaseController {
 		int userId = user.getId();
 		long balance = Long.valueOf(trRep.getUserBalance(userId));
 		if (count > 0 && balance > 0 && count <= balance) {
-			ResponseUtil.addBalanceData(resultJson, count, balance, userId, prRep);
-
 			// вывести деньги со счета
 			String desc = String.format("Вывод средств со счета");
-			Transaction t = new Transaction(desc, new Date(), count, TransferT.SPEND, userId, balance - count,
-					ArticleCashFlowT.WITHDRAW);
+			Date transactDate = new Date();
+			ArticleCashFlowT artCashFlowType = ArticleCashFlowT.WITHDRAW;
+			Transaction t = new Transaction(desc, transactDate, count, TransferT.SPEND, userId, balance - count, artCashFlowType);
 			trRep.addTransaction(t);
+
+			// сформировать json ответ
+			ResponseUtil.addBalanceData(resultJson, count, balance, userId, prRep);
+			resultJson.put("transactDate", DateUtils.dateToString(transactDate));
+			resultJson.put("description", desc);
 		} else {
 			ResponseUtil.putErrorMsg(resultJson,
 					"Сумма вывода и баланс должны быть положительными!<br/> Также сумма вывода должна быть <= суммы баланса!");

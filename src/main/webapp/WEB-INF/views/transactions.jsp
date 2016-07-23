@@ -109,7 +109,7 @@
 				  <tbody>
 						<c:forEach items="${transacs}" var="transac">
 							<tr>
-								<td><fmt:formatDate value="${transac.transactDate}" pattern="dd-MM-yyyy HH:mm:ss" /></td>
+								<td><fmt:formatDate value="${transac.transactDate}" pattern="dd.MM.yyyy HH:mm:ss" /></td>
 								
 								<c:choose>
 									<c:when test="${transac.articleCashFlow == 'DAILY_BONUS'}">
@@ -153,6 +153,9 @@
 									</c:when>
 									<c:when test="${transac.articleCashFlow == 'LOTTERY_TICKETS_BUY'}">
 										<td style="text-align:left">Покупка лотерейных билетов</td>
+									</c:when>
+									<c:when test="${transac.articleCashFlow == 'WITHDRAW'}">
+										<td style="text-align:left">Вывод средств</td>
 									</c:when>
 									<c:otherwise>
 										<td>${transac.articleCashFlow}</td>
@@ -250,6 +253,17 @@ $(document).ready(function(){
 	  			} else {
 	  				$('#withdraw_count').val("");
 	  				changeBal(data);
+	  				// создать новую строку для таблицы транзакций
+	  				var newTr = '<tr><td>'+ data.transactDate +'</td>' +
+	  					'<td>Вывод средств</td>' +
+	  					'<td>'+ data.description +'</td>' +
+	  					'<td>Расход</td>' +
+	  					'<td>'+ moneyCount +'</td>' +
+	  					'<td>'+ data.newBalance +'</td></tr>';
+	  				
+	  				var transactionTable = $('.tableTitleTr').closest('table');
+	  				transactionTable.find('tbody').prepend(newTr); // вставить новую строку на место первой
+	  				transactionTable.find('tbody tr:last').remove(); // удалить последнюю строку с таблицы
 	  			}
 	   		}).fail(function(jqXHR, textStatus, errorThrown) {
 	  			alert(jqXHR.status + " " + jqXHR.statusText);
