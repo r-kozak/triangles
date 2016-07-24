@@ -26,7 +26,7 @@
 		</div>
 		
 		<div style="display:inline-block; font-size:11">
-			Triangles © 2015 <br>
+			Triangles © 2015-2016 <br>
 			e-mail: roman.kozak2085@gmail.com <br>
 			Roman Kozak
 		</div>
