@@ -34,7 +34,8 @@
 				</table>			
 	
 	 		</div> <!-- container.row.col-md-9 - лицензии-->
-		</div> <!-- container.row - строка с кнопкой Строить и с лицензиями-->
+		</div> <!-- container.row -->
+		
+		<t:footer></t:footer>
 	</div> 
-	<t:footer></t:footer>	
 </t:template>

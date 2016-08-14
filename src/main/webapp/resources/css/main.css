@@ -74,6 +74,7 @@ body {
 }
 
 .content {
+	position: relative;
 	border: 2px solid;
 	border-color: darkturquoise;
 	border-bottom: none;
@@ -158,6 +159,7 @@ body {
 }
 
 .container {
+    position: relative;
 	background-color: white;
 	border: 2px solid;
     border-color: darkturquoise;
@@ -171,4 +173,14 @@ body {
 
 .tableTitleTr {
 	background-color: #F2F2F2;	
+}
+
+.footer {
+	padding: 10 10;
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	border-top: 2px solid #eee;
+	background-color: white;
 }

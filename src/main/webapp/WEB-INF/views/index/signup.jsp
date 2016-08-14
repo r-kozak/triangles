@@ -43,8 +43,8 @@
 				</form:form>
 			</div>
 		</div>
+		<t:footer></t:footer>
 	</div>
-	<t:footer></t:footer>
 </body>
 
 </html>

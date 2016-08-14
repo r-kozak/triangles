@@ -114,14 +114,9 @@ public class BuildingController extends BaseController {
 				resultJson.put("buiType", buiType);
 				resultJson.put("cityAreaTag", TagCreator.cityAreaTag(userLicenseLevel));
 				resultJson.put("price", "Цена постройки: <b>" + priceOfBuilt + "&tridot;</b>"); // цена постройки
-				resultJson.put("balanceAfter", "Баланс после постройки: <b>" + (userMoney - priceOfBuilt) + "&tridot;</b>"); // баланс
-																																// после
-																																// постройки
-
+				resultJson.put("balanceAfter", "Баланс после постройки: <b>" + (userMoney - priceOfBuilt) + "&tridot;</b>");
 				resultJson.put("solvencyAfter", "Состоятельность после постройки: <b>"
-						+ Util.getSolvency(String.valueOf(userMoney - priceOfBuilt), prRep, userId) + "&tridot;</b>"); // состоятельность
-																														// после
-																														// постройки
+						+ Util.getSolvency(String.valueOf(userMoney - priceOfBuilt), prRep, userId) + "&tridot;</b>");
 				resultJson.put("exploitation",
 						"Дата приема в эксплуатацию (при скорости 1.0): <b>" + DateUtils.dateToString(exploitation) + "</b>");
 			}

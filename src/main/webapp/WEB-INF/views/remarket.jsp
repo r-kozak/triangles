@@ -326,8 +326,8 @@
 				</c:if>
 			</div>
 	</div>	
+	<t:footer></t:footer>
 </div> <!-- container -->
-<t:footer></t:footer>
 
 	<div id="balChan">
 		<c:if test="${changeBal.length() > 0}">

@@ -113,7 +113,7 @@
  			<h4 class="page-header" align=center>В процессе постройки</h4>
  			
  			<c:choose>
- 				<c:when test="">
+ 				<c:when test="${empty constrProjects}">
 					<table class="table">
 						<tr class="text-danger" style="font-size:30">
 							<td>Нажмите кнопку СТРОИТЬ, чтобы построить здание.</td>
@@ -221,8 +221,8 @@
  			</c:choose>
  		</div>
  	</div>
+	<t:footer></t:footer>
 </div> <!-- container -->
-<t:footer></t:footer>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>

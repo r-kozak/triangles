@@ -111,6 +111,7 @@
 				
 	 		</div> <!-- container.row.col-md-9-->
 		</div> <!-- container.row -->
+		
+		<t:footer></t:footer>
 	</div> 
-	<t:footer></t:footer>
 </t:template>

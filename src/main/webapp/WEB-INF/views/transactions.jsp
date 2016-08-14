@@ -195,8 +195,8 @@
 			</c:if>
 		</div> <!-- tranBlock (col-md-9)-->
 	</div> <!-- row  -->
+	<t:footer></t:footer>
 </div> <!-- container -->
-<t:footer></t:footer>
 
 <div id="balChan"></div>
 

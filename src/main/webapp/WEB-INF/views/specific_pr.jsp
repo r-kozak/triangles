@@ -428,8 +428,8 @@ function sellProperty(data) {
 			</form:form>
 		</div>
 	</div>
+	<t:footer></t:footer>
 </div>
-<t:footer></t:footer>
 
 	<div id="balChan">
 		<c:if test="${changeBal.length() > 0}">

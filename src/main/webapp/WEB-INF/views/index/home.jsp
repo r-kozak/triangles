@@ -190,6 +190,8 @@
 			</div>
 			
 		</div>
+		
+		<div class="row">
 		<h3 class="page-header">Статистика</h3>
 		<div class="col-md-6">
 			<table class="table">
@@ -275,4 +277,5 @@
 		</div>
 	</div>
 	<t:footer></t:footer>
+	</div>
 </t:template>

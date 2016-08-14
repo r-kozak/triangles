@@ -286,8 +286,8 @@
    			</ul>
 		</div>
 	</div>
-</div>
-<t:footer></t:footer>
+	<t:footer></t:footer>
+</div> <!-- container -->
 
 <div id="balChan">
 	<c:choose>

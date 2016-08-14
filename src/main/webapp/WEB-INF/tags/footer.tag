@@ -1,9 +1,7 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 
-
-<div class="navbar navbar-fixed-bottom">
-  <div class="container" style="padding: 10 10">
-    	<div style="display:inline-block;">
+<div class="footer">
+	<div style="display:inline-block;">
 		<img src="${pageContext.request.contextPath}/resources/img/footer.png">
 	</div>
 	
@@ -31,5 +29,4 @@
 			Roman Kozak
 		</div>
 	</div>
-  </div>
 </div>
