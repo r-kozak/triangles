@@ -1,4 +1,7 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<jsp:useBean id="now" class="java.util.Date" />
 
 <div class="footer">
 	<div style="display:inline-block;">
@@ -24,9 +27,10 @@
 		</div>
 		
 		<div style="display:inline-block; font-size:11">
-			Triangles © 2015-2016 <br>
+			<span class="glyphicon glyphicon-time text-danger"></span> <fmt:formatDate value="${now}" pattern="dd.MM.yyyy - HH:mm:ss" /> <br>
+			Roman Kozak <br>
 			e-mail: roman.kozak2085@gmail.com <br>
-			Roman Kozak
+			Triangles © 2015-2016 <br>
 		</div>
 	</div>
 </div>
