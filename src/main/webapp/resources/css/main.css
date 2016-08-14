@@ -184,3 +184,10 @@ body {
 	border-top: 2px solid #eee;
 	background-color: white;
 }
+
+.notSelectable {
+	-ms-user-select: none; 
+	-moz-user-select: none; 
+	-webkit-user-select: none; 
+	user-select: none; 
+}

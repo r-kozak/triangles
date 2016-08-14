@@ -74,17 +74,17 @@
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>
-					<div class="buy_label" id="buy_1">1</div>
+					<div class="buy_label notSelectable" id="buy_1">1</div>
 					<div class="little_label">${ticketsPrice[0]}&tridot; за 1 билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>
-					<div class="buy_label" id="buy_10">10</div>
+					<div class="buy_label notSelectable" id="buy_10">10</div>
 					<div class="little_label">${ticketsPrice[1]}&tridot; за 1 билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>
-					<div class="buy_label" id="buy_50">50</div>
+					<div class="buy_label notSelectable" id="buy_50">50</div>
 					<div class="little_label">${ticketsPrice[2]}&tridot; за 1 билет</div>
 				</div>
 			</div>
@@ -95,22 +95,22 @@
 			<div class="col-md-12 text-center play_block">
 				<div class="col-md-3">
 					<div>Играть на</div>
-					<div class="play_label" id="play_1">1</div>
+					<div class="play_label notSelectable" id="play_1">1</div>
 					<div class="little_label">билет</div>
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
-					<div class="play_label" id="play_5">≤5</div>
+					<div class="play_label notSelectable" id="play_5">≤5</div>
 					<div class="little_label">билетов</div>
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
-					<div class="play_label" id="play_10">≤10</div>
+					<div class="play_label notSelectable" id="play_10">≤10</div>
 					<div class="little_label">билетов</div>
 				</div>
 				<div class="col-md-3">
 					<div>Играть на</div>
-					<div class="play_label" id="play_0">ВСЕ</div>
+					<div class="play_label notSelectable" id="play_0">ВСЕ</div>
 					<div class="little_label">билеты</div>
 				</div>
 			</div>
@@ -121,28 +121,28 @@
 			<div class="col-md-12 text-center plushki_block">
 				<div class="col-md-3">
 					<div>Повышение уровня имущества</div>
-					<div id="up_prop_btn" class="plushki_label">×${upPropCount}</div>
+					<div id="up_prop_btn" class="plushki_label notSelectable">×${upPropCount}</div>
 				</div>
 				<div class="col-md-3">
 					<div>Повышение уровня кассы имущества</div>
-					<div id="up_cash_btn" class="plushki_label">×${upCashCount}</div>
+					<div id="up_cash_btn" class="plushki_label notSelectable">×${upCashCount}</div>
 				</div>
 				<div class="col-md-3">
 					<div>Лицензии на строительство</div>
-					<div id="useLic2" class="plushki_label_lic">ур. 2: ×<span id="lic2CountVal">${lic2Count}</span></div>
-					<div id="useLic3" class="plushki_label_lic">ур. 3: ×<span id="lic3CountVal">${lic3Count}</span></div>
-					<div id="useLic4" class="plushki_label_lic">ур. 4: ×<span id="lic4CountVal">${lic4Count}</span></div>
+					<div id="useLic2" class="plushki_label_lic notSelectable">ур. 2: ×<span id="lic2CountVal">${lic2Count}</span></div>
+					<div id="useLic3" class="plushki_label_lic notSelectable">ур. 3: ×<span id="lic3CountVal">${lic3Count}</span></div>
+					<div id="useLic4" class="plushki_label_lic notSelectable">ур. 4: ×<span id="lic4CountVal">${lic4Count}</span></div>
 				</div>
 				<div class="col-md-3">
 					<div>Мудрость всезнающего<br/><br/></div>
 					<div id="predictBlock">
 						<c:choose>
 							<c:when test="${!isPredictionAvailable}">
-								<div class="plushki_label predictDiv"><span class="glyphicon glyphicon-certificate" 
+								<div class="plushki_label predictDiv notSelectable"><span class="glyphicon glyphicon-certificate" 
 									style="font-size:98; color:#FFCACA"></span></div>
 							</c:when>
 							<c:otherwise>
-								<div class="plushki_label predictDiv"><span id="predictSign" class="glyphicon glyphicon-certificate" 
+								<div class="plushki_label predictDiv notSelectable"><span id="predictSign" class="glyphicon glyphicon-certificate" 
 									style="font-size:98; color:#F35A30"></span></div>
 								<script>
 									animatePredictSign();
