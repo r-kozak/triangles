@@ -93,7 +93,7 @@ public class MessageController extends BaseController {
             msgRep.removeMsg(msgId);
         }
 
-        return ResponseUtil.getResponseEntity(new JSONObject());
+        return ResponseUtil.createTypicalResponseEntity(new JSONObject());
     }
 
 }

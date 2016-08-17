@@ -107,7 +107,7 @@ public class PropertyController extends BaseController {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/buy", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
-    public @ResponseBody ResponseEntity<String> jqueryBuyProperty(@RequestParam("propId") Integer propId,
+    public @ResponseBody ResponseEntity<String> buyProperty(@RequestParam("propId") Integer propId,
             @RequestParam("action") String action, User user) {
 
         JSONObject resultJson = new JSONObject();
@@ -183,7 +183,7 @@ public class PropertyController extends BaseController {
                 }
             }
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     /**
@@ -358,7 +358,7 @@ public class PropertyController extends BaseController {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/repair", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
-    public @ResponseBody ResponseEntity<String> jqueryRepairRequest(@RequestParam("type") String type,
+    public @ResponseBody ResponseEntity<String> repairRequest(@RequestParam("type") String type,
             @RequestParam("propId") Integer propId, User user) {
         JSONObject resultJson = new JSONObject();
 
@@ -408,7 +408,7 @@ public class PropertyController extends BaseController {
                 }
             }
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     /**
@@ -450,7 +450,7 @@ public class PropertyController extends BaseController {
                 }
             }
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     /**
@@ -507,7 +507,7 @@ public class PropertyController extends BaseController {
                 }
             }
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     /**
@@ -523,7 +523,7 @@ public class PropertyController extends BaseController {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/sell", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
-    public @ResponseBody ResponseEntity<String> jquerySellProperty(@RequestParam("propIds") String[] propIds,
+    public @ResponseBody ResponseEntity<String> sellProperty(@RequestParam("propIds") String[] propIds,
             @RequestParam("action") String action, User user) {
 
         JSONObject resultJson = new JSONObject();
@@ -562,7 +562,7 @@ public class PropertyController extends BaseController {
                 }
             }
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////// PRIVATE

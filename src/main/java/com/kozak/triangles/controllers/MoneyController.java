@@ -44,7 +44,7 @@ public class MoneyController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/buy-triangles", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<String> jqueryBuyTriangles(@RequestParam("count") int count,
+	public @ResponseBody ResponseEntity<String> buyTriangles(@RequestParam("count") int count,
 			@RequestParam("action") String action, User user) {
 
 		JSONObject resultJson = new JSONObject();
@@ -83,7 +83,7 @@ public class MoneyController extends BaseController {
 				}
 			}
 		}
-		return ResponseUtil.getResponseEntity(resultJson);
+		return ResponseUtil.createTypicalResponseEntity(resultJson);
 	}
 
 	@RequestMapping(value = "/transactions", method = RequestMethod.GET)
@@ -139,7 +139,7 @@ public class MoneyController extends BaseController {
 			ResponseUtil.putErrorMsg(resultJson,
 					"Сумма вывода и баланс должны быть положительными!<br/> Также сумма вывода должна быть <= суммы баланса!");
 		}
-		return ResponseUtil.getResponseEntity(resultJson);
+		return ResponseUtil.createTypicalResponseEntity(resultJson);
 	}
 
 	/**

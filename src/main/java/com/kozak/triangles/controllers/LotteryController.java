@@ -212,7 +212,7 @@ public class LotteryController extends BaseController {
                 resultJson.put("ticketsValue", user.getLotteryTickets());
             }
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     /**
@@ -276,7 +276,7 @@ public class LotteryController extends BaseController {
             userRep.updateUser(user);
 
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     /**
@@ -300,7 +300,7 @@ public class LotteryController extends BaseController {
         } catch (NoResultException e) {
             ResponseUtil.putErrorMsg(resultJson, "Работа всезнающего - мыслить, ваша работа - играть в лотерею.");
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     /**
@@ -332,7 +332,7 @@ public class LotteryController extends BaseController {
                 lotteryRep.updateLotoInfo(licenses);
             }
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     /**
@@ -367,7 +367,7 @@ public class LotteryController extends BaseController {
         } else {
             ResponseUtil.putErrorMsg(resultJson, "Нет таких объектов.");
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     /**
@@ -429,7 +429,7 @@ public class LotteryController extends BaseController {
         } else {
             ResponseUtil.putErrorMsg(resultJson, "Нет таких объектов.");
         }
-        return ResponseUtil.getResponseEntity(resultJson);
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
     private Object[] getPljushkiCountAndNameForLevelUp(String obj, int userId) {

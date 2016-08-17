@@ -121,7 +121,7 @@ public class BuildingController extends BaseController {
 						"Дата приема в эксплуатацию (при скорости 1.0): <b>" + DateUtils.dateToString(exploitation) + "</b>");
 			}
 		}
-		return ResponseUtil.getResponseEntity(resultJson);
+		return ResponseUtil.createTypicalResponseEntity(resultJson);
 	}
 
 	@RequestMapping(value = "/confirm-build", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
@@ -193,7 +193,7 @@ public class BuildingController extends BaseController {
 				}
 			}
 		}
-		return ResponseUtil.getResponseEntity(resultJson);
+		return ResponseUtil.createTypicalResponseEntity(resultJson);
 	}
 
 	/**
@@ -214,7 +214,7 @@ public class BuildingController extends BaseController {
 		} else {
 			singleProjectFromConstruct(resultJson, constrId, userId, null); // принять конкретный проект
 		}
-		return ResponseUtil.getResponseEntity(resultJson);
+		return ResponseUtil.createTypicalResponseEntity(resultJson);
 	}
 
 	private void singleProjectFromConstruct(JSONObject resultJson, int constrId, int userId, ConstructionProject constrProj) {
@@ -278,7 +278,7 @@ public class BuildingController extends BaseController {
 				resultJson.put("licenseTerm", "Срок действия лицензии, дней: <b>" + Consts.LICENSE_TERM[level] + ".</b>");
 			}
 		}
-		return ResponseUtil.getResponseEntity(resultJson);
+		return ResponseUtil.createTypicalResponseEntity(resultJson);
 	}
 
 	@RequestMapping(value = "/license-buy", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
@@ -308,7 +308,7 @@ public class BuildingController extends BaseController {
 				trRep.addTransaction(tr);
 			}
 		}
-		return ResponseUtil.getResponseEntity(resultJson);
+		return ResponseUtil.createTypicalResponseEntity(resultJson);
 	}
 
 	/**

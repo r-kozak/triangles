@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import com.kozak.triangles.repositories.PropertyRep;
 
 public class ResponseUtil {
-    public static ResponseEntity<String> getResponseEntity(JSONObject resultJson) {
+    public static ResponseEntity<String> createTypicalResponseEntity(JSONObject resultJson) {
         System.err.println(resultJson.toJSONString());
         String json = resultJson.toJSONString();
 
