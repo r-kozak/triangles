@@ -191,3 +191,7 @@ body {
 	-webkit-user-select: none; 
 	user-select: none; 
 }
+
+.label {
+	font-size: 85%;
+}

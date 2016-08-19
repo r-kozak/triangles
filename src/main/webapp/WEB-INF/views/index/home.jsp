@@ -54,11 +54,13 @@
 				<table class="table">
 					<tr>
 						<td class="tableTd1">Предложений всего</td>
-						<td class="tableTd2"><span class="badge">${rePrCo}</span></td>
+						<td class="tableTd2"><span class="label label-default">${rePrCo}</span></td>
 					</tr>
 					<tr>
 						<td class="tableTd1">Новых предложений</td>
-						<td class="tableTd2"><span class="badge">${newRePrCo}</span></td>
+						<td class="tableTd2">
+							<span class="label label-<c:out value="${newRePrCo > 0 ? 'danger' : 'default'}"/>">${newRePrCo}</span>
+						</td>
 					</tr>
 				</table>
 			</div>
@@ -71,7 +73,7 @@
 				<table class="table">
 					<tr>
 						<td class="tableTd1">Билетов</td>
-						<td class="tableTd2"><span class="badge">${ticketsCount}</span></td>
+						<td class="tableTd2"><span class="label label-<c:out value="${ticketsCount > 0 ? 'danger' : 'default'}"/>">${ticketsCount}</span></td>
 					</tr>
 				</table>
 			</div>
@@ -88,7 +90,7 @@
 								<c:when test="${ready > 0}">
 									<tr>
 										<td class="tableTd1">Готовых к сбору дохода</td>
-										<td class="tableTd2"><span class="badge">${ready}</span></td>
+										<td class="tableTd2"><span class="label label-danger">${ready}</span></td>
 									</tr>
 								</c:when>
 								<c:otherwise>
@@ -111,7 +113,7 @@
 							</c:choose>
 							<tr>
 								<td class="tableTd1">Нужен ремонт для</td>
-								<td class="tableTd2"><span class="badge">${needRepair}/${comPrCount}</span></td>
+								<td class="tableTd2"><span class="label label-default">${needRepair}/${comPrCount}</span></td>
 							</tr>
 						</c:when>
 						<c:otherwise>
@@ -184,11 +186,12 @@
 					</tr>
 					<tr>
 						<td class="tableTd1">Начато сегодня</td>
-						<td class="tableTd2"><span class="badge">${startedToConstructToday}/${constructionLimitPerDay}</span></td>
+						<td class="tableTd2">
+							<span class="label label-<c:out value="${startedToConstructToday >= constructionLimitPerDay ? 'danger' : 'default'}"/>">${startedToConstructToday}/${constructionLimitPerDay}</span>
+						</td>
 					</tr>
 				</table>
 			</div>
-			
 		</div>
 		
 		<div class="row">
