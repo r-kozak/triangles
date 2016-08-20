@@ -257,64 +257,84 @@ public class HomeController extends BaseController {
 	 */
 	private void buildDataInit() {
 		CommBuildData data = null;
-		BuildingsT superTYPE = BuildingsT.TRADING;
 
 		// получить данные всех коммерческих строений
 		HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
 
 		// init STALL
-		CommBuildingsT TYPE = CommBuildingsT.STALL;
-		if (mapData.get(TYPE.name()) == null) {
-			data = new CommBuildData(3, 6, 4500, 5500, TYPE, superTYPE, 1, 1, 2);
+		CommBuildingsT type = CommBuildingsT.STALL;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(3, 6, 4500, 5500, type, BuildingsT.TRADING, 1, 1, 2);
 			buiDataRep.addCommBuildingData(data);
 		}
 
 		// init VILLAGE_SHOP
-		TYPE = CommBuildingsT.VILLAGE_SHOP;
-		if (mapData.get(TYPE.name()) == null) {
-			data = new CommBuildData(2, 10, 10000, 15000, TYPE, superTYPE, 2, 2, 3);
+		type = CommBuildingsT.VILLAGE_SHOP;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(2, 10, 10000, 15000, type, BuildingsT.TRADING, 2, 2, 3);
 			buiDataRep.addCommBuildingData(data);
 		}
 
 		// init STATIONER_SHOP
-		TYPE = CommBuildingsT.STATIONER_SHOP;
-		if (mapData.get(TYPE.name()) == null) {
-			data = new CommBuildData(5, 12, 17000, 30000, TYPE, superTYPE, 3, 1, 4);
+		type = CommBuildingsT.STATIONER_SHOP;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(5, 12, 17000, 30000, type, BuildingsT.TRADING, 3, 1, 4);
 			buiDataRep.addCommBuildingData(data);
 		}
 
 		// init BOOK_SHOP
-		TYPE = CommBuildingsT.BOOK_SHOP;
-		if (mapData.get(TYPE.name()) == null) {
-			data = new CommBuildData(2, 4, 30000, 40000, TYPE, superTYPE, 4, 1, 2);
+		type = CommBuildingsT.BOOK_SHOP;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(2, 4, 30000, 40000, type, BuildingsT.TRADING, 4, 1, 2);
 			buiDataRep.addCommBuildingData(data);
 		}
 
 		// init CANDY_SHOP
-		TYPE = CommBuildingsT.CANDY_SHOP;
-		if (mapData.get(TYPE.name()) == null) {
-			data = new CommBuildData(3, 7, 40000, 50000, TYPE, superTYPE, 5, 1, 5);
+		type = CommBuildingsT.CANDY_SHOP;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(3, 7, 40000, 50000, type, BuildingsT.TRADING, 5, 1, 5);
 			buiDataRep.addCommBuildingData(data);
 		}
 
 		// init LITTLE_SUPERMARKET
-		TYPE = CommBuildingsT.LITTLE_SUPERMARKET;
-		if (mapData.get(TYPE.name()) == null) {
-			data = new CommBuildData(4, 5, 70000, 100000, TYPE, superTYPE, 6, 2, 6);
+		type = CommBuildingsT.LITTLE_SUPERMARKET;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(4, 5, 70000, 100000, type, BuildingsT.TRADING, 6, 2, 6);
 			buiDataRep.addCommBuildingData(data);
 		}
 
 		// init MIDDLE_SUPERMARKET
-		TYPE = CommBuildingsT.MIDDLE_SUPERMARKET;
-		if (mapData.get(TYPE.name()) == null) {
-			data = new CommBuildData(5, 7, 120000, 150000, TYPE, superTYPE, 7, 3, 7);
+		type = CommBuildingsT.MIDDLE_SUPERMARKET;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(5, 7, 120000, 150000, type, BuildingsT.TRADING, 7, 3, 7);
 			buiDataRep.addCommBuildingData(data);
 		}
 
 		// init BIG_SUPERMARKET
-		TYPE = CommBuildingsT.BIG_SUPERMARKET;
-		if (mapData.get(TYPE.name()) == null) {
-			data = new CommBuildData(4, 7, 150000, 200000, TYPE, superTYPE, 8, 4, 8);
+		type = CommBuildingsT.BIG_SUPERMARKET;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(4, 7, 150000, 200000, type, BuildingsT.TRADING, 8, 4, 8);
+			buiDataRep.addCommBuildingData(data);
+		}
+
+		// init RESTAURANT
+		type = CommBuildingsT.RESTAURANT;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(5, 8, 200000, 280000, type, BuildingsT.TRADING, 9, 3, 5);
+			buiDataRep.addCommBuildingData(data);
+		}
+
+		// init CINEMA
+		type = CommBuildingsT.CINEMA;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(6, 8, 280000, 380000, type, BuildingsT.TRADING, 10, 2, 4);
+			buiDataRep.addCommBuildingData(data);
+		}
+
+		// init MALL
+		type = CommBuildingsT.MALL;
+		if (mapData.get(type.name()) == null) {
+			data = new CommBuildData(3, 6, 380000, 500000, type, BuildingsT.TRADING, 11, 6, 10);
 			buiDataRep.addCommBuildingData(data);
 		}
 	}

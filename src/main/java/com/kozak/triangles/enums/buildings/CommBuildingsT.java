@@ -1,14 +1,13 @@
 package com.kozak.triangles.enums.buildings;
 
 /**
- * Типы коммерческих зданий по возрастанию характеристик.
- * Могут быть, как торговые, предоставляющие услуги, так и производственные
+ * Типы коммерческих зданий по возрастанию характеристик. Могут быть, как торговые, предоставляющие услуги, так и производственные
  * 
- * киоск, сельский магазин, магазин канцтоваров, книжный магазин, магазин сладостей, маленький, средний,
- * большой супермаркет
+ * киоск, сельский магазин, магазин канцтоваров, книжный магазин, магазин сладостей, маленький, средний, большой супермаркет,
+ * ресторан, кинотеатр, торговый центр
  * 
  * @author Roman: 12 июня 2015 г. 22:39:16
  */
 public enum CommBuildingsT {
-    STALL, VILLAGE_SHOP, STATIONER_SHOP, BOOK_SHOP, CANDY_SHOP, LITTLE_SUPERMARKET, MIDDLE_SUPERMARKET, BIG_SUPERMARKET
+	STALL, VILLAGE_SHOP, STATIONER_SHOP, BOOK_SHOP, CANDY_SHOP, LITTLE_SUPERMARKET, MIDDLE_SUPERMARKET, BIG_SUPERMARKET, RESTAURANT, CINEMA, MALL
 }

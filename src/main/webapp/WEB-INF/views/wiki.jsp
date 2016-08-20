@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -210,6 +210,9 @@ p {
 							<li><a href="#pr.ch.ls">Маленький супермаркет</a></li>
 							<li><a href="#pr.ch.ms">Средний супермаркет</a></li>
 							<li><a href="#pr.ch.hs">Большой супермаркет</a></li>
+							<li><a href="#pr.ch.re">Ресторан</a></li>
+							<li><a href="#pr.ch.ci">Кинотеатр</a></li>
+							<li><a href="#pr.ch.ma">Торговый центр</a></li>
 						</ul>
 						<li><a href="#pr.co">Порядок начислений</a></li>
 						<ul>
@@ -337,6 +340,15 @@ p {
 							</c:when>
 							<c:when test="${cbdata.commBuildType == 'BIG_SUPERMARKET'}">
 								<div id="pr.ch.hs" class="sp_point fs3">Большой супермаркет</div>
+							</c:when>
+							<c:when test="${cbdata.commBuildType == 'RESTAURANT'}">
+								<div id="pr.ch.re" class="sp_point fs3">Ресторан</div>
+							</c:when>
+							<c:when test="${cbdata.commBuildType == 'CINEMA'}">
+								<div id="pr.ch.ci" class="sp_point fs3">Кинотеатр</div>
+							</c:when>
+							<c:when test="${cbdata.commBuildType == 'MALL'}">
+								<div id="pr.ch.ma" class="sp_point fs3">Торговый центр</div>
 							</c:when>
 						</c:choose>
 						<ul>
