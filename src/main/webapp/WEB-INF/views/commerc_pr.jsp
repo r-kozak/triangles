@@ -14,6 +14,7 @@
 <head>
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/buildings_types.js"></script>
 	<script type="text/javascript">
 		$(function () {
 			$("#depreciation-slider").slider({
@@ -73,7 +74,7 @@
 					
 					<fieldset id = "searchBlock"> 
 					<legend>Тип</legend>
-						<div id="searchEl">
+						<div id="searchEl" class="build_types">
 							<form:checkboxes path="types" items="${types}"/>      
 						</div>
 					</fieldset>
@@ -199,34 +200,7 @@
 							</c:choose>
 							
 							<td><input id="${prop.id}" class="select_prop" type="checkbox"></td>
-							
-							<c:choose>
-								<c:when test="${prop.commBuildingType == 'STALL'}">
-									<td style="text-align:left">Киоск</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
-									<td style="text-align:left">Сельский магазин</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
-									<td style="text-align:left">Магазин	канцтоваров</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'BOOK_SHOP'}">
-									<td style="text-align:left">Книжный магазин</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'CANDY_SHOP'}">
-									<td style="text-align:left">Магазин сладостей</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'LITTLE_SUPERMARKET'}">
-									<td style="text-align:left">Маленький супермаркет</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'MIDDLE_SUPERMARKET'}">
-									<td style="text-align:left">Средний супермаркет</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'BIG_SUPERMARKET'}">
-									<td style="text-align:left">Большой супермаркет</td>
-								</c:when>
-							</c:choose>
-	
+							<td style="text-align:left" class="building_type_name">${prop.commBuildingType}</td>
 							<td style="text-align:left"><a class="bg-info" href="${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
 							<td style="text-align:center">${prop.level}</td>
 							<td style="text-align:center">${prop.cashLevel}</td>
@@ -394,7 +368,18 @@ $(document).ready(function(){
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				alert(jqXHR.status + " " + jqXHR.statusText);
 			});
-    }
+    };
+    
+    function replaceBuildingsTypeName() {
+    	var namesInTable = $('.building_type_name');
+    	var namesInMenu = $('.build_types label');
+    	
+		$.each([ $('.building_type_name'), $('.build_types label')], function(index, array) {
+			replaceBuildingTypeNames(array);
+		});
+    };
+    
+    replaceBuildingsTypeName();
 });
 </script>
 
