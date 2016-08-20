@@ -20,8 +20,6 @@
 }
 </style>
 <t:template>
-	<!-- Задний прозрачный фон-->
-	<div id="wrap"></div>
 
 <div class="container">
 	<div class="row">
@@ -160,7 +158,7 @@
 						<td>
 							<c:choose>
 	   							<c:when test="${prop.cash > 0}">
-									<a id="repairBut" class="btn btn-danger" data-toggle="tooltip" title="Собрать прибыль"
+									<a class="btn btn-danger" data-toggle="tooltip" title="Собрать прибыль"
 									  onclick="document.property.action.value='get_cash'; document.property.submit();"><span class="glyphicon glyphicon-piggy-bank"></span></a>
 								</c:when>    
 	   							<c:otherwise>
