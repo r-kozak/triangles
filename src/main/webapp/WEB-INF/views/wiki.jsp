@@ -274,17 +274,7 @@ p {
 <!-- 			Имущество -->
 			<div id="pr" class="sp_point fs1">Имущество</div>
 			<div class="text">
-				<p>Имущество является одним из основных источников прибыли.
-					Делится на:</p>
-				<ul>
-					<li>Коммерческое (приносит прибыль)</li>
-					<ul>
-						<li>Торговое (магазины, супермаркеты, торговые центры)</li>
-						<li>Производственное (заводы, фабрики, комбинаты)</li>
-						<li>Сфера услуг</li>
-					</ul>
-					<li>Личное (влияет на доминантность)</li>
-				</ul>
+				<p>Имущество является одним из основных источников прибыли.</p>
 				<p>У имущества есть общие характеристики (минимальная и
 					максимальная прибыль, срок полезного использования...подробности
 					ниже).</p>
@@ -314,59 +304,54 @@ p {
 					(период_окупаемости_мин * 7)]</p>
 				<p>Вместимость кассы = прибыль_макс * коэф. уровня (k)
 				<p>k - <a href="#uc">универсальный коэффициент</a> 
-				<c:if test="${!empty commBuData}">
-					<c:forEach items="${commBuData}" var="cbdata">
+				<c:if test="${!empty tradeBuildingsData}">
+					<c:forEach items="${tradeBuildingsData}" var="buildingData">
 						<c:choose>
-							<c:when test="${cbdata.commBuildType == 'STALL'}">
+							<c:when test="${buildingData.tradeBuildingType == 'STALL'}">
 								<div id="pr.ch.st" class="sp_point fs3">Киоск</div>
 							</c:when>
-							<c:when test="${cbdata.commBuildType == 'VILLAGE_SHOP'}">
+							<c:when test="${buildingData.tradeBuildingType == 'VILLAGE_SHOP'}">
 								<div id="pr.ch.vs" class="sp_point fs3">Сельский магазин</div>
 							</c:when>
-							<c:when test="${cbdata.commBuildType == 'STATIONER_SHOP'}">
+							<c:when test="${buildingData.tradeBuildingType == 'STATIONER_SHOP'}">
 								<div id="pr.ch.ss" class="sp_point fs3">Магазин	канцтоваров</div>
 							</c:when>
-							<c:when test="${cbdata.commBuildType == 'BOOK_SHOP'}">
+							<c:when test="${buildingData.tradeBuildingType == 'BOOK_SHOP'}">
 								<div id="pr.ch.bs" class="sp_point fs3">Книжный магазин</div>
 							</c:when>
-							<c:when test="${cbdata.commBuildType == 'CANDY_SHOP'}">
+							<c:when test="${buildingData.tradeBuildingType == 'CANDY_SHOP'}">
 								<div id="pr.ch.cs" class="sp_point fs3">Магазин сладостей</div>
 							</c:when>
-							<c:when test="${cbdata.commBuildType == 'LITTLE_SUPERMARKET'}">
+							<c:when test="${buildingData.tradeBuildingType == 'LITTLE_SUPERMARKET'}">
 								<div id="pr.ch.ls" class="sp_point fs3">Маленький супермаркет</div>
 							</c:when>
-							<c:when test="${cbdata.commBuildType == 'MIDDLE_SUPERMARKET'}">
+							<c:when test="${buildingData.tradeBuildingType == 'MIDDLE_SUPERMARKET'}">
 								<div id="pr.ch.ms" class="sp_point fs3">Средний супермаркет</div>
 							</c:when>
-							<c:when test="${cbdata.commBuildType == 'BIG_SUPERMARKET'}">
+							<c:when test="${buildingData.tradeBuildingType == 'BIG_SUPERMARKET'}">
 								<div id="pr.ch.hs" class="sp_point fs3">Большой супермаркет</div>
 							</c:when>
-							<c:when test="${cbdata.commBuildType == 'RESTAURANT'}">
+							<c:when test="${buildingData.tradeBuildingType == 'RESTAURANT'}">
 								<div id="pr.ch.re" class="sp_point fs3">Ресторан</div>
 							</c:when>
-							<c:when test="${cbdata.commBuildType == 'CINEMA'}">
+							<c:when test="${buildingData.tradeBuildingType == 'CINEMA'}">
 								<div id="pr.ch.ci" class="sp_point fs3">Кинотеатр</div>
 							</c:when>
-							<c:when test="${cbdata.commBuildType == 'MALL'}">
+							<c:when test="${buildingData.tradeBuildingType == 'MALL'}">
 								<div id="pr.ch.ma" class="sp_point fs3">Торговый центр</div>
 							</c:when>
 						</c:choose>
 						<ul>
-							<li>Сфера деятельности: <b> ${cbdata.buildType}</b></li>
-							<li>Период окупаемости, недель: <b>${cbdata.paybackPeriodMin}
-									- ${cbdata.paybackPeriodMax}</b></li>
-							<li>Цена покупки: <b>${cbdata.purchasePriceMin} -
-									${cbdata.purchasePriceMax}</b></li>
-							<li>Срок полезного использования, недель: <b>${cbdata.usefulLife}</b></li>
-							<li>Прибыль, в день: <b>${cbdata.profitMin} -
-									${cbdata.profitMax}</b></li>
-							<li>Срок пребывания на рынке, дней: <b>${cbdata.remTermMin}
-									- ${cbdata.remTermMax}</b></li>
-							<li>Время на постройку, дней: <b>${cbdata.buildTime}</b></li>
+							<li>Период окупаемости, недель: <b>${buildingData.paybackPeriodMin}	- ${buildingData.paybackPeriodMax}</b></li>
+							<li>Цена покупки: <b>${buildingData.purchasePriceMin} -	${buildingData.purchasePriceMax}</b></li>
+							<li>Срок полезного использования, недель: <b>${buildingData.usefulLife}</b></li>
+							<li>Прибыль, в день: <b>${buildingData.profitMin} -	${buildingData.profitMax}</b></li>
+							<li>Срок пребывания на рынке, дней: <b>${buildingData.marketTermMin} - ${buildingData.marketTermMax}</b></li>
+							<li>Время на постройку, дней: <b>${buildingData.buildTime}</b></li>
 							<li>Вместимость кассы:
 								<table border=1px solid style="display: inline-table;">
 									<tr>
-										<c:forEach items="${cbdata.cashCapacity}" var="cashcap" begin="0" end="${max_cash_lev}">
+										<c:forEach items="${buildingData.cashCapacity}" var="cashcap" begin="0" end="${max_cash_lev}">
 											<td>${cashcap}</td>
 										</c:forEach>
 									</tr>
@@ -384,7 +369,7 @@ p {
 
 				<div id="pr.co.pr" class="sp_point fs3">Прибыль</div>
 				<p>Прибыль начисляется каждые 24 часа по любому активному
-					коммерческому имуществу. Активным считается то, износ которого <
+					торговому имуществу. Активным считается то, износ которого <
 					100%.</p>
 				<p>
 					На прибыль влияет уровень здания. Коэфициенты по уровням и влиянию

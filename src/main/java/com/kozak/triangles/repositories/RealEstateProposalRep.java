@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.RealEstateProposal;
-import com.kozak.triangles.enums.CityAreasT;
-import com.kozak.triangles.enums.buildings.CommBuildingsT;
+import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.TradeBuildingsTypes;
 import com.kozak.triangles.search.RealEstateProposalsSearch;
 import com.kozak.triangles.utils.DateUtils;
 
@@ -28,7 +28,7 @@ import com.kozak.triangles.utils.DateUtils;
  */
 @Repository
 @Transactional
-public class ReProposalRep {
+public class RealEstateProposalRep {
     @PersistenceContext
     public EntityManager em;
 
@@ -40,7 +40,7 @@ public class ReProposalRep {
     public List<Object> getREProposalsList(int page, RealEstateProposalsSearch reps, int userId) throws ParseException {
         String hql0 = "from re_proposal as rep where rep.valid = true";
         String hql1 = "";
-        String hql2 = " ORDER BY rep.commBuildingType";
+		String hql2 = " ORDER BY rep.tradeBuildingType";
 
         Map<String, Object> params = new HashMap<String, Object>();
 
@@ -65,16 +65,16 @@ public class ReProposalRep {
         params.put("lossDateTo", lossDateTo);
 
         // area filter
-        List<CityAreasT> areas = reps.getAreas(); // типы из формы
+        List<CityAreas> areas = reps.getAreas(); // типы из формы
         if (areas != null && !areas.isEmpty()) {
             hql1 += " and rep.cityArea IN (:areas)";
             params.put("areas", areas);
         }
 
         // types filter
-        List<CommBuildingsT> types = reps.getTypes(); // типы из формы
+        List<TradeBuildingsTypes> types = reps.getTypes(); // типы из формы
         if (types != null && !types.isEmpty()) {
-            hql1 += " and rep.commBuildingType IN (:types)";
+			hql1 += " and rep.tradeBuildingType IN (:types)";
             params.put("types", types);
         }
 
@@ -126,7 +126,7 @@ public class ReProposalRep {
      * @param prop
      *            RealEstateProposal, которое нужно добавить
      */
-    public void addREproposal(RealEstateProposal prop) {
+    public void addRealEstateProposal(RealEstateProposal prop) {
         em.persist(prop);
     }
 
@@ -233,12 +233,12 @@ public class ReProposalRep {
 
     public void removeReProposalByUsedId(int usedId) {
         RealEstateProposal toRemove = this.getProposalByUsedId(usedId);
-        this.em.remove((Object) toRemove);
+        this.em.remove(toRemove);
     }
 
     public RealEstateProposal getProposalByUsedId(int usedId) {
         String hql = "from re_proposal as rep where usedId = :usedId";
-        Query query = this.em.createQuery(hql).setParameter("usedId", (Object) usedId);
+        Query query = this.em.createQuery(hql).setParameter("usedId", usedId);
         return (RealEstateProposal) query.getSingleResult();
     }
 
@@ -251,7 +251,7 @@ public class ReProposalRep {
     @SuppressWarnings("unchecked")
     public List<Integer> getPropertyIdsOnSale(int userId) {
         String hql = "Select id from Property as pr where pr.onSale = true and pr.userId = :userId";
-        Query query = this.em.createQuery(hql).setParameter("userId", (Object) userId);
+        Query query = this.em.createQuery(hql).setParameter("userId", userId);
 
         return query.getResultList();
     }

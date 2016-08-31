@@ -4,42 +4,42 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.kozak.triangles.enums.ArticleCashFlowT;
-import com.kozak.triangles.enums.CityAreasT;
+import com.kozak.triangles.enums.ArticleCashFlow;
+import com.kozak.triangles.enums.CityAreas;
 import com.kozak.triangles.enums.LotteryArticles;
-import com.kozak.triangles.enums.TransferT;
-import com.kozak.triangles.enums.buildings.CommBuildingsT;
+import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.TransferTypes;
 
 public class SearchCollections {
     // transaction search
-    public static List<ArticleCashFlowT> getArticlesCashFlow() {
-        List<ArticleCashFlowT> articles = new ArrayList<ArticleCashFlowT>();
-        for (ArticleCashFlowT a : ArticleCashFlowT.values()) {
+    public static List<ArticleCashFlow> getArticlesCashFlow() {
+        List<ArticleCashFlow> articles = new ArrayList<ArticleCashFlow>();
+        for (ArticleCashFlow a : ArticleCashFlow.values()) {
             articles.add(a);
         }
         return articles;
     }
 
-    public static List<TransferT> getTransferTypes() {
-        List<TransferT> transfers = new ArrayList<TransferT>();
-        transfers.add(TransferT.PROFIT);
-        transfers.add(TransferT.SPEND);
+    public static List<TransferTypes> getTransferTypes() {
+        List<TransferTypes> transfers = new ArrayList<TransferTypes>();
+        transfers.add(TransferTypes.PROFIT);
+        transfers.add(TransferTypes.SPEND);
         return transfers;
     }
 
-    // commercial property search
-    public static List<CommBuildingsT> getCommBuildTypes() {
-        List<CommBuildingsT> types = new ArrayList<CommBuildingsT>();
-        for (CommBuildingsT a : CommBuildingsT.values()) {
+	// trade property search
+    public static List<TradeBuildingsTypes> getTradeBuildingsTypes() {
+		List<TradeBuildingsTypes> types = new ArrayList<>();
+        for (TradeBuildingsTypes a : TradeBuildingsTypes.values()) {
             types.add(a);
         }
         return types;
     }
 
     // real estate market search
-    public static List<CityAreasT> getCityAreas() {
-        List<CityAreasT> types = new ArrayList<CityAreasT>();
-        for (CityAreasT a : CityAreasT.values()) {
+    public static List<CityAreas> getCityAreas() {
+        List<CityAreas> types = new ArrayList<CityAreas>();
+        for (CityAreas a : CityAreas.values()) {
             types.add(a);
         }
         return types;

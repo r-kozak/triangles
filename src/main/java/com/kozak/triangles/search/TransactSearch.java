@@ -3,22 +3,22 @@ package com.kozak.triangles.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kozak.triangles.enums.ArticleCashFlowT;
-import com.kozak.triangles.enums.TransferT;
+import com.kozak.triangles.enums.ArticleCashFlow;
+import com.kozak.triangles.enums.TransferTypes;
 
 public class TransactSearch extends AbstractSearch {
 
 	private String dateFrom = "";
 	private String dateTo = "";
-	private List<ArticleCashFlowT> articles = new ArrayList<ArticleCashFlowT>();
-	private TransferT transfer;
+	private List<ArticleCashFlow> articles = new ArrayList<ArticleCashFlow>();
+	private TransferTypes transfer;
 
 	@Override
 	public void clear() {
 		super.clear();
 		this.dateFrom = "";
 		this.dateTo = "";
-		articles = new ArrayList<ArticleCashFlowT>();
+		articles = new ArrayList<ArticleCashFlow>();
 		this.transfer = null;
 	}
 
@@ -38,19 +38,19 @@ public class TransactSearch extends AbstractSearch {
 		this.dateTo = dateTo;
 	}
 
-	public List<ArticleCashFlowT> getArticles() {
+	public List<ArticleCashFlow> getArticles() {
 		return articles;
 	}
 
-	public void setArticles(List<ArticleCashFlowT> articles) {
+	public void setArticles(List<ArticleCashFlow> articles) {
 		this.articles = articles;
 	}
 
-	public void setTransfer(TransferT transfer) {
+	public void setTransfer(TransferTypes transfer) {
 		this.transfer = transfer;
 	}
 
-	public TransferT getTransfer() {
+	public TransferTypes getTransfer() {
 		return transfer;
 	}
 }

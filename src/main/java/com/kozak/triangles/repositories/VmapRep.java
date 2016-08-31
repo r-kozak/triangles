@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Vmap;
-import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
 
 @Repository
@@ -23,10 +23,9 @@ public class VmapRep {
     /**
      * @return дата следующей генерации предложений на рынке имущества
      */
-    public Vmap getNextProposeGen() {
+    public Vmap getNextProposalGeneration() {
         String hql = "from vmap as vmap where vmap.name = :name";
-        Query query = em.createQuery(hql)
-                .setParameter("name", Consts.NEXT_RE_PROPOSE);
+		Query query = em.createQuery(hql).setParameter("name", Constants.NEXT_RE_PROPOSE);
 
         Vmap result = null;
         try {
@@ -45,7 +44,7 @@ public class VmapRep {
         String newValue = DateUtils.dateToString(new Date());
 
         Vmap vm = new Vmap();
-        vm.setName(Consts.NEXT_RE_PROPOSE);
+        vm.setName(Constants.NEXT_RE_PROPOSE);
         vm.setValue(newValue);
 
         em.persist(vm);

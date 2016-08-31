@@ -3,7 +3,6 @@ package com.kozak.triangles.controllers;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -12,24 +11,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.kozak.triangles.entities.CommBuildData;
+import com.kozak.triangles.data.CityAreasTableData;
+import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.ConstructionProject;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.RealEstateProposal;
+import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.entities.UserLicense;
 import com.kozak.triangles.entities.Vmap;
-import com.kozak.triangles.enums.ArticleCashFlowT;
-import com.kozak.triangles.enums.TransferT;
-import com.kozak.triangles.enums.buildings.BuildingsT;
-import com.kozak.triangles.enums.buildings.CommBuildingsT;
-import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.enums.ArticleCashFlow;
+import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
+import com.kozak.triangles.utils.PropertyUtil;
 import com.kozak.triangles.utils.ProposalGenerator;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
-import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
@@ -50,12 +50,11 @@ public class HomeController extends BaseController {
 
 		int userId = currUser.getId();
 
-		buildDataInit(); // инициализируем данные по строениям для каждого типа
 		checkFirstTime(currUser); // проверка, первый ли вход в игру (вообще)
 		giveDailyBonusAndLotteryTickets(currUser); // начисление ежедневного бонуса
 		giveCreditDeposit(userId); // начисление кредита/депозита
 		manageREMarketProposals(userId); // очистить-добавить предложения на глобальный рынок недвижимости
-		Util.profitCalculation(userId, buiDataRep, prRep); // начисление прибыли по имуществу пользователя
+		PropertyUtil.profitCalculation(userId, prRep); // начисление прибыли по имуществу пользователя
 		propertyDepreciation(userId); // начисление амортизации
 
 		// начислить проценты завершенности для всех объектов строительства
@@ -89,8 +88,8 @@ public class HomeController extends BaseController {
 		String userBalance = trRep.getUserBalance(userId);
 		int userDomi = userRep.getUserDomi(userId);
 		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
-		model.addAttribute("rePrCo", rePrRep.allPrCount(false, userId)); // колво предложений на рынке имущества
-		model.addAttribute("newRePrCo", rePrRep.allPrCount(true, userId)); // новых предложений на рын.имущ.
+		model.addAttribute("rePrCo", realEstateProposalRep.allPrCount(false, userId)); // колво предложений на рынке имущества
+		model.addAttribute("newRePrCo", realEstateProposalRep.allPrCount(true, userId)); // новых предложений на рын.имущ.
 		model.addAttribute("ready", prRep.allPrCount(userId, true, false)); // колво готовых к сбору дохода
 		model.addAttribute("comPrCount", prRep.allPrCount(userId, false, false)); // всего имущества
 		model.addAttribute("nextProfit", prRep.getMinNextProfit(userId)); // дата следующей прибыли
@@ -99,27 +98,28 @@ public class HomeController extends BaseController {
 		model.addAttribute("licenseExpire", licenseExpireDate); // окончание лицензии
 		model.addAttribute("ticketsCount", currUser.getLotteryTickets()); // количество лотерейных билетов
 		model.addAttribute("userLogin", currUser.getLogin()); // логин пользователя
-		model.addAttribute("constructionLimitPerDay", Consts.CONSTRUCTION_LIMIT_PER_DAY); // лимит на постройку зданий в день, шт
+		model.addAttribute("constructionLimitPerDay", Constants.CONSTRUCTION_LIMIT_PER_DAY); // лимит на постройку зданий в день,
+																								// шт
 
 		// СТАТИСТИКА
-		model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferT.PROFIT)); // прибыль всего
-		model.addAttribute("profitFromProp", trRep.getSumByAcf(userId, ArticleCashFlowT.LEVY_ON_PROPERTY));
-		model.addAttribute("profitFromPropSell", trRep.getSumByAcf(userId, ArticleCashFlowT.SELL_PROPERTY));
-		model.addAttribute("profitDB", trRep.getSumByAcf(userId, ArticleCashFlowT.DAILY_BONUS));
-		model.addAttribute("profitDep", trRep.getSumByAcf(userId, ArticleCashFlowT.DEPOSIT));
-		model.addAttribute("profitDomi", trRep.getSumByAcf(userId, ArticleCashFlowT.DOMINANT_TO_TRIAN));
-		model.addAttribute("profitLoto", trRep.getSumByAcf(userId, ArticleCashFlowT.LOTTERY_WINNINGS));
+		model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferTypes.PROFIT)); // прибыль всего
+		model.addAttribute("profitFromProp", trRep.getSumByAcf(userId, ArticleCashFlow.LEVY_ON_PROPERTY));
+		model.addAttribute("profitFromPropSell", trRep.getSumByAcf(userId, ArticleCashFlow.SELL_PROPERTY));
+		model.addAttribute("profitDB", trRep.getSumByAcf(userId, ArticleCashFlow.DAILY_BONUS));
+		model.addAttribute("profitDep", trRep.getSumByAcf(userId, ArticleCashFlow.DEPOSIT));
+		model.addAttribute("profitDomi", trRep.getSumByAcf(userId, ArticleCashFlow.DOMINANT_TO_TRIAN));
+		model.addAttribute("profitLoto", trRep.getSumByAcf(userId, ArticleCashFlow.LOTTERY_WINNINGS));
 
-		model.addAttribute("spendSum", trRep.getSumByTransfType(userId, TransferT.SPEND)); // расход всего
-		model.addAttribute("spendCr", trRep.getSumByAcf(userId, ArticleCashFlowT.CREDIT));
-		model.addAttribute("spendBuyPr", trRep.getSumByAcf(userId, ArticleCashFlowT.BUY_PROPERTY));
-		model.addAttribute("spendRepair", trRep.getSumByAcf(userId, ArticleCashFlowT.PROPERTY_REPAIR));
-		model.addAttribute("spendUpCash", trRep.getSumByAcf(userId, ArticleCashFlowT.UP_CASH_LEVEL));
-		model.addAttribute("spendUpLevel", trRep.getSumByAcf(userId, ArticleCashFlowT.UP_PROP_LEVEL));
-		model.addAttribute("spendLoto", trRep.getSumByAcf(userId, ArticleCashFlowT.LOTTERY_TICKETS_BUY));
-		model.addAttribute("spendLicenseBuy", trRep.getSumByAcf(userId, ArticleCashFlowT.BUY_LICENSE));
-		model.addAttribute("spendConstructProperty", trRep.getSumByAcf(userId, ArticleCashFlowT.CONSTRUCTION_PROPERTY));
-		model.addAttribute("spendWithdraw", trRep.getSumByAcf(userId, ArticleCashFlowT.WITHDRAW));
+		model.addAttribute("spendSum", trRep.getSumByTransfType(userId, TransferTypes.SPEND)); // расход всего
+		model.addAttribute("spendCr", trRep.getSumByAcf(userId, ArticleCashFlow.CREDIT));
+		model.addAttribute("spendBuyPr", trRep.getSumByAcf(userId, ArticleCashFlow.BUY_PROPERTY));
+		model.addAttribute("spendRepair", trRep.getSumByAcf(userId, ArticleCashFlow.PROPERTY_REPAIR));
+		model.addAttribute("spendUpCash", trRep.getSumByAcf(userId, ArticleCashFlow.UP_CASH_LEVEL));
+		model.addAttribute("spendUpLevel", trRep.getSumByAcf(userId, ArticleCashFlow.UP_PROP_LEVEL));
+		model.addAttribute("spendLoto", trRep.getSumByAcf(userId, ArticleCashFlow.LOTTERY_TICKETS_BUY));
+		model.addAttribute("spendLicenseBuy", trRep.getSumByAcf(userId, ArticleCashFlow.BUY_LICENSE));
+		model.addAttribute("spendConstructProperty", trRep.getSumByAcf(userId, ArticleCashFlow.CONSTRUCTION_PROPERTY));
+		model.addAttribute("spendWithdraw", trRep.getSumByAcf(userId, ArticleCashFlow.WITHDRAW));
 		return "index/home";
 	}
 
@@ -147,40 +147,40 @@ public class HomeController extends BaseController {
 		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
 
 		// данные имущества
-		model.addAttribute("commBuData", buiDataRep.getCommBuildDataList());
+		model.addAttribute("tradeBuildingsData", TradeBuildingsTableData.getTradeBuildingsDataList());
 		// коэфициенты вместимости кассы
-		model.addAttribute("univCoef", Consts.UNIVERS_K);
+		model.addAttribute("univCoef", Constants.UNIVERS_K);
 		// мин и макс частота генерации предложений на рынке
-		model.addAttribute("frp_min", Consts.FREQ_RE_PROP_MIN);
-		model.addAttribute("frp_max", Consts.FREQ_RE_PROP_MAX);
+		model.addAttribute("frp_min", Constants.FREQ_RE_PROP_MIN);
+		model.addAttribute("frp_max", Constants.FREQ_RE_PROP_MAX);
 		// районы города
-		model.addAttribute("gp", Consts.GHETTO_P);
-		model.addAttribute("op", Consts.OUTSKIRTS_P);
-		model.addAttribute("chp", Consts.CHINA_P);
-		model.addAttribute("cep", Consts.CENTER_P);
+		model.addAttribute("gp", CityAreasTableData.getCityAreaPercent(CityAreas.GHETTO));
+		model.addAttribute("op", CityAreasTableData.getCityAreaPercent(CityAreas.OUTSKIRTS));
+		model.addAttribute("chp", CityAreasTableData.getCityAreaPercent(CityAreas.CHINATOWN));
+		model.addAttribute("cep", CityAreasTableData.getCityAreaPercent(CityAreas.CENTER));
 		// проценты типов строителей
-		model.addAttribute("builders", Consts.BUILDERS_COEF);
+		model.addAttribute("builders", Constants.BUILDERS_COEF);
 		// цены и сроки лицензий на строительство
-		model.addAttribute("licPrice", Consts.LICENSE_PRICE);
-		model.addAttribute("licTerm", Consts.LICENSE_TERM);
+		model.addAttribute("licPrice", Constants.LICENSE_PRICE);
+		model.addAttribute("licTerm", Constants.LICENSE_TERM);
 		// ставки кредита и депозита
-		model.addAttribute("cr_rate", Consts.CREDIT_RATE);
-		model.addAttribute("dep_rate", Consts.DEPOSIT_RATE);
+		model.addAttribute("cr_rate", Constants.CREDIT_RATE);
+		model.addAttribute("dep_rate", Constants.DEPOSIT_RATE);
 		// ежедневный бонус
-		model.addAttribute("dailyBonus", Consts.DAILY_BONUS_SUM);
+		model.addAttribute("dailyBonus", Constants.DAILY_BONUS_SUM);
 		// коэф-ты уменьшения сумм
-		model.addAttribute("kdr", Consts.K_DECREASE_REPAIR);
-		model.addAttribute("kdp", Consts.K_DECREASE_PROP_L);
-		model.addAttribute("kdc", Consts.K_DECREASE_CASH_L);
+		model.addAttribute("kdr", Constants.K_DECREASE_REPAIR);
+		model.addAttribute("kdp", Constants.K_DECREASE_PROP_L);
+		model.addAttribute("kdc", Constants.K_DECREASE_CASH_L);
 		// максимальные уровни имущества и кассы
-		model.addAttribute("max_prop_lev", Consts.MAX_PROP_LEVEL);
-		model.addAttribute("max_cash_lev", Consts.MAX_CASH_LEVEL);
+		model.addAttribute("max_prop_lev", Constants.MAX_PROP_LEVEL);
+		model.addAttribute("max_cash_lev", Constants.MAX_CASH_LEVEL);
 		// цены на лотерейные билеты
-		model.addAttribute("ticketsPrice", Consts.LOTTERY_TICKETS_PRICE);
+		model.addAttribute("ticketsPrice", Constants.LOTTERY_TICKETS_PRICE);
 		// лимиты на доминантность и цена билета при ежедневном начислении билетов
-		model.addAttribute("domiTicketPrice", Consts.DAILY_TICKETS_FROM_DOMI_K);
-		model.addAttribute("domiLimit", Consts.DOMI_LIMIT);
-		model.addAttribute("constructionLimit", Consts.CONSTRUCTION_LIMIT_PER_DAY);
+		model.addAttribute("domiTicketPrice", Constants.DAILY_TICKETS_FROM_DOMI_K);
+		model.addAttribute("domiLimit", Constants.DOMI_LOTTERY_LIMIT);
+		model.addAttribute("constructionLimit", Constants.CONSTRUCTION_LIMIT_PER_DAY);
 		return "wiki";
 	}
 
@@ -192,16 +192,12 @@ public class HomeController extends BaseController {
 	 * @param currUserId
 	 */
 	private void propertyDepreciation(int userId) {
-		// получить данные всех коммерческих строений
-		HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
 		// получить валидное имущество пользователя, у которого nD <= тек.дата
 		ArrayList<Property> properties = (ArrayList<Property>) prRep.getPropertyListForProfit(userId, false);
-		// генератор
-		Random rand = new Random();
 
 		// для каждого имущества
 		for (Property p : properties) {
-			CommBuildData data = mapData.get(p.getCommBuildingType().name());
+			TradeBuilding data = tradeBuildingsData.get(p.getTradeBuildingType().ordinal());
 
 			int deprSum = 0;
 			double deprPerc = 0;
@@ -214,19 +210,20 @@ public class HomeController extends BaseController {
 
 			for (int i = 0; i < calcC; i++) {
 				// будем (+ || -) доп. процент износа
-				boolean plus = (rand.generateRandNum(0, 1) == 0) ? true : false;
+				boolean plus = (Random.generateRandNum(0, 1) == 0) ? true : false;
 
 				// ОСНОВНОЙ % за неделю
 				double mainPerc = 100 / data.getUsefulLife();
 
 				// ДОП % (расч. от основного)
-				double additPerc = mainPerc * (int) rand.generateRandNum(1, 30) / 100;
+				double additPerc = mainPerc * (int) Random.generateRandNum(1, 30) / 100;
 
 				// приплюсовать или отминусовать ПР от ПИ
-				if (plus)
+				if (plus) {
 					mainPerc += additPerc;
-				else
+				} else {
 					mainPerc -= additPerc;
+				}
 
 				// вычислить недельную сумму износа
 				deprSum += p.getInitialCost() * mainPerc / 100;
@@ -242,100 +239,10 @@ public class HomeController extends BaseController {
 			// если имущество на продаже - изменить цену в предложении
 			if (p.isOnSale()) {
 				// получить предложение с этим имуществом на рынке и установить новую цену
-				RealEstateProposal rePr = rePrRep.getProposalByUsedId(p.getId());
+				RealEstateProposal rePr = realEstateProposalRep.getProposalByUsedId(p.getId());
 				rePr.setPurchasePrice(p.getSellingPrice());
-				rePrRep.updateREproposal(rePr);
+				realEstateProposalRep.updateREproposal(rePr);
 			}
-		}
-	}
-
-	/**
-	 * Первоначальное добавление данных о каждом типе имущества в БД. Нужно для дальнейшего получения данных и генерации
-	 * предложений на рынке
-	 * 
-	 * После добавления нового типа (CommBuildingsT) необходимо его добавить и здесь
-	 */
-	private void buildDataInit() {
-		CommBuildData data = null;
-
-		// получить данные всех коммерческих строений
-		HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
-
-		// init STALL
-		CommBuildingsT type = CommBuildingsT.STALL;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(3, 6, 4500, 5500, type, BuildingsT.TRADING, 1, 1, 2);
-			buiDataRep.addCommBuildingData(data);
-		}
-
-		// init VILLAGE_SHOP
-		type = CommBuildingsT.VILLAGE_SHOP;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(2, 10, 10000, 15000, type, BuildingsT.TRADING, 2, 2, 3);
-			buiDataRep.addCommBuildingData(data);
-		}
-
-		// init STATIONER_SHOP
-		type = CommBuildingsT.STATIONER_SHOP;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(5, 12, 17000, 30000, type, BuildingsT.TRADING, 3, 1, 4);
-			buiDataRep.addCommBuildingData(data);
-		}
-
-		// init BOOK_SHOP
-		type = CommBuildingsT.BOOK_SHOP;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(2, 4, 30000, 40000, type, BuildingsT.TRADING, 4, 1, 2);
-			buiDataRep.addCommBuildingData(data);
-		}
-
-		// init CANDY_SHOP
-		type = CommBuildingsT.CANDY_SHOP;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(3, 7, 40000, 50000, type, BuildingsT.TRADING, 5, 1, 5);
-			buiDataRep.addCommBuildingData(data);
-		}
-
-		// init LITTLE_SUPERMARKET
-		type = CommBuildingsT.LITTLE_SUPERMARKET;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(4, 5, 70000, 100000, type, BuildingsT.TRADING, 6, 2, 6);
-			buiDataRep.addCommBuildingData(data);
-		}
-
-		// init MIDDLE_SUPERMARKET
-		type = CommBuildingsT.MIDDLE_SUPERMARKET;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(5, 7, 120000, 150000, type, BuildingsT.TRADING, 7, 3, 7);
-			buiDataRep.addCommBuildingData(data);
-		}
-
-		// init BIG_SUPERMARKET
-		type = CommBuildingsT.BIG_SUPERMARKET;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(4, 7, 150000, 200000, type, BuildingsT.TRADING, 8, 4, 8);
-			buiDataRep.addCommBuildingData(data);
-		}
-
-		// init RESTAURANT
-		type = CommBuildingsT.RESTAURANT;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(5, 8, 200000, 280000, type, BuildingsT.TRADING, 9, 3, 5);
-			buiDataRep.addCommBuildingData(data);
-		}
-
-		// init CINEMA
-		type = CommBuildingsT.CINEMA;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(6, 8, 280000, 380000, type, BuildingsT.TRADING, 10, 2, 4);
-			buiDataRep.addCommBuildingData(data);
-		}
-
-		// init MALL
-		type = CommBuildingsT.MALL;
-		if (mapData.get(type.name()) == null) {
-			data = new CommBuildData(3, 6, 380000, 500000, type, BuildingsT.TRADING, 11, 6, 10);
-			buiDataRep.addCommBuildingData(data);
 		}
 	}
 
@@ -349,28 +256,26 @@ public class HomeController extends BaseController {
 		clearREMarket(); // очищает рынок от устаревших предложений
 
 		int activeUsers = userRep.countActiveUsers();
-		boolean marketEmpty = rePrRep.allPrCount(false, userId) == 0;
+		boolean marketEmpty = realEstateProposalRep.allPrCount(false, userId) == 0;
 
-		Vmap vm = vmRep.getNextProposeGen(); // получаем экземпляр константы (след. даты генерации предложений)
+		Vmap vm = vmRep.getNextProposalGeneration(); // получаем экземпляр константы (след. даты генерации предложений)
 		Date nrep = DateUtils.stringToDate(vm.getValue()); // берем из нее значение даты
 		boolean dateCome = (new Date().after(nrep)); // пришла след. дата генерации предложений
 
 		if (marketEmpty || dateCome) {
-			// получаем данные всех коммерческих строений
-			HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
 			// генерируем предложения
-			ProposalGenerator pg = new ProposalGenerator();
-			ArrayList<RealEstateProposal> result = pg.generateProposalsREMarket(activeUsers, mapData);
-			while (result.isEmpty()) {
-				result = pg.generateProposalsREMarket(activeUsers, mapData);
-			}
-			for (RealEstateProposal prop : result) {
-				rePrRep.addREproposal(prop);
+			List<RealEstateProposal> proposals = null;
+			do {
+				proposals = new ProposalGenerator().generateMarketProposals(activeUsers, tradeBuildingsData);
+			} while (proposals.isEmpty());
+
+			for (RealEstateProposal proposal : proposals) {
+				realEstateProposalRep.addRealEstateProposal(proposal);
 			}
 		}
 		// если пришла дата след. генерации, значит нужно генерить новую
 		if (dateCome) {
-			generateNewNextDate(vm); // генерация новой даты NextREproposal (константа с Vmap)
+			generateNewNextDate(vm); // генерация новой даты NextRealEstateProposal (константа с Vmap)
 		}
 	}
 
@@ -381,9 +286,7 @@ public class HomeController extends BaseController {
 	 *            старый экземпляр константы для обновления
 	 */
 	private void generateNewNextDate(Vmap oldValue) {
-		ProposalGenerator pg = new ProposalGenerator();
-		String newDate = pg.generateNEXT_RE_PROPOSE();
-
+		String newDate = new ProposalGenerator().computeNextGeneratingDate();
 		oldValue.setValue(newDate);
 		vmRep.updateVmapRow(oldValue);
 	}
@@ -392,17 +295,14 @@ public class HomeController extends BaseController {
 	 * очищает рынок недвижимости от не актуальных предложений (lossDate которых меньше текущей)
 	 */
 	private void clearREMarket() {
-		List<RealEstateProposal> outdated = rePrRep.getOutdatedProposals();
+		List<RealEstateProposal> outdated = realEstateProposalRep.getOutdatedProposals();
 		for (RealEstateProposal rep : outdated) {
 			// если это б/у имущество - начислить деньги продавцу
 			if (rep.getUsedId() != 0) {
-				Util.buyUsedProperty(rep, new Date(), 0, prRep, trRep);
+				PropertyUtil.buyUsedProperty(rep, new Date(), 0, prRep, trRep);
 			}
 			// удалить устаревшее, обработанное предложение
-			rePrRep.removeReProposalById(rep.getId());
-
-			// rep.setValid(false);
-			// rePrRep.updateREproposal(rep);
+			realEstateProposalRep.removeReProposalById(rep.getId());
 		}
 	}
 
@@ -422,22 +322,23 @@ public class HomeController extends BaseController {
 			userRep.updateUser(user);
 
 			// transaction for DAILY_BONUS
-			Transaction firstT = new Transaction("Начальный капитал", yest, 17000, TransferT.PROFIT, user.getId(), 17000,
-					ArticleCashFlowT.DAILY_BONUS);
+			Transaction firstT = new Transaction("Начальный капитал", yest, Constants.GAME_START_BALANCE, TransferTypes.PROFIT,
+					user.getId(), Constants.GAME_START_BALANCE, ArticleCashFlow.DAILY_BONUS);
 			trRep.addTransaction(firstT);
 
 			// transaction for DEPOSIT
-			firstT = new Transaction("Начальный депозит", yest, 0, TransferT.PROFIT, user.getId(), 17000,
-					ArticleCashFlowT.DEPOSIT);
+			firstT = new Transaction("Начальный депозит", yest, 0, TransferTypes.PROFIT, user.getId(),
+					Constants.GAME_START_BALANCE, ArticleCashFlow.DEPOSIT);
 			trRep.addTransaction(firstT);
 
 			// transaction for CREDIT
-			firstT = new Transaction("Начальный кредит", yest, 0, TransferT.SPEND, user.getId(), 17000, ArticleCashFlowT.CREDIT);
+			firstT = new Transaction("Начальный кредит", yest, 0, TransferTypes.SPEND, user.getId(), Constants.GAME_START_BALANCE,
+					ArticleCashFlow.CREDIT);
 			trRep.addTransaction(firstT);
 
 			// transaction for LEVY_ON_PROPERTY
-			firstT = new Transaction("Начальный сбор с имущества", yest, 0, TransferT.PROFIT, user.getId(), 17000,
-					ArticleCashFlowT.LEVY_ON_PROPERTY);
+			firstT = new Transaction("Начальный сбор с имущества", yest, 0, TransferTypes.PROFIT, user.getId(),
+					Constants.GAME_START_BALANCE, ArticleCashFlow.LEVY_ON_PROPERTY);
 			trRep.addTransaction(firstT);
 		}
 	}
@@ -449,7 +350,7 @@ public class HomeController extends BaseController {
 	 */
 	private void giveDailyBonusAndLotteryTickets(User user) {
 		// максимальный номер дня при начислении бонуса
-		final int MAX_DAY_NUMBER = Consts.DAILY_BONUS_SUM.length - 1;
+		final int MAX_DAY_NUMBER = Constants.DAILY_BONUS_SUM.length - 1;
 
 		Date lastBonus = user.getLastBonus();
 		int dayNumber = user.getDayNumber();
@@ -467,21 +368,21 @@ public class HomeController extends BaseController {
 			}
 
 			// добавляем транзакцию
-			int bonusSum = Consts.DAILY_BONUS_SUM[dayNumber];
+			int bonusSum = Constants.DAILY_BONUS_SUM[dayNumber];
 			String description = "Ежедневный бонус (день " + dayNumber + "-й)";
 			long oldBalance = Long.parseLong(trRep.getUserBalance(user.getId()));
-			Transaction t = new Transaction(description, new Date(), bonusSum, TransferT.PROFIT, user.getId(),
-					oldBalance + bonusSum, ArticleCashFlowT.DAILY_BONUS);
+			Transaction t = new Transaction(description, new Date(), bonusSum, TransferTypes.PROFIT, user.getId(),
+					oldBalance + bonusSum, ArticleCashFlow.DAILY_BONUS);
 			trRep.addTransaction(t);
 
 			// ежедневное начисление бесплатных лотерейных билетов
 			int dailyTicketsCount = 0; // сколько начислить билетов
 			int userDomi = user.getDomi();
 
-			if (userDomi >= Consts.DOMI_LIMIT)
-				userDomi = Consts.DOMI_LIMIT; // ограничение доминантности для начисления билетов
+			if (userDomi >= Constants.DOMI_LOTTERY_LIMIT)
+				userDomi = Constants.DOMI_LOTTERY_LIMIT; // ограничение доминантности для начисления билетов
 
-			dailyTicketsCount = userDomi / Consts.DAILY_TICKETS_FROM_DOMI_K;
+			dailyTicketsCount = userDomi / Constants.DAILY_TICKETS_FROM_DOMI_K;
 			user.setLotteryTickets(user.getLotteryTickets() + dailyTicketsCount);
 
 			// обновляем данные юзера
@@ -498,8 +399,8 @@ public class HomeController extends BaseController {
 	 */
 	private void giveCreditDeposit(int currUserId) {
 		// получение транзакций пользователя для получения последней даты начисления
-		List<Transaction> userTransactionsCr = trRep.getUserTransactionsByType(currUserId, ArticleCashFlowT.CREDIT);
-		List<Transaction> userTransactionsDep = trRep.getUserTransactionsByType(currUserId, ArticleCashFlowT.DEPOSIT);
+		List<Transaction> userTransactionsCr = trRep.getUserTransactionsByType(currUserId, ArticleCashFlow.CREDIT);
+		List<Transaction> userTransactionsDep = trRep.getUserTransactionsByType(currUserId, ArticleCashFlow.DEPOSIT);
 
 		// получение дат кредита и депозита, после чего взятие последней
 		Date lastTransactionDateCr = userTransactionsCr.get(userTransactionsCr.size() - 1).getTransactDate();
@@ -512,9 +413,9 @@ public class HomeController extends BaseController {
 			int countI = daysBetween / 30;
 			for (int i = 0; i < countI; i++) {
 				long userBalance = Long.parseLong(trRep.getUserBalance(currUserId));
-				double rate = (userBalance > 0 ? Consts.DEPOSIT_RATE : Consts.CREDIT_RATE);
-				TransferT transferType = (userBalance > 0 ? TransferT.PROFIT : TransferT.SPEND);
-				ArticleCashFlowT acf = (userBalance > 0 ? ArticleCashFlowT.DEPOSIT : ArticleCashFlowT.CREDIT);
+				double rate = (userBalance > 0 ? Constants.DEPOSIT_RATE : Constants.CREDIT_RATE);
+				TransferTypes transferType = (userBalance > 0 ? TransferTypes.PROFIT : TransferTypes.SPEND);
+				ArticleCashFlow acf = (userBalance > 0 ? ArticleCashFlow.DEPOSIT : ArticleCashFlow.CREDIT);
 				long sum = Math.round(userBalance * rate);
 				long newBalance = userBalance + sum;
 

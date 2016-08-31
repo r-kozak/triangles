@@ -16,10 +16,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Property;
-import com.kozak.triangles.enums.CityAreasT;
-import com.kozak.triangles.enums.buildings.CommBuildingsT;
-import com.kozak.triangles.search.CommPropSearch;
-import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.search.TradePropertySearch;
+import com.kozak.triangles.utils.Constants;
 
 /**
  * репозиторий имущества пользователя
@@ -92,7 +92,7 @@ public class PropertyRep {
      * @param rowsOnPage
      * @return список имущества пользователя для отображения на странице имущества
      */
-    public List<Object> getPropertyList(int userId, CommPropSearch cps, int rowsOnPage) {
+    public List<Object> getPropertyList(int userId, TradePropertySearch cps, int rowsOnPage) {
         String hql00 = "SELECT count(id) ";
         String hql0 = "FROM Property as pr WHERE pr.userId = :userId";
         String hql1 = "";
@@ -118,14 +118,14 @@ public class PropertyRep {
         }
 
         // types filter
-        List<CommBuildingsT> types = cps.getTypes(); // типы из формы
+        List<TradeBuildingsTypes> types = cps.getTypes(); // типы из формы
         if (types != null && !types.isEmpty()) {
-            hql1 += " and pr.commBuildingType IN (:types)";
+			hql1 += " and pr.tradeBuildingType IN (:types)";
             params.put("types", types);
         }
 
         // area filter
-        List<CityAreasT> areas = cps.getAreas(); // типы из формы
+        List<CityAreas> areas = cps.getAreas(); // типы из формы
         if (areas != null && !areas.isEmpty()) {
             hql1 += " and pr.cityArea IN (:areas)";
             params.put("areas", areas);
@@ -265,10 +265,10 @@ public class PropertyRep {
         int maxLevel = 0;
         if (obj.equals("prop")) {
             field = "level";
-            maxLevel = Consts.MAX_PROP_LEVEL;
+            maxLevel = Constants.MAX_PROP_LEVEL;
         } else if (obj.equals("cash")) {
             field = "cashLevel";
-            maxLevel = Consts.MAX_CASH_LEVEL;
+            maxLevel = Constants.MAX_CASH_LEVEL;
         }
         String hql = String.format("FROM Property WHERE userId = ?0 AND %s < %s", field, maxLevel);
 

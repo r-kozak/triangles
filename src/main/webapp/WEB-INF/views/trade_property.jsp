@@ -51,7 +51,7 @@
 	</script>
 </head>
 
-<title>Коммерческое имущество</title>
+<title>Торговое имущество</title>
 <t:template>
 <div class="container">
 	<div class="row">
@@ -134,22 +134,22 @@
 		</t:menu>
 
 		<div class="col-md-9">
-			<h3 class="page-header" align=center>Коммерческое имущество</h3>
-			<c:if test="${empty comProps && !userHaveProps}">
+			<h3 class="page-header" align=center>Торговое имущество</h3>
+			<c:if test="${empty tradeProps && !userHaveProps}">
 				<div class = "noData">У вас нет имущества. Его можно купить на рынке или построить. 
 					<a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a>
 					<a href = "${pageContext.request.contextPath}/building">СТРОИТЬ</a>
 				</div>
 			</c:if>
-			<c:if test="${empty comProps && userHaveProps}">
+			<c:if test="${empty tradeProps && userHaveProps}">
 				<div class = "noData">Поиск не дал результатов. Попробуйте задать другие параметры.</div>
 			</c:if>
 			
-			<c:if test="${!empty comProps}">
+			<c:if test="${!empty tradeProps}">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<button id="descr" class="btn btn-default btn-lg" data-toggle="tooltip" data-toggle="collapse" data-target="#pr_descr" 
-					       title="Показать или скрыть подробное описание раздела Коммерческое имущество"><span class="glyphicon glyphicon-info-sign"></span></button>
+					       title="Показать или скрыть подробное описание раздела Торговое имущество"><span class="glyphicon glyphicon-info-sign"></span></button>
 					       
 					     <button id="profit_from_all_btn" class="btn btn-default btn-lg" data-toggle="tooltip" title="Собрать прибыль со всего имущества" >
 					       <span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span></button>
@@ -164,8 +164,8 @@
 					       <span class="glyphicon glyphicon-menu-up" aria-hidden="true">К</span></button>
 					</div>
 					<div class="panel-body collapse" id="pr_descr">
-						<p><a href="${pageContext.request.contextPath}/wiki#pr">Коммерческое имущество</a> - это раздел, где можно посмотреть всё коммерческое
-						имущество, которое принадлежит вам. Коммерческое имущество можно купить на <a href="${pageContext.request.contextPath}/r-e-market">рынке</a>
+						<p><a href="${pageContext.request.contextPath}/wiki#pr">Торговое имущество</a> - это раздел, где можно посмотреть всё торговое
+						имущество, которое принадлежит вам. Торговое имущество можно купить на <a href="${pageContext.request.contextPath}/r-e-market">рынке</a>
 						или построить на  <a href="${pageContext.request.contextPath}/building">стройке.</a>
 						Каждые сутки по каждому имуществу насчитывается <a href="${pageContext.request.contextPath}/wiki#pr.co.pr">прибыль</a>. 
 						Каждую неделю насчитывается <a href="${pageContext.request.contextPath}/wiki#pr.co.de">износ</a>.
@@ -189,7 +189,7 @@
 					</tr>
 				<thead>
 				<tbody>
-					<c:forEach items="${comProps}" var="prop">
+					<c:forEach items="${tradeProps}" var="prop">
 							<c:choose>
 								<c:when test="${prop.onSale}">
 									<tr class="warning text-danger">
@@ -200,7 +200,7 @@
 							</c:choose>
 							
 							<td><input id="${prop.id}" class="select_prop" type="checkbox"></td>
-							<td style="text-align:left" class="building_type_name">${prop.commBuildingType}</td>
+							<td style="text-align:left" class="building_type_name">${prop.tradeBuildingType}</td>
 							<td style="text-align:left"><a class="bg-info" href="${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
 							<td style="text-align:center">${prop.level}</td>
 							<td style="text-align:center">${prop.cashLevel}</td>

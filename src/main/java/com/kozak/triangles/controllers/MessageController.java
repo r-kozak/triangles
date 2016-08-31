@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entities.Messages;
 import com.kozak.triangles.entities.User;
-import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.RecaptchaVerifier;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.Util;
@@ -42,7 +42,7 @@ public class MessageController extends BaseController {
         List<Messages> messages = msgRep.getAllMsgs();
         model.addAttribute("messages", messages);
         model.addAttribute("currUserLogin", user.getLogin());
-        model.addAttribute("currUserAdmin", user.getLogin().equals(Consts.ADMIN_LOGIN));
+        model.addAttribute("currUserAdmin", user.getLogin().equals(Constants.ADMIN_LOGIN));
 
         return "arbor";
     }
@@ -56,7 +56,7 @@ public class MessageController extends BaseController {
     String postMessage(@RequestParam("message") String message,
             @RequestParam("g-recaptcha-response") String gRecapResp, User user, Model model) throws IOException {
 
-        if (message == null || message.trim().isEmpty() || message.length() > Consts.MSG_LEN) {
+        if (message == null || message.trim().isEmpty() || message.length() > Constants.MSG_LEN) {
             return "redirect:/arbor";
         }
 
@@ -89,7 +89,7 @@ public class MessageController extends BaseController {
         String currUserLogin = user.getLogin();
         Messages msg = msgRep.getMsgById(msgId);
 
-        if (currUserLogin.equals(Consts.ADMIN_LOGIN) || currUserLogin.equals(msg.getAuthor())) {
+        if (currUserLogin.equals(Constants.ADMIN_LOGIN) || currUserLogin.equals(msg.getAuthor())) {
             msgRep.removeMsg(msgId);
         }
 

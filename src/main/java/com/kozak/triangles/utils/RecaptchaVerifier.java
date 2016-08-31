@@ -21,7 +21,7 @@ public class RecaptchaVerifier {
 
         HttpsURLConnection conn = createConnection();
 
-        String postParams = String.format("secret=%s&response=%s", Consts.RECAPTCHA_SECRET, gRecapResp);
+        String postParams = String.format("secret=%s&response=%s", Constants.RECAPTCHA_SECRET, gRecapResp);
         sendRequest(conn, postParams);
         String responseStr = getResponse(conn);
 
@@ -32,7 +32,7 @@ public class RecaptchaVerifier {
     }
 
     private static HttpsURLConnection createConnection() throws IOException {
-        URL url = new URL(Consts.RECAPTHA_URL);
+        URL url = new URL(Constants.RECAPTHA_URL);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 
         conn.setRequestMethod("POST");

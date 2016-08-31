@@ -43,32 +43,32 @@
 					<tr>
 						<td>Тип</td>
 						<c:choose>
-								<c:when test="${prop.commBuildingType == 'STALL'}">
+								<c:when test="${prop.tradeBuildingType == 'STALL'}">
 									<td>Киоск</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
+								<c:when test="${prop.tradeBuildingType == 'VILLAGE_SHOP'}">
 									<td>Сельский магазин</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
+								<c:when test="${prop.tradeBuildingType == 'STATIONER_SHOP'}">
 									<td>Магазин канцтоваров</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'BOOK_SHOP'}">
+								<c:when test="${prop.tradeBuildingType == 'BOOK_SHOP'}">
 										<td>Книжный магазин</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'CANDY_SHOP'}">
+								<c:when test="${prop.tradeBuildingType == 'CANDY_SHOP'}">
 									<td>Магазин сладостей</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'LITTLE_SUPERMARKET'}">
+								<c:when test="${prop.tradeBuildingType == 'LITTLE_SUPERMARKET'}">
 									<td>Маленький супермаркет</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'MIDDLE_SUPERMARKET'}">
+								<c:when test="${prop.tradeBuildingType == 'MIDDLE_SUPERMARKET'}">
 									<td>Средний супермаркет</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'BIG_SUPERMARKET'}">
+								<c:when test="${prop.tradeBuildingType == 'BIG_SUPERMARKET'}">
 									<td>Большой супермаркет</td>
 								</c:when>
 								<c:otherwise>
-									<td>${prop.commBuildingType}</td>
+									<td>${prop.tradeBuildingType}</td>
 								</c:otherwise>
 							</c:choose>
 						<td></td>
@@ -92,11 +92,6 @@
 								<td>${prop.cityArea}</td>
 							</c:otherwise>
 						</c:choose>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Вид деятельности</td>
-						<td>${type}</td>
 						<td></td>
 					</tr>
 					<tr>

@@ -15,8 +15,8 @@ import javax.persistence.TemporalType;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
-import com.kozak.triangles.enums.CityAreasT;
-import com.kozak.triangles.enums.buildings.CommBuildingsT;
+import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.TradeBuildingsTypes;
 import com.kozak.triangles.utils.DateUtils;
 
 /**
@@ -53,7 +53,7 @@ public class Property implements JSONAware {
 
     @Column(name = "cityArea")
     @Enumerated(EnumType.STRING)
-    private CityAreasT cityArea;
+    private CityAreas cityArea;
 
     @Column(name = "level")
     private int level;
@@ -88,7 +88,7 @@ public class Property implements JSONAware {
 
     @Column(name = "build_type")
     @Enumerated(EnumType.STRING)
-    private CommBuildingsT commBuildingType;
+    private TradeBuildingsTypes tradeBuildingType;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "next_profit")
@@ -107,8 +107,7 @@ public class Property implements JSONAware {
     public Property() {
     }
 
-    public Property(CommBuildData data, int userId, CityAreasT cityArea, Date purchaseDate,
-            long initialCost, String name) {
+	public Property(TradeBuilding data, int userId, CityAreas cityArea, Date purchaseDate, long initialCost, String name) {
 
         Date now = new Date();
 
@@ -122,12 +121,12 @@ public class Property implements JSONAware {
         this.nextDepreciation = DateUtils.addDays(now, 7); // + 7 days
 
         this.cashCapacity = data.getCashCapacity().get(0);
-        this.commBuildingType = data.getCommBuildType();
+		this.tradeBuildingType = data.getTradeBuildingType();
         this.userId = userId;
         this.cityArea = cityArea;
         this.purchaseDate = purchaseDate;
         this.initialCost = initialCost;
-        this.sellingPrice = initialCost;
+		this.sellingPrice = initialCost; // тоже initialCost
     }
 
     public Integer getId() {
@@ -146,11 +145,11 @@ public class Property implements JSONAware {
         this.userId = userId;
     }
 
-    public CityAreasT getCityArea() {
+    public CityAreas getCityArea() {
         return cityArea;
     }
 
-    public void setCityArea(CityAreasT cityArea) {
+    public void setCityArea(CityAreas cityArea) {
         this.cityArea = cityArea;
     }
 
@@ -218,15 +217,15 @@ public class Property implements JSONAware {
         this.name = name;
     }
 
-    public CommBuildingsT getCommBuildingType() {
-        return commBuildingType;
-    }
+	public TradeBuildingsTypes getTradeBuildingType() {
+		return tradeBuildingType;
+	}
 
-    public void setCommBuildingType(CommBuildingsT commBuildingType) {
-        this.commBuildingType = commBuildingType;
-    }
+	public void setTradeBuildingType(TradeBuildingsTypes tradeBuildingType) {
+		this.tradeBuildingType = tradeBuildingType;
+	}
 
-    public int getCashLevel() {
+	public int getCashLevel() {
         return cashLevel;
     }
 
@@ -266,7 +265,8 @@ public class Property implements JSONAware {
         this.onSale = onSale;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public String toJSONString() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);

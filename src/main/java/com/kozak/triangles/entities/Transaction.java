@@ -12,8 +12,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.kozak.triangles.enums.ArticleCashFlowT;
-import com.kozak.triangles.enums.TransferT;
+import com.kozak.triangles.enums.ArticleCashFlow;
+import com.kozak.triangles.enums.TransferTypes;
 
 /**
  * Транзакция. Отображает действия, которые приводят к изменению денежного баланса персонажа.
@@ -44,7 +44,7 @@ public class Transaction {
     // тип движения - приход или расход
     @Column(name = "transferType")
     @Enumerated(EnumType.STRING)
-    private TransferT transferType;
+    private TransferTypes transferType;
 
     // чьи деньги
     @Column(name = "user_id")
@@ -57,14 +57,14 @@ public class Transaction {
     // статья движения денежных средств
     @Column(name = "article_cash_flow")
     @Enumerated(EnumType.STRING)
-    private ArticleCashFlowT articleCashFlow;
+    private ArticleCashFlow articleCashFlow;
 
     // ///////////////////////////// constructors
     public Transaction() {
     }
 
-    public Transaction(String description, Date transactDate, long sum, TransferT transferType, int userId,
-            long balance, ArticleCashFlowT articleCashFlow) {
+    public Transaction(String description, Date transactDate, long sum, TransferTypes transferType, int userId,
+            long balance, ArticleCashFlow articleCashFlow) {
         this.description = description;
         this.transactDate = transactDate;
         this.summa = sum;
@@ -115,11 +115,11 @@ public class Transaction {
         this.summa = sum;
     }
 
-    public TransferT getTransferType() {
+    public TransferTypes getTransferType() {
         return transferType;
     }
 
-    public void setTransferType(TransferT transferType) {
+    public void setTransferType(TransferTypes transferType) {
         this.transferType = transferType;
     }
 
@@ -131,11 +131,11 @@ public class Transaction {
         this.userId = userId;
     }
 
-    public ArticleCashFlowT getArticleCashFlow() {
+    public ArticleCashFlow getArticleCashFlow() {
         return articleCashFlow;
     }
 
-    public void setArticleCashFlow(ArticleCashFlowT articleCashFlow) {
+    public void setArticleCashFlow(ArticleCashFlow articleCashFlow) {
         this.articleCashFlow = articleCashFlow;
     }
 }

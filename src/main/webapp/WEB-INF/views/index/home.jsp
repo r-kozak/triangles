@@ -49,7 +49,7 @@
 			<div class="col-md-4">
 				<div class="block_title text-center">
 					<a href="${pageContext.request.contextPath}/property/r-e-market" class="btn"><span
-						class="glyphicon glyphicon-shopping-cart text-danger"> Рынок коммерческого имущества</span></a>
+						class="glyphicon glyphicon-shopping-cart text-danger"> Рынок торгового имущества</span></a>
 				</div>
 				<table class="table">
 					<tr>
@@ -80,8 +80,8 @@
 
 			<div class="col-md-4">
 				<div class="block_title text-center">
-					<a href="${pageContext.request.contextPath}/property/commerc-pr" class="btn"><span
-						class="glyphicon glyphicon-piggy-bank text-danger"> Коммерческое имущество</span></a>
+					<a href="${pageContext.request.contextPath}/property/trade-property" class="btn"><span
+						class="glyphicon glyphicon-piggy-bank text-danger"> Торговое имущество</span></a>
 				</div>
 				<table class="table">
 					<c:choose>

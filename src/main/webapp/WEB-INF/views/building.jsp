@@ -472,36 +472,11 @@ function confirmBuyLicense(buyLevel) {
 				<td>Цена, &tridot;</td>
 				<td>Строить</td>
 			</tr>
-			<c:forEach items="${commBuData}" var="cbdata">
+			<c:forEach items="${tradeBuildingsData}" var="buildingData">
 				<tr>
-					<c:choose>
-						<c:when test="${cbdata.commBuildType == 'STALL'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Киоск</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'VILLAGE_SHOP'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Сельский магазин</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'STATIONER_SHOP'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Магазин канцтоваров</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'BOOK_SHOP'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Книжный магазин</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'CANDY_SHOP'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Магазин сладостей</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'LITTLE_SUPERMARKET'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Маленький супермаркет</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'MIDDLE_SUPERMARKET'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Средний супермаркет</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'BIG_SUPERMARKET'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Большой супермаркет</td>
-						</c:when>
-					</c:choose>
-					<td>${cbdata.buildTime}</td>
-					<td>${cbdata.purchasePriceMin}</td>
+					<td class="bui_type" id="${buildingData.tradeBuildingType.ordinal()}">${buildingData.tradeBuildingType.name()}</td>
+					<td>${buildingData.buildTime}</td>
+					<td>${buildingData.purchasePriceMin}</td>
 					<td>
 						<button class="btn btn-success btn_build_info" title="Строить" data-toggle="tooltip">
 										<span class="glyphicon glyphicon-equalizer"></span></button>

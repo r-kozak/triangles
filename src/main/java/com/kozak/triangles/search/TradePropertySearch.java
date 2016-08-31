@@ -3,14 +3,14 @@ package com.kozak.triangles.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kozak.triangles.enums.CityAreasT;
-import com.kozak.triangles.enums.buildings.CommBuildingsT;
+import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.TradeBuildingsTypes;
 
-public class CommPropSearch extends AbstractSearch {
+public class TradePropertySearch extends AbstractSearch {
     private String name = "";
     private int rowsOnPage;
-    private List<CommBuildingsT> types = new ArrayList<CommBuildingsT>();
-    private List<CityAreasT> areas = new ArrayList<CityAreasT>();
+    private List<TradeBuildingsTypes> types = new ArrayList<TradeBuildingsTypes>();
+    private List<CityAreas> areas = new ArrayList<CityAreas>();
     private String state = "all";
     private long sellPriceFrom;
     private long sellPriceTo;
@@ -25,8 +25,8 @@ public class CommPropSearch extends AbstractSearch {
         super.clear();
         this.name = "";
         this.state = "all";
-        types = new ArrayList<CommBuildingsT>();
-        areas = new ArrayList<CityAreasT>();
+        types = new ArrayList<TradeBuildingsTypes>();
+        areas = new ArrayList<CityAreas>();
         this.sellPriceFrom = 0;
         this.sellPriceTo = 0;
         this.depreciationFrom = 0.0;
@@ -68,11 +68,11 @@ public class CommPropSearch extends AbstractSearch {
         this.name = name;
     }
 
-    public List<CommBuildingsT> getTypes() {
+    public List<TradeBuildingsTypes> getTypes() {
         return types;
     }
 
-    public void setTypes(List<CommBuildingsT> types) {
+    public void setTypes(List<TradeBuildingsTypes> types) {
         this.types = types;
     }
 
@@ -140,11 +140,11 @@ public class CommPropSearch extends AbstractSearch {
         this.depreciationMax = depreciationMax;
     }
 
-    public List<CityAreasT> getAreas() {
+    public List<CityAreas> getAreas() {
         return areas;
     }
 
-    public void setAreas(List<CityAreasT> areas) {
+    public void setAreas(List<CityAreas> areas) {
         this.areas = areas;
     }
 

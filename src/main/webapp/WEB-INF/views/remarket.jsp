@@ -229,7 +229,7 @@
 					     title="Показать или скрыть подробное описание раздела Рынок имущества"><span class="glyphicon glyphicon-info-sign"></span></button>
 					</div>
 					<div class="panel-body collapse" id="pr_descr">
-						<p><a href="${pageContext.request.contextPath}/wiki#pr.ma">Рынок имущества</a> - это раздел, где можно купить коммерческое
+						<p><a href="${pageContext.request.contextPath}/wiki#pr.ma">Рынок имущества</a> - это раздел, где можно купить торговое
 						имущество (магазины, супермаркеты, заводы, фабрики и т.д.). Рынок является глобальным, если вы купили имущество, для других
 						игроков оно станет недоступным.
 						При покупке, кроме добавления имущества в ваш список, также начисляются очки <a href="${pageContext.request.contextPath}/wiki#do">доминантности.</a>
@@ -262,32 +262,32 @@
 							</c:choose>
 								
 							<c:choose>
-								<c:when test="${prop.commBuildingType == 'STALL'}">
+								<c:when test="${prop.tradeBuildingType == 'STALL'}">
 									<td>Киоск</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
+								<c:when test="${prop.tradeBuildingType == 'VILLAGE_SHOP'}">
 									<td>Сельский магазин</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
+								<c:when test="${prop.tradeBuildingType == 'STATIONER_SHOP'}">
 									<td>Магазин канцтоваров</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'BOOK_SHOP'}">
+								<c:when test="${prop.tradeBuildingType == 'BOOK_SHOP'}">
 										<td>Книжный магазин</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'CANDY_SHOP'}">
+								<c:when test="${prop.tradeBuildingType == 'CANDY_SHOP'}">
 									<td>Магазин сладостей</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'LITTLE_SUPERMARKET'}">
+								<c:when test="${prop.tradeBuildingType == 'LITTLE_SUPERMARKET'}">
 									<td>Маленький супермаркет</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'MIDDLE_SUPERMARKET'}">
+								<c:when test="${prop.tradeBuildingType == 'MIDDLE_SUPERMARKET'}">
 									<td>Средний супермаркет</td>
 								</c:when>
-								<c:when test="${prop.commBuildingType == 'BIG_SUPERMARKET'}">
+								<c:when test="${prop.tradeBuildingType == 'BIG_SUPERMARKET'}">
 									<td>Большой супермаркет</td>
 								</c:when>
 								<c:otherwise>
-									<td>${prop.commBuildingType}</td>
+									<td>${prop.tradeBuildingType}</td>
 								</c:otherwise>
 							</c:choose>
 	
