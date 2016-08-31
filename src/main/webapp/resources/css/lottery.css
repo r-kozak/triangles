@@ -62,5 +62,10 @@
 }
 .plushki_label_lic {
 	font-size: 1.4em;
-	padding: 0 0;
+	padding: 0 10;
+}
+.sellLicBtn {
+	float: right;
+	color: #F35A30;
+	margin-top: 3px;
 }
