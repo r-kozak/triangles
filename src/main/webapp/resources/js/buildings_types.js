@@ -16,18 +16,13 @@ function getBuildingTypeName(buildingType) {
 	return buildingsTypes[buildingType];
 }
 
-// array - массив элементов, например td, которая в себе содержит 'STALL'
-// функция заменяет внутри td 'STALL' на 'Киоск'
-function replaceBuildingTypeNames(array) {
-	$.each(array, function(index, element) {
-		var newTypeName = getBuildingTypeName($(element).text());
-		$(element).html(newTypeName);
-	});
-}
-
+// функция заменяет внутри td 'STALL' на 'Киоск' и др. наименования имуществ
 function replaceAllBuildingsTypeNames() {
 	$.each([ $('.building_type_name'), $('.buildings_types label') ], function(index, array) {
-		replaceBuildingTypeNames(array);
+		$.each(array, function(index, element) {
+			var newTypeName = getBuildingTypeName($(element).text());
+			$(element).html(newTypeName);
+		});
 	});
 };
 
