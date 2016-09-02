@@ -157,16 +157,23 @@
 					
 								<td><fmt:formatDate value="${constrProject.startDate}" pattern="dd-MM-yyyy HH:mm"/></td>
 								<td class="hidden-sm" style="width:25%">
-									<script>
-										$(function() {
-											var austDay = new Date(parseInt("<c:out value='${constrProject.finishDate.time}'/>"));
-											$('#countdown_'+ "<c:out value='${constrProject.id}'/>").countdown({
-												until : austDay,
-												expiryUrl: "${requestScope['javax.servlet.forward.request_uri']}"
-											});
-										});
-									</script>
-									<div id='countdown_${constrProject.id}'></div>
+									<c:choose>
+										<c:when test="${constrProject.completePerc >= 100}">
+											Готов
+										</c:when>
+										<c:otherwise>
+											<script>
+												$(function() {
+													var austDay = new Date(parseInt("<c:out value='${constrProject.finishDate.time}'/>"));
+													$('#countdown_'+ "<c:out value='${constrProject.id}'/>").countdown({
+														until : austDay,
+														expiryUrl: "${requestScope['javax.servlet.forward.request_uri']}"
+													});
+												});
+											</script>
+											<div id='countdown_${constrProject.id}'></div>
+										</c:otherwise>
+									</c:choose>
 								</td>
 								<td>
 									${constrProject.completePerc}
