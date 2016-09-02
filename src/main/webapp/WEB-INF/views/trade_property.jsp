@@ -80,7 +80,7 @@
 					
 					<fieldset id = "searchBlock"> 
 					<legend>Район</legend>
-						<div id="searchEl">
+						<div class="city_areas" id="searchEl">
 							<form:checkboxes path="areas" items="${areas}"/>      
 						</div>
 					</fieldset>
@@ -203,25 +203,7 @@
 							<td style="text-align:left"><a class="bg-info" href="${pageContext.request.contextPath}/property/${prop.id}">${prop.name}</a></td>
 							<td style="text-align:center">${prop.level}</td>
 							<td style="text-align:center">${prop.cashLevel}</td>
-													<!-- Район -->
-								<c:choose>
-									<c:when test="${prop.cityArea == 'GHETTO'}">
-										<td>Гетто</td>
-									</c:when>
-									<c:when test="${prop.cityArea == 'OUTSKIRTS'}">
-										<td>Окраина</td>
-									</c:when>
-									<c:when test="${prop.cityArea == 'CHINATOWN'}">
-										<td>Чайнатаун</td>
-									</c:when>
-									<c:when test="${prop.cityArea == 'CENTER'}">
-										<td>Центр</td>
-									</c:when>
-									<c:otherwise>
-										<td>${prop.cityArea}</td>
-									</c:otherwise>
-								</c:choose>
-
+							<td class="city_area_name">${prop.cityArea}</td>
 							<td style="text-align:center"><fmt:formatNumber type="number" maxFractionDigits="3" value="${prop.sellingPrice}"/></td>
 							<td>
 								<div style="text-align:center">${prop.depreciationPercent}</div>
@@ -274,7 +256,8 @@
 </div>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/buildings_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/buildings_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/city_areas_types.js"></script>
 
 <script>
 $(document).ready(function(){

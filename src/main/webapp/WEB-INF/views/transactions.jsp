@@ -153,12 +153,8 @@
 <div id="balChan"></div>
 
 <script type="text/javascript" src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/transaction_articles_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/transaction_articles_types.js"></script>
 
-<!-- Сортировка даты -->
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
-<script type="text/javascript" src="webjars/datatables-plugins/1.10.7/sorting/datetime-moment.js"></script>
-	
 <script>
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок

@@ -141,7 +141,7 @@
 						<c:forEach items="${constrProjects}" var="constrProject">
 							<tr>
 								<td class="building_type_name">${constrProject.buildingType}</td> 
-								<td>${constrProject.cityArea}</td>
+								<td class="city_area_name">${constrProject.cityArea}</td>
 
 								<c:choose>
 									<c:when test="${constrProject.buildersType == 'GASTARBEITER'}">
@@ -269,7 +269,8 @@
 </div>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/buildings_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/buildings_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/city_areas_types.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -310,12 +311,14 @@ $('#build_btn').on('click', function() {
 							'<a id="b_count_down" class="btn btn-default"><span class="glyphicon glyphicon-menu-down"></span></a>' + 
 							'  <span>&nbsp;<b></span><span id="b_count">1</span><span></b>&nbsp;&nbsp;</span>' +
 							'<a id="b_count_up" class="btn btn-default"><span class="glyphicon glyphicon-menu-up"></span></a></div>');
+					replaceCityAreasNamesInSelectElement(); // заменить имя района города на нормальное ("GHETTO" -> "Гетто") в select элементе
 							
 					//назначить обработчик на клик кнопки Подтверждения стройки
 					$('#modal_ques_confirm').unbind('click');
 					
 					$('#modal_ques_confirm').on('click', function() {
 						var city_area = $('#city_area').val();
+						city_area = transformCityAreaNameToServerValue(city_area); // получить значение, как на сервере в Enum классе
 						confirmBuild(bui_type, city_area); // функция подтверждения покупки
 					});
 					$('#modal_ques_confirm').attr('disabled', false);

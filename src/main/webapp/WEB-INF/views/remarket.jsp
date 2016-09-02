@@ -175,7 +175,7 @@
 					
 					<fieldset id = "searchBlock"> 
 					<legend>Район</legend>
-						<div id="searchEl">
+						<div class="city_areas" id="searchEl">
 							<form:checkboxes path="areas" items="${areas}"/>      
 						</div>
 					</fieldset>
@@ -262,24 +262,7 @@
 							</c:choose>
 								
 							<td class="building_type_name">${prop.tradeBuildingType}</td>
-							<c:choose>
-								<c:when test="${prop.cityArea == 'GHETTO'}">
-									<td>Гетто</td>
-								</c:when>
-								<c:when test="${prop.cityArea == 'OUTSKIRTS'}">
-									<td>Окраина</td>
-								</c:when>
-								<c:when test="${prop.cityArea == 'CHINATOWN'}">
-									<td>Чайнатаун</td>
-								</c:when>
-								<c:when test="${prop.cityArea == 'CENTER'}">
-									<td>Центр</td>
-								</c:when>
-								<c:otherwise>
-									<td>${prop.cityArea}</td>
-								</c:otherwise>
-							</c:choose>
-	
+							<td class="city_area_name">${prop.cityArea}</td>
 							<td><fmt:formatDate value="${prop.appearDate}" pattern="dd-MM-yyyy HH:mm" /></td>
 							<td><fmt:formatDate value="${prop.lossDate}" pattern="dd-MM-yyyy HH:mm" /></td>
 							<td>${prop.propLevel}</td>
@@ -311,7 +294,8 @@
 	
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/buildings_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/buildings_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/city_areas_types.js"></script>
 
 <!-- Сортировка даты -->
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
