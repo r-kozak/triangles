@@ -14,7 +14,6 @@
 <head>
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/buildings_types.js"></script>
 	<script type="text/javascript">
 		$(function () {
 			$("#depreciation-slider").slider({
@@ -74,7 +73,7 @@
 					
 					<fieldset id = "searchBlock"> 
 					<legend>Тип</legend>
-						<div id="searchEl" class="build_types">
+						<div id="searchEl" class="buildings_types">
 							<form:checkboxes path="types" items="${types}"/>      
 						</div>
 					</fieldset>
@@ -275,7 +274,7 @@
 </div>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/buildings_types.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -369,17 +368,6 @@ $(document).ready(function(){
 				alert(jqXHR.status + " " + jqXHR.statusText);
 			});
     };
-    
-    function replaceBuildingsTypeName() {
-    	var namesInTable = $('.building_type_name');
-    	var namesInMenu = $('.build_types label');
-    	
-		$.each([ $('.building_type_name'), $('.build_types label')], function(index, array) {
-			replaceBuildingTypeNames(array);
-		});
-    };
-    
-    replaceBuildingsTypeName();
 });
 </script>
 

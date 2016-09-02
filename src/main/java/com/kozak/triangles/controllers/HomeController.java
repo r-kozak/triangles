@@ -266,7 +266,7 @@ public class HomeController extends BaseController {
 			// генерируем предложения
 			List<RealEstateProposal> proposals = null;
 			do {
-				proposals = new ProposalGenerator().generateMarketProposals(activeUsers, tradeBuildingsData);
+				proposals = new ProposalGenerator().generateMarketProposals(activeUsers);
 			} while (proposals.isEmpty());
 
 			for (RealEstateProposal proposal : proposals) {

@@ -182,7 +182,7 @@
 					
 					<fieldset id = "searchBlock"> 
 					<legend>Тип</legend>
-						<div id="searchEl">
+						<div id="searchEl" class="buildings_types">
 							<form:checkboxes path="types" items="${types}"/>      
 						</div>
 					</fieldset>
@@ -261,36 +261,7 @@
 								</c:otherwise>
 							</c:choose>
 								
-							<c:choose>
-								<c:when test="${prop.tradeBuildingType == 'STALL'}">
-									<td>Киоск</td>
-								</c:when>
-								<c:when test="${prop.tradeBuildingType == 'VILLAGE_SHOP'}">
-									<td>Сельский магазин</td>
-								</c:when>
-								<c:when test="${prop.tradeBuildingType == 'STATIONER_SHOP'}">
-									<td>Магазин канцтоваров</td>
-								</c:when>
-								<c:when test="${prop.tradeBuildingType == 'BOOK_SHOP'}">
-										<td>Книжный магазин</td>
-								</c:when>
-								<c:when test="${prop.tradeBuildingType == 'CANDY_SHOP'}">
-									<td>Магазин сладостей</td>
-								</c:when>
-								<c:when test="${prop.tradeBuildingType == 'LITTLE_SUPERMARKET'}">
-									<td>Маленький супермаркет</td>
-								</c:when>
-								<c:when test="${prop.tradeBuildingType == 'MIDDLE_SUPERMARKET'}">
-									<td>Средний супермаркет</td>
-								</c:when>
-								<c:when test="${prop.tradeBuildingType == 'BIG_SUPERMARKET'}">
-									<td>Большой супермаркет</td>
-								</c:when>
-								<c:otherwise>
-									<td>${prop.tradeBuildingType}</td>
-								</c:otherwise>
-							</c:choose>
-	
+							<td class="building_type_name">${prop.tradeBuildingType}</td>
 							<c:choose>
 								<c:when test="${prop.cityArea == 'GHETTO'}">
 									<td>Гетто</td>
@@ -340,6 +311,7 @@
 	
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/buildings_types.js"></script>
 
 <!-- Сортировка даты -->
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>

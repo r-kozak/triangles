@@ -22,7 +22,7 @@ public class TradeBuildingsTableData {
 			put(TradeBuildingsTypes.BOOK_SHOP.ordinal(), new TradeBuilding(2, 4, 30000, 40000, TradeBuildingsTypes.BOOK_SHOP, 4, 1, 2));
 			put(TradeBuildingsTypes.CANDY_SHOP.ordinal(), new TradeBuilding(3, 7, 40000, 50000, TradeBuildingsTypes.CANDY_SHOP, 5, 1, 5));
 			put(TradeBuildingsTypes.LITTLE_SUPERMARKET.ordinal(), new TradeBuilding(4, 5, 70000, 100000, TradeBuildingsTypes.LITTLE_SUPERMARKET, 6, 2, 6));
-			put(TradeBuildingsTypes.MIDDLE_SUPERMARKET, new TradeBuilding(5, 7, 120000, 150000, TradeBuildingsTypes.MIDDLE_SUPERMARKET, 7, 3, 7));
+			put(TradeBuildingsTypes.MIDDLE_SUPERMARKET.ordinal(), new TradeBuilding(5, 7, 120000, 150000, TradeBuildingsTypes.MIDDLE_SUPERMARKET, 7, 3, 7));
 			put(TradeBuildingsTypes.BIG_SUPERMARKET.ordinal(), new TradeBuilding(4, 7, 150000, 200000, TradeBuildingsTypes.BIG_SUPERMARKET, 8, 4, 8));
 			put(TradeBuildingsTypes.RESTAURANT.ordinal(), new TradeBuilding(5, 8, 200000, 280000, TradeBuildingsTypes.RESTAURANT, 9, 3, 5));
 			put(TradeBuildingsTypes.CINEMA.ordinal(), new TradeBuilding(6, 8, 280000, 380000, TradeBuildingsTypes.CINEMA, 10, 2, 4));

@@ -24,3 +24,11 @@ function replaceBuildingTypeNames(array) {
 		$(element).html(newTypeName);
 	});
 }
+
+function replaceAllBuildingsTypeNames() {
+	$.each([ $('.building_type_name'), $('.buildings_types label') ], function(index, array) {
+		replaceBuildingTypeNames(array);
+	});
+};
+
+replaceAllBuildingsTypeNames();

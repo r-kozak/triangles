@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kozak.triangles.data.CityAreasTableData;
+import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.enums.CityAreas;
@@ -62,7 +63,7 @@ public class ProposalGenerator {
 	 * 
 	 * @param usersCount
 	 */
-	public List<RealEstateProposal> generateMarketProposals(int usersCount, Map<Integer, TradeBuilding> data) {
+	public List<RealEstateProposal> generateMarketProposals(int usersCount) {
 		List<RealEstateProposal> result = new ArrayList<>();
 
 		// коэф. кол-во имуществ на одного пользователя
@@ -76,7 +77,8 @@ public class ProposalGenerator {
 			// никогда не будет, но все равно проверим
 			Integer buildTypeOrdinal = (PROPERTY_PROBABILITY[rd] != null) ? PROPERTY_PROBABILITY[rd].ordinal() : null;
 			if (buildTypeOrdinal != null) {
-				TradeBuilding buildingData = data.get(buildTypeOrdinal);
+				Map<Integer, TradeBuilding> tradeBuildingsData = TradeBuildingsTableData.getTradeBuildingsDataMap();
+				TradeBuilding buildingData = tradeBuildingsData.get(buildTypeOrdinal);
 				RealEstateProposal proposal = generateProposal(buildingData);
 				result.add(proposal);
             }

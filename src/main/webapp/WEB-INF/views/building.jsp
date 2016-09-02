@@ -140,36 +140,7 @@
 						
 						<c:forEach items="${constrProjects}" var="constrProject">
 							<tr>
-								<c:choose>
-									<c:when test="${constrProject.buildingType == 'STALL'}">
-										<td>Киоск</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'VILLAGE_SHOP'}">
-										<td>Сельский магазин</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'STATIONER_SHOP'}">
-										<td>Магазин канцтоваров</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'BOOK_SHOP'}">
-										<td>Книжный магазин</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'CANDY_SHOP'}">
-										<td>Магазин сладостей</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'LITTLE_SUPERMARKET'}">
-										<td>Маленький супермаркет</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'MIDDLE_SUPERMARKET'}">
-										<td>Средний супермаркет</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'BIG_SUPERMARKET'}">
-										<td>Большой супермаркет</td>
-									</c:when>
-									<c:otherwise>
-										<td>${constrProject.buildingType}</td> 
-									</c:otherwise>
-								</c:choose>
-
+								<td class="building_type_name">${constrProject.buildingType}</td> 
 								<td>${constrProject.cityArea}</td>
 
 								<c:choose>
@@ -224,8 +195,81 @@
 	<t:footer></t:footer>
 </div> <!-- container -->
 
+<!-- модальное окно с выбором типов зданий -->
+<div class="modal fade" id="modalBuildTypes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalBuildTypesTitle">Выберите тип для постройки</h4>
+      </div>
+      <div class="modal-body" id="modalBuildTypesBody">
+        <table class="table">
+			<tr class="tableTitleTr">
+				<td>Тип</td>
+				<td>Время постройки, дней</td>
+				<td>Цена, &tridot;</td>
+				<td>Строить</td>
+			</tr>
+			<c:forEach items="${tradeBuildingsData}" var="buildingData">
+				<tr>
+					<td class="building_type_name" id="${buildingData.tradeBuildingType.ordinal()}">${buildingData.tradeBuildingType}</td>
+					<td>${buildingData.buildTime}</td>
+					<td>${buildingData.purchasePriceMin}</td>
+					<td>
+						<button class="btn btn-success btn_build_info" title="Строить" data-toggle="tooltip">
+										<span class="glyphicon glyphicon-equalizer"></span></button>
+					</td>
+				</tr>
+			</c:forEach>
+		</table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- модальное окно для отображения ошибки -->
+<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-danger" id="modalErrorTitle">Ошибка</h4>
+      </div>
+      
+	  <div class="modal-body" id="modalErrorBody">Тело</div>
+	  
+	  <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ок :(</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- модальное окно для отображения вопросов -->
+<div class="modal fade" id="modalQues" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalQuesTitle">Заголовок</h4>
+      </div>
+      
+	  <div class="modal-body" id="modalQuesBody">Тело</div>
+	  
+	  <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+		<button id="modal_ques_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Да</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/buildings_types.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -238,7 +282,7 @@ $('#build_btn').on('click', function() {
 
 	//по клику на кнопки выбора конкретного типа имущества для стройки (кнопки в модальном окне)
 	$('.btn_build_info').on('click', function() {
-		var bui_type = $(this).closest('tr').find('.bui_type').attr('id'); // тип постройки
+		var bui_type = $(this).closest('tr').find('.building_type_name').attr('id'); // тип постройки
 		$.ajax({
 	  		  type: 'POST',
 	  		  url: "${pageContext.request.contextPath}/building/pre-build",
@@ -252,7 +296,8 @@ $('#build_btn').on('click', function() {
 					$('#modalError').modal();
 				} else {
 					// показать сообщение с вопросом
-					$('#modalQuesTitle').html('<b>Вы хотите построить ' + data.buiType + '?</b>');
+					$('#modalQuesTitle').html('<b>Вы хотите построить <span class="building_type_name">' + data.buiType + '</span>?</b>');
+					replaceAllBuildingsTypeNames(); // заменить имя строения на нормальное ("STALL" -> "Киоск")
 					
 					// сформировать тело модального окна
 					$('#modalQuesBody').html('<div class="text-danger">Выберите район: ' + data.cityAreaTag + '</div> <br/>' +
@@ -455,77 +500,4 @@ function confirmBuyLicense(buyLevel) {
 		});
 }
 </script>
-
-<!-- модальное окно с выбором типов зданий -->
-<div class="modal fade" id="modalBuildTypes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalBuildTypesTitle">Выберите тип для постройки</h4>
-      </div>
-      <div class="modal-body" id="modalBuildTypesBody">
-        <table class="table">
-			<tr class="tableTitleTr">
-				<td>Тип</td>
-				<td>Время постройки, дней</td>
-				<td>Цена, &tridot;</td>
-				<td>Строить</td>
-			</tr>
-			<c:forEach items="${tradeBuildingsData}" var="buildingData">
-				<tr>
-					<td class="bui_type" id="${buildingData.tradeBuildingType.ordinal()}">${buildingData.tradeBuildingType.name()}</td>
-					<td>${buildingData.buildTime}</td>
-					<td>${buildingData.purchasePriceMin}</td>
-					<td>
-						<button class="btn btn-success btn_build_info" title="Строить" data-toggle="tooltip">
-										<span class="glyphicon glyphicon-equalizer"></span></button>
-					</td>
-				</tr>
-			</c:forEach>
-		</table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- модальное окно для отображения ошибки -->
-<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title text-danger" id="modalErrorTitle">Ошибка</h4>
-      </div>
-      
-	  <div class="modal-body" id="modalErrorBody">Тело</div>
-	  
-	  <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Ок :(</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- модальное окно для отображения вопросов -->
-<div class="modal fade" id="modalQues" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalQuesTitle">Заголовок</h4>
-      </div>
-      
-	  <div class="modal-body" id="modalQuesBody">Тело</div>
-	  
-	  <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
-		<button id="modal_ques_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Да</span></button>
-      </div>
-    </div>
-  </div>
-</div>
 </t:template>

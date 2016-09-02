@@ -19,5 +19,5 @@ public enum TradeBuildingsTypes {
 	BIG_SUPERMARKET, 
 	RESTAURANT, 
 	CINEMA, 
-	MALL
+	MALL;
 }
