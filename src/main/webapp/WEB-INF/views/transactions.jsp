@@ -53,6 +53,9 @@
 		</t:menu>
 	
 		<div class="col-md-9">
+			<c:if test="${empty transacs}">
+				<div class = "noData">Поиск не дал результатов. Попробуйте задать другие параметры.</div>
+			</c:if>
 			<c:if test="${!empty transacs}">
 						
 				<h3 class="page-header" align=center>Транзакции</h3>
