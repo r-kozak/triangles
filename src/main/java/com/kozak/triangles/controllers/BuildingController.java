@@ -180,7 +180,7 @@ public class BuildingController extends BaseController {
 								ArticleCashFlow.CONSTRUCTION_PROPERTY);
 						trRep.addTransaction(tr);
 
-						int domiCount = type.ordinal();
+						int domiCount = type.ordinal() * Constants.K_ADD_DOMI_FOR_BUILDING;
 						MoneyController.upUserDomi(domiCount, userId, userRep); // повысить доминантность
 					}
 				}

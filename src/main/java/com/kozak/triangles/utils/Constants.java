@@ -76,4 +76,7 @@ public final class Constants {
 
 	// лимит на постройку зданий в день, шт
 	public static final int CONSTRUCTION_LIMIT_PER_DAY = 10;
+
+	// коэфициент умножения индекса типа строения при постройке здания. Нужен для начисления доминантности
+	public static final int K_ADD_DOMI_FOR_BUILDING = 5;
 }
