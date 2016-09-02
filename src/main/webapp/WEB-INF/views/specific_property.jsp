@@ -47,23 +47,7 @@
 					</tr>
 					<tr>
 						<td>Район</td>
-						<c:choose>
-							<c:when test="${prop.cityArea == 'GHETTO'}">
-								<td>Гетто</td>
-							</c:when>
-							<c:when test="${prop.cityArea == 'OUTSKIRTS'}">
-								<td>Окраина</td>
-							</c:when>
-							<c:when test="${prop.cityArea == 'CHINATOWN'}">
-								<td>Чайнатаун</td>
-							</c:when>
-							<c:when test="${prop.cityArea == 'CENTER'}">
-								<td>Центр</td>
-							</c:when>
-							<c:otherwise>
-								<td>${prop.cityArea}</td>
-							</c:otherwise>
-						</c:choose>
+						<td class="city_area_name">${prop.cityArea}</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -179,6 +163,8 @@
 	
 	<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/buildings_types.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/city_areas_types.js"></script>
+	
 <script>
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
