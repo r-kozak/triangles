@@ -12,6 +12,7 @@ public class TransactSearch extends AbstractSearch {
 	private String dateTo = "";
 	private List<ArticleCashFlow> articles = new ArrayList<ArticleCashFlow>();
 	private TransferTypes transfer;
+	private String description = "";
 
 	@Override
 	public void clear() {
@@ -20,6 +21,7 @@ public class TransactSearch extends AbstractSearch {
 		this.dateTo = "";
 		articles = new ArrayList<ArticleCashFlow>();
 		this.transfer = null;
+		this.description = "";
 	}
 
 	public String getDateFrom() {
@@ -52,5 +54,13 @@ public class TransactSearch extends AbstractSearch {
 
 	public TransferTypes getTransfer() {
 		return transfer;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

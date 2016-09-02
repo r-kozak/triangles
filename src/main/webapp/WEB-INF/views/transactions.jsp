@@ -26,6 +26,10 @@
 							<button class="btn btn-default btn-xs" onclick="setDateValue('dateTo', false)">→</button>
 						</div>
 					</fieldset>
+					
+					<fieldset id = "searchBlock">
+						<form:input class="textInp" type="text" path="description" placeholder="Описание"></form:input>
+					</fieldset>
 		
 					<fieldset id="searchBlock">
 					<legend>Движение</legend>

@@ -81,7 +81,7 @@ public class TransactionRep {
      * @return
      * @throws ParseException
      */
-    public List<Object> transList(int userId, TransactSearch ts) throws ParseException {
+    public List<Object> getTransactionsList(int userId, TransactSearch ts) throws ParseException {
         String hql00 = "SELECT count(id) ";
         String hql01 = "SELECT sum(summa) ";
         String hql0 = "from Transac as tr where tr.userId = :userId";
@@ -90,6 +90,12 @@ public class TransactionRep {
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
+
+		// description filter
+		if (!ts.getDescription().isEmpty()) {
+			hql1 += " and lower(tr.description) like :description";
+			params.put("description", "%" + ts.getDescription().toLowerCase() + "%");
+		}
 
         // date filter
         hql1 += " and tr.transactDate between :dateFrom and :dateTo";
