@@ -6,7 +6,7 @@ import java.util.Locale;
 import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
 
-public class Util {
+public class CommonUtil {
 
     public static String moneyFormat(Number sum) {
         NumberFormat formatter = NumberFormat.getInstance(new Locale("ru"));

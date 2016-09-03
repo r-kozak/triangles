@@ -30,7 +30,7 @@ import com.kozak.triangles.utils.PropertyUtil;
 import com.kozak.triangles.utils.ProposalGenerator;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
-import com.kozak.triangles.utils.Util;
+import com.kozak.triangles.utils.CommonUtil;
 
 @SessionAttributes("user")
 @Controller
@@ -87,7 +87,7 @@ public class HomeController extends BaseController {
 		// статистика
 		String userBalance = trRep.getUserBalance(userId);
 		int userDomi = userRep.getUserDomi(userId);
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
 		model.addAttribute("rePrCo", realEstateProposalRep.allPrCount(false, userId)); // колво предложений на рынке имущества
 		model.addAttribute("newRePrCo", realEstateProposalRep.allPrCount(true, userId)); // новых предложений на рын.имущ.
 		model.addAttribute("ready", prRep.allPrCount(userId, true, false)); // колво готовых к сбору дохода
@@ -129,7 +129,7 @@ public class HomeController extends BaseController {
 
 		String userBalance = trRep.getUserBalance(userId);
 		int userDomi = userRep.getUserDomi(userId);
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
 
 		List<Object[]> users = userRep.getUserRating();
 		model.addAttribute("users", users);
@@ -144,7 +144,7 @@ public class HomeController extends BaseController {
 		int userId = user.getId();
 		String userBalance = trRep.getUserBalance(userId);
 		int userDomi = userRep.getUserDomi(userId);
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
 
 		// данные имущества
 		model.addAttribute("tradeBuildingsData", TradeBuildingsTableData.getTradeBuildingsDataList());
@@ -233,7 +233,7 @@ public class HomeController extends BaseController {
 			// установить новые значения
 			p.setNextDepreciation(DateUtils.addDays(new Date(), 7 - (dayBetw % 7)));
 			p.setSellingPrice(p.getSellingPrice() - deprSum);
-			p.setDepreciationPercent(Util.numberRound(p.getDepreciationPercent() + deprPerc, 2));
+			p.setDepreciationPercent(CommonUtil.numberRound(p.getDepreciationPercent() + deprPerc, 2));
 			prRep.updateProperty(p);
 
 			// если имущество на продаже - изменить цену в предложении

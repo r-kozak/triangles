@@ -48,6 +48,26 @@ public class TradeBuildingsTableData {
 		}
 	};
 
+	// граничные значение влияния типа имущества на уровень доминантности. Означает, к примеру, что если при повышении уровня
+	// Киоска (STALL) у пользователя уровень доминантности = 1000 (>= граничного значения для Киоска), то его доминантность при
+	// этом не будет повышена, но если доминантность меньше граничного значения - доминантность повышена будет.
+	@SuppressWarnings({ "rawtypes", "serial", "unchecked" })
+	private static Map<TradeBuildingsTypes, Integer> boundaryValuesForDomiUp = new HashMap() {
+		{
+			put(TradeBuildingsTypes.STALL, 1000);
+			put(TradeBuildingsTypes.VILLAGE_SHOP, 1500);
+			put(TradeBuildingsTypes.STATIONER_SHOP, 3000);
+			put(TradeBuildingsTypes.BOOK_SHOP, 5000);
+			put(TradeBuildingsTypes.CANDY_SHOP, 7500);
+			put(TradeBuildingsTypes.LITTLE_SUPERMARKET, 15000);
+			put(TradeBuildingsTypes.MIDDLE_SUPERMARKET, 30000);
+			put(TradeBuildingsTypes.BIG_SUPERMARKET, 50000);
+			put(TradeBuildingsTypes.RESTAURANT, 100000);
+			put(TradeBuildingsTypes.CINEMA, 300000);
+			put(TradeBuildingsTypes.MALL, 1000000);
+		}
+	};
+
     /**
 	 * @return - данные о всех торговых строениях в виде списка
 	 */
@@ -84,5 +104,14 @@ public class TradeBuildingsTableData {
 			return UNDEFINED_TYPE_NAME;
 		}
 		return shortName;
+	}
+
+	/**
+	 * @param buildingType
+	 *            тип торгового имущества
+	 * @return граничное значение влияния типа имущества на уровень доминантности при повышении его уровня или уровня его кассы
+	 */
+	public static Integer getBoundaryValueForDomiUp(TradeBuildingsTypes buildingType) {
+		return boundaryValuesForDomiUp.get(buildingType);
 	}
 }

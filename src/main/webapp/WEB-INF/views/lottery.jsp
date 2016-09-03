@@ -250,7 +250,7 @@ $(document).ready(function(){
 	  <div class="modal-body" id="modalErrorBody">Тело</div>
 	  
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Ок :(</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ок</button>
       </div>
     </div>
   </div>
@@ -268,7 +268,7 @@ $(document).ready(function(){
 	  <div class="modal-body" id="modalForInfoBody">Тело</div>
 	  
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Ок :)</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Ок</button>
       </div>
     </div>
   </div>
@@ -431,10 +431,6 @@ function confirmUpLevel(clickedBtn) {
 				
 				// изменить значение плюшки
 				var currPljushkaVal = parseInt($('#up_' + obj + '_btn').text().substring(1));
-				
-				console.log('currPljushkaVal=' + currPljushkaVal);
-				console.log('obj=' + obj);
-				console.log('$(#up_ + obj + _btn).html()=' + $('#up_' + obj + '_btn').html());
 				$('#up_' + obj + '_btn').html('×' + (currPljushkaVal - 1));
 			}
 	}).fail(function(jqXHR, textStatus, errorThrown) {

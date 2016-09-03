@@ -32,7 +32,7 @@ import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.TagCreator;
-import com.kozak.triangles.utils.Util;
+import com.kozak.triangles.utils.CommonUtil;
 
 @SessionAttributes("user")
 @Controller
@@ -56,7 +56,7 @@ public class BuildingController extends BaseController {
 		Date licenseExpireDate = userLicense.getLossDate(); // дата окончания лицензии
 		BuildingController.checkLicenseExpire(licenseExpireDate, userRep, userId); // если кончилась - назначить новую
 
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
 		model.addAttribute("tradeBuildingsData", TradeBuildingsTableData.getTradeBuildingsDataList()); // данные всех имуществ
 		model.addAttribute("constrProjects", consProjectRep.getUserConstructProjects(userId));
 		model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии
@@ -89,7 +89,7 @@ public class BuildingController extends BaseController {
 		int userId = user.getId();
 
 		long userMoney = Long.parseLong(trRep.getUserBalance(userId));
-		long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
+		long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 		User userWithLicense = userRep.getUserWithLicense(userId); // пользователь с лицензиями
 		byte userLicenseLevel = userWithLicense.getUserLicense().getLicenseLevel();
 
@@ -100,7 +100,7 @@ public class BuildingController extends BaseController {
 			long priceOfBuilt = dataOfBuilding.getPurchasePriceMin(); // цена постройки = минимальная цена покупки
 			if (userSolvency < priceOfBuilt) { // не хватает денег
 				ResponseUtil.putErrorMsg(resultJson,
-						"Не хватает денег на постройку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency) + "&tridot;</b>");
+						"Не хватает денег на постройку. Ваш максимум: <b>" + CommonUtil.moneyFormat(userSolvency) + "&tridot;</b>");
 			} else if (availableForBuildToday(userId) <= 0) {
 				ResponseUtil.putErrorMsg(resultJson,
 						"Сегодня уже достигнута верхняя граница лимита на постройку зданий. Повторите попытку завтра.");
@@ -113,7 +113,7 @@ public class BuildingController extends BaseController {
 				resultJson.put("price", "Цена постройки: <b>" + priceOfBuilt + "&tridot;</b>"); // цена постройки
 				resultJson.put("balanceAfter", "Баланс после постройки: <b>" + (userMoney - priceOfBuilt) + "&tridot;</b>");
 				resultJson.put("solvencyAfter", "Состоятельность после постройки: <b>"
-						+ Util.getSolvency(String.valueOf(userMoney - priceOfBuilt), prRep, userId) + "&tridot;</b>");
+						+ CommonUtil.getSolvency(String.valueOf(userMoney - priceOfBuilt), prRep, userId) + "&tridot;</b>");
 				resultJson.put("exploitation",
 						"Дата приема в эксплуатацию (при скорости 1.0): <b>" + DateUtils.dateToString(exploitation) + "</b>");
 			}
@@ -140,11 +140,11 @@ public class BuildingController extends BaseController {
 
 			for (int i = 0; i < count; i++) {
 				long userMoney = Long.parseLong(trRep.getUserBalance(userId));
-				long userSolvency = Util.getSolvency(String.valueOf(userMoney), prRep, userId); // состоятельность
+				long userSolvency = CommonUtil.getSolvency(String.valueOf(userMoney), prRep, userId); // состоятельность
 
 				if (userSolvency < priceOfBuilt * (count - i)) { // не хватает денег
 					ResponseUtil.putErrorMsg(resultJson,
-							"Не хватает денег на постройку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency) + "&tridot;</b>");
+							"Не хватает денег на постройку. Ваш максимум: <b>" + CommonUtil.moneyFormat(userSolvency) + "&tridot;</b>");
 					break;
 				} else if (availableForBuildToday(userId) <= 0) {
 					ResponseUtil.putErrorMsg(resultJson,
@@ -259,7 +259,7 @@ public class BuildingController extends BaseController {
 		JSONObject resultJson = new JSONObject();
 		int userId = user.getId();
 		long userMoney = Long.parseLong(trRep.getUserBalance(userId));
-		long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
+		long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 
 		if (level < 1 || level > 4) {
 			ResponseUtil.putErrorMsg(resultJson, "Нет такого уровня лицензии.");
@@ -267,7 +267,7 @@ public class BuildingController extends BaseController {
 			int licensePrice = Constants.LICENSE_PRICE[level];
 			if (userSolvency < licensePrice) { // не хватает денег Util.moneyFormat(userSolvency) + "&tridot;</b>");
 				ResponseUtil.putErrorMsg(resultJson, "Не хватает денег на покупку. Ваш максимум: <b>"
-						+ Util.moneyFormat(userSolvency) + "&tridot;</b> <br/> " + "Цена покупки: <b>" + licensePrice + "</b>");
+						+ CommonUtil.moneyFormat(userSolvency) + "&tridot;</b> <br/> " + "Цена покупки: <b>" + licensePrice + "</b>");
 			} else {
 				resultJson.put("licenseLevel", "Вы покупаете лицензию уровня: <b>" + level + ".</b>");
 				resultJson.put("licensePrice", "Стоимость покупки лицензии: <b>" + licensePrice + "&tridot;</b>");
@@ -284,7 +284,7 @@ public class BuildingController extends BaseController {
 		JSONObject resultJson = new JSONObject();
 		int userId = user.getId();
 		long userMoney = Long.parseLong(trRep.getUserBalance(userId));
-		long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
+		long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 
 		if (level < 1 || level > 4) {
 			ResponseUtil.putErrorMsg(resultJson, "Нет такого уровня лицензии.");
@@ -292,7 +292,7 @@ public class BuildingController extends BaseController {
 			int licensePrice = Constants.LICENSE_PRICE[level];
 			if (userSolvency < licensePrice) { // не хватает денег
 				ResponseUtil.putErrorMsg(resultJson,
-						"Не хватает денег на покупку. Ваш максимум: <b>" + Util.moneyFormat(userSolvency) + "&tridot;</b>");
+						"Не хватает денег на покупку. Ваш максимум: <b>" + CommonUtil.moneyFormat(userSolvency) + "&tridot;</b>");
 			} else {
 				// установить новую лицензию пользователю
 				BuildingController.setNewLicenseToUser(userRep, userId, level);
@@ -325,7 +325,7 @@ public class BuildingController extends BaseController {
 				completePercent = 100;
 			} else {
 				completePercent = (float) countStartToNowMs * 100 / countStartToFinishMs;
-				completePercent = (float) Util.numberRound(completePercent, 2); // округление
+				completePercent = (float) CommonUtil.numberRound(completePercent, 2); // округление
 			}
 			constProject.setCompletePerc(completePercent);
 			constrPrRep.updateConstructionProject(constProject);

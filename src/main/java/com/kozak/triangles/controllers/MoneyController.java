@@ -27,7 +27,7 @@ import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.TagCreator;
-import com.kozak.triangles.utils.Util;
+import com.kozak.triangles.utils.CommonUtil;
 
 @SessionAttributes("user")
 @Controller
@@ -107,7 +107,7 @@ public class MoneyController extends BaseController {
 
 		String userBalance = trRep.getUserBalance(userId);
 		int userDomi = userRep.getUserDomi(userId);
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
 		model.addAttribute("totalSum", dbResult.get(1));
 		model.addAttribute("transacs", dbResult.get(2));
 		model.addAttribute("articles", SearchCollections.getArticlesCashFlow());

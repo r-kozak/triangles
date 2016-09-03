@@ -42,7 +42,7 @@ import com.kozak.triangles.utils.PropertyUtil;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.TagCreator;
-import com.kozak.triangles.utils.Util;
+import com.kozak.triangles.utils.CommonUtil;
 
 @SessionAttributes("user")
 @Controller
@@ -139,7 +139,7 @@ public class LotteryController extends BaseController {
         long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
         long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
 
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId),
                 userDomi);
         model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
         model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
@@ -171,7 +171,7 @@ public class LotteryController extends BaseController {
         int userId = user.getId();
 
         long userMoney = Long.parseLong(trRep.getUserBalance(userId));
-        long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
+        long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 
         // проверки на правильность количества покупаемых билетов
         if (count != 1 && count != 10 && count != 50) {
