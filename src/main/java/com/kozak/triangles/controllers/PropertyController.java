@@ -306,10 +306,9 @@ public class PropertyController extends BaseController {
     /**
      * запрос на изьятие денег с кассы имущества
      */
-    @RequestMapping(value = "get-cash/{prId}", method = RequestMethod.GET)
-    public String getCash(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
-            @ModelAttribute("newName") String newName, User user, Model model, HttpServletRequest request,
-            RedirectAttributes ra) {
+	@RequestMapping(value = "get-cash/{prId}", method = RequestMethod.GET)
+	public String getCash(@ModelAttribute("prId") int prId, @RequestParam("redirectAddress") String redirectAddress, User user,
+			RedirectAttributes ra) {
 
         int userId = user.getId();
         long cash = 0;
@@ -336,7 +335,7 @@ public class PropertyController extends BaseController {
             ra.addFlashAttribute("changeBal", "+" + cash); // передаем параметр
         }
 
-		return "redirect:/property/trade-property";
+		return "redirect:/" + redirectAddress;
     }
 
     /**

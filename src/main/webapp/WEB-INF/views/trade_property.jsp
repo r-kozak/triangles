@@ -219,7 +219,7 @@
 							<td style="text-align:center">
 								<c:if test="${prop.cash > 0}">
 										<button class="btn btn-danger btn-lg" title="Собрать прибыль" data-toggle="tooltip" 
-										onclick="window.location.replace('${pageContext.request.contextPath}/property/get-cash/${prop.id}')">
+										onclick="window.location.replace('${pageContext.request.contextPath}/property/get-cash/${prop.id}?redirectAddress=property/trade-property')">
 										<span class="glyphicon glyphicon-piggy-bank"></span></button>
 								</c:if>
 							</td>
@@ -268,7 +268,7 @@ $(document).ready(function(){
     
     // по клику на кнопку Собрать всё - пройти по ссылке
     $("#profit_from_all_btn").on('click', function() {
-    	window.location.replace("${pageContext.request.contextPath}/property/get-cash/0");
+    	window.location.replace("${pageContext.request.contextPath}/property/get-cash/0?redirectAddress=property/trade-property");
     });
     
     //если нет имущества с НЕ собранным доходом - сделать кнопку "Собрать всё" не активной

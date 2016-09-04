@@ -36,13 +36,13 @@ import com.kozak.triangles.enums.TransferTypes;
 import com.kozak.triangles.repositories.LotteryRep;
 import com.kozak.triangles.search.LotterySearch;
 import com.kozak.triangles.search.SearchCollections;
+import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.PropertyUtil;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.TagCreator;
-import com.kozak.triangles.utils.CommonUtil;
 
 @SessionAttributes("user")
 @Controller
@@ -208,7 +208,7 @@ public class LotteryController extends BaseController {
                 trRep.addTransaction(tr);
 
                 // добавить информацию о новом значении баланса, состоятельности, количества билетов
-                ResponseUtil.addBalanceData(resultJson, purchaseSum, userMoney, userId, prRep);
+				ResponseUtil.addBalanceData(resultJson, purchaseSum, userMoney, userId, prRep);
                 resultJson.put("ticketsValue", user.getLotteryTickets());
             }
         }

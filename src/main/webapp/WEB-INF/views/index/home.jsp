@@ -90,7 +90,11 @@
 								<c:when test="${ready > 0}">
 									<tr>
 										<td class="tableTd1">Готовых к сбору дохода</td>
-										<td class="tableTd2"><span class="label label-danger">${ready}</span></td>
+										<td class="tableTd2">
+											<button class="btn btn-danger btn-xs" id="btn_get_cash_all_prop" type="button">
+  												Собрать <span class="badge">${ready}</span>
+											</button>
+										</td>
 									</tr>
 								</c:when>
 								<c:otherwise>
@@ -158,7 +162,7 @@
 						<c:choose>
 							<c:when test="${countCompletedProj > 0}">
 								<td class="tableTd1">Завершенных проектов</td>
-								<td class="tableTd2"><span class="badge">${countCompletedProj}/${totalProjCount}</span></td>
+								<td class="tableTd2"><span class="label label-danger">${countCompletedProj}/${totalProjCount}</span></td>
 							</c:when>
 							<c:otherwise>
 								<td class="tableTd1">До принятия в эксплуатацию</td>
@@ -282,3 +286,25 @@
 	<t:footer></t:footer>
 	</div>
 </t:template>
+
+<div id="balChan">
+	<c:choose>
+		<c:when test="${changeBal.length() > 0}">
+			${changeBal}&tridot;
+			<script>
+				popUp("<c:out value='${changeBal}'/>", "#balChan");
+			</script>
+		</c:when>
+	</c:choose>
+</div>
+
+<script>
+	$(document).ready(function() {
+		
+		$('#btn_get_cash_all_prop').on('click', function() {
+			window.location.replace("${pageContext.request.contextPath}/property/get-cash/0?redirectAddress=home");
+		});
+		
+	});
+
+</script>
