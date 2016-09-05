@@ -74,10 +74,7 @@ public class PropertyController extends BaseController {
 
         reps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
 
-        String userBalance = trRep.getUserBalance(userId);
-        int userDomi = userRep.getUserDomi(userId);
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId),
-                userDomi);
+		model = addMoneyInfoToModel(model, user);
         model.addAttribute("reps", reps);
         model.addAttribute("types", SearchCollections.getTradeBuildingsTypes());
         model.addAttribute("areas", SearchCollections.getCityAreas());
@@ -184,8 +181,7 @@ public class PropertyController extends BaseController {
 	 * 
 	 */
 	@RequestMapping(value = "/trade-property", method = RequestMethod.GET)
-    public String userProperty(@ModelAttribute("user") User user, Model model, TradePropertySearch cps,
-            HttpServletRequest req) {
+	public String userProperty(@ModelAttribute("user") User user, Model model, TradePropertySearch cps, HttpServletRequest req) {
 
         if (cps.isNeedClear())
             cps.clear();
@@ -224,9 +220,7 @@ public class PropertyController extends BaseController {
 
         user = userRep.getCurrentUserByLogin(user.getLogin());
 
-        String userBalance = trRep.getUserBalance(userId);
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId),
-                user.getDomi());
+		model = addMoneyInfoToModel(model, user);
         model.addAttribute("cps", cps);
         model.addAttribute("areas", SearchCollections.getCityAreas());
 		model.addAttribute("tradeProps", dbResult.get(1)); // все торговое имущество юзера
@@ -259,10 +253,7 @@ public class PropertyController extends BaseController {
 			return "redirect:/property/trade-property";
         }
 
-        String userBalance = trRep.getUserBalance(userId);
-        int userDomi = userRep.getUserDomi(userId);
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId),
-                userDomi);
+		model = addMoneyInfoToModel(model, user);
         model.addAttribute("prop", prop);
 
         // если собирали наличку с кассы - для информационного popup окна

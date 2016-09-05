@@ -27,12 +27,12 @@ import com.kozak.triangles.enums.TradeBuildingsTypes;
 import com.kozak.triangles.enums.TransferTypes;
 import com.kozak.triangles.repositories.ConstructionProjectRep;
 import com.kozak.triangles.repositories.UserRep;
+import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.TagCreator;
-import com.kozak.triangles.utils.CommonUtil;
 
 @SessionAttributes("user")
 @Controller
@@ -43,8 +43,6 @@ public class BuildingController extends BaseController {
 	public String buildingPage(Model model, User user) {
 
 		int userId = user.getId();
-		String userBalance = trRep.getUserBalance(userId);
-		int userDomi = userRep.getUserDomi(userId);
 
 		// начислить проценты завершенности для всех объектов строительства
 		List<ConstructionProject> constrProjects = consProjectRep.getUserConstructProjects(userId);
@@ -56,7 +54,7 @@ public class BuildingController extends BaseController {
 		Date licenseExpireDate = userLicense.getLossDate(); // дата окончания лицензии
 		BuildingController.checkLicenseExpire(licenseExpireDate, userRep, userId); // если кончилась - назначить новую
 
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
+		model = addMoneyInfoToModel(model, user);
 		model.addAttribute("tradeBuildingsData", TradeBuildingsTableData.getTradeBuildingsDataList()); // данные всех имуществ
 		model.addAttribute("constrProjects", consProjectRep.getUserConstructProjects(userId));
 		model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии

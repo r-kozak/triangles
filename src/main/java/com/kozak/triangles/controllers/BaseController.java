@@ -3,9 +3,11 @@ package com.kozak.triangles.controllers;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 
 import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.TradeBuilding;
+import com.kozak.triangles.entities.User;
 import com.kozak.triangles.repositories.ConstructionProjectRep;
 import com.kozak.triangles.repositories.LotteryRep;
 import com.kozak.triangles.repositories.MessageRep;
@@ -14,6 +16,8 @@ import com.kozak.triangles.repositories.RealEstateProposalRep;
 import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.repositories.VmapRep;
+import com.kozak.triangles.utils.CommonUtil;
+import com.kozak.triangles.utils.ResponseUtil;
 
 public abstract class BaseController {
 	// получить данные всех торговых строений
@@ -35,4 +39,12 @@ public abstract class BaseController {
     protected LotteryRep lotteryRep;
     @Autowired
     protected MessageRep msgRep;
+
+	protected Model addMoneyInfoToModel(Model model, User user) {
+		Integer userId = user.getId();
+		int userDomi = userRep.getUserDomi(userId);
+		String userBalance = trRep.getUserBalance(userId);
+		Long userSolvency = CommonUtil.getSolvency(userBalance, prRep, userId);
+		return ResponseUtil.addMoneyInfoToModel(model, userBalance, userSolvency, userDomi);
+	}
 }

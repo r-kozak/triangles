@@ -20,7 +20,6 @@ import com.kozak.triangles.entities.User;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.RecaptchaVerifier;
 import com.kozak.triangles.utils.ResponseUtil;
-import com.kozak.triangles.utils.CommonUtil;
 
 @SessionAttributes("user")
 @Controller
@@ -33,11 +32,7 @@ public class MessageController extends BaseController {
      */
     @RequestMapping(value = "/arbor", method = RequestMethod.GET)
     String arbor(User user, Model model) {
-        int userId = user.getId();
-        String userBalance = trRep.getUserBalance(userId);
-        int userDomi = userRep.getUserDomi(userId);
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId),
-                userDomi);
+		model = addMoneyInfoToModel(model, user);
 
         List<Messages> messages = msgRep.getAllMsgs();
         model.addAttribute("messages", messages);

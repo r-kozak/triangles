@@ -36,13 +36,13 @@
 				</tr>
 				<tr>
 					<td>Уровень</td>
-					<td>${marketLevel}/{marketLevelMax}</td>
-					<td><a class="btn btn-danger" data-toggle="tooltip" title="Повысить уровень"><span class="glyphicon glyphicon-menu-up"></span></a></td>
+					<td>${marketLevel}/${marketLevelMax}</td>
+					<td><a class="btn btn-success" data-toggle="tooltip" title="Повысить уровень"><span class="glyphicon glyphicon-menu-up"></span></a></td>
 				</tr>
 				<tr>
 					<td>Лицензии на продаже</td>
 					<td>${countLicenseOnSell}</td>
-					<td><a class="btn btn-danger" data-toggle="tooltip" title="Детально"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+					<td><a class="btn btn-primary" data-toggle="tooltip" title="Детально"><span class="glyphicon glyphicon-eye-open"></span></a></td>
 				</tr>
 				<tr>
 					<td>Лицензии уровня 2</td>

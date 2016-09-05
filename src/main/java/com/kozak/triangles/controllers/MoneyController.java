@@ -23,7 +23,6 @@ import com.kozak.triangles.enums.TransferTypes;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.search.TransactSearch;
-import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.ResponseUtil;
@@ -105,9 +104,7 @@ public class MoneyController extends BaseController {
 			model.addAttribute("paginationTag", paginationTag);
 		}
 
-		String userBalance = trRep.getUserBalance(userId);
-		int userDomi = userRep.getUserDomi(userId);
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
+		model = addMoneyInfoToModel(model, user);
 		model.addAttribute("totalSum", dbResult.get(1));
 		model.addAttribute("transacs", dbResult.get(2));
 		model.addAttribute("articles", SearchCollections.getArticlesCashFlow());

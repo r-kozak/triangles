@@ -131,16 +131,13 @@ public class LotteryController extends BaseController {
             model.addAttribute("paginationTag", paginationTag);
         }
 
-        String userBalance = trRep.getUserBalance(userId);
-        int userDomi = userRep.getUserDomi(userId);
         long upPropCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
         long upCashCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.CASH_UP);
         long lic2Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_2);
         long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
         long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
 
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId),
-                userDomi);
+		model = addMoneyInfoToModel(model, user);
         model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
         model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
         model.addAttribute("lotteryStory", fromDB.get(1)); // информация о розыгрышах

@@ -24,13 +24,12 @@ import com.kozak.triangles.entities.Vmap;
 import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.CityAreas;
 import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.PropertyUtil;
 import com.kozak.triangles.utils.ProposalGenerator;
 import com.kozak.triangles.utils.Random;
-import com.kozak.triangles.utils.ResponseUtil;
-import com.kozak.triangles.utils.CommonUtil;
 
 @SessionAttributes("user")
 @Controller
@@ -85,9 +84,7 @@ public class HomeController extends BaseController {
 		model.addAttribute("startedToConstructToday", consProjectRep.getCountOfStartedProjectsToday(userId));
 
 		// статистика
-		String userBalance = trRep.getUserBalance(userId);
-		int userDomi = userRep.getUserDomi(userId);
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
+		model = addMoneyInfoToModel(model, user);
 		model.addAttribute("rePrCo", realEstateProposalRep.allPrCount(false, userId)); // колво предложений на рынке имущества
 		model.addAttribute("newRePrCo", realEstateProposalRep.allPrCount(true, userId)); // новых предложений на рын.имущ.
 		model.addAttribute("ready", prRep.allPrCount(userId, true, false)); // колво готовых к сбору дохода
@@ -125,12 +122,7 @@ public class HomeController extends BaseController {
 
 	@RequestMapping(value = "/rating", method = RequestMethod.GET)
 	String ratingPage(User user, Model model) {
-		int userId = user.getId();
-
-		String userBalance = trRep.getUserBalance(userId);
-		int userDomi = userRep.getUserDomi(userId);
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
-
+		model = addMoneyInfoToModel(model, user);
 		List<Object[]> users = userRep.getUserRating();
 		model.addAttribute("users", users);
 		return "rating";
@@ -141,10 +133,7 @@ public class HomeController extends BaseController {
 	 */
 	@RequestMapping(value = "/wiki", method = RequestMethod.GET)
 	String wiki(User user, Model model) {
-		int userId = user.getId();
-		String userBalance = trRep.getUserBalance(userId);
-		int userDomi = userRep.getUserDomi(userId);
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
+		model = addMoneyInfoToModel(model, user);
 
 		// данные имущества
 		model.addAttribute("tradeBuildingsData", TradeBuildingsTableData.getTradeBuildingsDataList());
