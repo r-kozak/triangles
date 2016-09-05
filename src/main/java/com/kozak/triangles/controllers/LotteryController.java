@@ -21,27 +21,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.kozak.triangles.entities.CommBuildData;
+import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.LotteryInfo;
 import com.kozak.triangles.entities.Predictions;
 import com.kozak.triangles.entities.Property;
+import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.entities.WinningsData;
-import com.kozak.triangles.enums.ArticleCashFlowT;
-import com.kozak.triangles.enums.CityAreasT;
+import com.kozak.triangles.enums.ArticleCashFlow;
+import com.kozak.triangles.enums.CityAreas;
 import com.kozak.triangles.enums.LotteryArticles;
-import com.kozak.triangles.enums.TransferT;
+import com.kozak.triangles.enums.TransferTypes;
 import com.kozak.triangles.repositories.LotteryRep;
 import com.kozak.triangles.search.LotterySearch;
 import com.kozak.triangles.search.SearchCollections;
-import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.utils.CommonUtil;
+import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
+import com.kozak.triangles.utils.PropertyUtil;
 import com.kozak.triangles.utils.Random;
 import com.kozak.triangles.utils.ResponseUtil;
-import com.kozak.triangles.utils.SingletonData;
 import com.kozak.triangles.utils.TagCreator;
-import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @Controller
@@ -98,12 +99,11 @@ public class LotteryController extends BaseController {
             List<Integer> allPredIDs = lotteryRep.getAllPredictionIDs(); // все ID предсказаний
             int lastPredId = allPredIDs.get(allPredIDs.size() - 1); // последний ID из предсказаний
 
-            // cгенерить ID предсказания (мудрости)
-            Random r = new Random();
-            int predictionId = (int) r.generateRandNum(1, lastPredId); // сгенерить ID
-            while (!allPredIDs.contains(predictionId)) {
-                predictionId = (int) r.generateRandNum(1, lastPredId); // получить ID
-            }
+			// cгенерить ID предсказания (мудрости), которое точно есть в базе
+			Integer predictionId = null;
+			do {
+				predictionId = (int) Random.generateRandNum(1, lastPredId);
+			} while (!allPredIDs.contains(predictionId));
 
             // добавить предсказание
             LotteryInfo lInfo = new LotteryInfo(userId, "Ты получил мудрость от всезнающего. Вникай.",
@@ -123,7 +123,7 @@ public class LotteryController extends BaseController {
 
         List<Object> fromDB = lotteryRep.getLotteryStory(userId, ls);
         long itemsCount = (long) fromDB.get(0);
-        int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE) + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+        int totalPages = (int) (itemsCount / Constants.ROWS_ON_PAGE) + ((itemsCount % Constants.ROWS_ON_PAGE != 0) ? 1 : 0);
 
         if (totalPages > 1) {
             int currPage = Integer.parseInt(ls.getPage());
@@ -139,7 +139,7 @@ public class LotteryController extends BaseController {
         long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
         long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
 
-        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId),
+        model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId),
                 userDomi);
         model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
         model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
@@ -150,7 +150,7 @@ public class LotteryController extends BaseController {
         model.addAttribute("lic3Count", lic3Count); // количество лицензий 3 ур
         model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
         model.addAttribute("isPredictionAvailable", lotteryRep.isUserHasPrediction(userId)); // есть ли предсказание
-        model.addAttribute("ticketsPrice", Consts.LOTTERY_TICKETS_PRICE); // цены на билеты
+        model.addAttribute("ticketsPrice", Constants.LOTTERY_TICKETS_PRICE); // цены на билеты
         model.addAttribute("user", user);
 
         return "lottery";
@@ -171,7 +171,7 @@ public class LotteryController extends BaseController {
         int userId = user.getId();
 
         long userMoney = Long.parseLong(trRep.getUserBalance(userId));
-        long userSolvency = Util.getSolvency(trRep, prRep, userId); // состоятельность пользователя
+        long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 
         // проверки на правильность количества покупаемых билетов
         if (count != 1 && count != 10 && count != 50) {
@@ -180,11 +180,11 @@ public class LotteryController extends BaseController {
             // цена за один
             int priceToOneTicket = 0;
             if (count == 1) {
-                priceToOneTicket = Consts.LOTTERY_TICKETS_PRICE[0];
+                priceToOneTicket = Constants.LOTTERY_TICKETS_PRICE[0];
             } else if (count == 10) {
-                priceToOneTicket = Consts.LOTTERY_TICKETS_PRICE[1];
+                priceToOneTicket = Constants.LOTTERY_TICKETS_PRICE[1];
             } else if (count == 50) {
-                priceToOneTicket = Consts.LOTTERY_TICKETS_PRICE[2];
+                priceToOneTicket = Constants.LOTTERY_TICKETS_PRICE[2];
             }
 
             // сумма покупки
@@ -203,12 +203,12 @@ public class LotteryController extends BaseController {
                 String descr = String.format("Покупка лотерейных билетов, %s шт.", count);
                 long newBalance = userMoney - purchaseSum;
 
-                Transaction tr = new Transaction(descr, new Date(), purchaseSum, TransferT.SPEND, userId, newBalance,
-                        ArticleCashFlowT.LOTTERY_TICKETS_BUY);
+                Transaction tr = new Transaction(descr, new Date(), purchaseSum, TransferTypes.SPEND, userId, newBalance,
+                        ArticleCashFlow.LOTTERY_TICKETS_BUY);
                 trRep.addTransaction(tr);
 
                 // добавить информацию о новом значении баланса, состоятельности, количества билетов
-                ResponseUtil.addBalanceData(resultJson, purchaseSum, userMoney, userId, prRep);
+				ResponseUtil.addBalanceData(resultJson, purchaseSum, userMoney, userId, prRep);
                 resultJson.put("ticketsValue", user.getLotteryTickets());
             }
         }
@@ -236,8 +236,7 @@ public class LotteryController extends BaseController {
         if (count != 1 && count != 5 && count != 10 && count != 0) {
             ResponseUtil.putErrorMsg(resultJson, "Игра в лото на такое количество билетов недоступна.");
         } else if (userTickets == 0) {
-            ResponseUtil.putErrorMsg(resultJson,
-                    "У вас нет билетов. Купите или ждите зачисления за очки доминантности.");
+			ResponseUtil.putErrorMsg(resultJson, "У вас нет билетов. Купите или ждите зачисления за очки доминантности.");
         } else {
             int gamesCount = computeGamesCount(userTickets, count); // вычислить количество игр
             Date date = new Date(); // дата игры
@@ -266,8 +265,7 @@ public class LotteryController extends BaseController {
                 } else if (article.equals(LotteryArticles.PREDICTION)) {
                     Omniscient.givePredictionToUser(userId, date, lotteryRep);
                 } else {
-                    ResponseUtil.putErrorMsg(resultJson,
-                            "Возникла ошибка! Одна из статьей выигрыша не была обработана!");
+					ResponseUtil.putErrorMsg(resultJson, "Возникла ошибка! Одна из статьей выигрыша не была обработана!");
                 }
             }
             // снять билеты пользователя
@@ -378,8 +376,8 @@ public class LotteryController extends BaseController {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/confirm-level-up", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
-    public @ResponseBody ResponseEntity<String> confirmLevelUp(@RequestParam("obj") String obj,
-            @RequestParam("propId") int propId, User user) {
+	public @ResponseBody ResponseEntity<String> confirmLevelUp(@RequestParam("obj") String obj,
+			@RequestParam("propId") int propId, User user) {
 
         JSONObject resultJson = new JSONObject();
         int userId = user.getId();
@@ -401,22 +399,22 @@ public class LotteryController extends BaseController {
                     if (obj.equals("cash")) { // если это повышение для кассы
                         int nCashLevel = prop.getCashLevel() + 1; // уровень, к которому будем повышать
 
-                        if (nCashLevel > Consts.MAX_CASH_LEVEL) { // отправить сообщение, что достигли последнего уровня
+                        if (nCashLevel > Constants.MAX_CASH_LEVEL) { // отправить сообщение, что достигли последнего уровня
                             ResponseUtil.putErrorMsg(resultJson, "Достигнут последний уровень.");
                         } else { // повысить уровень или просто получить сумму повышения
                             propertyController.upCashLevel(resultJson, prop, nCashLevel, userId, 0, false);
-                            resultJson.put("maxLevel", Consts.MAX_CASH_LEVEL);
+                            resultJson.put("maxLevel", Constants.MAX_CASH_LEVEL);
 
                             lInfo = lotteryRep.getUserUpCashLevel(userId);
                         }
                     } else if (obj.equals("prop")) {
                         int nPropLevel = prop.getLevel() + 1; // уровень, к которому будем повышать
 
-                        if (nPropLevel > Consts.MAX_PROP_LEVEL) { // отправить сообщение, что достигли последнего уровня
+                        if (nPropLevel > Constants.MAX_PROP_LEVEL) { // отправить сообщение, что достигли последнего уровня
                             ResponseUtil.putErrorMsg(resultJson, "Достигнут последний уровень.");
                         } else { // повысить уровень или просто получить сумму повышения
                             propertyController.upPropLevel(resultJson, prop, nPropLevel, userId, 0, false);
-                            resultJson.put("maxLevel", Consts.MAX_PROP_LEVEL);
+                            resultJson.put("maxLevel", Constants.MAX_PROP_LEVEL);
 
                             lInfo = lotteryRep.getUserUpPropLevel(userId);
                         }
@@ -447,33 +445,30 @@ public class LotteryController extends BaseController {
     }
 
     /**
-     * Вводит в эксплуатацию один из видов коммерческого имущества (в зависимости от стастьи выигрыша в лотерею). Все
-     * имущество, которое выигрывается в лотерею, находится в районе Гетто, имеет минимальную цену для данного вида
-     * имущества.
-     * 
-     * @param groupedRes
-     *            - сгруппированный результат по статье
-     * @param userId
-     * @param article
-     *            - статья выигрыша (STALL, VILLAGE_SHOP, ...)
-     * @param date
-     */
+	 * Вводит в эксплуатацию один из видов торгового имущества (в зависимости от стастьи выигрыша в лотерею). Все
+	 * имущество, которое выигрывается в лотерею, находится в районе Гетто, имеет минимальную цену для данного вида
+	 * имущества.
+	 * 
+	 * @param groupedRes
+	 *            - сгруппированный результат по статье
+	 * @param userId
+	 * @param article
+	 *            - статья выигрыша (STALL, VILLAGE_SHOP, ...)
+	 * @param date
+	 */
     private void handlePropertyArticle(WinGroup groupedRes, int userId, LotteryArticles article, Date date) {
-
-        // получить данные всех коммерческих строений
-        HashMap<String, CommBuildData> mapData = SingletonData.getCommBuildData(buiDataRep);
 
         // ввести в эксплуатацию все выигранное имущество
         int countOfProperties = groupedRes.entitiesCount;
         // данные конкретного имущества
-        CommBuildData buildData = mapData.get(article.name());
+		TradeBuilding buildingData = TradeBuildingsTableData.getTradeBuildingDataByName(article.name());
 
         for (int i = 0; i < countOfProperties; i++) {
-            // имя нового имущества
-            String name = new Random().generatePropertyName(buildData.getCommBuildType(), CityAreasT.GHETTO);
-            long price = buildData.getPurchasePriceMin(); // цена нового имущества (всегда минимальная)
+			// генерация имя для нового имущества
+			String name = PropertyUtil.generatePropertyName(buildingData.getTradeBuildingType(), CityAreas.GHETTO);
+            long price = buildingData.getPurchasePriceMin(); // цена нового имущества (всегда минимальная)
 
-            Property prop = new Property(buildData, userId, CityAreasT.GHETTO, new Date(), price, name);
+            Property prop = new Property(buildingData, userId, CityAreas.GHETTO, new Date(), price, name);
             prRep.addProperty(prop);
         }
 
@@ -531,8 +526,8 @@ public class LotteryController extends BaseController {
 
         String descr = String.format("Выигрыш в лотерею за %s бил.", groupedRes.ticketsCount);
         int sum = groupedRes.entitiesCount;
-        Transaction tr = new Transaction(descr, date, sum, TransferT.PROFIT, userId, userMoney + sum,
-                ArticleCashFlowT.LOTTERY_WINNINGS);
+        Transaction tr = new Transaction(descr, date, sum, TransferTypes.PROFIT, userId, userMoney + sum,
+                ArticleCashFlow.LOTTERY_WINNINGS);
         trRep.addTransaction(tr);
 
         // добавить информацию в таблицу с лотерейными выигрышами
@@ -575,14 +570,13 @@ public class LotteryController extends BaseController {
         // получить данные со всеми возможными вариантами выигрышей
         TreeMap<Integer, WinningsData> winningsData = fillWinningsData();
 
-        Random r = new Random(); // Рандом для генерации
         boolean userHasPrediction = lotteryRep.isUserHasPrediction(userId); // есть непросмотренные предсказания
 
         WinningsData tempWinData = null; // временные данные результата одного розыгрыша
         // цикл - это розыгрыш одного билета
         for (int i = 0; i < ticketsCount; i++) {
             // результат розыгрыша одного билета
-            int ticRes = (int) r.generateRandNum(Consts.LOWER_LOTTERY_BOUND, Consts.UPPER_LOTTERY_BOUND);
+			int ticRes = (int) Random.generateRandNum(Constants.LOWER_LOTTERY_BOUND, Constants.UPPER_LOTTERY_BOUND);
 
             int flKey = winningsData.floorKey(ticRes); // ближайший нижный ключ в дереве
             tempWinData = winningsData.get(flKey); // данные о выигрыше

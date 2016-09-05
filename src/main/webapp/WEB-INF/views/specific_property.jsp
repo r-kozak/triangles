@@ -42,71 +42,22 @@
 					</tr>
 					<tr>
 						<td>Тип</td>
-						<c:choose>
-								<c:when test="${prop.commBuildingType == 'STALL'}">
-									<td>Киоск</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
-									<td>Сельский магазин</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
-									<td>Магазин канцтоваров</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'BOOK_SHOP'}">
-										<td>Книжный магазин</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'CANDY_SHOP'}">
-									<td>Магазин сладостей</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'LITTLE_SUPERMARKET'}">
-									<td>Маленький супермаркет</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'MIDDLE_SUPERMARKET'}">
-									<td>Средний супермаркет</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'BIG_SUPERMARKET'}">
-									<td>Большой супермаркет</td>
-								</c:when>
-								<c:otherwise>
-									<td>${prop.commBuildingType}</td>
-								</c:otherwise>
-							</c:choose>
+						<td class="building_type_name">${prop.tradeBuildingType}</td>
 						<td></td>
 					</tr>
 					<tr>
 						<td>Район</td>
-						<c:choose>
-							<c:when test="${prop.cityArea == 'GHETTO'}">
-								<td>Гетто</td>
-							</c:when>
-							<c:when test="${prop.cityArea == 'OUTSKIRTS'}">
-								<td>Окраина</td>
-							</c:when>
-							<c:when test="${prop.cityArea == 'CHINATOWN'}">
-								<td>Чайнатаун</td>
-							</c:when>
-							<c:when test="${prop.cityArea == 'CENTER'}">
-								<td>Центр</td>
-							</c:when>
-							<c:otherwise>
-								<td>${prop.cityArea}</td>
-							</c:otherwise>
-						</c:choose>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Вид деятельности</td>
-						<td>${type}</td>
+						<td class="city_area_name">${prop.cityArea}</td>
 						<td></td>
 					</tr>
 					<tr>
 						<td>Активность</td>
 						<c:choose>
 							<c:when test="${prop.valid}">
-								<td>активное</td>
+								<td>АКТИВНОЕ</td>
 							</c:when>
 							<c:otherwise>
-								<td>не активное</td>
+								<td>НЕАКТИВНОЕ</td>
 							</c:otherwise>
 						</c:choose>
 						<td></td>
@@ -211,8 +162,9 @@
 	</div>
 	
 	<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
-
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/buildings_types.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/city_areas_types.js"></script>
+	
 <script>
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок

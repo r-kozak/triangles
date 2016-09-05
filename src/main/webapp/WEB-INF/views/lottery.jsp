@@ -188,7 +188,7 @@
 		
 					<fieldset id="searchBlock">
 					<legend>Статья удачи</legend>
-						<div id="searchEl">
+						<div id="searchEl" class="lottery_articles">
 							<form:checkboxes path="articles" items="${articles}"/>      
 						</div>
 					</fieldset>
@@ -216,7 +216,7 @@
 			<c:forEach items="${lotteryStory}" var="lotterySt">
 				<tr>
 					<td><fmt:formatDate value="${lotterySt.date}" pattern="dd-MM-yyyy HH:mm"/></td>
-					<td>${lotterySt.article}</td>
+					<td class="lottery_article_name">${lotterySt.article}</td>
 					<td style="text-align:left!important">${lotterySt.description}</td>
 					<c:choose>
 						<c:when test="${lotterySt.article == 'PREDICTION'}">
@@ -240,7 +240,7 @@
 </div> <!-- container -->
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/lottery_articles_types.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -260,7 +260,7 @@ $(document).ready(function(){
 	  <div class="modal-body" id="modalErrorBody">Тело</div>
 	  
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Ок :(</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ок</button>
       </div>
     </div>
   </div>
@@ -278,7 +278,7 @@ $(document).ready(function(){
 	  <div class="modal-body" id="modalForInfoBody">Тело</div>
 	  
 	  <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Ок :)</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Ок</button>
       </div>
     </div>
   </div>
@@ -441,10 +441,6 @@ function confirmUpLevel(clickedBtn) {
 				
 				// изменить значение плюшки
 				var currPljushkaVal = parseInt($('#up_' + obj + '_btn').text().substring(1));
-				
-				console.log('currPljushkaVal=' + currPljushkaVal);
-				console.log('obj=' + obj);
-				console.log('$(#up_ + obj + _btn).html()=' + $('#up_' + obj + '_btn').html());
 				$('#up_' + obj + '_btn').html('×' + (currPljushkaVal - 1));
 			}
 	}).fail(function(jqXHR, textStatus, errorThrown) {

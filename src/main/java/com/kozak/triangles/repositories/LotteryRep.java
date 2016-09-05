@@ -20,7 +20,7 @@ import com.kozak.triangles.entities.Predictions;
 import com.kozak.triangles.entities.WinningsData;
 import com.kozak.triangles.enums.LotteryArticles;
 import com.kozak.triangles.search.LotterySearch;
-import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
 
 @Repository
@@ -121,9 +121,9 @@ public class LotteryRep {
         }
 
         int page = Integer.parseInt(ls.getPage());
-        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+        int firstResult = (page - 1) * Constants.ROWS_ON_PAGE;
         query.setFirstResult(firstResult);
-        query.setMaxResults(Consts.ROWS_ON_PAGE);
+        query.setMaxResults(Constants.ROWS_ON_PAGE);
 
         result.add(query.getResultList());
 

@@ -26,6 +26,10 @@
 							<button class="btn btn-default btn-xs" onclick="setDateValue('dateTo', false)">→</button>
 						</div>
 					</fieldset>
+					
+					<fieldset id = "searchBlock">
+						<form:input class="textInp" type="text" path="description" placeholder="Описание"></form:input>
+					</fieldset>
 		
 					<fieldset id="searchBlock">
 					<legend>Движение</legend>
@@ -37,7 +41,7 @@
 		
 					<fieldset id="searchBlock">
 					<legend>Статьи затрат</legend>
-						<div id="searchEl">
+						<div id="searchEl" class="transaction_articles">
 							<form:checkboxes path="articles" items="${articles}"/>      
 						</div>
 					</fieldset>
@@ -53,6 +57,9 @@
 		</t:menu>
 	
 		<div class="col-md-9">
+			<c:if test="${empty transacs}">
+				<div class = "noData">Поиск не дал результатов. Попробуйте задать другие параметры.</div>
+			</c:if>
 			<c:if test="${!empty transacs}">
 						
 				<h3 class="page-header" align=center>Транзакции</h3>
@@ -110,58 +117,7 @@
 						<c:forEach items="${transacs}" var="transac">
 							<tr>
 								<td><fmt:formatDate value="${transac.transactDate}" pattern="dd.MM.yyyy HH:mm:ss" /></td>
-								
-								<c:choose>
-									<c:when test="${transac.articleCashFlow == 'DAILY_BONUS'}">
-										<td style="text-align:left">Ежедневный бонус</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'CREDIT'}">
-										<td style="text-align:left">Кредит</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'DEPOSIT'}">
-										<td style="text-align:left">Депозит</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'LEVY_ON_PROPERTY'}">
-										<td style="text-align:left">Сбор с имущества</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'BUY_PROPERTY'}">
-										<td style="text-align:left">Покупка имущества</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'PROPERTY_REPAIR'}">
-										<td style="text-align:left">Ремонт имущества</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'UP_CASH_LEVEL'}">
-										<td style="text-align:left">Улучшение кассы</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'UP_PROP_LEVEL'}">
-										<td style="text-align:left">Улучшение имущества</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'DOMINANT_TO_TRIAN'}">
-										<td style="text-align:left">Обмен доминантности</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'SELL_PROPERTY'}">
-										<td style="text-align:left">Продажа имущества</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'BUY_LICENSE'}">
-										<td style="text-align:left">Покупка лицензий</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'CONSTRUCTION_PROPERTY'}">
-										<td style="text-align:left">Постройка имущества</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'LOTTERY_WINNINGS'}">
-										<td style="text-align:left">Выигрыш в лотерею</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'LOTTERY_TICKETS_BUY'}">
-										<td style="text-align:left">Покупка лотерейных билетов</td>
-									</c:when>
-									<c:when test="${transac.articleCashFlow == 'WITHDRAW'}">
-										<td style="text-align:left">Вывод средств</td>
-									</c:when>
-									<c:otherwise>
-										<td>${transac.articleCashFlow}</td>
-									</c:otherwise>
-								</c:choose>
-								
+								<td class="transaction_article_name" style="text-align:left">${transac.articleCashFlow}</td>
 								<td style="text-align:left">${transac.description}</td>
 								
 								<c:choose>
@@ -201,12 +157,8 @@
 <div id="balChan"></div>
 
 <script type="text/javascript" src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/transaction_articles_types.js"></script>
 
-<!-- Сортировка даты -->
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
-<script type="text/javascript" src="webjars/datatables-plugins/1.10.7/sorting/datetime-moment.js"></script>
-	
 <script>
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок

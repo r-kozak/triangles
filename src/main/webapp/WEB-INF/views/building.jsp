@@ -140,37 +140,8 @@
 						
 						<c:forEach items="${constrProjects}" var="constrProject">
 							<tr>
-								<c:choose>
-									<c:when test="${constrProject.buildingType == 'STALL'}">
-										<td>Киоск</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'VILLAGE_SHOP'}">
-										<td>Сельский магазин</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'STATIONER_SHOP'}">
-										<td>Магазин канцтоваров</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'BOOK_SHOP'}">
-										<td>Книжный магазин</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'CANDY_SHOP'}">
-										<td>Магазин сладостей</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'LITTLE_SUPERMARKET'}">
-										<td>Маленький супермаркет</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'MIDDLE_SUPERMARKET'}">
-										<td>Средний супермаркет</td>
-									</c:when>
-									<c:when test="${constrProject.buildingType == 'BIG_SUPERMARKET'}">
-										<td>Большой супермаркет</td>
-									</c:when>
-									<c:otherwise>
-										<td>${constrProject.buildingType}</td> 
-									</c:otherwise>
-								</c:choose>
-
-								<td>${constrProject.cityArea}</td>
+								<td class="building_type_name">${constrProject.buildingType}</td> 
+								<td class="city_area_name">${constrProject.cityArea}</td>
 
 								<c:choose>
 									<c:when test="${constrProject.buildersType == 'GASTARBEITER'}">
@@ -186,16 +157,23 @@
 					
 								<td><fmt:formatDate value="${constrProject.startDate}" pattern="dd-MM-yyyy HH:mm"/></td>
 								<td class="hidden-sm" style="width:25%">
-									<script>
-										$(function() {
-											var austDay = new Date(parseInt("<c:out value='${constrProject.finishDate.time}'/>"));
-											$('#countdown_'+ "<c:out value='${constrProject.id}'/>").countdown({
-												until : austDay,
-												expiryUrl: "${requestScope['javax.servlet.forward.request_uri']}"
-											});
-										});
-									</script>
-									<div id='countdown_${constrProject.id}'></div>
+									<c:choose>
+										<c:when test="${constrProject.completePerc >= 100}">
+											Готов
+										</c:when>
+										<c:otherwise>
+											<script>
+												$(function() {
+													var austDay = new Date(parseInt("<c:out value='${constrProject.finishDate.time}'/>"));
+													$('#countdown_'+ "<c:out value='${constrProject.id}'/>").countdown({
+														until : austDay,
+														expiryUrl: "${requestScope['javax.servlet.forward.request_uri']}"
+													});
+												});
+											</script>
+											<div id='countdown_${constrProject.id}'></div>
+										</c:otherwise>
+									</c:choose>
 								</td>
 								<td>
 									${constrProject.completePerc}
@@ -224,8 +202,82 @@
 	<t:footer></t:footer>
 </div> <!-- container -->
 
+<!-- модальное окно с выбором типов зданий -->
+<div class="modal fade" id="modalBuildTypes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalBuildTypesTitle">Выберите тип для постройки</h4>
+      </div>
+      <div class="modal-body" id="modalBuildTypesBody">
+        <table class="table">
+			<tr class="tableTitleTr">
+				<td>Тип</td>
+				<td>Время постройки, дней</td>
+				<td>Цена, &tridot;</td>
+				<td>Строить</td>
+			</tr>
+			<c:forEach items="${tradeBuildingsData}" var="buildingData">
+				<tr>
+					<td class="building_type_name" id="${buildingData.tradeBuildingType.ordinal()}">${buildingData.tradeBuildingType}</td>
+					<td>${buildingData.buildTime}</td>
+					<td>${buildingData.purchasePriceMin}</td>
+					<td>
+						<button class="btn btn-success btn_build_info" title="Строить" data-toggle="tooltip">
+										<span class="glyphicon glyphicon-equalizer"></span></button>
+					</td>
+				</tr>
+			</c:forEach>
+		</table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- модальное окно для отображения ошибки -->
+<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-danger" id="modalErrorTitle">Ошибка</h4>
+      </div>
+      
+	  <div class="modal-body" id="modalErrorBody">Тело</div>
+	  
+	  <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ок :(</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- модальное окно для отображения вопросов -->
+<div class="modal fade" id="modalQues" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalQuesTitle">Заголовок</h4>
+      </div>
+      
+	  <div class="modal-body" id="modalQuesBody">Тело</div>
+	  
+	  <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+		<button id="modal_ques_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Да</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/buildings_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/city_areas_types.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -238,7 +290,7 @@ $('#build_btn').on('click', function() {
 
 	//по клику на кнопки выбора конкретного типа имущества для стройки (кнопки в модальном окне)
 	$('.btn_build_info').on('click', function() {
-		var bui_type = $(this).closest('tr').find('.bui_type').attr('id'); // тип постройки
+		var bui_type = $(this).closest('tr').find('.building_type_name').attr('id'); // тип постройки
 		$.ajax({
 	  		  type: 'POST',
 	  		  url: "${pageContext.request.contextPath}/building/pre-build",
@@ -252,7 +304,8 @@ $('#build_btn').on('click', function() {
 					$('#modalError').modal();
 				} else {
 					// показать сообщение с вопросом
-					$('#modalQuesTitle').html('<b>Вы хотите построить ' + data.buiType + '?</b>');
+					$('#modalQuesTitle').html('<b>Вы хотите построить <span class="building_type_name">' + data.buiType + '</span>?</b>');
+					replaceAllBuildingsTypeNames(); // заменить имя строения на нормальное ("STALL" -> "Киоск")
 					
 					// сформировать тело модального окна
 					$('#modalQuesBody').html('<div class="text-danger">Выберите район: ' + data.cityAreaTag + '</div> <br/>' +
@@ -265,12 +318,14 @@ $('#build_btn').on('click', function() {
 							'<a id="b_count_down" class="btn btn-default"><span class="glyphicon glyphicon-menu-down"></span></a>' + 
 							'  <span>&nbsp;<b></span><span id="b_count">1</span><span></b>&nbsp;&nbsp;</span>' +
 							'<a id="b_count_up" class="btn btn-default"><span class="glyphicon glyphicon-menu-up"></span></a></div>');
+					replaceCityAreasNamesInSelectElement(); // заменить имя района города на нормальное ("GHETTO" -> "Гетто") в select элементе
 							
 					//назначить обработчик на клик кнопки Подтверждения стройки
 					$('#modal_ques_confirm').unbind('click');
 					
 					$('#modal_ques_confirm').on('click', function() {
 						var city_area = $('#city_area').val();
+						city_area = transformCityAreaNameToServerValue(city_area); // получить значение, как на сервере в Enum классе
 						confirmBuild(bui_type, city_area); // функция подтверждения покупки
 					});
 					$('#modal_ques_confirm').attr('disabled', false);
@@ -455,102 +510,4 @@ function confirmBuyLicense(buyLevel) {
 		});
 }
 </script>
-
-<!-- модальное окно с выбором типов зданий -->
-<div class="modal fade" id="modalBuildTypes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalBuildTypesTitle">Выберите тип для постройки</h4>
-      </div>
-      <div class="modal-body" id="modalBuildTypesBody">
-        <table class="table">
-			<tr class="tableTitleTr">
-				<td>Тип</td>
-				<td>Время постройки, дней</td>
-				<td>Цена, &tridot;</td>
-				<td>Строить</td>
-			</tr>
-			<c:forEach items="${commBuData}" var="cbdata">
-				<tr>
-					<c:choose>
-						<c:when test="${cbdata.commBuildType == 'STALL'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Киоск</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'VILLAGE_SHOP'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Сельский магазин</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'STATIONER_SHOP'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Магазин канцтоваров</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'BOOK_SHOP'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Книжный магазин</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'CANDY_SHOP'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Магазин сладостей</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'LITTLE_SUPERMARKET'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Маленький супермаркет</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'MIDDLE_SUPERMARKET'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Средний супермаркет</td>
-						</c:when>
-						<c:when test="${cbdata.commBuildType == 'BIG_SUPERMARKET'}">
-							<td class="bui_type" id="${cbdata.commBuildType}">Большой супермаркет</td>
-						</c:when>
-					</c:choose>
-					<td>${cbdata.buildTime}</td>
-					<td>${cbdata.purchasePriceMin}</td>
-					<td>
-						<button class="btn btn-success btn_build_info" title="Строить" data-toggle="tooltip">
-										<span class="glyphicon glyphicon-equalizer"></span></button>
-					</td>
-				</tr>
-			</c:forEach>
-		</table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- модальное окно для отображения ошибки -->
-<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title text-danger" id="modalErrorTitle">Ошибка</h4>
-      </div>
-      
-	  <div class="modal-body" id="modalErrorBody">Тело</div>
-	  
-	  <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Ок :(</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- модальное окно для отображения вопросов -->
-<div class="modal fade" id="modalQues" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalQuesTitle">Заголовок</h4>
-      </div>
-      
-	  <div class="modal-body" id="modalQuesBody">Тело</div>
-	  
-	  <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
-		<button id="modal_ques_confirm" type="button" class="btn btn-success"><span id="text_modal_confirm">Да</span></button>
-      </div>
-    </div>
-  </div>
-</div>
 </t:template>

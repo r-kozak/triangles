@@ -36,15 +36,15 @@ public class ResponseUtil {
     @SuppressWarnings("unchecked")
     public static void addBalanceData(JSONObject resultJson, long sum, long userMoney, int userId, PropertyRep prRep) {
         resultJson.put("changeBal", "-" + sum);
-        resultJson.put("newBalance", Util.moneyFormat(userMoney - sum));
+        resultJson.put("newBalance", CommonUtil.moneyFormat(userMoney - sum));
         resultJson.put("newSolvency",
-                Util.moneyFormat(Util.getSolvency(String.valueOf(userMoney - sum), prRep, userId)));
+                CommonUtil.moneyFormat(CommonUtil.getSolvency(String.valueOf(userMoney - sum), prRep, userId)));
     }
 
     public static Model addMoneyInfoToModel(Model model, String userBalance, Long userSolvency, int userDomi) {
-        String balance = Util.moneyFormat(Long.valueOf(userBalance));
-        String solvency = Util.moneyFormat(userSolvency);
-        String domi = Util.moneyFormat(userDomi);
+        String balance = CommonUtil.moneyFormat(Long.valueOf(userBalance));
+        String solvency = CommonUtil.moneyFormat(userSolvency);
+        String domi = CommonUtil.moneyFormat(userDomi);
         model.addAttribute("solvency", solvency);
         model.addAttribute("balance", balance);
         model.addAttribute("domi", domi);

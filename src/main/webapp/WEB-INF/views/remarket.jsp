@@ -175,14 +175,14 @@
 					
 					<fieldset id = "searchBlock"> 
 					<legend>Район</legend>
-						<div id="searchEl">
+						<div class="city_areas" id="searchEl">
 							<form:checkboxes path="areas" items="${areas}"/>      
 						</div>
 					</fieldset>
 					
 					<fieldset id = "searchBlock"> 
 					<legend>Тип</legend>
-						<div id="searchEl">
+						<div id="searchEl" class="buildings_types">
 							<form:checkboxes path="types" items="${types}"/>      
 						</div>
 					</fieldset>
@@ -229,7 +229,7 @@
 					     title="Показать или скрыть подробное описание раздела Рынок имущества"><span class="glyphicon glyphicon-info-sign"></span></button>
 					</div>
 					<div class="panel-body collapse" id="pr_descr">
-						<p><a href="${pageContext.request.contextPath}/wiki#pr.ma">Рынок имущества</a> - это раздел, где можно купить коммерческое
+						<p><a href="${pageContext.request.contextPath}/wiki#pr.ma">Рынок имущества</a> - это раздел, где можно купить торговое
 						имущество (магазины, супермаркеты, заводы, фабрики и т.д.). Рынок является глобальным, если вы купили имущество, для других
 						игроков оно станет недоступным.
 						При покупке, кроме добавления имущества в ваш список, также начисляются очки <a href="${pageContext.request.contextPath}/wiki#do">доминантности.</a>
@@ -261,54 +261,8 @@
 								</c:otherwise>
 							</c:choose>
 								
-							<c:choose>
-								<c:when test="${prop.commBuildingType == 'STALL'}">
-									<td>Киоск</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'VILLAGE_SHOP'}">
-									<td>Сельский магазин</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'STATIONER_SHOP'}">
-									<td>Магазин канцтоваров</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'BOOK_SHOP'}">
-										<td>Книжный магазин</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'CANDY_SHOP'}">
-									<td>Магазин сладостей</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'LITTLE_SUPERMARKET'}">
-									<td>Маленький супермаркет</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'MIDDLE_SUPERMARKET'}">
-									<td>Средний супермаркет</td>
-								</c:when>
-								<c:when test="${prop.commBuildingType == 'BIG_SUPERMARKET'}">
-									<td>Большой супермаркет</td>
-								</c:when>
-								<c:otherwise>
-									<td>${prop.commBuildingType}</td>
-								</c:otherwise>
-							</c:choose>
-	
-							<c:choose>
-								<c:when test="${prop.cityArea == 'GHETTO'}">
-									<td>Гетто</td>
-								</c:when>
-								<c:when test="${prop.cityArea == 'OUTSKIRTS'}">
-									<td>Окраина</td>
-								</c:when>
-								<c:when test="${prop.cityArea == 'CHINATOWN'}">
-									<td>Чайнатаун</td>
-								</c:when>
-								<c:when test="${prop.cityArea == 'CENTER'}">
-									<td>Центр</td>
-								</c:when>
-								<c:otherwise>
-									<td>${prop.cityArea}</td>
-								</c:otherwise>
-							</c:choose>
-	
+							<td class="building_type_name">${prop.tradeBuildingType}</td>
+							<td class="city_area_name">${prop.cityArea}</td>
 							<td><fmt:formatDate value="${prop.appearDate}" pattern="dd-MM-yyyy HH:mm" /></td>
 							<td><fmt:formatDate value="${prop.lossDate}" pattern="dd-MM-yyyy HH:mm" /></td>
 							<td>${prop.propLevel}</td>
@@ -340,6 +294,8 @@
 	
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/datatables/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/buildings_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/city_areas_types.js"></script>
 
 <!-- Сортировка даты -->
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>

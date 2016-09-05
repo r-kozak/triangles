@@ -16,10 +16,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Property;
-import com.kozak.triangles.enums.CityAreasT;
-import com.kozak.triangles.enums.buildings.CommBuildingsT;
-import com.kozak.triangles.search.CommPropSearch;
-import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.search.TradePropertySearch;
+import com.kozak.triangles.utils.Constants;
 
 /**
  * репозиторий имущества пользователя
@@ -92,7 +92,7 @@ public class PropertyRep {
      * @param rowsOnPage
      * @return список имущества пользователя для отображения на странице имущества
      */
-    public List<Object> getPropertyList(int userId, CommPropSearch cps, int rowsOnPage) {
+    public List<Object> getPropertyList(int userId, TradePropertySearch tps, int rowsOnPage) {
         String hql00 = "SELECT count(id) ";
         String hql0 = "FROM Property as pr WHERE pr.userId = :userId";
         String hql1 = "";
@@ -102,13 +102,13 @@ public class PropertyRep {
         params.put("userId", userId);
 
         // name filter
-        if (!cps.getName().isEmpty()) {
+        if (!tps.getName().isEmpty()) {
             hql1 += " and lower(pr.name) like :name";
-            params.put("name", "%" + cps.getName().toLowerCase() + "%");
+            params.put("name", "%" + tps.getName().toLowerCase() + "%");
         }
 
         // state filter
-        String state = cps.getState();
+        String state = tps.getState();
         if (!state.isEmpty()) {
             if (state.equals("on_sale")) {
                 hql1 += " and onSale = true";
@@ -118,22 +118,22 @@ public class PropertyRep {
         }
 
         // types filter
-        List<CommBuildingsT> types = cps.getTypes(); // типы из формы
+        List<TradeBuildingsTypes> types = tps.getTypes(); // типы из формы
         if (types != null && !types.isEmpty()) {
-            hql1 += " and pr.commBuildingType IN (:types)";
+			hql1 += " and pr.tradeBuildingType IN (:types)";
             params.put("types", types);
         }
 
         // area filter
-        List<CityAreasT> areas = cps.getAreas(); // типы из формы
+        List<CityAreas> areas = tps.getAreas(); // типы из формы
         if (areas != null && !areas.isEmpty()) {
             hql1 += " and pr.cityArea IN (:areas)";
             params.put("areas", areas);
         }
 
         // selling price filter
-        long priceFrom = cps.getSellPriceFrom();
-        long priceTo = cps.getSellPriceTo();
+        long priceFrom = tps.getSellPriceFrom();
+        long priceTo = tps.getSellPriceTo();
         if (priceFrom > 0 && priceTo > 0) {
             hql1 += " and pr.sellingPrice between :priceFrom AND :priceTo";
             params.put("priceFrom", priceFrom);
@@ -141,8 +141,8 @@ public class PropertyRep {
         }
 
         // depreciation percent filter
-        double percFrom = cps.getDepreciationFrom();
-        double percTo = cps.getDepreciationTo();
+        double percFrom = tps.getDepreciationFrom();
+        double percTo = tps.getDepreciationTo();
         if (percTo > 0) {
             hql1 += " and pr.depreciationPercent between :percFrom AND :percTo";
             params.put("percFrom", percFrom);
@@ -167,7 +167,7 @@ public class PropertyRep {
         }
 
         // пагинация
-        int page = Integer.parseInt(cps.getPage());
+        int page = Integer.parseInt(tps.getPage());
         int firstResult = (page - 1) * rowsOnPage;
         query.setFirstResult(firstResult);
         query.setMaxResults(rowsOnPage);
@@ -265,10 +265,10 @@ public class PropertyRep {
         int maxLevel = 0;
         if (obj.equals("prop")) {
             field = "level";
-            maxLevel = Consts.MAX_PROP_LEVEL;
+            maxLevel = Constants.MAX_PROP_LEVEL;
         } else if (obj.equals("cash")) {
             field = "cashLevel";
-            maxLevel = Consts.MAX_CASH_LEVEL;
+            maxLevel = Constants.MAX_CASH_LEVEL;
         }
         String hql = String.format("FROM Property WHERE userId = ?0 AND %s < %s", field, maxLevel);
 

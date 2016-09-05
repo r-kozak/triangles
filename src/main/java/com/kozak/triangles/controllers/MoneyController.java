@@ -18,16 +18,16 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
-import com.kozak.triangles.enums.ArticleCashFlowT;
-import com.kozak.triangles.enums.TransferT;
+import com.kozak.triangles.enums.ArticleCashFlow;
+import com.kozak.triangles.enums.TransferTypes;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.search.TransactSearch;
-import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.utils.CommonUtil;
+import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.TagCreator;
-import com.kozak.triangles.utils.Util;
 
 @SessionAttributes("user")
 @Controller
@@ -58,7 +58,7 @@ public class MoneyController extends BaseController {
 		} else {
 			int userId = user.getId();
 			int userDomi = userRep.getUserDomi(userId);
-			int needDomi = count / Consts.DOMI_PRICE; // сколько нужно доминантности для обмена
+			int needDomi = count / Constants.DOMI_PRICE; // сколько нужно доминантности для обмена
 
 			if (userDomi < needDomi) {
 				ResponseUtil.putErrorMsg(resultJson,
@@ -77,8 +77,8 @@ public class MoneyController extends BaseController {
 					String desc = String.format("Обмен %s очков доминантности на %s&tridot;", needDomi, count);
 					long balance = Long.valueOf(trRep.getUserBalance(userId));
 
-					Transaction t = new Transaction(desc, new Date(), count, TransferT.PROFIT, userId, balance + count,
-							ArticleCashFlowT.DOMINANT_TO_TRIAN);
+					Transaction t = new Transaction(desc, new Date(), count, TransferTypes.PROFIT, userId, balance + count,
+							ArticleCashFlow.DOMINANT_TO_TRIAN);
 					trRep.addTransaction(t);
 				}
 			}
@@ -95,9 +95,9 @@ public class MoneyController extends BaseController {
 		int userId = user.getId();
 
 		// результат с БД [количество всего; общая сумма; транзакции с учетом пагинации]
-		List<Object> dbResult = trRep.transList(userId, ts);
+		List<Object> dbResult = trRep.getTransactionsList(userId, ts);
 		long itemsCount = (long) dbResult.get(0);
-		int totalPages = (int) (itemsCount / Consts.ROWS_ON_PAGE) + ((itemsCount % Consts.ROWS_ON_PAGE != 0) ? 1 : 0);
+		int totalPages = (int) (itemsCount / Constants.ROWS_ON_PAGE) + ((itemsCount % Constants.ROWS_ON_PAGE != 0) ? 1 : 0);
 
 		if (totalPages > 1) {
 			int currPage = Integer.parseInt(ts.getPage());
@@ -107,7 +107,7 @@ public class MoneyController extends BaseController {
 
 		String userBalance = trRep.getUserBalance(userId);
 		int userDomi = userRep.getUserDomi(userId);
-		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, Util.getSolvency(userBalance, prRep, userId), userDomi);
+		model = ResponseUtil.addMoneyInfoToModel(model, userBalance, CommonUtil.getSolvency(userBalance, prRep, userId), userDomi);
 		model.addAttribute("totalSum", dbResult.get(1));
 		model.addAttribute("transacs", dbResult.get(2));
 		model.addAttribute("articles", SearchCollections.getArticlesCashFlow());
@@ -127,8 +127,8 @@ public class MoneyController extends BaseController {
 			// вывести деньги со счета
 			String desc = String.format("Вывод средств со счета");
 			Date transactDate = new Date();
-			ArticleCashFlowT artCashFlowType = ArticleCashFlowT.WITHDRAW;
-			Transaction t = new Transaction(desc, transactDate, count, TransferT.SPEND, userId, balance - count, artCashFlowType);
+			ArticleCashFlow artCashFlowType = ArticleCashFlow.WITHDRAW;
+			Transaction t = new Transaction(desc, transactDate, count, TransferTypes.SPEND, userId, balance - count, artCashFlowType);
 			trRep.addTransaction(t);
 
 			// сформировать json ответ

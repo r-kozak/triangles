@@ -15,10 +15,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Transaction;
-import com.kozak.triangles.enums.ArticleCashFlowT;
-import com.kozak.triangles.enums.TransferT;
+import com.kozak.triangles.enums.ArticleCashFlow;
+import com.kozak.triangles.enums.TransferTypes;
 import com.kozak.triangles.search.TransactSearch;
-import com.kozak.triangles.utils.Consts;
+import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
 
 @Repository
@@ -41,13 +41,13 @@ public class TransactionRep {
      * @return all current user transactions where Article of cash flow = some_type
      */
     @SuppressWarnings("unchecked")
-    public List<Transaction> getUserTransactionsByType(int userId, ArticleCashFlowT acf) {
+    public List<Transaction> getUserTransactionsByType(int userId, ArticleCashFlow acf) {
         String hql = "from Transac as tr where tr.userId = :userId and tr.articleCashFlow = :acf ORDER BY id";
         Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("acf", acf);
         return query.getResultList();
     }
 
-    public long getSumByAcf(int userId, ArticleCashFlowT acf) {
+    public long getSumByAcf(int userId, ArticleCashFlow acf) {
         String hql = "SELECT sum(summa) from Transac as tr where tr.userId = :userId and tr.articleCashFlow = :acf";
         Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("acf", acf);
         Long result = (Long) query.getSingleResult();
@@ -58,7 +58,7 @@ public class TransactionRep {
         }
     }
 
-    public long getSumByTransfType(int userId, TransferT transfT) {
+    public long getSumByTransfType(int userId, TransferTypes transfT) {
         String hql = "SELECT sum(summa) from Transac as tr where tr.userId = :userId and tr.transferType = :trt";
         Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("trt", transfT);
         return Long.valueOf(query.getSingleResult().toString());
@@ -81,7 +81,7 @@ public class TransactionRep {
      * @return
      * @throws ParseException
      */
-    public List<Object> transList(int userId, TransactSearch ts) throws ParseException {
+    public List<Object> getTransactionsList(int userId, TransactSearch ts) throws ParseException {
         String hql00 = "SELECT count(id) ";
         String hql01 = "SELECT sum(summa) ";
         String hql0 = "from Transac as tr where tr.userId = :userId";
@@ -91,6 +91,12 @@ public class TransactionRep {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
 
+		// description filter
+		if (!ts.getDescription().isEmpty()) {
+			hql1 += " and lower(tr.description) like :description";
+			params.put("description", "%" + ts.getDescription().toLowerCase() + "%");
+		}
+
         // date filter
         hql1 += " and tr.transactDate between :dateFrom and :dateTo";
         Date dateFrom = DateUtils.getStartDateForQuery(ts.getDateFrom());
@@ -99,14 +105,14 @@ public class TransactionRep {
         params.put("dateTo", dateTo);
 
         // transfer type filter
-        TransferT trType = ts.getTransfer();
-        if (trType != null && trType != TransferT.NONE) {
+        TransferTypes trType = ts.getTransfer();
+        if (trType != null && trType != TransferTypes.NONE) {
             hql1 += " and tr.transferType = :trType";
             params.put("trType", trType);
         }
 
         // articles cash flow filter
-        List<ArticleCashFlowT> articles = ts.getArticles(); // статьи из формы
+        List<ArticleCashFlow> articles = ts.getArticles(); // статьи из формы
         if (articles != null && !articles.isEmpty()) {
             hql1 += " and tr.articleCashFlow IN (:acf)";
             params.put("acf", articles);
@@ -138,9 +144,9 @@ public class TransactionRep {
         }
 
         int page = Integer.parseInt(ts.getPage());
-        int firstResult = (page - 1) * Consts.ROWS_ON_PAGE;
+        int firstResult = (page - 1) * Constants.ROWS_ON_PAGE;
         query.setFirstResult(firstResult);
-        query.setMaxResults(Consts.ROWS_ON_PAGE);
+        query.setMaxResults(Constants.ROWS_ON_PAGE);
 
         result.add(query.getResultList());
 

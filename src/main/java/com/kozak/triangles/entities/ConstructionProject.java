@@ -12,10 +12,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.kozak.triangles.enums.CityAreasT;
-import com.kozak.triangles.enums.buildings.BuildersT;
-import com.kozak.triangles.enums.buildings.CommBuildingsT;
-import com.kozak.triangles.utils.Random;
+import com.kozak.triangles.enums.BuildersTypes;
+import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.utils.PropertyUtil;
 
 /**
  * Объект строительства
@@ -41,7 +41,7 @@ public class ConstructionProject {
     // тип - КИОСК, СЕЛЬСКИЙ МАГАЗИН ...
     @Column(name = "BUILDING_TYPE")
     @Enumerated(EnumType.STRING)
-    private CommBuildingsT buildingType;
+    private TradeBuildingsTypes buildingType;
 
     // дата начала стройки
     @Temporal(TemporalType.TIMESTAMP)
@@ -56,11 +56,11 @@ public class ConstructionProject {
     // район города
     @Column(name = "CITY_AREA")
     @Enumerated(EnumType.STRING)
-    private CityAreasT cityArea;
+    private CityAreas cityArea;
 
     // тип строителей
     @Column(name = "buildersType")
-    private BuildersT buildersType;
+    private BuildersTypes buildersType;
 
     // процент завершенности строительства
     @Column(name = "COMPLETE_PERC")
@@ -69,12 +69,12 @@ public class ConstructionProject {
     public ConstructionProject() {
     }
 
-    public ConstructionProject(CommBuildingsT commBuildingType, Date finishDate, CityAreasT cityArea,
-            BuildersT buildersType, int userId) {
+	public ConstructionProject(TradeBuildingsTypes tradeBuildingType, Date finishDate, CityAreas cityArea,
+            BuildersTypes buildersType, int userId) {
         this.startDate = new Date();
-        this.name = new Random().generatePropertyName(commBuildingType, cityArea);
+		this.name = PropertyUtil.generatePropertyName(tradeBuildingType, cityArea);
 
-        this.buildingType = commBuildingType;
+		this.buildingType = tradeBuildingType;
         this.finishDate = finishDate;
         this.cityArea = cityArea;
         this.buildersType = buildersType;
@@ -89,11 +89,11 @@ public class ConstructionProject {
         this.id = id;
     }
 
-    public CommBuildingsT getBuildingType() {
+    public TradeBuildingsTypes getBuildingType() {
         return buildingType;
     }
 
-    public void setBuildingType(CommBuildingsT buildingType) {
+    public void setBuildingType(TradeBuildingsTypes buildingType) {
         this.buildingType = buildingType;
     }
 
@@ -113,11 +113,11 @@ public class ConstructionProject {
         this.finishDate = finishDate;
     }
 
-    public CityAreasT getCityArea() {
+    public CityAreas getCityArea() {
         return cityArea;
     }
 
-    public void setCityArea(CityAreasT cityArea) {
+    public void setCityArea(CityAreas cityArea) {
         this.cityArea = cityArea;
     }
 
@@ -137,11 +137,11 @@ public class ConstructionProject {
         this.name = name;
     }
 
-    public BuildersT getBuildersType() {
+    public BuildersTypes getBuildersType() {
         return buildersType;
     }
 
-    public void setBuildersType(BuildersT buildersType) {
+    public void setBuildersType(BuildersTypes buildersType) {
         this.buildersType = buildersType;
     }
 }

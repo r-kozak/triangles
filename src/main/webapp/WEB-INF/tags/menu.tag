@@ -12,7 +12,7 @@
 			<a href="${pageContext.request.contextPath}/property/r-e-market">Рынок</a>
 		</div>
 		<div id="elMenu">
-			<a href="${pageContext.request.contextPath}/property/commerc-pr">Коммерческое имущество</a>
+			<a href="${pageContext.request.contextPath}/property/trade-property">Торговое имущество</a>
 		</div>
 		<div id="elMenu">
 			<a href="${pageContext.request.contextPath}/service-buildings">Служебное имущество</a>

@@ -3,7 +3,10 @@ package com.kozak.triangles.utils;
 /**
  * @author Roman: 13 июня 2015 г. 12:18:06
  */
-public final class Consts {
+public final class Constants {
+	// стартовая сумма, с которой игрой начинает игру
+	public static final long GAME_START_BALANCE = 17000;
+
 	// ЛОГИН АДМИНА
 	public static final String ADMIN_LOGIN = "admin";
 
@@ -19,16 +22,10 @@ public final class Consts {
 
 	// частота появления предложений на рынке недвижимости - мин, макс (ДНЕЙ)
 	public static final int FREQ_RE_PROP_MIN = 1;
-	public static final int FREQ_RE_PROP_MAX = 7;
+	public static final int FREQ_RE_PROP_MAX = 4;
 
 	// название поля с датой следующего предложения на рынке недвижимости
 	public static final String NEXT_RE_PROPOSE = "NEXT_RE_PROPOSE_DATE";
-
-	// ставки процентов районов города
-	public static final int CENTER_P = 30;
-	public static final int CHINA_P = 15;
-	public static final int OUTSKIRTS_P = 5;
-	public static final int GHETTO_P = 0;
 
 	// универсальные коэфициенты вместимости кассы, начисления прибыли, повышения уровня имущества и кассы
 	// осторожно! нужно, чтобы элементов было больше хотя бы на один, чем нужно
@@ -74,9 +71,12 @@ public final class Consts {
 	// длина сообщения из беседки с погрешностью на пробелы и др. знаки
 	public static final int MSG_LEN = 600;
 
-	// лимит доминантности при начислении ежедневных лотерейных билетов
-	public static final int DOMI_LIMIT = 50000;
+	// очки доминантности, что учитываются при начислении ежедневных лотерейных билетов
+	public static final int DOMI_LOTTERY_LIMIT = 50000;
 
 	// лимит на постройку зданий в день, шт
 	public static final int CONSTRUCTION_LIMIT_PER_DAY = 10;
+
+	// коэфициент умножения индекса типа строения при постройке здания. Нужен для начисления доминантности
+	public static final int K_ADD_DOMI_FOR_BUILDING = 5;
 }
