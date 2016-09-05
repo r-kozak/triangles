@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<title>Магазин лицензий</title>
+<title>Служебное имущество</title>
 
 <style>
 #defaultCountdown {
@@ -26,50 +26,20 @@
 		<t:menu/>
 		
 		<div class="col-md-9">
-			<h3 class="page-header" align="center">Магазин лицензий</h3>
+			<h3 class="page-header" align="center">Служебное имущество</h3>
 			
 			<table class="table table-striped">
 				<tr class="tableTitleTr">
-					<td>Характеристика</td>
-					<td>Значение</td>
-					<td>Действие</td>
+					<td>Имущество</td>
+					<td>Статус</td>
 				</tr>
 				<tr>
-					<td>Уровень</td>
-					<td>${marketLevel}/{marketLevelMax}</td>
-					<td><a class="btn btn-danger" data-toggle="tooltip" title="Повысить уровень"><span class="glyphicon glyphicon-menu-up"></span></a></td>
+					<td><a class="bg-info" href="${pageContext.request.contextPath}/license-market">Магазин лицензий</a></td>
+					<td>-</td>
 				</tr>
 				<tr>
-					<td>Лицензии на продаже</td>
-					<td>${countLicenseOnSell}</td>
-					<td><a class="btn btn-danger" data-toggle="tooltip" title="Детально"><span class="glyphicon glyphicon-eye-open"></span></a></td>
-				</tr>
-				<tr>
-					<td>Лицензии уровня 2</td>
-					<td class="license_count">${countLicense2}</td>
-					<td id="2">
-						<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
-							<span class="glyphicon glyphicon-briefcase"></span>
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td>Лицензии уровня 3</td>
-					<td class="license_count">${countLicense3}</td>
-					<td id="3">
-						<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
-							<span class="glyphicon glyphicon-briefcase"></span>
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td>Лицензии уровня 4</td>
-					<td class="license_count">${countLicense4}</td>
-					<td id="4">
-						<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
-							<span class="glyphicon glyphicon-briefcase"></span>
-						</a>
-					</td>
+					<td><a class="bg-info" href="${pageContext.request.contextPath}/resources-warehouse">Склад ресурсов</a></td>
+					<td>-</td>
 				</tr>
 			</table>
 		</div>

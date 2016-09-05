@@ -15,6 +15,9 @@
 			<a href="${pageContext.request.contextPath}/property/commerc-pr">Коммерческое имущество</a>
 		</div>
 		<div id="elMenu">
+			<a href="${pageContext.request.contextPath}/service-buildings">Служебное имущество</a>
+		</div>
+		<div id="elMenu">
 			<a href="${pageContext.request.contextPath}/building">Стройка</a>
 		</div>
 		<div id="elMenu">
