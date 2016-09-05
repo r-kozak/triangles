@@ -28,6 +28,27 @@
 		<div class="col-md-9">
 			<h3 class="page-header" align="center">Магазин лицензий</h3>
 			
+			<c:if test="${marketBuilt}">
+				<div class="">
+					<p>Магазин лицензий не построен. Для строительства выполните следующие требования:</p>
+					<table class="table table-striped">
+						<c:forEach items="${requirementsToBuild}" var="requirement">
+							<tr>
+								<c:choose>
+									<c:when test="${requirement.carriedOut}">
+										<td><span class="glyphicon glyphicon-ok"></span></td>
+									</c:when>
+									<c:otherwise>
+										<td><span class="glyphicon glyphicon-remove"></span></td>
+									</c:otherwise>
+								</c:choose>
+								<td>${requirement.description}</td>
+							</tr>						
+						</c:forEach>
+					</table>
+				</div>
+			</c:if>
+			
 			<table class="table table-striped">
 				<tr class="tableTitleTr">
 					<td>Характеристика</td>

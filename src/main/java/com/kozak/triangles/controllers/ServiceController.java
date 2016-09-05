@@ -12,6 +12,9 @@ import com.kozak.triangles.entities.User;
 @Controller
 public class ServiceController extends BaseController {
 
+	/**
+	 * @return страницу со списком служебного имущества
+	 */
 	@RequestMapping(value = "/service-buildings", method = RequestMethod.GET)
 	public String getServiceBuildingsPage(Model model, User user) {
 		model = addMoneyInfoToModel(model, user);
