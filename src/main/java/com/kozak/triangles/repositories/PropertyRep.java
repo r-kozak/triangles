@@ -274,4 +274,54 @@ public class PropertyRep {
 
         return em.createQuery(hql).setParameter(0, userId).getResultList();
     }
+
+	/**
+	 * @param userId
+	 *            - id владельца имущества
+	 * @param type
+	 *            - тип имущества (Киоск, Сельский магазин, ...), может быть null, тогда этот параметр не учитывается
+	 * @param cityArea
+	 *            - район города
+	 * @param level
+	 *            - уровень имущества, может быть null, тогда этот параметр не учитывается
+	 * @param cashLevel
+	 *            - уровень кассы имущества, может быть null, тогда этот параметр не учитывается
+	 * @return список имущества пользователя, учитывая указанные параметры
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Property> getPropertyListWithParams(Integer userId, TradeBuildingsTypes type, CityAreas cityArea, Integer level,
+			Integer cashLevel) {
+
+		String hql = "from Property as pr WHERE userId = :userId";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+
+		// установка параметра Типа
+		if (type != null) {
+			hql += " and pr.tradeBuildingType = :type";
+			params.put("type", type);
+		}
+		// установка параметра Района города
+		if (cityArea != null) {
+			hql += " and pr.cityArea = :cityArea";
+			params.put("cityArea", cityArea);
+		}
+		// установка параметра Уровня имущества
+		if (level != null) {
+			hql += " and pr.level = :level";
+			params.put("level", level);
+		}
+		// установка параметра Уровня кассы имущества
+		if (cashLevel != null) {
+			hql += " and pr.cashLevel = :cashLevel";
+			params.put("cashLevel", cashLevel);
+		}
+
+		Query query = em.createQuery(hql);
+		// установка параметров
+		for (Map.Entry<String, Object> entry : params.entrySet()) {
+			query.setParameter(entry.getKey(), entry.getValue());
+		}
+		return query.getResultList();
+	}
 }

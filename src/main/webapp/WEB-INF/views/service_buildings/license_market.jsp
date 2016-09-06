@@ -28,72 +28,75 @@
 		<div class="col-md-9">
 			<h3 class="page-header" align="center">Магазин лицензий</h3>
 			
-			<c:if test="${marketBuilt}">
-				<div class="">
-					<p>Магазин лицензий не построен. Для строительства выполните следующие требования:</p>
+			<c:choose>
+				<c:when test="${!marketBuilt}">
+					<div class="">
+						<p>Магазин лицензий не построен. Для строительства выполните следующие требования:</p>
+						<table class="table table-striped">
+							<c:forEach items="${requirementsToBuild}" var="requirement">
+								<tr>
+									<c:choose>
+										<c:when test="${requirement.carriedOut}">
+											<td><span class="glyphicon glyphicon-ok"></span></td>
+										</c:when>
+										<c:otherwise>
+											<td><span class="glyphicon glyphicon-remove"></span></td>
+										</c:otherwise>
+									</c:choose>
+									<td>${requirement.description}</td>
+								</tr>						
+							</c:forEach>
+						</table>
+					</div>
+				</c:when>
+				<c:otherwise>
 					<table class="table table-striped">
-						<c:forEach items="${requirementsToBuild}" var="requirement">
-							<tr>
-								<c:choose>
-									<c:when test="${requirement.carriedOut}">
-										<td><span class="glyphicon glyphicon-ok"></span></td>
-									</c:when>
-									<c:otherwise>
-										<td><span class="glyphicon glyphicon-remove"></span></td>
-									</c:otherwise>
-								</c:choose>
-								<td>${requirement.description}</td>
-							</tr>						
-						</c:forEach>
+						<tr class="tableTitleTr">
+							<td>Характеристика</td>
+							<td>Значение</td>
+							<td>Действие</td>
+						</tr>
+						<tr>
+							<td>Уровень</td>
+							<td>${marketLevel}/${marketLevelMax}</td>
+							<td><a class="btn btn-success" data-toggle="tooltip" title="Повысить уровень"><span class="glyphicon glyphicon-menu-up"></span></a></td>
+						</tr>
+						<tr>
+							<td>Лицензии на продаже</td>
+							<td>${countLicenseOnSell}</td>
+							<td><a class="btn btn-primary" data-toggle="tooltip" title="Детально"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+						</tr>
+						<tr>
+							<td>Лицензии уровня 2</td>
+							<td class="license_count">${lic2Count}</td>
+							<td id="2">
+								<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
+									<span class="glyphicon glyphicon-briefcase"></span>
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td>Лицензии уровня 3</td>
+							<td class="license_count">${lic3Count}</td>
+							<td id="3">
+								<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
+									<span class="glyphicon glyphicon-briefcase"></span>
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td>Лицензии уровня 4</td>
+							<td class="license_count">${lic4Count}</td>
+							<td id="4">
+								<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
+									<span class="glyphicon glyphicon-briefcase"></span>
+								</a>
+							</td>
+						</tr>
 					</table>
-				</div>
-			</c:if>
-			
-			<table class="table table-striped">
-				<tr class="tableTitleTr">
-					<td>Характеристика</td>
-					<td>Значение</td>
-					<td>Действие</td>
-				</tr>
-				<tr>
-					<td>Уровень</td>
-					<td>${marketLevel}/${marketLevelMax}</td>
-					<td><a class="btn btn-success" data-toggle="tooltip" title="Повысить уровень"><span class="glyphicon glyphicon-menu-up"></span></a></td>
-				</tr>
-				<tr>
-					<td>Лицензии на продаже</td>
-					<td>${countLicenseOnSell}</td>
-					<td><a class="btn btn-primary" data-toggle="tooltip" title="Детально"><span class="glyphicon glyphicon-eye-open"></span></a></td>
-				</tr>
-				<tr>
-					<td>Лицензии уровня 2</td>
-					<td class="license_count">${countLicense2}</td>
-					<td id="2">
-						<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
-							<span class="glyphicon glyphicon-briefcase"></span>
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td>Лицензии уровня 3</td>
-					<td class="license_count">${countLicense3}</td>
-					<td id="3">
-						<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
-							<span class="glyphicon glyphicon-briefcase"></span>
-						</a>
-					</td>
-				</tr>
-				<tr>
-					<td>Лицензии уровня 4</td>
-					<td class="license_count">${countLicense4}</td>
-					<td id="4">
-						<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
-							<span class="glyphicon glyphicon-briefcase"></span>
-						</a>
-					</td>
-				</tr>
-			</table>
-		</div>
+				</c:otherwise>
+			</c:choose>
+		</div> <!-- <div class="col-md-9"> --> 
 	</div>
 	<t:footer></t:footer>
 </div>

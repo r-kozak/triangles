@@ -1,9 +1,14 @@
 package com.kozak.triangles.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -16,7 +21,14 @@ import javax.persistence.Table;
 @Table(name = "LicenseMarket")
 public class LicenseMarket {
 
+	public static final int START_LEVEL = 1; // уровень после постройки
 	public static final int MAX_LEVEL = 10; // максимальный уровень магазина
+
+	/**
+	 * базовая стоимость магазина, будет умножаться на универсальный коэфициент (Constants.UNIVERS_K) при строительстве или
+	 * повышении уровня магазина
+	 */
+	public static final int BASE_PRICE = 100_000;
 
 	/**
 	 * Количество первых уровней, для которых нет надбавки к стоимости лицензий при их продаже. За каждый уровень после этого
@@ -36,6 +48,9 @@ public class LicenseMarket {
 
     @Column(name = "license_level")
 	private byte level = 1; // уровень магазина
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "licenseMarket")
+	private List<LicensesConsignment> licensesConsignments = new ArrayList<>(0);
 
     public LicenseMarket() {
     }
@@ -62,6 +77,14 @@ public class LicenseMarket {
 
 	public void setLevel(byte level) {
 		this.level = level;
+	}
+
+	public List<LicensesConsignment> getLicensesConsignments() {
+		return licensesConsignments;
+	}
+
+	public void setLicensesConsignments(List<LicensesConsignment> licensesConsignments) {
+		this.licensesConsignments = licensesConsignments;
 	}
 
 }

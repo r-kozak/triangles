@@ -21,11 +21,11 @@ public class LicenseMarketRepository {
 	}
 
 	/**
-	 * Позволяет получить рынок лицензий по Id его владельца.
+	 * Позволяет получить магазин лицензий по Id его владельца.
 	 */
 	public LicenseMarket getLicenseMarketByUserId(int userId) {
 		String hql = "from LicenseMarket where userId = :userId";
 		Query query = em.createQuery(hql).setParameter("userId", userId);
-		return (LicenseMarket) query.getSingleResult(); // Рынок лицензий у пользователя может быть только один
+		return (LicenseMarket) query.getSingleResult(); // магазин лицензий у пользователя может быть только один
 	}
 }

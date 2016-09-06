@@ -133,19 +133,14 @@ public class LotteryController extends BaseController {
 
         long upPropCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
         long upCashCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.CASH_UP);
-        long lic2Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_2);
-        long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
-        long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
 
 		model = addMoneyInfoToModel(model, user);
+		model = addLicenseCountInfoToModel(model, userId);
         model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
         model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
         model.addAttribute("lotteryStory", fromDB.get(1)); // информация о розыгрышах
         model.addAttribute("upPropCount", upPropCount); // количество доступных повышений имуществ
         model.addAttribute("upCashCount", upCashCount); // количество доступных повышений кассы
-        model.addAttribute("lic2Count", lic2Count); // количество лицензий 2 ур
-        model.addAttribute("lic3Count", lic3Count); // количество лицензий 3 ур
-        model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
         model.addAttribute("isPredictionAvailable", lotteryRep.isUserHasPrediction(userId)); // есть ли предсказание
         model.addAttribute("ticketsPrice", Constants.LOTTERY_TICKETS_PRICE); // цены на билеты
         model.addAttribute("user", user);

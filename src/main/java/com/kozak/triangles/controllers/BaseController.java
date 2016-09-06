@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.entities.User;
+import com.kozak.triangles.enums.LotteryArticles;
 import com.kozak.triangles.repositories.ConstructionProjectRep;
 import com.kozak.triangles.repositories.LotteryRep;
 import com.kozak.triangles.repositories.MessageRep;
@@ -46,5 +47,21 @@ public abstract class BaseController {
 		String userBalance = trRep.getUserBalance(userId);
 		Long userSolvency = CommonUtil.getSolvency(userBalance, prRep, userId);
 		return ResponseUtil.addMoneyInfoToModel(model, userBalance, userSolvency, userDomi);
+	}
+
+	/**
+	 * @return переданную модель, но с информацией о количестве лицензий разных уровней
+	 */
+	protected Model addLicenseCountInfoToModel(Model model, int userId) {
+		long lic2Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_2);
+		model.addAttribute("lic2Count", lic2Count); // количество лицензий 2 ур
+
+		long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
+		model.addAttribute("lic3Count", lic3Count); // количество лицензий 3 ур
+
+		long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
+		model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
+
+		return model;
 	}
 }
