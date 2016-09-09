@@ -19,85 +19,146 @@
 	font-size: 16px;
 }
 </style>
+
 <t:template>
+
+<script>var ctx = "${pageContext.request.contextPath}"</script>
 
 <div class="container">
 	<div class="row">
 		<t:menu/>
 		
 		<div class="col-md-9">
-			<h3 class="page-header" align="center">Магазин лицензий</h3>
-			
 			<c:choose>
-				<c:when test="${!marketBuilt}">
-					<div class="">
+				<c:when test="${marketBuilt}">
+					<h3 class="page-header" align="center">Магазин лицензий (уровень <span id="marketLevel">${marketLevel}</span>/${marketLevelMax})
+						<a id="up_level_btn" class="btn btn-success" data-toggle="tooltip" title="Повысить уровень">
+							<span class="glyphicon glyphicon-menu-up"></span>
+						</a>
+					</h3>
+					
+					<h4 class="page-header" align=center>Продать лицензии</h4>
+					<div class="col-md-12 text-center sell_block">
+						<div class="col-md-4">
+							<div class="little_label">Уровень 2</div>
+							<c:choose>
+								<c:when test="${lic2Count > 0 && requirementToSellLic2.carriedOut}">
+									<div class="sell_label notSelectable" id="2">×<span id="lic2CountVal">${lic2Count}</span></div>
+								</c:when>
+								<c:otherwise>
+									<div class="sell_label notSelectable disabled_label" id="2" 
+										data-requirement-message="${requirementToSellLic2.description}">×<span id="lic2CountVal">${lic2Count}</span>
+									</div>
+								</c:otherwise>
+							</c:choose>
+						</div>
+						
+						<div class="col-md-4">
+							<div class="little_label">Уровень 3</div>
+							<c:choose>
+								<c:when test="${lic3Count > 0 && requirementToSellLic3.carriedOut}">
+									<div class="sell_label notSelectable" id="3">×<span id="lic3CountVal">${lic3Count}</span></div>
+								</c:when>
+								<c:otherwise>
+									<div class="sell_label notSelectable disabled_label" id="3" 
+										data-requirement-message="${requirementToSellLic3.description}">×<span id="lic3CountVal">${lic3Count}</span>
+									</div>
+								</c:otherwise>
+							</c:choose>
+						</div>
+						
+						<div class="col-md-4">
+							<div class="little_label">Уровень 4</div>
+							<c:choose>
+								<c:when test="${lic4Count > 0 && requirementToSellLic4.carriedOut}">
+									<div class="sell_label notSelectable" id="4">×<span id="lic4CountVal">${lic4Count}</span></div>
+								</c:when>
+								<c:otherwise>
+									<div class="sell_label notSelectable disabled_label" id="4" 
+										data-requirement-message="${requirementToSellLic4.description}">×<span id="lic4CountVal">${lic4Count}</span>
+									</div>
+								</c:otherwise>
+							</c:choose>
+						</div>
+					</div>
+					
+					<div class="row"> 		
+				 		<div class="col-md-12">
+				 			<h4 class="page-header" align=center>Партии лицензий на продаже</h4>
+				 			
+				 			<c:choose>
+				 				<c:when test="${!empty licensesConsignments}">
+									<table class="table">
+										<tr class="tableTitleTr">
+											<td>Уровень лицензий</td>
+											<td>Количество</td>
+											<td>До продажи</td>
+											<td>Сумма прибыли</td>
+										</tr>
+										
+										<c:forEach items="${licensesConsignments}" var="consignment">
+											<tr>
+												<td>${consignment.licenseLevel}</td> 
+												<td>${consignment.countOnSell}</td>
+												<td style="width:25%">
+													<script>
+														$(function() {
+															var austDay = new Date(parseInt("<c:out value='${consignment.sellDate.time}'/>"));
+															$('#countdown_'+ "<c:out value='${consignment.id}'/>").countdown({
+																until : austDay,
+																expiryUrl: "${requestScope['javax.servlet.forward.request_uri']}"
+															});
+														});
+													</script>
+													<div id='countdown_${consignment.id}'></div>
+												</td>
+												<td>${consignment.profit}</td>
+											</tr>
+										</c:forEach>
+									</table>
+				 				</c:when>
+				 				<c:otherwise>
+									<div class="text-danger text-center" style="font-size:30">
+										Нет лицензий на продаже.
+									</div>
+				 				</c:otherwise>
+				 			</c:choose>
+				 		</div> <!-- <div class="col-md-12"> -->
+				 	</div> <!-- <div class="row"> -->
+				</c:when>
+				<c:otherwise>
+					<h3 class="page-header" align="center">Магазин лицензий</h3>
+					
+					<div class="noData">
 						<p>Магазин лицензий не построен. Для строительства выполните следующие требования:</p>
 						<table class="table table-striped">
 							<c:forEach items="${requirementsToBuild}" var="requirement">
 								<tr>
 									<c:choose>
 										<c:when test="${requirement.carriedOut}">
-											<td><span class="glyphicon glyphicon-ok"></span></td>
+											<td><span class="text-success glyphicon glyphicon-ok"></span></td>
 										</c:when>
 										<c:otherwise>
-											<td><span class="glyphicon glyphicon-remove"></span></td>
+											<td><span class="text-danger glyphicon glyphicon-remove"></span></td>
 										</c:otherwise>
 									</c:choose>
 									<td>${requirement.description}</td>
 								</tr>						
 							</c:forEach>
 						</table>
+						<c:choose>
+							<c:when test="${isMarketCanBeBuilt}">
+								<a href="${pageContext.request.contextPath}/build-license-market">СТРОИТЬ</a>
+							</c:when>
+							<c:otherwise>
+								<a class="disabledBtn" href="#">СТРОИТЬ</a>
+							</c:otherwise>
+						</c:choose>						
 					</div>
-				</c:when>
-				<c:otherwise>
-					<table class="table table-striped">
-						<tr class="tableTitleTr">
-							<td>Характеристика</td>
-							<td>Значение</td>
-							<td>Действие</td>
-						</tr>
-						<tr>
-							<td>Уровень</td>
-							<td>${marketLevel}/${marketLevelMax}</td>
-							<td><a class="btn btn-success" data-toggle="tooltip" title="Повысить уровень"><span class="glyphicon glyphicon-menu-up"></span></a></td>
-						</tr>
-						<tr>
-							<td>Лицензии на продаже</td>
-							<td>${countLicenseOnSell}</td>
-							<td><a class="btn btn-primary" data-toggle="tooltip" title="Детально"><span class="glyphicon glyphicon-eye-open"></span></a></td>
-						</tr>
-						<tr>
-							<td>Лицензии уровня 2</td>
-							<td class="license_count">${lic2Count}</td>
-							<td id="2">
-								<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
-									<span class="glyphicon glyphicon-briefcase"></span>
-								</a>
-							</td>
-						</tr>
-						<tr>
-							<td>Лицензии уровня 3</td>
-							<td class="license_count">${lic3Count}</td>
-							<td id="3">
-								<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
-									<span class="glyphicon glyphicon-briefcase"></span>
-								</a>
-							</td>
-						</tr>
-						<tr>
-							<td>Лицензии уровня 4</td>
-							<td class="license_count">${lic4Count}</td>
-							<td id="4">
-								<a class="btn btn-danger sell_license_btn" data-toggle="tooltip" title="Продать">
-									<span class="glyphicon glyphicon-briefcase"></span>
-								</a>
-							</td>
-						</tr>
-					</table>
 				</c:otherwise>
 			</c:choose>
 		</div> <!-- <div class="col-md-9"> --> 
-	</div>
+	</div> <!-- row -->
 	<t:footer></t:footer>
 </div>
 
@@ -110,7 +171,9 @@
 		</c:if>
 	</div>
 	
-	<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/license_market.css" type="text/css" />
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/lottery_market.js"></script>
 	
 <script>
 $(document).ready(function(){
@@ -118,7 +181,7 @@ $(document).ready(function(){
 });
 </script>
 
-<!-- модальное окно -->
+<!-- модальное окно для информации-->
 <div class="modal fade" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -137,7 +200,3 @@ $(document).ready(function(){
   </div>
 </div>
 </t:template>
-
-<script>
-
-</script>

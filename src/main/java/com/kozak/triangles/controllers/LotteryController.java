@@ -33,6 +33,7 @@ import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.CityAreas;
 import com.kozak.triangles.enums.LotteryArticles;
 import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.exceptions.NoSuchLicenseLevelException;
 import com.kozak.triangles.repositories.LotteryRep;
 import com.kozak.triangles.search.LotterySearch;
 import com.kozak.triangles.search.SearchCollections;
@@ -304,10 +305,10 @@ public class LotteryController extends BaseController {
     public @ResponseBody ResponseEntity<String> useLicense(@RequestParam("licLevel") byte licLevel, User user) {
 
         JSONObject resultJson = new JSONObject();
-        int userId = user.getId();
+		try {
+			int userId = user.getId();
 
-        LotteryArticles levelArticle = LotteryArticles.valueOf("LICENSE_" + licLevel);
-        if (levelArticle != null) {
+			LotteryArticles levelArticle = LotteryArticles.getLicenseArticleByLevel(licLevel);
             LotteryInfo licenses = lotteryRep.getUserLicenses(userId, levelArticle);
             if (licenses == null) {
                 ResponseUtil.putErrorMsg(resultJson,
@@ -321,7 +322,9 @@ public class LotteryController extends BaseController {
                 licenses.setRemainingAmount(licenses.getRemainingAmount() - 1);
                 lotteryRep.updateLotoInfo(licenses);
             }
-        }
+		} catch (NoSuchLicenseLevelException e) {
+			ResponseUtil.putErrorMsg(resultJson, e.getMessage());
+		}
         return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 

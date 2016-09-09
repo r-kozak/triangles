@@ -448,9 +448,9 @@ public class DateUtils {
         return getEnd(parsed);
     }
 
-    public static Date addHours(int hoursToConstruct) {
+    public static Date addHours(int hoursToAdd) {
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.HOUR, hoursToConstruct);
+        c.add(Calendar.HOUR, hoursToAdd);
 
         return c.getTime();
     }

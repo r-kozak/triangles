@@ -1,0 +1,30 @@
+.sell_block {
+	color: #687d61;
+	background-color: #5cb85c;
+	padding: 20 0;
+}
+
+.sell_label {
+	font-size:70px;
+	margin-top: 5;
+	border: 2px solid #75946B;
+	cursor: pointer;
+	background-color: #bbf1aa;
+	border-radius: 8px;
+}
+
+.sell_label:hover {
+	background-color: #d1ffc3;
+	color: #447334;
+}
+
+.little_label {
+	color: white;
+}
+
+.disabled_label {
+	color: #afadad !important;
+	border: 2px solid #989898 !important;
+	background-color: #e0e0e0 !important;
+}
+

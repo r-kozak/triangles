@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.data.CityAreasTableData;
+import com.kozak.triangles.data.LicensesTableData;
 import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.ConstructionProject;
 import com.kozak.triangles.entities.Property;
@@ -151,8 +152,8 @@ public class HomeController extends BaseController {
 		// проценты типов строителей
 		model.addAttribute("builders", Constants.BUILDERS_COEF);
 		// цены и сроки лицензий на строительство
-		model.addAttribute("licPrice", Constants.LICENSE_PRICE);
-		model.addAttribute("licTerm", Constants.LICENSE_TERM);
+		model.addAttribute("licPrices", LicensesTableData.getLicensePricesTable().values().toArray());
+		model.addAttribute("licTerms", LicensesTableData.getLicenseTermsTable().values().toArray());
 		// ставки кредита и депозита
 		model.addAttribute("cr_rate", Constants.CREDIT_RATE);
 		model.addAttribute("dep_rate", Constants.DEPOSIT_RATE);

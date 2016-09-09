@@ -35,12 +35,6 @@ public final class Constants {
 	// проценты типов строителей - влияют на скорость постройки здания
 	public static final float[] BUILDERS_COEF = { (float) 0.5, 1, (float) 1.5 };
 
-	// цены лицензий на строительство
-	public static final int[] LICENSE_PRICE = { 0, 0, 16000, 32000, 64000 };
-
-	// сроки действия лицензий на строительство, дней
-	public static final int[] LICENSE_TERM = { 0, 10, 7, 4, 2 };
-
 	public static final int K_DECREASE_REPAIR = 2; // коэф. уменьшения суммы ремонта
 	public static final int K_DECREASE_CASH_L = 10; // коэф. уменьшения суммы поднятия уровня кассы
 	public static final int K_DECREASE_PROP_L = 8; // коэф. уменьшения суммы поднятия уровня имущества

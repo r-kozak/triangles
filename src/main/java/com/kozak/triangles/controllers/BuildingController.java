@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.kozak.triangles.data.LicensesTableData;
 import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.ConstructionProject;
 import com.kozak.triangles.entities.Property;
@@ -262,7 +263,7 @@ public class BuildingController extends BaseController {
 		if (level < 1 || level > 4) {
 			ResponseUtil.putErrorMsg(resultJson, "Нет такого уровня лицензии.");
 		} else {
-			int licensePrice = Constants.LICENSE_PRICE[level];
+			int licensePrice = LicensesTableData.getLicensePrice(level);
 			if (userSolvency < licensePrice) { // не хватает денег Util.moneyFormat(userSolvency) + "&tridot;</b>");
 				ResponseUtil.putErrorMsg(resultJson, "Не хватает денег на покупку. Ваш максимум: <b>"
 						+ CommonUtil.moneyFormat(userSolvency) + "&tridot;</b> <br/> " + "Цена покупки: <b>" + licensePrice + "</b>");
@@ -270,7 +271,8 @@ public class BuildingController extends BaseController {
 				resultJson.put("licenseLevel", "Вы покупаете лицензию уровня: <b>" + level + ".</b>");
 				resultJson.put("licensePrice", "Стоимость покупки лицензии: <b>" + licensePrice + "&tridot;</b>");
 				resultJson.put("balAfter", "Баланс после покупки: <b>" + (userMoney - licensePrice) + "&tridot;</b>");
-				resultJson.put("licenseTerm", "Срок действия лицензии, дней: <b>" + Constants.LICENSE_TERM[level] + ".</b>");
+				resultJson.put("licenseTerm",
+						"Срок действия лицензии, дней: <b>" + LicensesTableData.getLicenseTerm(level) + ".</b>");
 			}
 		}
 		return ResponseUtil.createTypicalResponseEntity(resultJson);
@@ -287,7 +289,7 @@ public class BuildingController extends BaseController {
 		if (level < 1 || level > 4) {
 			ResponseUtil.putErrorMsg(resultJson, "Нет такого уровня лицензии.");
 		} else {
-			int licensePrice = Constants.LICENSE_PRICE[level];
+			int licensePrice = LicensesTableData.getLicensePrice(level);
 			if (userSolvency < licensePrice) { // не хватает денег
 				ResponseUtil.putErrorMsg(resultJson,
 						"Не хватает денег на покупку. Ваш максимум: <b>" + CommonUtil.moneyFormat(userSolvency) + "&tridot;</b>");
@@ -297,9 +299,8 @@ public class BuildingController extends BaseController {
 
 				// снять деньги у пользователя
 				String descr = String.format("Покупка лицензии на строительство. Уровень: %s", level);
-				int price = Constants.LICENSE_PRICE[level];
-				Transaction tr = new Transaction(descr, new Date(), price, TransferTypes.SPEND, userId, userMoney - price,
-						ArticleCashFlow.BUY_LICENSE);
+				Transaction tr = new Transaction(descr, new Date(), licensePrice, TransferTypes.SPEND, userId,
+						userMoney - licensePrice, ArticleCashFlow.BUY_LICENSE);
 				trRep.addTransaction(tr);
 			}
 		}
@@ -357,7 +358,7 @@ public class BuildingController extends BaseController {
 	 * @param level
 	 */
 	static Date setNewLicenseToUser(UserRep userRep, int userId, byte level) {
-		Date nextExpireDate = DateUtils.addDays(new Date(), Constants.LICENSE_TERM[level]); // сейчас + Х дней
+		Date nextExpireDate = DateUtils.addDays(new Date(), LicensesTableData.getLicenseTerm(level)); // сейчас + Х дней
 
 		User user = userRep.getUserWithLicense(userId);
 		UserLicense license = user.getUserLicense();

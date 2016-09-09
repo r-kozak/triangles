@@ -188,13 +188,20 @@ public class LotteryRep {
         return getLotteryInfoByArticle(userId, LotteryArticles.CASH_UP);
     }
 
+	/**
+	 * @param userId
+	 * @param article
+	 * @return список выигранного в лотерею с определенной статьей. Например вернет все Лицензии 2-го уровня, где остаток > 0.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<LotteryInfo> getLotteryInfoListByArticle(int userId, LotteryArticles article) {
+		Query query = createQueryForLotteryInfoByArticle(userId, article);
+		return query.getResultList();
+	}
+
     @SuppressWarnings("unchecked")
     private LotteryInfo getLotteryInfoByArticle(int userId, LotteryArticles article) {
-        String hql = "from LotteryInfo WHERE userId = ?0 AND article = ?1 AND remainingAmount > 0 ORDER BY id ASC";
-        Query query = em.createQuery(hql);
-        query.setParameter(0, userId);
-        query.setParameter(1, article);
-
+		Query query = createQueryForLotteryInfoByArticle(userId, article);
         query.setMaxResults(1);
 
         List<LotteryInfo> result = query.getResultList();
@@ -204,4 +211,21 @@ public class LotteryRep {
             return result.get(0);
         }
     }
+
+	/**
+	 * Создается запрос на выборку из базы данных списка остатков, выигранных в лото, где оставшееся количество > 0 и статья
+	 * выигрыша в лото соответствует переданному параметру.
+	 * 
+	 * @param userId
+	 * @param article
+	 *            статья выигрыша в лото
+	 * @return запрос
+	 */
+	private Query createQueryForLotteryInfoByArticle(int userId, LotteryArticles article) {
+		String hql = "from LotteryInfo WHERE userId = ?0 AND article = ?1 AND remainingAmount > 0 ORDER BY id ASC";
+		Query query = em.createQuery(hql);
+		query.setParameter(0, userId);
+		query.setParameter(1, article);
+		return query;
+	}
 }

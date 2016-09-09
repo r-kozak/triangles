@@ -42,7 +42,7 @@ public class LicensesConsignment {
 	private Date sellDate; // дата продажи партии лицензий
 
 	@Column(name = "PROFIT")
-	private int profit; // сумма прибыли от продажи лицензий
+	private long profit; // сумма прибыли от продажи лицензий
 
 	public LicensesConsignment() {
 	}
@@ -71,12 +71,28 @@ public class LicensesConsignment {
 		this.countOnSell = countOnSell;
 	}
 
-	public int getProfit() {
+	public long getProfit() {
 		return profit;
 	}
 
-	public void setProfit(int profit) {
-		this.profit = profit;
+	public void setProfit(long totalProfit) {
+		this.profit = totalProfit;
+	}
+
+	public byte getLicenseLevel() {
+		return licenseLevel;
+	}
+
+	public void setLicenseLevel(byte licenseLevel) {
+		this.licenseLevel = licenseLevel;
+	}
+
+	public Date getSellDate() {
+		return sellDate;
+	}
+
+	public void setSellDate(Date sellDate) {
+		this.sellDate = sellDate;
 	}
 
 }
