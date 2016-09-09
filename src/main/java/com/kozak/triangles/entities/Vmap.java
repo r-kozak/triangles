@@ -15,14 +15,14 @@ import javax.persistence.Table;
 @Table(name = "vmap")
 public class Vmap {
     @Id
-    @Column(name = "id")
+	@Column(name = "ID")
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "name", length = 20)
+	@Column(name = "NAME", length = 20)
     private String name;
 
-    @Column(name = "value")
+	@Column(name = "VALUE")
     private String value;
 
     public Vmap() {

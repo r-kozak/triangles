@@ -49,58 +49,58 @@ public class Property implements JSONAware {
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "user_id")
+	@Column(name = "USER_ID")
     private int userId;
 
-    @Column(name = "cityArea")
+	@Column(name = "CITY_AREA")
     @Enumerated(EnumType.STRING)
     private CityAreas cityArea;
 
-    @Column(name = "level")
+	@Column(name = "LEVEL")
     private int level;
 
-    @Column(name = "depreciation_percent")
+	@Column(name = "DEPRECIATION_PERCENT")
     private double depreciationPercent;
 
-    @Column(name = "valid")
+	@Column(name = "VALID")
     private boolean valid;
 
-    @Column(name = "cash")
+	@Column(name = "CASH")
     private long cash;
 
-    @Column(name = "cash_level")
+	@Column(name = "CASH_LEVEL")
     private int cashLevel;
 
-    @Column(name = "cash_capacity")
+	@Column(name = "CASH_CAPACITY")
     private long cashCapacity;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "purchase_date")
+	@Column(name = "PURCHASE_DATE")
     private Date purchaseDate;
 
-    @Column(name = "initial_cost")
+	@Column(name = "INITIAL_COST")
     private long initialCost;
 
-    @Column(name = "selling_price")
+	@Column(name = "SELLING_PRICE")
     private long sellingPrice;
 
-    @Column(name = "name")
+	@Column(name = "NAME")
     private String name;
 
-    @Column(name = "build_type")
+	@Column(name = "BUILD_TYPE")
     @Enumerated(EnumType.STRING)
     private TradeBuildingsTypes tradeBuildingType;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "next_profit")
+	@Column(name = "NEXT_PROFIT")
     private Date nextProfit;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "next_depr")
+	@Column(name = "NEXT_DEPR")
     private Date nextDepreciation;
 
     // признак - на продаже имущество или нет
-    @Column(name = "on_sale")
+	@Column(name = "ON_SALE")
     private boolean onSale;
 
     // //////////////////////////////////////////////

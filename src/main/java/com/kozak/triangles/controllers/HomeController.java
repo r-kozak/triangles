@@ -40,17 +40,18 @@ public class HomeController extends BaseController {
 		if (user == null) {
 			return "redirect:/";
 		}
-		User currUser = userRep.getCurrentUserByLogin(user.getLogin().toLowerCase());
-		model.addAttribute("user", currUser); // чтобы в след. действиях был уже юзер со всеми полями
+		// получить пользователя со всеми данными
+		user = userRep.getCurrentUserByLogin(user.getLogin().toLowerCase());
+		model.addAttribute("user", user); // чтобы в след. действиях был уже юзер со всеми полями
 
 		// set currUser lastEnter
-		currUser.setLastEnter(new Date());
-		userRep.updateUser(currUser);
+		user.setLastEnter(new Date());
+		userRep.updateUser(user);
 
-		int userId = currUser.getId();
+		int userId = user.getId();
 
-		checkFirstTime(currUser); // проверка, первый ли вход в игру (вообще)
-		giveDailyBonusAndLotteryTickets(currUser); // начисление ежедневного бонуса
+		checkFirstTime(user); // проверка, первый ли вход в игру (вообще)
+		giveDailyBonusAndLotteryTickets(user); // начисление ежедневного бонуса
 		giveCreditDeposit(userId); // начисление кредита/депозита
 		manageREMarketProposals(userId); // очистить-добавить предложения на глобальный рынок недвижимости
 		PropertyUtil.profitCalculation(userId, prRep); // начисление прибыли по имуществу пользователя
@@ -93,8 +94,8 @@ public class HomeController extends BaseController {
 		model.addAttribute("needRepair", prRep.allPrCount(userId, false, true)); // скольким имуществам нужен ремонт
 		model.addAttribute("licenseLevel", userLicense.getLicenseLevel()); // уровень лицензии
 		model.addAttribute("licenseExpire", licenseExpireDate); // окончание лицензии
-		model.addAttribute("ticketsCount", currUser.getLotteryTickets()); // количество лотерейных билетов
-		model.addAttribute("userLogin", currUser.getLogin()); // логин пользователя
+		model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
+		model.addAttribute("userLogin", user.getLogin()); // логин пользователя
 		model.addAttribute("constructionLimitPerDay", Constants.CONSTRUCTION_LIMIT_PER_DAY); // лимит на постройку зданий в день,
 																								// шт
 

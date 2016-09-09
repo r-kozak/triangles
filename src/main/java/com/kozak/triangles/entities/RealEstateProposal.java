@@ -33,42 +33,42 @@ public class RealEstateProposal {
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "building_type")
+	@Column(name = "BUILDING_TYPE")
     @Enumerated(EnumType.STRING)
 	private TradeBuildingsTypes tradeBuildingType; // тип торгового здания (Киоск, Маркет, ...)
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "appear_date")
+	@Column(name = "APPEAR_DATE")
 	private Date appearDate; // дата появления на рынке
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "loss_date")
+	@Column(name = "LOSS_DATE")
 	private Date lossDate; // дата ухода с рынка
 
-    @Column(name = "purchase_price")
+	@Column(name = "PURCHASE_PRICE")
 	private long purchasePrice; // цена покупки
 
-    @Column(name = "cityArea")
+	@Column(name = "CITY_AREA")
     @Enumerated(EnumType.STRING)
 	private CityAreas cityArea; // район здания
 
-    @Column(name = "valid")
+	@Column(name = "VALID")
 	private boolean valid = true; // предложение еще действительно
 
     // id имущества, которое продается (0, если новое)
-    @Column(name = "used_id")
+	@Column(name = "USED_ID")
     private int usedId;
 
     // уровень имущества (0, если новое)
-    @Column(name = "prop_level")
+	@Column(name = "PROP_LEVEL")
     private int propLevel;
 
     // уровень кассы имущества (0, если новое)
-    @Column(name = "cash_level")
+	@Column(name = "CASH_LEVEL")
     private int cashLevel;
 
     // процент износа имущества
-    @Column(name = "depreciation")
+	@Column(name = "DEPRECIATION")
     private double depreciation;
 
 	public RealEstateProposal(TradeBuildingsTypes tradeBuildingType, Date lossDate, long purchasePrice, CityAreas cityArea) {

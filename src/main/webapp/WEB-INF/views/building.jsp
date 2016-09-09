@@ -114,11 +114,9 @@
  			
  			<c:choose>
  				<c:when test="${empty constrProjects}">
-					<table class="table">
-						<tr class="text-danger" style="font-size:30">
-							<td>Нажмите кнопку СТРОИТЬ, чтобы построить здание.</td>
-						</tr>
-					</table>
+					<div class="text-danger text-center" style="font-size:30">
+						Нажмите кнопку СТРОИТЬ, чтобы построить здание.
+					</div>
  				</c:when>
  				<c:otherwise>
  					<table class="table">

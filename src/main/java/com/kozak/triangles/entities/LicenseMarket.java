@@ -43,17 +43,21 @@ public class LicenseMarket {
     @GeneratedValue
     private int id;
 
-	@Column(name = "user_id")
+	@Column(name = "USER_ID")
 	private int userId; // id владельца магазина
 
-    @Column(name = "license_level")
-	private byte level = 1; // уровень магазина
+	@Column(name = "MARKET_LEVEL")
+	private byte level = START_LEVEL; // уровень магазина
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "licenseMarket")
 	private List<LicensesConsignment> licensesConsignments = new ArrayList<>(0);
 
     public LicenseMarket() {
     }
+
+	public LicenseMarket(int userId) {
+		this.userId = userId;
+	}
 
     public int getId() {
         return id;

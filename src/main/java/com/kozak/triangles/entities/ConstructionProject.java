@@ -26,7 +26,7 @@ import com.kozak.triangles.utils.PropertyUtil;
 @Table(name = "CONSTRUCTION_PROJECT")
 public class ConstructionProject {
     @Id
-    @Column(name = "id")
+	@Column(name = "ID")
     @GeneratedValue
     private Integer id;
 
@@ -35,7 +35,7 @@ public class ConstructionProject {
     private String name;
 
     // владелец имущества
-    @Column(name = "userId")
+	@Column(name = "USER_ID")
     private int userId;
 
     // тип - КИОСК, СЕЛЬСКИЙ МАГАЗИН ...
@@ -59,7 +59,7 @@ public class ConstructionProject {
     private CityAreas cityArea;
 
     // тип строителей
-    @Column(name = "buildersType")
+	@Column(name = "BUILDERS_TYPE")
     private BuildersTypes buildersType;
 
     // процент завершенности строительства

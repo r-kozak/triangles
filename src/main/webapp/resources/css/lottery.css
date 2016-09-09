@@ -14,15 +14,16 @@
 .buy_label {
 	font-size: 70;
 	margin-top: 5;
-	border: 1px solid rgba(111, 197, 76, 0.53);
+	border: 2px solid rgba(111, 197, 76, 0.53);
 	cursor: pointer;
+	border-radius: 8px;
 }
 .buy_label_no_handlers {
 	font-size: 70;
 	margin-top: 5;
 }
 .buy_label:hover {
-	border: 1px solid rgb(55, 165, 10);
+	border: 2px solid rgb(55, 165, 10);
 	cursor: pointer;
 }
 
@@ -36,11 +37,12 @@
 .play_label {
 	font-size: 70;
 	margin-top: 5;
-	border: 1px solid rgba(204, 105, 0, 0.53);
+	border: 2px solid rgba(204, 105, 0, 0.53);
 	cursor: pointer;
+	border-radius: 8px;
 }
 .play_label:hover {
-	border: 1px solid rgb(255, 94, 0);
+	border: 2px solid rgb(255, 94, 0);
 	cursor: pointer;
 }
 
@@ -53,11 +55,12 @@
 .plushki_label, .plushki_label_lic {
 	font-size: 69;
 	margin-top: 5;
-	border: 1px solid #489FBB;
+	border: 2px solid #489FBB;
 	cursor: pointer;
+	border-radius: 8px;
 }
 .plushki_label:hover, .plushki_label_lic:hover {
-	border: 1px solid #001A9A;
+	border: 2px solid #001A9A;
 	cursor: pointer;
 }
 .plushki_label_lic {

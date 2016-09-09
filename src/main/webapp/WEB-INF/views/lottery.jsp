@@ -128,18 +128,12 @@
 					<div id="up_cash_btn" class="plushki_label notSelectable">×${upCashCount}</div>
 				</div>
 				<div class="col-md-3">
-					<div>Лицензии на строительство</div>
-					
-					<div id="useLic2" class="plushki_label_lic notSelectable">
-						<div style="float:left">
-							ур. 2: ×<span id="lic2CountVal">${lic2Count}</span>
-						</div>
-						<div class="sellLicBtn">
-							<span class="glyphicon glyphicon-briefcase" onclick="alert('Hello World!')"></span>
-						</div>
-						<div class="clearfix"></div>
+					<div>Лицензии на строительство
+						<a class="btn btn-danger btn-xs" data-toggle="tooltip" title="Продажа лицензий" href="${pageContext.request.contextPath}/license-market">
+							<span class="glyphicon glyphicon-briefcase"></span>
+						</a>
 					</div>
-						
+					<div id="useLic2" class="plushki_label_lic notSelectable">ур. 2: ×<span id="lic2CountVal">${lic2Count}</span></div>
 					<div id="useLic3" class="plushki_label_lic notSelectable">ур. 3: ×<span id="lic3CountVal">${lic3Count}</span></div>
 					<div id="useLic4" class="plushki_label_lic notSelectable">ур. 4: ×<span id="lic4CountVal">${lic4Count}</span></div>
 				</div>

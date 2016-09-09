@@ -27,35 +27,35 @@ import com.kozak.triangles.enums.TransferTypes;
 @Table(name = "Transac")
 public class Transaction {
     @Id
-    @Column(name = "id")
+	@Column(name = "ID")
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "description", length = 100)
+	@Column(name = "DESCRIPTION", length = 100)
     private String description;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "transactDate")
+	@Column(name = "TRANSACT_DATE")
     private Date transactDate;
 
-    @Column(name = "summa")
+	@Column(name = "SUMMA")
     private long summa;
 
     // тип движения - приход или расход
-    @Column(name = "transferType")
+	@Column(name = "TRANSFER_TYPE")
     @Enumerated(EnumType.STRING)
     private TransferTypes transferType;
 
     // чьи деньги
-    @Column(name = "user_id")
+	@Column(name = "USER_ID")
     private int userId;
 
     // остаток на конец
-    @Column(name = "balance")
+	@Column(name = "BALANCE")
     private long balance;
 
     // статья движения денежных средств
-    @Column(name = "article_cash_flow")
+	@Column(name = "ARTICLE_CASH_FLOW")
     @Enumerated(EnumType.STRING)
     private ArticleCashFlow articleCashFlow;
 
@@ -64,13 +64,13 @@ public class Transaction {
     }
 
     public Transaction(String description, Date transactDate, long sum, TransferTypes transferType, int userId,
-            long balance, ArticleCashFlow articleCashFlow) {
+			long newBalance, ArticleCashFlow articleCashFlow) {
         this.description = description;
         this.transactDate = transactDate;
         this.summa = sum;
         this.transferType = transferType;
         this.userId = userId;
-        this.balance = balance;
+		this.balance = newBalance;
         this.articleCashFlow = articleCashFlow;
     }
 

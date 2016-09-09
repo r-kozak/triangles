@@ -1,20 +1,20 @@
 package com.kozak.triangles.models;
 
 public class Requirement {
-	private boolean isCarriedOut; // выполнено
+	private boolean carriedOut; // выполнено
 	private String description;
 
-	public Requirement(boolean isCarriedOut, String description) {
-		this.isCarriedOut = isCarriedOut;
+	public Requirement(boolean carriedOut, String description) {
+		this.carriedOut = carriedOut;
 		this.description = description;
 	}
 
 	public boolean isCarriedOut() {
-		return isCarriedOut;
+		return carriedOut;
 	}
 
-	public void setCarriedOut(boolean isCarriedOut) {
-		this.isCarriedOut = isCarriedOut;
+	public void setCarriedOut(boolean carriedOut) {
+		this.carriedOut = carriedOut;
 	}
 
 	public String getDescription() {
@@ -24,4 +24,5 @@ public class Requirement {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 }

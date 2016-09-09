@@ -20,41 +20,41 @@ import org.hibernate.validator.constraints.Length;
 @Table(name = "User")
 public class User {
     @Id
-    @Column(name = "id")
+	@Column(name = "ID")
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "login", length = 20)
+	@Column(name = "LOGIN", length = 20)
     @Length(min = 4, max = 20, message = "Длина логина должна быть 4-20!")
     private String login;
 
-    @Column(name = "password", length = 32)
+	@Column(name = "PASSWORD", length = 32)
     @Length(min = 4, max = 32, message = "Длина пароля должна быть 4-32!")
     private String password;
 
-    @Column(name = "email", length = 50)
+	@Column(name = "EMAIL", length = 50)
     @Email(message = "Это не e-mail!")
     private String email;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "last_enter")
+	@Column(name = "LAST_ENTER")
     private Date lastEnter;
 
     // дата последнего бонуса
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "last_bonus")
+	@Column(name = "LAST_BONUS")
     private Date lastBonus;
 
     // номер дня, за который был бонус
-    @Column(name = "day_number")
+	@Column(name = "DAY_NUMBER")
     private int dayNumber;
 
     // доминантность
-    @Column(name = "domi")
+	@Column(name = "DOMI")
     private int domi;
 
     // //////// зашифрованный логин
-    @Column(name = "encr_login")
+	@Column(name = "ENCR_LOGIN")
     private String encrLogin;
     // /////////////////
 
@@ -63,7 +63,7 @@ public class User {
     private UserLicense userLicense;
 
     // количество лотерейных билетов у пользователя
-    @Column(name = "lottery_tickets")
+	@Column(name = "LOTTERY_TICKETS")
     private int lotteryTickets;
 
     @Transient
