@@ -1,6 +1,8 @@
 package com.kozak.triangles.entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -84,6 +86,18 @@ public class LicenseMarket {
 	}
 
 	public List<LicensesConsignment> getLicensesConsignments() {
+		Collections.sort(licensesConsignments, new Comparator<LicensesConsignment>() {
+
+			@Override
+			public int compare(LicensesConsignment o1, LicensesConsignment o2) {
+				if (o1.getSellDate().before(o2.getSellDate())) {
+					return -1;
+				} else if (o1.getSellDate().after(o2.getSellDate())) {
+					return 1;
+				}
+				return 0;
+			}
+		});
 		return licensesConsignments;
 	}
 

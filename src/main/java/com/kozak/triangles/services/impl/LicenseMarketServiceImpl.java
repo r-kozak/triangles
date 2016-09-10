@@ -8,10 +8,12 @@ import java.util.List;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.data.LicensesTableData;
 import com.kozak.triangles.entities.LicenseMarket;
 import com.kozak.triangles.entities.LicensesConsignment;
+import com.kozak.triangles.entities.LotteryInfo;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlow;
@@ -129,9 +131,21 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 	}
 
 	@Override
-	public List<LicensesConsignment> getLicensesOnSell(Integer userId) {
-		// TODO Auto-generated method stub
-		return null;
+	@Transactional
+	public void processSoldLicenses(Integer userId) {
+		List<LicensesConsignment> soldConsignments = licensesConsignmentRepository.getSoldConsignments(userId);
+		for (LicensesConsignment consignment : soldConsignments) {
+			// начислить деньги за продажу партии
+			String descr = String.format("Продажа лицензий уровня %d, %d шт.", consignment.getLicenseLevel(),
+					consignment.getCountOnSell());
+			long userMoney = Long.parseLong(transactionRep.getUserBalance(userId));
+			Transaction tr = new Transaction(descr, new Date(), consignment.getProfit(), TransferTypes.PROFIT, userId,
+					userMoney + consignment.getProfit(), ArticleCashFlow.SELL_LICENSE);
+			transactionRep.addTransaction(tr);
+
+			// удалить партию лицензий
+			licensesConsignmentRepository.removeConsignment(consignment);
+		}
 	}
 
 	@Override
@@ -178,7 +192,8 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 				// создать партию лицензий на продаже
 				createLicensesConsignment(userId, licensesCount, licensesLevel);
 
-				// TODO списать с остатков выиграных лицензий в лото
+				// списать с остатков выиграных лицензий в лото
+				withdrawFromLotoInfo(userId, licenseLevelArticle, licensesCount);
 			} else {
 				// иначе вернуть ошибку, что лицензий НЕ достаточно
 				ResponseUtil.putErrorMsg(resultJson, LICENSES_NOT_ENOUGH);
@@ -217,5 +232,38 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 		consignment.setProfit(totalProfit);
 
 		consignment = licensesConsignmentRepository.addLicenseConsignment(consignment); // сохранить новую партию
+	}
+
+	/**
+	 * Списывает с остатков нужное количество лицензий определенного уровня
+	 * 
+	 * @param licensesLevel
+	 *            уровень лицензий
+	 * @param requiredCount
+	 *            количество лицензий, которое нужно списать
+	 */
+	private void withdrawFromLotoInfo(int userId, LotteryArticles licenseLevelArticle, int requiredCount) {
+		List<LotteryInfo> lotteryInfos = lotteryRep.getLotteryInfoListByArticle(userId, licenseLevelArticle); // остатки
+
+		int withdrawals = 0; // снято всего
+		int leftToWithDraw = requiredCount; // осталось снять
+		int i = 0;
+		while (withdrawals < requiredCount) {
+			LotteryInfo lotteryInfo = lotteryInfos.get(i);
+			int countOfRemains = lotteryInfo.getRemainingAmount(); // количество в сущности LotteryInfo
+			if (countOfRemains >= leftToWithDraw) {
+				// если в сущности на остатке >= чем нужно снять, то снять только нужное количество
+				lotteryInfo.setRemainingAmount(countOfRemains - leftToWithDraw); // установить новое значение
+				withdrawals += leftToWithDraw; // потребности в количестве удовлетворены
+				break;
+			} else {
+				// в сущности на остатке < чем нужно
+				lotteryInfo.setRemainingAmount(0); // забрать из остатков все
+				withdrawals += countOfRemains;
+			}
+			lotteryRep.updateLotoInfo(lotteryInfo);
+			leftToWithDraw = requiredCount - withdrawals;
+			i++;
+		}
 	}
 }

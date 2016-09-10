@@ -40,7 +40,6 @@ public class ServiceBuildingController extends BaseController {
 	 */
 	@RequestMapping(value = "/license-market", method = RequestMethod.GET)
 	public String getLicenseMarketPage(Model model, User user) {
-		model = addMoneyInfoToModel(model, user);
 		Integer userId = user.getId();
 
 		boolean isMarketBuilt = licenseMarketService.isMarketBuilt(userId); // построен ли магазин
@@ -48,8 +47,10 @@ public class ServiceBuildingController extends BaseController {
 		model.addAttribute("marketLevelMax", LicenseMarket.MAX_LEVEL);
 
 		if (isMarketBuilt) {
-			// если магазин построен, тогда передать на страницу
-			// текущий уровень магазина
+			// если магазин построен, тогда
+			licenseMarketService.processSoldLicenses(userId); // обработать проданные лицензии (начислить деньги, удалить партию)
+
+			// передать на страницу текущий уровень магазина
 			LicenseMarket market = licenseMarketService.getLicenseMarket(userId, true);
 			model.addAttribute("marketLevel", market.getLevel());
 			model.addAttribute("licensesConsignments", market.getLicensesConsignments()); // список лицензий на продаже
@@ -67,6 +68,7 @@ public class ServiceBuildingController extends BaseController {
 			// выполнены ли все требования для постройки магазина
 			model.addAttribute("isMarketCanBeBuilt", licenseMarketService.isMarkerCanBeBuilt(userId));
 		}
+		model = addMoneyInfoToModel(model, user);
 		return "service_buildings/license_market";
 	}
 

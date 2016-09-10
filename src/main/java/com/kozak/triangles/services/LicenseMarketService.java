@@ -5,7 +5,6 @@ import java.util.List;
 import org.json.simple.JSONObject;
 
 import com.kozak.triangles.entities.LicenseMarket;
-import com.kozak.triangles.entities.LicensesConsignment;
 import com.kozak.triangles.models.Requirement;
 
 public interface LicenseMarketService {
@@ -38,9 +37,9 @@ public interface LicenseMarketService {
 	void buildNewLicenseMarket(Integer userId);
 
 	/**
-	 * @return список партий лицензий на продаже
+	 * Списывает проданные лицензии. При списании начисляет деньги пользователю, удаляет проданную партию из базы.
 	 */
-	List<LicensesConsignment> getLicensesOnSell(Integer userId);
+	void processSoldLicenses(Integer userId);
 
 	/**
 	 * @param licenseLevel

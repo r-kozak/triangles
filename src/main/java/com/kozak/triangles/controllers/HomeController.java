@@ -57,6 +57,7 @@ public class HomeController extends BaseController {
 		manageREMarketProposals(userId); // очистить-добавить предложения на глобальный рынок недвижимости
 		PropertyUtil.profitCalculation(userId, prRep); // начисление прибыли по имуществу пользователя
 		propertyDepreciation(userId); // начисление амортизации
+		licenseMarketService.processSoldLicenses(userId); // списывает партии проданных лицензий
 
 		// начислить проценты завершенности для всех объектов строительства
 		List<ConstructionProject> constrProjects = consProjectRep.getUserConstructProjects(userId);
@@ -84,8 +85,6 @@ public class HomeController extends BaseController {
 
 		// количество начатых строительных проектов сегодня
 		model.addAttribute("startedToConstructToday", consProjectRep.getCountOfStartedProjectsToday(userId));
-
-		// статистика
 		model = addMoneyInfoToModel(model, user);
 		model.addAttribute("rePrCo", realEstateProposalRep.allPrCount(false, userId)); // колво предложений на рынке имущества
 		model.addAttribute("newRePrCo", realEstateProposalRep.allPrCount(true, userId)); // новых предложений на рын.имущ.
@@ -108,6 +107,7 @@ public class HomeController extends BaseController {
 		model.addAttribute("profitDep", trRep.getSumByAcf(userId, ArticleCashFlow.DEPOSIT));
 		model.addAttribute("profitDomi", trRep.getSumByAcf(userId, ArticleCashFlow.DOMINANT_TO_TRIAN));
 		model.addAttribute("profitLoto", trRep.getSumByAcf(userId, ArticleCashFlow.LOTTERY_WINNINGS));
+		model.addAttribute("profitFromLicensesSell", trRep.getSumByAcf(userId, ArticleCashFlow.SELL_LICENSE));
 
 		model.addAttribute("spendSum", trRep.getSumByTransfType(userId, TransferTypes.SPEND)); // расход всего
 		model.addAttribute("spendCr", trRep.getSumByAcf(userId, ArticleCashFlow.CREDIT));

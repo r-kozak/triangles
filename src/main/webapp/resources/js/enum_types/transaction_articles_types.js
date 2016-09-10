@@ -15,6 +15,7 @@ var transactionArticles = {
 	"DOMINANT_TO_TRIAN" : "Обмен доминантности",
 	"CONSTRUCTION_PROPERTY" : "Постойка имущества",
 	"BUY_LICENSE" : "Покупка лицензий",
+	"SELL_LICENSE" : "Продажа лицензий",
 	"LOTTERY_TICKETS_BUY" : "Покупка лотерейных билетов",
 	"LOTTERY_WINNINGS" : "Выигрыш в лотерею",
 	"WITHDRAW" : "Вывод средств",

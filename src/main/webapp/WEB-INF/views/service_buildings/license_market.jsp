@@ -100,7 +100,7 @@
 											<tr>
 												<td>${consignment.licenseLevel}</td> 
 												<td>${consignment.countOnSell}</td>
-												<td style="width:25%">
+												<td style="width:35%">
 													<script>
 														$(function() {
 															var austDay = new Date(parseInt("<c:out value='${consignment.sellDate.time}'/>"));

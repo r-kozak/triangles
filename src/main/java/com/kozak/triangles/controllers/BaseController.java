@@ -17,6 +17,7 @@ import com.kozak.triangles.repositories.RealEstateProposalRep;
 import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.repositories.VmapRep;
+import com.kozak.triangles.services.LicenseMarketService;
 import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.ResponseUtil;
 
@@ -40,6 +41,8 @@ public abstract class BaseController {
     protected LotteryRep lotteryRep;
     @Autowired
     protected MessageRep msgRep;
+	@Autowired
+	protected LicenseMarketService licenseMarketService;
 
 	protected Model addMoneyInfoToModel(Model model, User user) {
 		Integer userId = user.getId();

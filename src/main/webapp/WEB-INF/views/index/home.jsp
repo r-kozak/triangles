@@ -233,6 +233,10 @@
 					<td class="tableTd1">Выиграно в лотерею, &tridot;</td>
 					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitLoto}" /></td>
 				</tr>
+				<tr>
+					<td class="tableTd1">Продажа лицензий, &tridot;</td>
+					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitFromLicensesSell}" /></td>
+				</tr>
 			</table>
 		</div>
 		<div class="col-md-6">
