@@ -32,6 +32,9 @@ public class ServiceBuildingController extends BaseController {
 	@RequestMapping(value = "/service-buildings", method = RequestMethod.GET)
 	public String getServiceBuildingsPage(Model model, User user) {
 		model = addMoneyInfoToModel(model, user);
+		int userId = user.getId(); 
+		boolean  licenseMarketActive = licenseMarketService.isMarketBuilt(userId) && licenseMarketService.isMarketCanFunction(userId);
+		model.addAttribute("licenseMarketActive", licenseMarketActive);
 		return "service_buildings/list";
 	}
 
@@ -56,10 +59,19 @@ public class ServiceBuildingController extends BaseController {
 			model.addAttribute("licensesConsignments", market.getLicensesConsignments()); // список лицензий на продаже
 			model = addLicenseCountInfoToModel(model, userId); // количество лицензий разных уровней, доступных для продажи
 
-			// можно ли продавать лицензии разных уровней. Можно, если выполнены разные требования
-			model.addAttribute("requirementToSellLic2", licenseMarketService.isLicensesCanBeSold(2, userId)); // уровня 2
-			model.addAttribute("requirementToSellLic3", licenseMarketService.isLicensesCanBeSold(3, userId)); // уровня 3
-			model.addAttribute("requirementToSellLic4", licenseMarketService.isLicensesCanBeSold(4, userId)); // уровня 4
+			// может ли магазин функционировать
+			boolean isMarketCanFunction = licenseMarketService.isMarketCanFunction(userId);
+			model.addAttribute("isMarketCanFunction", isMarketCanFunction);
+			if (isMarketCanFunction) {
+				// можно ли продавать лицензии разных уровней. Можно, если выполнены разные требования
+				model.addAttribute("requirementToSellLic2", licenseMarketService.isLicensesCanBeSold(2, userId)); // уровня 2
+				model.addAttribute("requirementToSellLic3", licenseMarketService.isLicensesCanBeSold(3, userId)); // уровня 3
+				model.addAttribute("requirementToSellLic4", licenseMarketService.isLicensesCanBeSold(4, userId)); // уровня 4
+			} else {
+				// магазин не может функционировать, вычислить требования для восстановления функций
+				List<Requirement> requirements = licenseMarketService.computeFunctionRequirements(userId);
+				model.addAttribute("requirementsToFunction", requirements);
+			}
 		} else {
 			// если магазин не построен, передать на страницу требования (выполненные и не выполненные)
 			List<Requirement> requirements = licenseMarketService.computeBuildRequirements(userId);

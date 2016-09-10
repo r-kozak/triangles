@@ -31,56 +31,83 @@
 		<div class="col-md-9">
 			<c:choose>
 				<c:when test="${marketBuilt}">
-					<h3 class="page-header" align="center">Магазин лицензий (уровень <span id="marketLevel">${marketLevel}</span>/${marketLevelMax})
-						<a id="up_level_btn" class="btn btn-success" data-toggle="tooltip" title="Повысить уровень">
-							<span class="glyphicon glyphicon-menu-up"></span>
-						</a>
-					</h3>
+					<c:choose>
+						<c:when test="${isMarketCanFunction}">
+							<!-- магазин может функционировать -->
+							<h3 class="page-header" align="center">Магазин лицензий (уровень <span id="marketLevel">${marketLevel}</span>/${marketLevelMax})
+								<a id="up_level_btn" class="btn btn-success" data-toggle="tooltip" title="Повысить уровень">
+									<span class="glyphicon glyphicon-menu-up"></span>
+								</a>
+							</h3>
+							<h4 class="page-header" align=center>Продать лицензии</h4>
+							<div class="col-md-12 text-center sell_block">
+								<div class="col-md-4">
+									<div class="little_label">Уровень 2</div>
+									<c:choose>
+										<c:when test="${lic2Count > 0 && requirementToSellLic2.carriedOut}">
+											<div class="sell_label notSelectable" id="2">×<span id="lic2CountVal">${lic2Count}</span></div>
+										</c:when>
+										<c:otherwise>
+											<div class="sell_label notSelectable disabled_label" id="2" 
+												data-requirement-message="${requirementToSellLic2.description}">×<span id="lic2CountVal">${lic2Count}</span>
+											</div>
+										</c:otherwise>
+									</c:choose>
+								</div>
+								
+								<div class="col-md-4">
+									<div class="little_label">Уровень 3</div>
+									<c:choose>
+										<c:when test="${lic3Count > 0 && requirementToSellLic3.carriedOut}">
+											<div class="sell_label notSelectable" id="3">×<span id="lic3CountVal">${lic3Count}</span></div>
+										</c:when>
+										<c:otherwise>
+											<div class="sell_label notSelectable disabled_label" id="3" 
+												data-requirement-message="${requirementToSellLic3.description}">×<span id="lic3CountVal">${lic3Count}</span>
+											</div>
+										</c:otherwise>
+									</c:choose>
+								</div>
+								
+								<div class="col-md-4">
+									<div class="little_label">Уровень 4</div>
+									<c:choose>
+										<c:when test="${lic4Count > 0 && requirementToSellLic4.carriedOut}">
+											<div class="sell_label notSelectable" id="4">×<span id="lic4CountVal">${lic4Count}</span></div>
+										</c:when>
+										<c:otherwise>
+											<div class="sell_label notSelectable disabled_label" id="4" 
+												data-requirement-message="${requirementToSellLic4.description}">×<span id="lic4CountVal">${lic4Count}</span>
+											</div>
+										</c:otherwise>
+									</c:choose>
+								</div>
+							</div>
+						</c:when>
+						<c:otherwise>
+							<!-- магазин НЕ может функционировать -->
+							<h3 class="page-header" align="center">Магазин лицензий</h3>
 					
-					<h4 class="page-header" align=center>Продать лицензии</h4>
-					<div class="col-md-12 text-center sell_block">
-						<div class="col-md-4">
-							<div class="little_label">Уровень 2</div>
-							<c:choose>
-								<c:when test="${lic2Count > 0 && requirementToSellLic2.carriedOut}">
-									<div class="sell_label notSelectable" id="2">×<span id="lic2CountVal">${lic2Count}</span></div>
-								</c:when>
-								<c:otherwise>
-									<div class="sell_label notSelectable disabled_label" id="2" 
-										data-requirement-message="${requirementToSellLic2.description}">×<span id="lic2CountVal">${lic2Count}</span>
-									</div>
-								</c:otherwise>
-							</c:choose>
-						</div>
-						
-						<div class="col-md-4">
-							<div class="little_label">Уровень 3</div>
-							<c:choose>
-								<c:when test="${lic3Count > 0 && requirementToSellLic3.carriedOut}">
-									<div class="sell_label notSelectable" id="3">×<span id="lic3CountVal">${lic3Count}</span></div>
-								</c:when>
-								<c:otherwise>
-									<div class="sell_label notSelectable disabled_label" id="3" 
-										data-requirement-message="${requirementToSellLic3.description}">×<span id="lic3CountVal">${lic3Count}</span>
-									</div>
-								</c:otherwise>
-							</c:choose>
-						</div>
-						
-						<div class="col-md-4">
-							<div class="little_label">Уровень 4</div>
-							<c:choose>
-								<c:when test="${lic4Count > 0 && requirementToSellLic4.carriedOut}">
-									<div class="sell_label notSelectable" id="4">×<span id="lic4CountVal">${lic4Count}</span></div>
-								</c:when>
-								<c:otherwise>
-									<div class="sell_label notSelectable disabled_label" id="4" 
-										data-requirement-message="${requirementToSellLic4.description}">×<span id="lic4CountVal">${lic4Count}</span>
-									</div>
-								</c:otherwise>
-							</c:choose>
-						</div>
-					</div>
+							<div class="noData">
+								<p>Магазин лицензий не функционирует. Для возобновления работы выполните следующие требования:</p>
+								<table class="table table-striped">
+									<c:forEach items="${requirementsToFunction}" var="requirement">
+										<tr>
+											<c:choose>
+												<c:when test="${requirement.carriedOut}">
+													<td><span class="text-success glyphicon glyphicon-ok"></span></td>
+												</c:when>
+												<c:otherwise>
+													<td><span class="text-danger glyphicon glyphicon-remove"></span></td>
+												</c:otherwise>
+											</c:choose>
+											<td>${requirement.description}</td>
+										</tr>						
+									</c:forEach>
+								</table>				
+							</div>
+						</c:otherwise>
+					</c:choose>
 					
 					<div class="row"> 		
 				 		<div class="col-md-12">

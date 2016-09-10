@@ -27,9 +27,19 @@ public interface LicenseMarketService {
 	List<Requirement> computeBuildRequirements(int userId);
 
 	/**
+	 * @return список требований (выполненные и невыполненные) чтобы магазин лицензий мог функционировать
+	 */
+	List<Requirement> computeFunctionRequirements(int userId);
+
+	/**
 	 * @return true, если магазин может быть построен, иначе - false
 	 */
 	boolean isMarkerCanBeBuilt(int userId);
+
+	/**
+	 * @return может ли магазин лицензий функционировать. Для функционирования необходимо выполнить требования
+	 */
+	boolean isMarketCanFunction(int userId);
 
 	/**
 	 * создает новый магазин лицензий для пользователя
@@ -72,4 +82,5 @@ public interface LicenseMarketService {
 	 * @return
 	 */
 	JSONObject confirmLicenseSelling(int licenseCount, byte licenseLevel, Integer userId, JSONObject resultJson);
+
 }

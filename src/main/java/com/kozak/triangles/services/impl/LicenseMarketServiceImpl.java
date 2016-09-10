@@ -38,10 +38,14 @@ import com.kozak.triangles.utils.ResponseUtil;
 @Service
 public class LicenseMarketServiceImpl implements LicenseMarketService {
 
+	// надбавка к требованию доминантности за каждый уровень магазина
+	private static final int DOMI_PREMIUM_FOR_LEVEL = 250;
+
 	private static final int LEVEL_OF_STATIONER_SHOP = 10;
 	private static final int DOMI_COUNT_TO_BUILD = 1500;
-	private static final String DOMI_REQUIREMENT_DESCRIPTION = DOMI_COUNT_TO_BUILD + " доминантности.";
+	private static final String DOMI_REQUIREMENT_DESCRIPTION = " доминантности.";
 	private static final String LICENSES_NOT_ENOUGH = "Лицензий для продажи недостаточно!";
+	private static final String MARKET_CANNOT_FUNCTION = "Магазин лицензий не может функционировать!";
 	private static final int PREMIUM_PERCENT_FOR_ONE_LEVEL = 10;
 
 	@Autowired
@@ -74,19 +78,12 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 	public List<Requirement> computeBuildRequirements(int userId) {
 		List<Requirement> result = new ArrayList<>();
 
-		// требование, что у пользователя достаточное доминантности для постройки
-		int userDomi = userRep.getUserDomi(userId);
-		Requirement domiRequirement = new Requirement(userDomi >= DOMI_COUNT_TO_BUILD, DOMI_REQUIREMENT_DESCRIPTION);
+		// требование, что у пользователя достаточное количество доминантности для постройки
+		Requirement domiRequirement = createDomiRequirement(userId, DOMI_COUNT_TO_BUILD);
 		result.add(domiRequirement);
 
-		// требование, что у пользователя достаточно Магазинов канцтоваров для постройки
-		// Для постройки нужно иметь 1 магазин канцтоваров, 10-го уровня, в центре
-		List<Property> stationerShops = propertyRep.getPropertyListWithParams(userId, TradeBuildingsTypes.STATIONER_SHOP,
-				CityAreas.CENTER, LEVEL_OF_STATIONER_SHOP, null);
-		String shopsDescription = String.format("Необходимо %d магазинов канцтоваров (%d-го уровня, в центре)",
-				LicenseMarket.START_LEVEL, LEVEL_OF_STATIONER_SHOP);
-		Requirement stationerShopRequirement = new Requirement(stationerShops.size() >= LicenseMarket.START_LEVEL,
-				shopsDescription);
+		// требование, что у пользователя есть достаточное количество Магазинов канцтоваров для постройки
+		Requirement stationerShopRequirement = createStationerShopsRequirement(userId, LicenseMarket.START_LEVEL);
 		result.add(stationerShopRequirement);
 
 		// требование, что состоятельность пользователя позволяет построить магазин
@@ -100,14 +97,33 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 	}
 
 	@Override
+	public List<Requirement> computeFunctionRequirements(int userId) {
+		List<Requirement> result = new ArrayList<>();
+		LicenseMarket licenseMarket = getLicenseMarket(userId, false);
+
+		// требование, что у пользователя достаточное количество доминантности для функционирования
+		// расчитывается, как [базовая ставка доминантности] + (([тек.уровень магазина] - [уровень магазина сразу, после
+		// постройки]) * [надбавка к требованию доминантности за каждый уровень магазина])
+		int domiCount = DOMI_COUNT_TO_BUILD + ((licenseMarket.getLevel() - LicenseMarket.START_LEVEL) * DOMI_PREMIUM_FOR_LEVEL);
+		Requirement domiRequirement = createDomiRequirement(userId, domiCount);
+		result.add(domiRequirement);
+
+		// требование, что у пользователя достаточно Магазинов канцтоваров для функционирования
+		// Для функционирования нужно иметь [уровень магазина лицензий] Магазинов канцтоваров, 10-го уровня, в центре
+		Requirement stationerShopRequirement = createStationerShopsRequirement(userId, licenseMarket.getLevel());
+		result.add(stationerShopRequirement);
+
+		return result;
+	}
+
+	@Override
 	public boolean isMarkerCanBeBuilt(int userId) {
-		for (Requirement requirement : computeBuildRequirements(userId)) {
-			// если хотя бы одно из требований не выполнено, то магазин НЕ может быть построен
-			if (!requirement.isCarriedOut()) {
-				return false;
-			}
-		}
-		return true;
+		return isAllRequirementsCarriedOut(computeBuildRequirements(userId));
+	}
+
+	@Override
+	public boolean isMarketCanFunction(int userId) {
+		return isAllRequirementsCarriedOut(computeFunctionRequirements(userId));
 	}
 
 	@Override
@@ -176,30 +192,30 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 		}
 	}
 
-	private long getPriceOfBuild() {
-		return (long) (LicenseMarket.BASE_PRICE * Constants.UNIVERS_K[LicenseMarket.START_LEVEL]);
-	}
-
 	@Override
 	public JSONObject confirmLicenseSelling(int licensesCount, byte licensesLevel, Integer userId, JSONObject resultJson) {
-		try {
-			// получить количество лицензий определенного уровня на остатке
-			LotteryArticles licenseLevelArticle = LotteryArticles.getLicenseArticleByLevel(licensesLevel);
-			long countOfLicenses = lotteryRep.getPljushkiCountByArticle(userId, licenseLevelArticle);
+		if (isMarketCanFunction(userId)) {
+			try {
+				// получить количество лицензий определенного уровня на остатке
+				LotteryArticles licenseLevelArticle = LotteryArticles.getLicenseArticleByLevel(licensesLevel);
+				long countOfLicenses = lotteryRep.getPljushkiCountByArticle(userId, licenseLevelArticle);
 
-			if (countOfLicenses >= 0) {
-				// если лицензий определенного уровня достаточно на остатках, что были выиграны в лото
-				// создать партию лицензий на продаже
-				createLicensesConsignment(userId, licensesCount, licensesLevel);
+				if (countOfLicenses >= 0) {
+					// если лицензий определенного уровня достаточно на остатках, что были выиграны в лото
+					// создать партию лицензий на продаже
+					createLicensesConsignment(userId, licensesCount, licensesLevel);
 
-				// списать с остатков выиграных лицензий в лото
-				withdrawFromLotoInfo(userId, licenseLevelArticle, licensesCount);
-			} else {
-				// иначе вернуть ошибку, что лицензий НЕ достаточно
-				ResponseUtil.putErrorMsg(resultJson, LICENSES_NOT_ENOUGH);
+					// списать с остатков выиграных лицензий в лото
+					withdrawFromLotoInfo(userId, licenseLevelArticle, licensesCount);
+				} else {
+					// иначе вернуть ошибку, что лицензий НЕ достаточно
+					ResponseUtil.putErrorMsg(resultJson, LICENSES_NOT_ENOUGH);
+				}
+			} catch (NoSuchLicenseLevelException e) {
+				ResponseUtil.putErrorMsg(resultJson, e.getMessage());
 			}
-		} catch (NoSuchLicenseLevelException e) {
-			ResponseUtil.putErrorMsg(resultJson, e.getMessage());
+		} else {
+			ResponseUtil.putErrorMsg(resultJson, MARKET_CANNOT_FUNCTION);
 		}
 		return resultJson;
 	}
@@ -265,5 +281,44 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 			leftToWithDraw = requiredCount - withdrawals;
 			i++;
 		}
+	}
+
+	/**
+	 * @return требование количества доминантности у пользователя
+	 */
+	private Requirement createDomiRequirement(int userId, int domiCount) {
+		int userDomi = userRep.getUserDomi(userId);
+		return new Requirement(userDomi >= domiCount, domiCount + DOMI_REQUIREMENT_DESCRIPTION);
+	}
+
+	/**
+	 * @return требование количества Магазинов канцтоваров у пользователя
+	 */
+	private Requirement createStationerShopsRequirement(int userId, int countOfShops) {
+		List<Property> stationerShops = propertyRep.getPropertyListWithParams(userId, TradeBuildingsTypes.STATIONER_SHOP,
+				CityAreas.CENTER, LEVEL_OF_STATIONER_SHOP, null);
+		String shopsDescription = String.format("Необходимо %d шт. Магазин канцтоваров (%d-го уровня, в центре)", countOfShops,
+				LEVEL_OF_STATIONER_SHOP);
+		Requirement stationerShopRequirement = new Requirement(stationerShops.size() >= countOfShops, shopsDescription);
+		return stationerShopRequirement;
+	}
+
+	/**
+	 * @return все ли требования удовлетворены
+	 */
+	private boolean isAllRequirementsCarriedOut(List<Requirement> requirements) {
+		for (Requirement requirement : requirements) {
+			if (!requirement.isCarriedOut()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @return стоимость постройки магазина лицензий
+	 */
+	private long getPriceOfBuild() {
+		return (long) (LicenseMarket.BASE_PRICE * Constants.UNIVERS_K[LicenseMarket.START_LEVEL]);
 	}
 }

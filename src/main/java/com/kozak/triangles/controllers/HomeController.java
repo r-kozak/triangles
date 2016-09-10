@@ -15,6 +15,7 @@ import com.kozak.triangles.data.CityAreasTableData;
 import com.kozak.triangles.data.LicensesTableData;
 import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.ConstructionProject;
+import com.kozak.triangles.entities.LicenseMarket;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.entities.TradeBuilding;
@@ -85,6 +86,7 @@ public class HomeController extends BaseController {
 
 		// количество начатых строительных проектов сегодня
 		model.addAttribute("startedToConstructToday", consProjectRep.getCountOfStartedProjectsToday(userId));
+
 		model = addMoneyInfoToModel(model, user);
 		model.addAttribute("rePrCo", realEstateProposalRep.allPrCount(false, userId)); // колво предложений на рынке имущества
 		model.addAttribute("newRePrCo", realEstateProposalRep.allPrCount(true, userId)); // новых предложений на рын.имущ.
@@ -96,8 +98,18 @@ public class HomeController extends BaseController {
 		model.addAttribute("licenseExpire", licenseExpireDate); // окончание лицензии
 		model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
 		model.addAttribute("userLogin", user.getLogin()); // логин пользователя
-		model.addAttribute("constructionLimitPerDay", Constants.CONSTRUCTION_LIMIT_PER_DAY); // лимит на постройку зданий в день,
-																								// шт
+		model.addAttribute("constructionLimitPerDay", Constants.CONSTRUCTION_LIMIT_PER_DAY); // лимит постройки зданий в день, шт
+
+		// информация по магазину лицензий
+		LicenseMarket licenseMarket = licenseMarketService.getLicenseMarket(userId, true);
+		model.addAttribute("licenseMarket", licenseMarket); // магазин лицензий
+		if (licenseMarket != null && !licenseMarket.getLicensesConsignments().isEmpty()) {
+			// количество лицензий на продаже
+			model.addAttribute("sellLicensesCount", licenseMarket.getLicensesConsignments().size());
+			// дата ближайшей продажи лицензий
+			model.addAttribute("toLicenseSell", licenseMarket.getLicensesConsignments().get(0).getSellDate());
+		}
+		model.addAttribute("licenseMarketActive", licenseMarketService.isMarketCanFunction(userId));
 
 		// СТАТИСТИКА
 		model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferTypes.PROFIT)); // прибыль всего

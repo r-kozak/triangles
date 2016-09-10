@@ -35,7 +35,14 @@
 				</tr>
 				<tr>
 					<td><a class="bg-info" href="${pageContext.request.contextPath}/license-market">Магазин лицензий</a></td>
-					<td>-</td>
+					<c:choose>
+						<c:when test="${licenseMarketActive}">
+							<td>Активный</td>
+						</c:when>
+						<c:otherwise>
+							<td>Неактивный</td>
+						</c:otherwise>
+					</c:choose>
 				</tr>
 				<tr>
 					<td><a class="bg-info" href="${pageContext.request.contextPath}/resources-warehouse">Склад ресурсов</a></td>

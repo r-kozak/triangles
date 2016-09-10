@@ -133,7 +133,7 @@
 				</table>
 			</div>
 
-			<div class="col-md-4 col-md-offset-4">
+			<div class="col-md-4 col-md-offset-2">
 				<div class="block_title text-center">
 					<a href="${pageContext.request.contextPath}/building" class="btn"><span
 						class="glyphicon glyphicon-equalizer text-danger"> Стройка</span></a>
@@ -194,6 +194,65 @@
 							<span class="label label-<c:out value="${startedToConstructToday >= constructionLimitPerDay ? 'danger' : 'default'}"/>">${startedToConstructToday}/${constructionLimitPerDay}</span>
 						</td>
 					</tr>
+				</table>
+			</div>
+			
+			<div class="col-md-4">
+				<div class="block_title text-center">
+					<a href="${pageContext.request.contextPath}/license-market" class="btn"><span
+						class="glyphicon glyphicon-briefcase text-danger"> Магазин лицензий</span></a>
+				</div>
+				<table class="table">
+					<c:choose>
+						<c:when test="${licenseMarket != null}">
+							<tr>
+								<td class="tableTd1">Уровень магазина</td>
+								<td class="tableTd2"><span class="label label-default">${licenseMarket.level}</span></td>
+							</tr>
+							<tr>
+								<td class="tableTd1">Статус магазина</td>
+								<td class="tableTd2">
+									<c:choose>
+										<c:when test="${licenseMarketActive}">
+											Активный
+										</c:when>
+										<c:otherwise>
+											Неактивный
+										</c:otherwise>
+									</c:choose>
+								</td>
+							</tr>
+							<tr>
+								<td class="tableTd1">До продажи</td>
+								<td class="tableTd2">
+									<c:choose>
+										<c:when test="${sellLicensesCount > 0}">
+											<script>
+												$(function() {
+													var austDay = new Date(parseInt("<c:out value='${toLicenseSell.time}'/>"));
+													$('#toLicenseSellCountdown').countdown({
+														until : austDay,
+														expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
+													});
+												});
+											</script>
+											<div id="toLicenseSellCountdown"></div>
+										</c:when>
+										<c:otherwise>
+											нет партий
+										</c:otherwise>
+									</c:choose>
+								</td>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<td id="info">
+								<p>Построить</p>
+								<a href="${pageContext.request.contextPath}/license-market">Магазин</a>
+							</td>
+							<tr><td></td></tr>
+						</c:otherwise>
+					</c:choose>
 				</table>
 			</div>
 		</div>
