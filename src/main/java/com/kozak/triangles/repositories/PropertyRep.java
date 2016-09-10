@@ -286,11 +286,13 @@ public class PropertyRep {
 	 *            - уровень имущества, может быть null, тогда этот параметр не учитывается
 	 * @param cashLevel
 	 *            - уровень кассы имущества, может быть null, тогда этот параметр не учитывается
+	 * @param active
+	 *            - активное имущество считается тогда, когда процент износа в нем меньше 100%
 	 * @return список имущества пользователя, учитывая указанные параметры
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Property> getPropertyListWithParams(Integer userId, TradeBuildingsTypes type, CityAreas cityArea, Integer level,
-			Integer cashLevel) {
+			Integer cashLevel, boolean active) {
 
 		String hql = "from Property as pr WHERE userId = :userId";
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -315,6 +317,10 @@ public class PropertyRep {
 		if (cashLevel != null) {
 			hql += " and pr.cashLevel = :cashLevel";
 			params.put("cashLevel", cashLevel);
+		}
+		// установка параметра процента износа (показатель активности имущества)
+		if (active) {
+			hql += " and pr.depreciationPercent < 100";
 		}
 
 		Query query = em.createQuery(hql);

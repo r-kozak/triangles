@@ -108,8 +108,9 @@ public class HomeController extends BaseController {
 			model.addAttribute("sellLicensesCount", licenseMarket.getLicensesConsignments().size());
 			// дата ближайшей продажи лицензий
 			model.addAttribute("toLicenseSell", licenseMarket.getLicensesConsignments().get(0).getSellDate());
+			// может ли магазин функционировать
+			model.addAttribute("licenseMarketActive", licenseMarketService.isMarketCanFunction(userId));
 		}
-		model.addAttribute("licenseMarketActive", licenseMarketService.isMarketCanFunction(userId));
 
 		// СТАТИСТИКА
 		model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferTypes.PROFIT)); // прибыль всего

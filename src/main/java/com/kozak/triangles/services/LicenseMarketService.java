@@ -81,6 +81,28 @@ public interface LicenseMarketService {
 	 * @param resultJson
 	 * @return
 	 */
-	JSONObject confirmLicenseSelling(int licenseCount, byte licenseLevel, Integer userId, JSONObject resultJson);
+	JSONObject confirmLicenseSelling(int licenseCount, byte licenseLevel, Integer userId);
+
+	/**
+	 * Возвращает список требований для повышения Магазина лицензий
+	 */
+	List<Requirement> computeRequirementsForLevelUp(Integer userId);
+
+	/**
+	 * @return достигнут ли последний уровень
+	 */
+	boolean isMaxLevelAchieved(Integer userId);
+
+	/**
+	 * @return все ли требования удовлетворены для повышения уровня Магазина лицензий
+	 */
+	boolean isPossibleToUpMarketLevel(int userId);
+
+	/**
+	 * Повышает уровень Магазина лицензий, если это возможно
+	 * 
+	 * @return true - если уровень магазина возможно повысить и он был повышен.
+	 */
+	boolean upLicenseMarketLevel(Integer userId);
 
 }

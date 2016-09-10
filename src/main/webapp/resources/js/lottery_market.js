@@ -30,6 +30,10 @@ window.onload = function(){
 		}
 	});
 	
+	$('#up_level_btn').on('click', function() {
+		preMarketLevelUp();
+	});
+	
 	/**
 	 * Показывает сообщение с ошибкой.
 	 */
@@ -84,20 +88,22 @@ window.onload = function(){
 		if (countToSell > 0 && countToSell <= licenseCount) {
 			$('#modal_confirm').attr('disabled', false);
 			$('#labelLicenseCount').removeClass("text-danger");
-			
-			var profit = licensePrices[licenseLevel] * countToSell;
-			var premiumPercent = (parseInt($("#marketLevel").text()) - LEVELS_COUNT_WITHOUT_PREMIUM) * PREMIUM_PERCENT_FOR_ONE_LEVEL;
-			var premiumSum = 0;
-			if (premiumPercent > 0) {
-				premiumSum = (profit * premiumPercent) / 100;
-			}
-			$("#profit").html(profit);
-			$("#premiumSum").html(premiumSum);
-			$("#totalProfit").html(profit + premiumSum);
-		} else if (countToSell > 0) {
+		} else if (countToSell > licenseCount) {
 			$('#modal_confirm').attr('disabled', true);
 			$('#labelLicenseCount').addClass("text-danger");
+		} else if (countToSell == 0) {
+			$('#modal_confirm').attr('disabled', true);
 		}
+		
+		var profit = licensePrices[licenseLevel] * countToSell;
+		var premiumPercent = (parseInt($("#marketLevel").text()) - LEVELS_COUNT_WITHOUT_PREMIUM) * PREMIUM_PERCENT_FOR_ONE_LEVEL;
+		var premiumSum = 0;
+		if (premiumPercent > 0) {
+			premiumSum = (profit * premiumPercent) / 100;
+		}
+		$("#profit").html(profit);
+		$("#premiumSum").html(premiumSum);
+		$("#totalProfit").html(profit + premiumSum);
 	}
 	
 	/**
@@ -112,7 +118,7 @@ window.onload = function(){
 			  async:false
 			}).done(function(data) {
 				 if(data.error) {
-					showErrorMsg(data); // показать сообщение с ошибкой
+					 showErrorMessage(data.message); // показать сообщение с ошибкой
 				  } else {
 					location = location;
 				  }
@@ -121,4 +127,78 @@ window.onload = function(){
 			});
 	}
 	
+	/**
+	 * Получить требования для повышения уровня Магазина лицензий
+	 */
+	function preMarketLevelUp() {
+		$.ajax({
+			  type: 'GET',
+			  url: ctx + '/license-market/pre-level-up',
+			  dataType: "json",
+			  async:false
+			}).done(function(data) {
+				 if(data.error) {
+					 showErrorMessage(data.message); // показать сообщение с ошибкой
+				 } else {
+					var targetLevel = parseInt($("#marketLevel").text()) + 1;
+					$("#modalWindowTitle").html("Повысить до уровня: " + targetLevel);
+					$("#text_modal_confirm").html("Повысить");
+					
+					// сформировать тело модального окна
+					var modalBodyHtml = "";
+					modalBodyHtml += '<p>Для повышения уровня выполните следующие требования:</p>'
+						+ '<table class="table table-striped">';
+					
+					var isPossibleToUpLevel = true; // удовлетворены ли все требования 
+					var requirements = data.requirements;
+					for (var i = 0; i < requirements.length; i++) {
+						var requirement = requirements[i];
+						var sign = '';
+						if (requirement.carriedOut) {
+							sign = '<span class="text-success glyphicon glyphicon-ok"></span>';
+						} else {
+							sign = '<span class="text-danger glyphicon glyphicon-remove"></span>';
+							isPossibleToUpLevel = false;
+						}
+						modalBodyHtml += '<tr><td>' + sign + '</td><td>' + requirement.description + '</td></tr>';
+					}
+					modalBodyHtml += '</table>';
+					$("#modalWindowBody").html(modalBodyHtml);
+					
+					if (isPossibleToUpLevel) {
+						$("#modal_confirm").unbind('click'); // удалим все обработчики события 'click' у элемента modal_confirm
+						$("#modal_confirm").on("click", function() {
+							confirmLevelUp();
+						});
+						$('#modal_confirm').attr('disabled', false);
+					} else {
+						$('#modal_confirm').attr('disabled', true);
+					}
+					
+					$("#modalWindow").modal();
+		  		 }
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				alert(jqXHR.status + " " + jqXHR.statusText);
+			});
+	}
+	
+	/**
+	 * Подтвердить повышение уровня Магазина лицензий
+	 */
+	function confirmLevelUp() {
+		$.ajax({
+			  type: 'GET',
+			  url: ctx + '/license-market/confirm-level-up',
+			  dataType: "json",
+			  async:false
+			}).done(function(data) {
+				 if(data.error) {
+					 showErrorMessage(data.message); // показать сообщение с ошибкой
+				 } else {
+					location = location;
+		  		 }
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				alert(jqXHR.status + " " + jqXHR.statusText);
+			});
+	}
 }

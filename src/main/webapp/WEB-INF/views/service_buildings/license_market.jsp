@@ -35,9 +35,11 @@
 						<c:when test="${isMarketCanFunction}">
 							<!-- магазин может функционировать -->
 							<h3 class="page-header" align="center">Магазин лицензий (уровень <span id="marketLevel">${marketLevel}</span>/${marketLevelMax})
-								<a id="up_level_btn" class="btn btn-success" data-toggle="tooltip" title="Повысить уровень">
-									<span class="glyphicon glyphicon-menu-up"></span>
-								</a>
+								<c:if test="${marketLevel < marketLevelMax}">
+									<a id="up_level_btn" class="btn btn-success" data-toggle="tooltip" title="Повысить уровень">
+										<span class="glyphicon glyphicon-menu-up"></span>
+									</a>
+								</c:if>
 							</h3>
 							<h4 class="page-header" align=center>Продать лицензии</h4>
 							<div class="col-md-12 text-center sell_block">

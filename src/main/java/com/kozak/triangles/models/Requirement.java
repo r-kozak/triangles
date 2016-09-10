@@ -1,6 +1,9 @@
 package com.kozak.triangles.models;
 
-public class Requirement {
+import org.json.simple.JSONAware;
+import org.json.simple.JSONObject;
+
+public class Requirement implements JSONAware {
 	private boolean carriedOut; // выполнено
 	private String description;
 
@@ -23,6 +26,15 @@ public class Requirement {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String toJSONString() {
+		JSONObject obj = new JSONObject();
+		obj.put("carriedOut", carriedOut);
+		obj.put("description", description);
+		return obj.toString();
 	}
 
 }

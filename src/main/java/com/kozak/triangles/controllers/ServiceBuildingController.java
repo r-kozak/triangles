@@ -23,8 +23,12 @@ import com.kozak.triangles.utils.ResponseUtil;
 @Controller
 public class ServiceBuildingController extends BaseController {
 
+	private static final String ERROR_OCCURRED_WHILE_LEVEL_UP = "Не все требования соблюдены для повышения уровня или достигнут последний уровень.";
+	private static final String MAX_MARKET_LEVEL_ACHIEVED = "Максимальный уровень достигнут.";
+
 	@Autowired
 	private LicenseMarketService licenseMarketService;
+
 
 	/**
 	 * @return страницу со списком служебного имущества
@@ -103,9 +107,39 @@ public class ServiceBuildingController extends BaseController {
 			@RequestParam("licenseLevel") byte licenseLevel, User user) {
 
 		Integer userId = user.getId();
-		JSONObject resultJson = new JSONObject();
-		licenseMarketService.confirmLicenseSelling(licenseCount, licenseLevel, userId, resultJson);
+		JSONObject resultJson = licenseMarketService.confirmLicenseSelling(licenseCount, licenseLevel, userId);
+		return ResponseUtil.createTypicalResponseEntity(resultJson);
+	}
 
+	/**
+	 * Получить требования для повышения уровня имущества
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/license-market/pre-level-up", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<String> getRequirementsForLicenseMarketLevelUp(Model model, User user) {
+		Integer userId = user.getId();
+
+		JSONObject resultJson = new JSONObject();
+		if (!licenseMarketService.isMaxLevelAchieved(userId)) {
+			List<Requirement> requirementsForLevelUp = licenseMarketService.computeRequirementsForLevelUp(userId);
+			resultJson.put("requirements", requirementsForLevelUp);
+		} else {
+			ResponseUtil.putErrorMsg(resultJson, MAX_MARKET_LEVEL_ACHIEVED); // достигнут последний уровень магазина
+		}
+		return ResponseUtil.createTypicalResponseEntity(resultJson);
+	}
+
+	/**
+	 * Получить требования для повышения уровня имущества
+	 */
+	@RequestMapping(value = "/license-market/confirm-level-up", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<String> confirmLicenseMarketLevelUp(Model model, User user) {
+		Integer userId = user.getId();
+		JSONObject resultJson = new JSONObject();
+		boolean upped = licenseMarketService.upLicenseMarketLevel(userId);
+		if (!upped) {
+			ResponseUtil.putErrorMsg(resultJson, ERROR_OCCURRED_WHILE_LEVEL_UP); // возникла ошибка
+		}
 		return ResponseUtil.createTypicalResponseEntity(resultJson);
 	}
 
