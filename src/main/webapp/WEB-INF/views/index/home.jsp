@@ -217,7 +217,7 @@
 											Активный
 										</c:when>
 										<c:otherwise>
-											Неактивный
+											<span class="text-danger">Неактивный</span>
 										</c:otherwise>
 									</c:choose>
 								</td>

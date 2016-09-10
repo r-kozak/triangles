@@ -40,7 +40,7 @@
 							<td>Активный</td>
 						</c:when>
 						<c:otherwise>
-							<td>Неактивный</td>
+							<td><span class="text-danger">Неактивный</span></td>
 						</c:otherwise>
 					</c:choose>
 				</tr>
