@@ -44,7 +44,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 	private static final int DOMI_PREMIUM_FOR_LEVEL = 500;
 
 	private static final int LEVEL_OF_STATIONER_SHOP = 10;
-	private static final int DOMI_COUNT_TO_BUILD = 1500;
+	private static final int BASE_DOMI_COUNT = 1000;
 	private static final String DOMI_REQUIREMENT_DESCRIPTION = " доминантности.";
 	private static final String LICENSES_NOT_ENOUGH = "Лицензий для продажи недостаточно!";
 	private static final String MARKET_CANNOT_FUNCTION = "Магазин лицензий не может функционировать!";
@@ -81,7 +81,8 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 		List<Requirement> result = new ArrayList<>();
 
 		// требование, что у пользователя достаточное количество доминантности для постройки
-		Requirement domiRequirement = createDomiRequirement(userId, DOMI_COUNT_TO_BUILD);
+		int domiCount = BASE_DOMI_COUNT + (LicenseMarket.START_LEVEL * DOMI_PREMIUM_FOR_LEVEL);
+		Requirement domiRequirement = createDomiRequirement(userId, domiCount);
 		result.add(domiRequirement);
 
 		// требование, что у пользователя есть достаточное количество Магазинов канцтоваров для постройки
@@ -104,7 +105,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 		// требование, что у пользователя достаточное количество доминантности для функционирования
 		// расчитывается, как [базовая ставка доминантности] + (([тек.уровень магазина] - [уровень магазина сразу, после
 		// постройки]) * [надбавка к требованию доминантности за каждый уровень магазина])
-		int domiCount = DOMI_COUNT_TO_BUILD + ((licenseMarket.getLevel() - LicenseMarket.START_LEVEL) * DOMI_PREMIUM_FOR_LEVEL);
+		int domiCount = BASE_DOMI_COUNT + ((licenseMarket.getLevel() - LicenseMarket.START_LEVEL) * DOMI_PREMIUM_FOR_LEVEL);
 		Requirement domiRequirement = createDomiRequirement(userId, domiCount);
 		result.add(domiRequirement);
 
@@ -237,7 +238,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 		// требование, что у пользователя достаточное количество доминантности для повышения уровня
 		// расчитывается, как [базовая ставка доминантности] + (([целевой уровень] - [уровень магазина сразу, после
 		// постройки]) * [надбавка к требованию доминантности за каждый уровень магазина])
-		int domiCount = DOMI_COUNT_TO_BUILD + ((targetLevel - LicenseMarket.START_LEVEL) * DOMI_PREMIUM_FOR_LEVEL);
+		int domiCount = BASE_DOMI_COUNT + ((targetLevel - LicenseMarket.START_LEVEL) * DOMI_PREMIUM_FOR_LEVEL);
 		Requirement domiRequirement = createDomiRequirement(userId, domiCount);
 		resultRequirements.add(domiRequirement);
 

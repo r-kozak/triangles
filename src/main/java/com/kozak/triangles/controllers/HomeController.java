@@ -54,11 +54,11 @@ public class HomeController extends BaseController {
 
 		checkFirstTime(user); // проверка, первый ли вход в игру (вообще)
 		giveDailyBonusAndLotteryTickets(user); // начисление ежедневного бонуса
+		licenseMarketService.processSoldLicenses(userId); // списывает партии проданных лицензий
 		giveCreditDeposit(userId); // начисление кредита/депозита
 		manageREMarketProposals(userId); // очистить-добавить предложения на глобальный рынок недвижимости
 		PropertyUtil.profitCalculation(userId, prRep); // начисление прибыли по имуществу пользователя
 		propertyDepreciation(userId); // начисление амортизации
-		licenseMarketService.processSoldLicenses(userId); // списывает партии проданных лицензий
 
 		// начислить проценты завершенности для всех объектов строительства
 		List<ConstructionProject> constrProjects = consProjectRep.getUserConstructProjects(userId);
@@ -185,6 +185,12 @@ public class HomeController extends BaseController {
 		model.addAttribute("domiTicketPrice", Constants.DAILY_TICKETS_FROM_DOMI_K);
 		model.addAttribute("domiLimit", Constants.DOMI_LOTTERY_LIMIT);
 		model.addAttribute("constructionLimit", Constants.CONSTRUCTION_LIMIT_PER_DAY);
+		// магазин лицензий
+		model.addAttribute("maxLicMarketLevel", LicenseMarket.MAX_LEVEL);
+		model.addAttribute("basePriceLicMarketBuild", LicenseMarket.BASE_PRICE);
+		model.addAttribute("hoursToSellLic2", LicensesTableData.getHoursToSellLicenses(2));
+		model.addAttribute("hoursToSellLic3", LicensesTableData.getHoursToSellLicenses(3));
+		model.addAttribute("hoursToSellLic4", LicensesTableData.getHoursToSellLicenses(4));
 		return "wiki";
 	}
 
