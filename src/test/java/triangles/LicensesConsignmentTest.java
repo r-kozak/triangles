@@ -1,8 +1,8 @@
 package triangles;
 
-import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +29,10 @@ public class LicensesConsignmentTest {
 	public void after() throws Exception {
 	}
 
+	@Ignore // !!! не запускать, т.к. метод создает запись в базе данных !!!
 	@Test
 	public void testLazyLoading() {
-		licenseMarketService.confirmLicenseSelling(1, (byte) 2, 1, new JSONObject());
+		licenseMarketService.confirmLicenseSelling(1, (byte) 2, 1);
 	}
 }
 
