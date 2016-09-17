@@ -351,9 +351,7 @@ public class DateUtils {
      * @return the difference between two Calendar Instances
      */
     public static int daysBetween(Calendar c1, Calendar c2) {
-        Date d1 = c1.getTime();
-        Date d2 = c2.getTime();
-        return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+		return daysBetween(c1.getTime(), c2.getTime());
     }
 
     public static Date stringToDate(String strDate) {

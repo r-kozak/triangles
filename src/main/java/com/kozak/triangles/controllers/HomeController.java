@@ -454,4 +454,20 @@ public class HomeController extends BaseController {
 			}
 		}
 	}
+
+	//////////////////////////////////////////////////////// UTILS /////////////////////////////////////////////////////
+	public static void main(String[] args) {
+		Calendar lastTransactionDate = Calendar.getInstance(); // последняя дата кредита или депозита
+		lastTransactionDate.set(2016, 7, 20, 10, 30, 05);
+
+		Calendar estimatedDate = Calendar.getInstance(); // предполагаемая дата депозита
+		estimatedDate.set(2016, 8, 18, 22, 30, 05);
+
+		System.out.println("Дадут депозит: " + isDepositWillBeReceived(lastTransactionDate, estimatedDate));
+	}
+
+	private static boolean isDepositWillBeReceived(Calendar lastDate, Calendar estimatedDate) {
+		int daysBetween = DateUtils.daysBetween(lastDate, estimatedDate);
+		return daysBetween >= 30;
+	}
 }
