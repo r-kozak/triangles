@@ -118,6 +118,33 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 	}
 
 	@Override
+	public List<Requirement> computeRequirementsForLevelUp(Integer userId) {
+		LicenseMarket market = getLicenseMarket(userId, false);
+		int targetLevel = market.getLevel() + 1;
+
+		List<Requirement> resultRequirements = new ArrayList<>();
+
+		// требование, что у пользователя достаточное количество доминантности для повышения уровня
+		// расчитывается, как [базовая ставка доминантности] + ([целевой уровень] * [надбавка к требованию доминантности за каждый
+		// уровень магазина])
+		int domiCount = BASE_DOMI_COUNT + (targetLevel * DOMI_PREMIUM_FOR_LEVEL);
+		Requirement domiRequirement = createDomiRequirement(userId, domiCount);
+		resultRequirements.add(domiRequirement);
+
+		// требование, что у пользователя достаточно Магазинов канцтоваров для повышения уровня
+		// Для функционирования нужно иметь [целевой уровень] АКТИВНЫХ Магазинов канцтоваров, 10-го уровня, в центре
+		Requirement stationerShopRequirement = createStationerShopsRequirement(userId, targetLevel);
+		resultRequirements.add(stationerShopRequirement);
+
+		// требование наличия денежных средств для повышения уровня
+		long requiredSum = getPriceOfLevelUp(targetLevel);
+		Requirement moneyRequirement = createMoneyRequirement(userId, requiredSum);
+		resultRequirements.add(moneyRequirement);
+
+		return resultRequirements;
+	}
+
+	@Override
 	public boolean isMarkerCanBeBuilt(int userId) {
 		return isAllRequirementsCarriedOut(computeBuildRequirements(userId));
 	}
@@ -226,33 +253,6 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
 			ResponseUtil.putErrorMsg(resultJson, MARKET_CANNOT_FUNCTION);
 		}
 		return resultJson;
-	}
-
-	@Override
-	public List<Requirement> computeRequirementsForLevelUp(Integer userId) {
-		LicenseMarket market = getLicenseMarket(userId, false);
-		int targetLevel = market.getLevel() + 1;
-
-		List<Requirement> resultRequirements = new ArrayList<>();
-
-		// требование, что у пользователя достаточное количество доминантности для повышения уровня
-		// расчитывается, как [базовая ставка доминантности] + (([целевой уровень] - [уровень магазина сразу, после
-		// постройки]) * [надбавка к требованию доминантности за каждый уровень магазина])
-		int domiCount = BASE_DOMI_COUNT + ((targetLevel - LicenseMarket.START_LEVEL) * DOMI_PREMIUM_FOR_LEVEL);
-		Requirement domiRequirement = createDomiRequirement(userId, domiCount);
-		resultRequirements.add(domiRequirement);
-
-		// требование, что у пользователя достаточно Магазинов канцтоваров для повышения уровня
-		// Для функционирования нужно иметь [целевой уровень] АКТИВНЫХ Магазинов канцтоваров, 10-го уровня, в центре
-		Requirement stationerShopRequirement = createStationerShopsRequirement(userId, targetLevel);
-		resultRequirements.add(stationerShopRequirement);
-
-		// требование наличия денежных средств для повышения уровня
-		long requiredSum = getPriceOfLevelUp(targetLevel);
-		Requirement moneyRequirement = createMoneyRequirement(userId, requiredSum);
-		resultRequirements.add(moneyRequirement);
-
-		return resultRequirements;
 	}
 
 	@Override

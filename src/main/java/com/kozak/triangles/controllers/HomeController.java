@@ -103,14 +103,19 @@ public class HomeController extends BaseController {
 		// информация по магазину лицензий
 		LicenseMarket licenseMarket = licenseMarketService.getLicenseMarket(userId, true);
 		model.addAttribute("licenseMarket", licenseMarket); // магазин лицензий
-		if (licenseMarket != null && !licenseMarket.getLicensesConsignments().isEmpty()) {
-			// количество лицензий на продаже
-			model.addAttribute("sellLicensesCount", licenseMarket.getLicensesConsignments().size());
-			// дата ближайшей продажи лицензий
-			model.addAttribute("toLicenseSell", licenseMarket.getLicensesConsignments().get(0).getSellDate());
+		if (licenseMarket != null) {
 			// может ли магазин функционировать
 			model.addAttribute("licenseMarketActive", licenseMarketService.isMarketCanFunction(userId));
+
+			// если есть партии лицензий на продаже
+			if (!licenseMarket.getLicensesConsignments().isEmpty()) {
+				// количество лицензий на продаже
+				model.addAttribute("sellLicensesCount", licenseMarket.getLicensesConsignments().size());
+				// дата ближайшей продажи лицензий
+				model.addAttribute("toLicenseSell", licenseMarket.getLicensesConsignments().get(0).getSellDate());
+			}
 		}
+
 
 		// СТАТИСТИКА
 		model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferTypes.PROFIT)); // прибыль всего
