@@ -116,7 +116,6 @@ public class HomeController extends BaseController {
 			}
 		}
 
-
 		// СТАТИСТИКА
 		model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferTypes.PROFIT)); // прибыль всего
 		model.addAttribute("profitFromProp", trRep.getSumByAcf(userId, ArticleCashFlow.LEVY_ON_PROPERTY));
