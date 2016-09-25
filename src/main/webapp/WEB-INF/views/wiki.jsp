@@ -882,6 +882,9 @@ p {
 						<td>${univCoef[5]}</td> <td>${univCoef[6]}</td>
 						<td>${univCoef[7]}</td> <td>${univCoef[8]}</td>
 						<td>${univCoef[9]}</td> <td>${univCoef[10]}</td>
+						<td>${univCoef[11]}</td> <td>${univCoef[12]}</td>
+						<td>${univCoef[13]}</td> <td>${univCoef[14]}</td>
+						<td>${univCoef[15]}</td> <td>${univCoef[16]}</td>
 					</tr>
 				</table>
 			</div>

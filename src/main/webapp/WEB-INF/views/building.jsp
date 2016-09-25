@@ -383,7 +383,6 @@ function changeBcount(action, price) {
 		// если значения состоятельности и доступных для стройки объектов после операции положительные 
 		if (new_solvency >= 0 && new_available_for_build >= 0) {
 			$('#modal_ques_confirm').attr('disabled', false);
-			$('#available_for_build_after').removeClass("text-danger");
 		} else {
 			// если значения состоятельности или доступных для стройки объектов после операции отрицательные
 			$('#modal_ques_confirm').attr('disabled', true);
@@ -391,6 +390,8 @@ function changeBcount(action, price) {
 		// если значение доступных для стройки объектов после операции отрицательное
 		if (new_available_for_build < 0) {
 			$('#available_for_build_after').addClass("text-danger");
+		} else {
+			$('#available_for_build_after').removeClass("text-danger");
 		}
 	}
 }
