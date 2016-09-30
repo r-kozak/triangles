@@ -1,5 +1,6 @@
 package com.kozak.triangles.repositories;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -197,6 +198,26 @@ public class LotteryRep {
 	public List<LotteryInfo> getLotteryInfoListByArticle(int userId, LotteryArticles article) {
 		Query query = createQueryForLotteryInfoByArticle(userId, article);
 		return query.getResultList();
+	}
+
+	public int countOfPlaysToday(int userId) {
+		String hql = "SELECT sum(ticketCount) FROM LotteryInfo WHERE userId = ?0 AND date between ?1 and ?2";
+
+		Query query = em.createQuery(hql);
+		query.setParameter(0, userId);
+
+		Date currDate = new Date();
+		query.setParameter(1, DateUtils.getStart(currDate));
+		query.setParameter(2, DateUtils.getEnd(currDate));
+		try {
+			Long result = (Long) query.getSingleResult();
+			if (result == null) {
+				return 0;
+			}
+			return new BigDecimal(result).intValueExact();
+		} catch (NoResultException e) {
+			return 0;
+		}
 	}
 
     @SuppressWarnings("unchecked")

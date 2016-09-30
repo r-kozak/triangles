@@ -38,7 +38,7 @@ import com.kozak.triangles.utils.Random;
 public class HomeController extends BaseController {
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	String homeGET(User user, Model model) throws InterruptedException {
+	String homePage(User user, Model model) throws InterruptedException {
 		if (user == null) {
 			return "redirect:/";
 		}
@@ -99,6 +99,8 @@ public class HomeController extends BaseController {
 		model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
 		model.addAttribute("userLogin", user.getLogin()); // логин пользователя
 		model.addAttribute("constructionLimitPerDay", Constants.CONSTRUCTION_LIMIT_PER_DAY); // лимит постройки зданий в день, шт
+		model.addAttribute("lotteryPlayLimit", Constants.LOTTERY_PLAYS_LIMIT_PER_DAY); // лимит на количество розыграшей в день
+		model.addAttribute("playsCountToday", lotteryRep.countOfPlaysToday(userId)); // количество розыграшей сегодня
 
 		// информация по магазину лицензий
 		LicenseMarket licenseMarket = licenseMarketService.getLicenseMarket(userId, true);

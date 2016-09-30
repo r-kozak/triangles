@@ -144,6 +144,8 @@ public class LotteryController extends BaseController {
         model.addAttribute("upCashCount", upCashCount); // количество доступных повышений кассы
         model.addAttribute("isPredictionAvailable", lotteryRep.isUserHasPrediction(userId)); // есть ли предсказание
         model.addAttribute("ticketsPrice", Constants.LOTTERY_TICKETS_PRICE); // цены на билеты
+		model.addAttribute("lotteryPlayLimit", Constants.LOTTERY_PLAYS_LIMIT_PER_DAY); // лимит на количество розыграшей в день
+		model.addAttribute("playsCountToday", lotteryRep.countOfPlaysToday(userId)); // количество розыграшей сегодня
         model.addAttribute("user", user);
 
         return "lottery";
@@ -226,12 +228,14 @@ public class LotteryController extends BaseController {
         int userTickets = user.getLotteryTickets();
 
         // проверки на правильность количества покупаемых билетов
-        if (count != 1 && count != 5 && count != 10 && count != 0) {
-            ResponseUtil.putErrorMsg(resultJson, "Игра в лото на такое количество билетов недоступна.");
-        } else if (userTickets == 0) {
+		if (userTickets == 0) {
 			ResponseUtil.putErrorMsg(resultJson, "У вас нет билетов. Купите или ждите зачисления за очки доминантности.");
-        } else {
-            int gamesCount = computeGamesCount(userTickets, count); // вычислить количество игр
+		} else if (lotteryRep.countOfPlaysToday(userId) >= Constants.LOTTERY_PLAYS_LIMIT_PER_DAY) {
+			ResponseUtil.putErrorMsg(resultJson, "Вы исчерпали суточный лимит розыгрышей лотереи. Приходите завтра.");
+		} else if (count != 1 && count != 5 && count != 10 && count != 0) {
+            ResponseUtil.putErrorMsg(resultJson, "Игра в лото на такое количество билетов недоступна.");
+		} else {
+			int gamesCount = computeGamesCount(userTickets, count, userId); // вычислить количество игр
             Date date = new Date(); // дата игры
 
             // сгруппированный результат игры на все билеты
@@ -541,12 +545,21 @@ public class LotteryController extends BaseController {
      * @param countUserWant
      *            - количество, на которое он хочет играть
      */
-    private int computeGamesCount(int userTickets, int countUserWant) {
+	private int computeGamesCount(int userTickets, int countUserWant, int userId) {
         int gamesCount = countUserWant; // количество игр в лото
+
         // если билетов меньше, чем пользователь хочет потратить на игру ИЛИ он хочет играть на все
         if (userTickets < countUserWant || countUserWant == 0) {
             gamesCount = userTickets; // количество игр будет ограниченно билетами
         }
+
+		// вычислить, сколько осталось розыгрышей на сегодня, учитывая лимит на количество игр в день
+		int remainToPlayToday = Constants.LOTTERY_PLAYS_LIMIT_PER_DAY - lotteryRep.countOfPlaysToday(userId);
+		if (gamesCount > remainToPlayToday) {
+			// если количество игр больше, чем осталось сыграть сегодня, то ограничим остаточным количеством
+			gamesCount = remainToPlayToday;
+		}
+
         return gamesCount;
     }
 

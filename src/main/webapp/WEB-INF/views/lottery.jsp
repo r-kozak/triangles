@@ -71,6 +71,7 @@
 				<div class="col-md-3">
 					<div>Билеты</div>
 					<div id="tickets_count" class="buy_label_no_handlers">${ticketsCount}</div>
+					<div class="little_label">Игр сегодня: ${playsCountToday}/${lotteryPlayLimit}</div>
 				</div>
 				<div class="col-md-3">
 					<div>Купить</div>

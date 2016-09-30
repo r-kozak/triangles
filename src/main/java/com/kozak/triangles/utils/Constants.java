@@ -73,4 +73,7 @@ public final class Constants {
 
 	// коэфициент умножения индекса типа строения при постройке здания. Нужен для начисления доминантности
 	public static final int K_ADD_DOMI_FOR_BUILDING = 5;
+
+	// лимит розыгрышей лотереи в день
+	public static final int LOTTERY_PLAYS_LIMIT_PER_DAY = 3000;
 }
