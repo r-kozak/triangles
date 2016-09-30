@@ -75,5 +75,5 @@ public final class Constants {
 	public static final int K_ADD_DOMI_FOR_BUILDING = 5;
 
 	// лимит розыгрышей лотереи в день
-	public static final int LOTTERY_PLAYS_LIMIT_PER_DAY = 3000;
+	public static final int LOTTERY_GAMES_LIMIT_PER_DAY = 3000;
 }

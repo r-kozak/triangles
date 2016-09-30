@@ -77,7 +77,7 @@
 					</tr>
 					<tr>
 						<td class="tableTd1">Игр сегодня</td>
-						<td class="tableTd2"><span class="label label-default">${playsCountToday}/${lotteryPlayLimit}</span></td>
+						<td class="tableTd2"><span class="label label-default">${playsCountToday}/${lotteryGamesLimit}</span></td>
 					</tr>
 				</table>
 			</div>

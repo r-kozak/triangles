@@ -1,5 +1,7 @@
 package com.kozak.triangles.controllers;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +9,9 @@ import org.springframework.ui.Model;
 
 import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.TradeBuilding;
+import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
+import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.LotteryArticles;
 import com.kozak.triangles.repositories.ConstructionProjectRep;
 import com.kozak.triangles.repositories.LotteryRep;
@@ -66,5 +70,22 @@ public abstract class BaseController {
 		model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
 
 		return model;
+	}
+
+	/**
+	 * @return последнюю дату начисленного кредита или депозита конкретному пользователю
+	 */
+	protected Date getLastCreditOrDepositDate(int userId) {
+		// получение транзакций пользователя для получения последней даты начисления
+		List<Transaction> userTransactionsCr = trRep.getUserTransactionsByType(userId, ArticleCashFlow.CREDIT);
+		List<Transaction> userTransactionsDep = trRep.getUserTransactionsByType(userId, ArticleCashFlow.DEPOSIT);
+
+		// получение дат кредита и депозита, после чего взятие последней
+		Date lastTransactionDateCr = userTransactionsCr.get(userTransactionsCr.size() - 1).getTransactDate();
+		Date lastTransactionDateDep = userTransactionsDep.get(userTransactionsDep.size() - 1).getTransactDate();
+		Date lastTransactionDate = (lastTransactionDateCr.after(lastTransactionDateDep)) ? lastTransactionDateCr
+				: lastTransactionDateDep;
+
+		return lastTransactionDate;
 	}
 }

@@ -144,7 +144,7 @@ public class LotteryController extends BaseController {
         model.addAttribute("upCashCount", upCashCount); // количество доступных повышений кассы
         model.addAttribute("isPredictionAvailable", lotteryRep.isUserHasPrediction(userId)); // есть ли предсказание
         model.addAttribute("ticketsPrice", Constants.LOTTERY_TICKETS_PRICE); // цены на билеты
-		model.addAttribute("lotteryPlayLimit", Constants.LOTTERY_PLAYS_LIMIT_PER_DAY); // лимит на количество розыграшей в день
+		model.addAttribute("lotteryGamesLimit", Constants.LOTTERY_GAMES_LIMIT_PER_DAY); // лимит на количество розыграшей в день
 		model.addAttribute("playsCountToday", lotteryRep.countOfPlaysToday(userId)); // количество розыграшей сегодня
         model.addAttribute("user", user);
 
@@ -230,7 +230,7 @@ public class LotteryController extends BaseController {
         // проверки на правильность количества покупаемых билетов
 		if (userTickets == 0) {
 			ResponseUtil.putErrorMsg(resultJson, "У вас нет билетов. Купите или ждите зачисления за очки доминантности.");
-		} else if (lotteryRep.countOfPlaysToday(userId) >= Constants.LOTTERY_PLAYS_LIMIT_PER_DAY) {
+		} else if (lotteryRep.countOfPlaysToday(userId) >= Constants.LOTTERY_GAMES_LIMIT_PER_DAY) {
 			ResponseUtil.putErrorMsg(resultJson, "Вы исчерпали суточный лимит розыгрышей лотереи. Приходите завтра.");
 		} else if (count != 1 && count != 5 && count != 10 && count != 0) {
             ResponseUtil.putErrorMsg(resultJson, "Игра в лото на такое количество билетов недоступна.");
@@ -554,7 +554,7 @@ public class LotteryController extends BaseController {
         }
 
 		// вычислить, сколько осталось розыгрышей на сегодня, учитывая лимит на количество игр в день
-		int remainToPlayToday = Constants.LOTTERY_PLAYS_LIMIT_PER_DAY - lotteryRep.countOfPlaysToday(userId);
+		int remainToPlayToday = Constants.LOTTERY_GAMES_LIMIT_PER_DAY - lotteryRep.countOfPlaysToday(userId);
 		if (gamesCount > remainToPlayToday) {
 			// если количество игр больше, чем осталось сыграть сегодня, то ограничим остаточным количеством
 			gamesCount = remainToPlayToday;

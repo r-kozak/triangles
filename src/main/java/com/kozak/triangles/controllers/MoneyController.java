@@ -104,11 +104,25 @@ public class MoneyController extends BaseController {
 			model.addAttribute("paginationTag", paginationTag);
 		}
 
+		// вычисление следующей даты начисления кредита или депозита
+		// для этого добавить 29 дней и 12 часов к последнему начислению, именно через это время будет кредит или депозит
+		Date lastCreditDeposit = getLastCreditOrDepositDate(userId);
+		Date nextCreditDeposit = DateUtils.addDays(lastCreditDeposit, 29);
+		nextCreditDeposit = DateUtils.addHours(nextCreditDeposit, 12);
+
+		// вычисление суммы кредита или депозита
+		long userBalance = Long.parseLong(trRep.getUserBalance(userId));
+		double rate = (userBalance > 0 ? Constants.DEPOSIT_RATE : Constants.CREDIT_RATE);
+		long creditDepositSum = Math.round(userBalance * rate);
+
 		model = addMoneyInfoToModel(model, user);
 		model.addAttribute("totalSum", dbResult.get(1));
 		model.addAttribute("transacs", dbResult.get(2));
 		model.addAttribute("articles", SearchCollections.getArticlesCashFlow());
 		model.addAttribute("transfers", SearchCollections.getTransferTypes());
+		model.addAttribute("nextCreditDeposit", nextCreditDeposit); // следующее начисление кредита/депозита
+		model.addAttribute("creditDepositSum", Math.abs(creditDepositSum)); // сумма кредита/депозита
+		model.addAttribute("isDeposit", userBalance > 0); // это кредит или депозит
 
 		return "transactions";
 	}
@@ -183,4 +197,5 @@ public class MoneyController extends BaseController {
 		}
 		userRep.updateUser(user);
 	}
+
 }

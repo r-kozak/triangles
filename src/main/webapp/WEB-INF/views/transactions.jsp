@@ -141,7 +141,21 @@
 				<div class="panel panel-default" style="margin-bottom:0">
 					<div class="panel-body">
 					    <p class="text-right">Общая сумма операций по выбранным фильтрам: <b><fmt:formatNumber type="number" maxFractionDigits="3" 
-					    value="${totalSum}"/>&tridot;</b></p>
+					    	value="${totalSum}"/>&tridot;</b></p>
+					    
+				   		<p class="text-right">Следующее начисление <c:out value="${isDeposit ? 'депозита' : 'кредита'}"/> (<b><fmt:formatNumber 
+				   				type="number" maxFractionDigits="3" value="${creditDepositSum}"/>&tridot;</b>) через:</p>
+				   				
+    					<script>
+							$(function() {
+								var austDay = new Date(parseInt("<c:out value='${nextCreditDeposit.time}'/>"));
+								$('#toCreditDepositCountdown').countdown({
+									until : austDay,
+									expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
+								});
+							});
+						</script>
+						<div class="text-right" id="toCreditDepositCountdown" style="width:200px; float:right"></div>
 					</div>
 				</div>
 				

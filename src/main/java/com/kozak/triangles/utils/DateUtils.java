@@ -452,4 +452,11 @@ public class DateUtils {
 
         return c.getTime();
     }
+
+	public static Date addHours(Date date, int hoursToAdd) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.HOUR, hoursToAdd);
+		return c.getTime();
+	}
 }

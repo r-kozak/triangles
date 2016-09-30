@@ -99,7 +99,7 @@ public class HomeController extends BaseController {
 		model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
 		model.addAttribute("userLogin", user.getLogin()); // логин пользователя
 		model.addAttribute("constructionLimitPerDay", Constants.CONSTRUCTION_LIMIT_PER_DAY); // лимит постройки зданий в день, шт
-		model.addAttribute("lotteryPlayLimit", Constants.LOTTERY_PLAYS_LIMIT_PER_DAY); // лимит на количество розыграшей в день
+		model.addAttribute("lotteryGamesLimit", Constants.LOTTERY_GAMES_LIMIT_PER_DAY); // лимит на количество розыграшей в день
 		model.addAttribute("playsCountToday", lotteryRep.countOfPlaysToday(userId)); // количество розыграшей сегодня
 
 		// информация по магазину лицензий
@@ -197,6 +197,9 @@ public class HomeController extends BaseController {
 		model.addAttribute("hoursToSellLic2", LicensesTableData.getHoursToSellLicenses(2));
 		model.addAttribute("hoursToSellLic3", LicensesTableData.getHoursToSellLicenses(3));
 		model.addAttribute("hoursToSellLic4", LicensesTableData.getHoursToSellLicenses(4));
+		// лимит на количество розыграшей в день
+		model.addAttribute("lotteryGamesLimit", Constants.LOTTERY_GAMES_LIMIT_PER_DAY);
+
 		return "wiki";
 	}
 
@@ -414,15 +417,8 @@ public class HomeController extends BaseController {
 	 * @param currUserId
 	 */
 	private void giveCreditDeposit(int currUserId) {
-		// получение транзакций пользователя для получения последней даты начисления
-		List<Transaction> userTransactionsCr = trRep.getUserTransactionsByType(currUserId, ArticleCashFlow.CREDIT);
-		List<Transaction> userTransactionsDep = trRep.getUserTransactionsByType(currUserId, ArticleCashFlow.DEPOSIT);
-
-		// получение дат кредита и депозита, после чего взятие последней
-		Date lastTransactionDateCr = userTransactionsCr.get(userTransactionsCr.size() - 1).getTransactDate();
-		Date lastTransactionDateDep = userTransactionsDep.get(userTransactionsDep.size() - 1).getTransactDate();
-		Date lastTransactionDate = (lastTransactionDateCr.after(lastTransactionDateDep)) ? lastTransactionDateCr
-				: lastTransactionDateDep;
+		// получение последней даты начисления кредита или депозита
+		Date lastTransactionDate = getLastCreditOrDepositDate(currUserId);
 
 		int daysBetween = DateUtils.daysBetween(lastTransactionDate, new Date());
 		if (daysBetween > 0) {
@@ -461,19 +457,4 @@ public class HomeController extends BaseController {
 		}
 	}
 
-	//////////////////////////////////////////////////////// UTILS /////////////////////////////////////////////////////
-	public static void main(String[] args) {
-		Calendar lastTransactionDate = Calendar.getInstance(); // последняя дата кредита или депозита
-		lastTransactionDate.set(2016, 7, 20, 10, 30, 05);
-
-		Calendar estimatedDate = Calendar.getInstance(); // предполагаемая дата депозита
-		estimatedDate.set(2016, 8, 18, 22, 30, 05);
-
-		System.out.println("Дадут депозит: " + isDepositWillBeReceived(lastTransactionDate, estimatedDate));
-	}
-
-	private static boolean isDepositWillBeReceived(Calendar lastDate, Calendar estimatedDate) {
-		int daysBetween = DateUtils.daysBetween(lastDate, estimatedDate);
-		return daysBetween >= 30;
-	}
 }
