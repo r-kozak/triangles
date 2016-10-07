@@ -73,7 +73,7 @@
 				<table class="table">
 					<tr>
 						<td class="tableTd1">Билетов</td>
-						<td class="tableTd2"><span class="label label-<c:out value="${ticketsCount > 0 ? 'danger' : 'default'}"/>">${ticketsCount}</span></td>
+						<td class="tableTd2"><span class="label label-<c:out value="${ticketsCount > 0 && playsCountToday < lotteryGamesLimit ? 'danger' : 'default'}"/>">${ticketsCount}</span></td>
 					</tr>
 					<tr>
 						<td class="tableTd1">Игр сегодня</td>
