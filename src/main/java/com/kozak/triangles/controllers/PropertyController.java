@@ -844,7 +844,7 @@ public class PropertyController extends BaseController {
 
             resultJson.put("upped", true); // уровень был поднят
 
-            if (nPropLevel == Constants.MAX_CASH_LEVEL) {
+			if (nPropLevel == Constants.MAX_PROP_LEVEL) {
                 ResponseUtil.putErrorMsg(resultJson, "Достигнут последний уровень.");
             } else if (userSolvency < nextSum) {
                 ResponseUtil.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
