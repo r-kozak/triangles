@@ -249,9 +249,13 @@ public class HomeController extends BaseController {
 				deprPerc += mainPerc;
 			}
 
+			// вычислить новую цену продажи
+			long newSellingPrice = p.getSellingPrice() - deprSum;
+			newSellingPrice = newSellingPrice < 0 ? 0 : newSellingPrice; // нельзя, чтобы цена продажи была меньше 0
+
 			// установить новые значения
 			p.setNextDepreciation(DateUtils.addDays(new Date(), 7 - (dayBetw % 7)));
-			p.setSellingPrice(p.getSellingPrice() - deprSum);
+			p.setSellingPrice(newSellingPrice);
 			p.setDepreciationPercent(CommonUtil.numberRound(p.getDepreciationPercent() + deprPerc, 2));
 			prRep.updateProperty(p);
 
