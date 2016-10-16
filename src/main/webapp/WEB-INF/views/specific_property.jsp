@@ -113,17 +113,19 @@
 									  onclick="document.property.action.value='get_cash'; document.property.submit();"><span class="glyphicon glyphicon-piggy-bank"></span></a>
 								</c:when>    
 	   							<c:otherwise>
-	   							через...
-	   								<script>
-										$(function() {
-											var austDay = new Date(parseInt("<c:out value='${prop.nextProfit.time}'/>"));
-											$('#defaultCountdown').countdown({
-												until : austDay,
-												expiryUrl: "${requestScope['javax.servlet.forward.request_uri']}"
+	   								<c:if test="${prop.valid}">
+		   								через...
+		   								<script>
+											$(function() {
+												var austDay = new Date(parseInt("<c:out value='${prop.nextProfit.time}'/>"));
+												$('#defaultCountdown').countdown({
+													until : austDay,
+													expiryUrl: "${requestScope['javax.servlet.forward.request_uri']}"
+												});
 											});
-										});
-									</script>
-									<div id="defaultCountdown"></div>
+										</script>
+										<div id="defaultCountdown"></div>
+									</c:if>
 							    </c:otherwise>
 							</c:choose>
 						</td>
@@ -243,10 +245,9 @@ $(function() {
     		  dataType: "json",
     		  async:true
     		}).done(function(data) {
-					var messageBlock = (!data.zeroSolvency) ? '#infoMessg' : '#errorMessg';
+				var messageBlock = (!data.zeroSolvency) ? '#infoMessg' : '#errorMessg';
 					
-				$('#modalWindowBody').html('<div id="infoMessg"></div>'+
-				        		'<div id="errorMessg">');
+				$('#modalWindowBody').html('<div id="infoMessg"></div><div id="errorMessg">');
 				$(messageBlock).html(data.message);
 				
 				$('#modalWindowTitle').html('Ремонт имущества'); // задать заголовок модального окна
@@ -258,13 +259,13 @@ $(function() {
 				    
 				$('#modal_confirm').unbind('click'); // удалим все обработчики события 'click' у элемента modal_confirm
 				// назначить обработчик кнопке modal_confirm (кнопка модального окна)
-				    $('#modal_confirm').on('click', function() {
-				    	$('#modalWindow').modal('hide'); // скрыть модальное окно
-				    	$('#modal_confirm').attr('disabled', false);
-				    	if (!data.zeroSolvency) { // хватает денег
-					     	sendPost("repair");
-						}
-				  });
+			    $('#modal_confirm').on('click', function() {
+			    	$('#modalWindow').modal('hide'); // скрыть модальное окно
+			    	$('#modal_confirm').attr('disabled', false);
+			    	if (!data.zeroSolvency) { // хватает денег
+				     	sendPost("repair");
+					}
+			  	});
     		});
         return false;
     });

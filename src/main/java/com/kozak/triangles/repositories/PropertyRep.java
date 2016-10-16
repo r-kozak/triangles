@@ -204,8 +204,7 @@ public class PropertyRep {
     public List<Property> getPropertyListForProfit(int userId, boolean isProfit) {
         // это начисление прибыли или износа
         String field = (isProfit) ? "nextProfit" : "nextDepreciation";
-        String hql = "FROM Property as pr WHERE valid = true and pr.userId = :userId and " + "pr." + field
-                + " <= :currDate";
+		String hql = "FROM Property as pr WHERE pr.valid = true and pr.userId = :userId and pr." + field + " <= :currDate";
 
         Query query = em.createQuery(hql).setParameter("userId", userId)
                 .setParameter("currDate", new Date(), TemporalType.TIMESTAMP);
@@ -220,7 +219,7 @@ public class PropertyRep {
      * @return дату прибыли
      */
     public Date getMinNextProfit(int userId) {
-        String hql = "SELECT min(nextProfit) FROM Property as pr WHERE pr.userId = :userId";
+		String hql = "SELECT min(nextProfit) FROM Property as pr WHERE pr.userId = :userId and pr.valid = true";
         Query query = em.createQuery(hql).setParameter("userId", userId);
         return (Date) query.getSingleResult();
     }

@@ -102,21 +102,23 @@
 									</tr>
 								</c:when>
 								<c:otherwise>
-									<tr>
-										<td class="tableTd1">До ближайшего сбора</td>
-										<td class="tableTd2">
-											<script>
-												$(function() {
-													var austDay = new Date(parseInt("<c:out value='${nextProfit.time}'/>"));
-													$('#nextProfitCountdown').countdown({
-														until : austDay,
-														expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
+									<c:if test="${nextProfit != null}">
+										<tr>
+											<td class="tableTd1">До ближайшего сбора</td>
+											<td class="tableTd2">
+												<script>
+													$(function() {
+														var austDay = new Date(parseInt("<c:out value='${nextProfit.time}'/>"));
+														$('#nextProfitCountdown').countdown({
+															until : austDay,
+															expiryUrl : "${requestScope['javax.servlet.forward.request_uri']}"
+														});
 													});
-												});
-											</script>
-											<div id="nextProfitCountdown"></div>
-										</td>
-									</tr>
+												</script>
+												<div id="nextProfitCountdown"></div>
+											</td>
+										</tr>
+									</c:if>
 								</c:otherwise>
 							</c:choose>
 							<tr>

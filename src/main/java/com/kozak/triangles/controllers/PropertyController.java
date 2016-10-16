@@ -565,12 +565,13 @@ public class PropertyController extends BaseController {
             long repairSum, int userId) {
         prop.setDepreciationPercent(deprPercent);
         prop.setSellingPrice(sellPrice);
-        // если данное имущество НЕ valid на момент ремонта - установить
+		// если данное имущество НЕ valid на момент ремонта И новый процент износа < 100 - установить
         // nextProfit = tomorrow
         // nextDepreciation = next week
-        if (!prop.isValid()) {
+		if (!prop.isValid() && deprPercent < 100) {
             prop.setNextProfit(DateUtils.addDays(new Date(), 1));
             prop.setNextDepreciation(DateUtils.addDays(new Date(), 7));
+			prop.setValid(true);
         }
         prRep.updateProperty(prop);
 

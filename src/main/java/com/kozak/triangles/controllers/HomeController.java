@@ -253,10 +253,17 @@ public class HomeController extends BaseController {
 			long newSellingPrice = p.getSellingPrice() - deprSum;
 			newSellingPrice = newSellingPrice < 0 ? 0 : newSellingPrice; // нельзя, чтобы цена продажи была меньше 0
 
+			// вычислить новый процент износа
+			double newDepreciationPercent = CommonUtil.numberRound(p.getDepreciationPercent() + deprPerc, 2);
+			newDepreciationPercent = newDepreciationPercent > 100 ? 100 : newDepreciationPercent; // не больше 100
+
 			// установить новые значения
 			p.setNextDepreciation(DateUtils.addDays(new Date(), 7 - (dayBetw % 7)));
 			p.setSellingPrice(newSellingPrice);
-			p.setDepreciationPercent(CommonUtil.numberRound(p.getDepreciationPercent() + deprPerc, 2));
+			p.setDepreciationPercent(newDepreciationPercent);
+			if (newDepreciationPercent >= 100) {
+				p.setValid(false);
+			}
 			prRep.updateProperty(p);
 
 			// если имущество на продаже - изменить цену в предложении
