@@ -15,33 +15,33 @@ import com.kozak.triangles.entities.LicenseMarket;
 @Transactional
 public class LicenseMarketRepository {
 
-	@PersistenceContext
-	public EntityManager em;
+    @PersistenceContext
+    public EntityManager em;
 
-	public void addLicenseMarket(LicenseMarket licenseMarket) {
-		em.persist(licenseMarket);
-	}
+    public void addLicenseMarket(LicenseMarket licenseMarket) {
+        em.persist(licenseMarket);
+    }
 
-	public void updateMarket(LicenseMarket market) {
-		em.merge(market);
-	}
+    public void updateMarket(LicenseMarket market) {
+        em.merge(market);
+    }
 
-	/**
-	 * Позволяет получить магазин лицензий по Id его владельца.
-	 */
-	public LicenseMarket getLicenseMarketByUserId(int userId, boolean isLoadConsignments) {
-		String hql = "from LicenseMarket where userId = :userId";
-		Query query = em.createQuery(hql).setParameter("userId", userId);
-		try {
-			// магазин лицензий у пользователя может быть только один
-			LicenseMarket market = (LicenseMarket) query.getSingleResult();
-			if (isLoadConsignments) {
-				Hibernate.initialize(market.getLicensesConsignments());
-			}
-			return market;
-		} catch (NoResultException e) {
-			return null;
-		}
-	}
+    /**
+     * Позволяет получить магазин лицензий по Id его владельца.
+     */
+    public LicenseMarket getLicenseMarketByUserId(long userId, boolean isLoadConsignments) {
+        String hql = "from LicenseMarket where userId = :userId";
+        Query query = em.createQuery(hql).setParameter("userId", userId);
+        try {
+            // магазин лицензий у пользователя может быть только один
+            LicenseMarket market = (LicenseMarket) query.getSingleResult();
+            if (isLoadConsignments) {
+                Hibernate.initialize(market.getLicensesConsignments());
+            }
+            return market;
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 
 }

@@ -76,14 +76,14 @@ public class UserRep {
     /**
      * получает юзера по ID
      */
-    public User find(int userId) {
+    public User find(long userId) {
         return em.find(User.class, userId);
     }
 
     /**
      * получает доминантность юзера
      */
-    public int getUserDomi(int userId) {
+    public int getUserDomi(long userId) {
         return find(userId).getDomi();
     }
 
@@ -93,7 +93,7 @@ public class UserRep {
      * @param userId
      * @return
      */
-    public User getUserWithLicense(int userId) {
+    public User getUserWithLicense(long userId) {
         User user = em.find(User.class, userId);
         Hibernate.initialize(user.getUserLicense());
         return user;

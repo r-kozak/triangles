@@ -27,9 +27,9 @@ public class SearchCollections {
         return transfers;
     }
 
-	// trade property search
+    // trade property search
     public static List<TradeBuildingsTypes> getTradeBuildingsTypes() {
-		List<TradeBuildingsTypes> types = new ArrayList<>();
+        List<TradeBuildingsTypes> types = new ArrayList<>();
         for (TradeBuildingsTypes a : TradeBuildingsTypes.values()) {
             types.add(a);
         }

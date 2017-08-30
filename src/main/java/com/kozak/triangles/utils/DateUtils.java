@@ -52,8 +52,8 @@ public class DateUtils {
         if (cal1 == null || cal2 == null) {
             throw new IllegalArgumentException("The dates must not be null");
         }
-        return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1
-                .get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
+        return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+                && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
     }
 
     /**
@@ -351,7 +351,7 @@ public class DateUtils {
      * @return the difference between two Calendar Instances
      */
     public static int daysBetween(Calendar c1, Calendar c2) {
-		return daysBetween(c1.getTime(), c2.getTime());
+        return daysBetween(c1.getTime(), c2.getTime());
     }
 
     public static Date stringToDate(String strDate) {
@@ -453,10 +453,10 @@ public class DateUtils {
         return c.getTime();
     }
 
-	public static Date addHours(Date date, int hoursToAdd) {
-		Calendar c = Calendar.getInstance();
-		c.setTime(date);
-		c.add(Calendar.HOUR, hoursToAdd);
-		return c.getTime();
-	}
+    public static Date addHours(Date date, int hoursToAdd) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.HOUR, hoursToAdd);
+        return c.getTime();
+    }
 }

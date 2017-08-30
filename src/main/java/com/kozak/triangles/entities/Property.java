@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -42,65 +40,60 @@ import com.kozak.triangles.utils.DateUtils;
 
 @Entity
 @Table(name = "Property")
-public class Property implements JSONAware {
+public class Property extends BaseEntity implements JSONAware {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue
-    private Integer id;
+    @Column(name = "USER_ID")
+    private long userId;
 
-	@Column(name = "USER_ID")
-    private int userId;
-
-	@Column(name = "CITY_AREA")
+    @Column(name = "CITY_AREA")
     @Enumerated(EnumType.STRING)
     private CityAreas cityArea;
 
-	@Column(name = "LEVEL")
+    @Column(name = "LEVEL")
     private int level;
 
-	@Column(name = "DEPRECIATION_PERCENT")
+    @Column(name = "DEPRECIATION_PERCENT")
     private double depreciationPercent;
 
-	@Column(name = "VALID")
+    @Column(name = "VALID")
     private boolean valid;
 
-	@Column(name = "CASH")
+    @Column(name = "CASH")
     private long cash;
 
-	@Column(name = "CASH_LEVEL")
+    @Column(name = "CASH_LEVEL")
     private int cashLevel;
 
-	@Column(name = "CASH_CAPACITY")
+    @Column(name = "CASH_CAPACITY")
     private long cashCapacity;
 
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "PURCHASE_DATE")
+    @Column(name = "PURCHASE_DATE")
     private Date purchaseDate;
 
-	@Column(name = "INITIAL_COST")
+    @Column(name = "INITIAL_COST")
     private long initialCost;
 
-	@Column(name = "SELLING_PRICE")
+    @Column(name = "SELLING_PRICE")
     private long sellingPrice;
 
-	@Column(name = "NAME")
+    @Column(name = "NAME")
     private String name;
 
-	@Column(name = "BUILD_TYPE")
+    @Column(name = "BUILD_TYPE")
     @Enumerated(EnumType.STRING)
     private TradeBuildingsTypes tradeBuildingType;
 
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "NEXT_PROFIT")
+    @Column(name = "NEXT_PROFIT")
     private Date nextProfit;
 
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "NEXT_DEPR")
+    @Column(name = "NEXT_DEPR")
     private Date nextDepreciation;
 
     // признак - на продаже имущество или нет
-	@Column(name = "ON_SALE")
+    @Column(name = "ON_SALE")
     private boolean onSale;
 
     // //////////////////////////////////////////////
@@ -108,7 +101,7 @@ public class Property implements JSONAware {
     public Property() {
     }
 
-	public Property(TradeBuilding data, int userId, CityAreas cityArea, Date purchaseDate, long initialCost, String name) {
+    public Property(TradeBuilding data, long userId, CityAreas cityArea, Date purchaseDate, long initialCost, String name) {
 
         Date now = new Date();
 
@@ -122,27 +115,19 @@ public class Property implements JSONAware {
         this.nextDepreciation = DateUtils.addDays(now, 7); // + 7 days
 
         this.cashCapacity = data.getCashCapacity().get(0);
-		this.tradeBuildingType = data.getTradeBuildingType();
+        this.tradeBuildingType = data.getTradeBuildingType();
         this.userId = userId;
         this.cityArea = cityArea;
         this.purchaseDate = purchaseDate;
         this.initialCost = initialCost;
-		this.sellingPrice = initialCost; // тоже initialCost
+        this.sellingPrice = initialCost; // тоже initialCost
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -218,15 +203,15 @@ public class Property implements JSONAware {
         this.name = name;
     }
 
-	public TradeBuildingsTypes getTradeBuildingType() {
-		return tradeBuildingType;
-	}
+    public TradeBuildingsTypes getTradeBuildingType() {
+        return tradeBuildingType;
+    }
 
-	public void setTradeBuildingType(TradeBuildingsTypes tradeBuildingType) {
-		this.tradeBuildingType = tradeBuildingType;
-	}
+    public void setTradeBuildingType(TradeBuildingsTypes tradeBuildingType) {
+        this.tradeBuildingType = tradeBuildingType;
+    }
 
-	public int getCashLevel() {
+    public int getCashLevel() {
         return cashLevel;
     }
 
@@ -267,10 +252,10 @@ public class Property implements JSONAware {
     }
 
     @Override
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public String toJSONString() {
         JSONObject obj = new JSONObject();
-        obj.put("id", id);
+        obj.put("id", getId());
         obj.put("name", name);
         obj.put("level", level);
         obj.put("cashLevel", cashLevel);

@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,37 +23,33 @@ import com.kozak.triangles.enums.TransferTypes;
 
 @Entity(name = "Transac")
 @Table(name = "Transac")
-public class Transaction {
-    @Id
-	@Column(name = "ID")
-    @GeneratedValue
-    private Integer id;
+public class Transaction extends BaseEntity {
 
-	@Column(name = "DESCRIPTION", length = 100)
+    @Column(name = "DESCRIPTION", length = 100)
     private String description;
 
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "TRANSACT_DATE")
+    @Column(name = "TRANSACT_DATE")
     private Date transactDate;
 
-	@Column(name = "SUMMA")
+    @Column(name = "SUMMA")
     private long summa;
 
     // тип движения - приход или расход
-	@Column(name = "TRANSFER_TYPE")
+    @Column(name = "TRANSFER_TYPE")
     @Enumerated(EnumType.STRING)
     private TransferTypes transferType;
 
     // чьи деньги
-	@Column(name = "USER_ID")
-    private int userId;
+    @Column(name = "USER_ID")
+    private long userId;
 
     // остаток на конец
-	@Column(name = "BALANCE")
+    @Column(name = "BALANCE")
     private long balance;
 
     // статья движения денежных средств
-	@Column(name = "ARTICLE_CASH_FLOW")
+    @Column(name = "ARTICLE_CASH_FLOW")
     @Enumerated(EnumType.STRING)
     private ArticleCashFlow articleCashFlow;
 
@@ -63,32 +57,24 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(String description, Date transactDate, long sum, TransferTypes transferType, int userId,
-			long newBalance, ArticleCashFlow articleCashFlow) {
+    public Transaction(String description, Date transactDate, long sum, TransferTypes transferType, long userId, long newBalance,
+            ArticleCashFlow articleCashFlow) {
         this.description = description;
         this.transactDate = transactDate;
         this.summa = sum;
         this.transferType = transferType;
         this.userId = userId;
-		this.balance = newBalance;
+        this.balance = newBalance;
         this.articleCashFlow = articleCashFlow;
     }
 
     // ///////////////////////////// getters and setters
-    public Integer getId() {
-        return id;
-    }
-
     public long getBalance() {
         return balance;
     }
 
     public void setBalance(long balance) {
         this.balance = balance;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getDescription() {
@@ -123,11 +109,11 @@ public class Transaction {
         this.transferType = transferType;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

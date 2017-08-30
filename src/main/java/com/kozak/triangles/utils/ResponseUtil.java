@@ -34,7 +34,7 @@ public class ResponseUtil {
      *            - сумма операции
      */
     @SuppressWarnings("unchecked")
-    public static void addBalanceData(JSONObject resultJson, long sum, long userMoney, int userId, PropertyRep prRep) {
+    public static void addBalanceData(JSONObject resultJson, long sum, long userMoney, long userId, PropertyRep prRep) {
         resultJson.put("changeBal", "-" + sum);
         resultJson.put("newBalance", CommonUtil.moneyFormat(userMoney - sum));
         resultJson.put("newSolvency",

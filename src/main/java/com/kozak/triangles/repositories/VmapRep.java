@@ -25,7 +25,7 @@ public class VmapRep {
      */
     public Vmap getNextProposalGeneration() {
         String hql = "from vmap as vmap where vmap.name = :name";
-		Query query = em.createQuery(hql).setParameter("name", Constants.NEXT_RE_PROPOSE);
+        Query query = em.createQuery(hql).setParameter("name", Constants.NEXT_RE_PROPOSE);
 
         Vmap result = null;
         try {

@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.kozak.triangles.enums.LotteryArticles;
@@ -19,14 +17,11 @@ import com.kozak.triangles.enums.LotteryArticles;
  */
 @Entity
 @Table(name = "LotteryInfo")
-public class LotteryInfo {
-    @Id
-    @GeneratedValue
-    private int id;
+public class LotteryInfo extends BaseEntity {
 
     // id пользователя, чья информация
     @Column(name = "USER_ID")
-    private int userId;
+    private long userId;
 
     // описание выигрыша
     @Column(name = "DESCRIPTION")
@@ -56,8 +51,8 @@ public class LotteryInfo {
     public LotteryInfo() {
     }
 
-    public LotteryInfo(int userId, String description, LotteryArticles article, int count, int ticketCount,
-            int remainingAmount, Date date) {
+    public LotteryInfo(long userId, String description, LotteryArticles article, int count, int ticketCount, int remainingAmount,
+            Date date) {
 
         this.userId = userId;
         this.description = description;
@@ -68,19 +63,11 @@ public class LotteryInfo {
         this.date = date;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

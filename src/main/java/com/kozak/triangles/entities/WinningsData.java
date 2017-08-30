@@ -4,8 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.kozak.triangles.enums.LotteryArticles;
@@ -16,10 +14,7 @@ import com.kozak.triangles.enums.LotteryArticles;
  */
 @Entity
 @Table(name = "WinningsData")
-public class WinningsData {
-    @Id
-    @GeneratedValue
-    private int id;
+public class WinningsData extends BaseEntity {
 
     // рандомный номер, который выпал - С
     private int randomNumFrom;
@@ -34,14 +29,6 @@ public class WinningsData {
     private int count;
 
     public WinningsData() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getRandomNumFrom() {

@@ -5,8 +5,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.kozak.triangles.enums.MessageLevel;
@@ -16,11 +14,7 @@ import com.kozak.triangles.enums.MessageLevel;
  */
 @Entity(name = "Messages")
 @Table(name = "Messages")
-public class Messages {
-    @Id
-    @Column(name = "ID")
-    @GeneratedValue
-    private Integer id;
+public class Messages extends BaseEntity {
 
     // логин автора
     @Column(name = "AUTHOR")
@@ -45,14 +39,6 @@ public class Messages {
     public Messages(String author, String message) {
         this.author = author;
         this.message = message;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getAuthor() {

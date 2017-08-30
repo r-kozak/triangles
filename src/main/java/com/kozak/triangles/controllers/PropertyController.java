@@ -56,7 +56,7 @@ public class PropertyController extends BaseController {
     public String realEstMarket(@ModelAttribute("user") User user, Model model, HttpServletRequest request,
             RealEstateProposalsSearch reps) throws ParseException {
 
-        int userId = user.getId();
+        long userId = user.getId();
 
         if (reps.isNeedClear())
             reps.clear();
@@ -74,7 +74,7 @@ public class PropertyController extends BaseController {
 
         reps.setPrice(rangeValues.get(0), rangeValues.get(1)); // установка мин и макс цены продажи
 
-		model = addMoneyInfoToModel(model, user);
+        model = addMoneyInfoToModel(model, user);
         model.addAttribute("reps", reps);
         model.addAttribute("types", SearchCollections.getTradeBuildingsTypes());
         model.addAttribute("areas", SearchCollections.getCityAreas());
@@ -105,7 +105,7 @@ public class PropertyController extends BaseController {
             @RequestParam("action") String action, User user) {
 
         JSONObject resultJson = new JSONObject();
-        int userId = user.getId();
+        long userId = user.getId();
         RealEstateProposal prop = realEstateProposalRep.getREProposalById(propId);
 
         long userMoney = Long.parseLong(trRep.getUserBalance(userId));
@@ -123,7 +123,7 @@ public class PropertyController extends BaseController {
             long newBalance = userMoney - prop.getPurchasePrice(); // balance after purchase
 
             // данные конкретного имущества
-			TradeBuilding buildData = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal());
+            TradeBuilding buildData = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal());
 
             if (action.equals("info")) { // получение информации
                 String usedText = (prop.getUsedId() != 0) ? "<b>(Б/У)</b>" : "<b>(НОВОЕ)</b>";
@@ -132,7 +132,7 @@ public class PropertyController extends BaseController {
                 } else if (userSolvency >= prop.getPurchasePrice()) { // покупка в кредит
                     resultJson.put("title", "Покупка в кредит " + usedText);
                 }
-				resultJson.put("buildType", buildData.getTradeBuildingType().toString()); // тип недвиги
+                resultJson.put("buildType", buildData.getTradeBuildingType().toString()); // тип недвиги
                 resultJson.put("newBalance", newBalance); // balance after purchase
                 putMainInfoAboutPurchase(resultJson, prop); // вставка основной информации о покупке
             } else if (action.equals("confirm")) { // подтверждение покупки
@@ -142,17 +142,17 @@ public class PropertyController extends BaseController {
                     long price = prop.getPurchasePrice();
 
                     CityAreas cityArea = prop.getCityArea();
-					// новое имя имущества
-					String propName = PropertyUtil.generatePropertyName(buildData.getTradeBuildingType(), cityArea);
+                    // новое имя имущества
+                    String propName = PropertyUtil.generatePropertyName(buildData.getTradeBuildingType(), cityArea);
                     // если имущ. новое - добавить новое имущество пользователю, иначе - изменить владельца у б/у
                     if (prop.getUsedId() == 0) {
-						Property newProp = new Property(buildData, userId, cityArea, purchDate, price, propName);
+                        Property newProp = new Property(buildData, userId, cityArea, purchDate, price, propName);
                         prRep.addProperty(newProp);
 
-						MoneyController.upUserDomi(Constants.K_DOMI_BUY_PROP, userId, userRep); // повысить доминантность
+                        MoneyController.upUserDomi(Constants.K_DOMI_BUY_PROP, userId, userRep); // повысить доминантность
                     } else {
                         // покупка б/у имущества
-						propName = PropertyUtil.buyUsedProperty(prop, purchDate, userId, prRep, trRep);
+                        propName = PropertyUtil.buyUsedProperty(prop, purchDate, userId, prRep, trRep);
                         prop.setUsedId(0);
                     }
 
@@ -164,8 +164,8 @@ public class PropertyController extends BaseController {
                     // rePrRep.updateREproposal(prop);
 
                     // снять деньги
-                    Transaction t = new Transaction("Покупка имущества: " + propName, purchDate, price,
-                            TransferTypes.SPEND, userId, userMoney - price, ArticleCashFlow.BUY_PROPERTY);
+                    Transaction t = new Transaction("Покупка имущества: " + propName, purchDate, price, TransferTypes.SPEND,
+                            userId, userMoney - price, ArticleCashFlow.BUY_PROPERTY);
                     trRep.addTransaction(t);
 
                     ResponseUtil.addBalanceData(resultJson, prop.getPurchasePrice(), userMoney, userId, prRep);
@@ -177,17 +177,17 @@ public class PropertyController extends BaseController {
     }
 
     /**
-	 * переход на страницу торговой недвижимости пользователя
-	 * 
-	 */
-	@RequestMapping(value = "/trade-property", method = RequestMethod.GET)
-	public String userProperty(@ModelAttribute("user") User user, Model model, TradePropertySearch cps, HttpServletRequest req) {
+     * переход на страницу торговой недвижимости пользователя
+     * 
+     */
+    @RequestMapping(value = "/trade-property", method = RequestMethod.GET)
+    public String userProperty(@ModelAttribute("user") User user, Model model, TradePropertySearch cps, HttpServletRequest req) {
 
         if (cps.isNeedClear())
             cps.clear();
 
-        int userId = user.getId();
-		PropertyUtil.profitCalculation(userId, prRep); // начисление прибыли по имуществу пользователя
+        long userId = user.getId();
+        PropertyUtil.profitCalculation(userId, prRep); // начисление прибыли по имуществу пользователя
 
         // количество строк на странице
         final int MAX_ROWS_COUNT = 100;
@@ -220,10 +220,10 @@ public class PropertyController extends BaseController {
 
         user = userRep.getCurrentUserByLogin(user.getLogin());
 
-		model = addMoneyInfoToModel(model, user);
+        model = addMoneyInfoToModel(model, user);
         model.addAttribute("cps", cps);
         model.addAttribute("areas", SearchCollections.getCityAreas());
-		model.addAttribute("tradeProps", dbResult.get(1)); // все торговое имущество юзера
+        model.addAttribute("tradeProps", dbResult.get(1)); // все торговое имущество юзера
         model.addAttribute("types", SearchCollections.getTradeBuildingsTypes());
         model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);
         model.addAttribute("ready", prRep.allPrCount(userId, true, false)); // колво готовых к сбору дохода
@@ -235,7 +235,7 @@ public class PropertyController extends BaseController {
             model.addAttribute("changeBal", cash);
         }
 
-		return "trade_property";
+        return "trade_property";
     }
 
     /**
@@ -243,17 +243,17 @@ public class PropertyController extends BaseController {
      */
     @RequestMapping(value = "/{prId}", method = RequestMethod.GET)
     public String specificPropertyPage(@ModelAttribute("prId") int prId, User user, Model model) {
-        int userId = user.getId();
-		PropertyUtil.profitCalculation(userId, prRep); // начисление прибыли по имуществу пользователя
+        long userId = user.getId();
+        PropertyUtil.profitCalculation(userId, prRep); // начисление прибыли по имуществу пользователя
 
         // получить конкретное имущество текущего пользоватетя
         Property prop = prRep.getSpecificProperty(userId, prId);
         // если получили null - значит это не имущество пользователя
         if (prop == null) {
-			return "redirect:/property/trade-property";
+            return "redirect:/property/trade-property";
         }
 
-		model = addMoneyInfoToModel(model, user);
+        model = addMoneyInfoToModel(model, user);
         model.addAttribute("prop", prop);
 
         // если собирали наличку с кассы - для информационного popup окна
@@ -262,7 +262,7 @@ public class PropertyController extends BaseController {
             model.addAttribute("changeBal", cash);
         }
 
-		return "specific_property";
+        return "specific_property";
     }
 
     /**
@@ -272,12 +272,12 @@ public class PropertyController extends BaseController {
     public String propertyOperations(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
             @ModelAttribute("newName") String newName, User user, Model model, RedirectAttributes ra) {
 
-        int userId = user.getId();
+        long userId = user.getId();
         // получить конкретное имущество текущего пользоватетя
         Property prop = prRep.getSpecificProperty(userId, prId);
         // если получили null - значит это не имущество пользователя
         if (prop == null) {
-			return "redirect:/property/trade-property";
+            return "redirect:/property/trade-property";
         }
 
         if (action.equals("change_name")) {
@@ -297,11 +297,11 @@ public class PropertyController extends BaseController {
     /**
      * запрос на изьятие денег с кассы имущества
      */
-	@RequestMapping(value = "get-cash/{prId}", method = RequestMethod.GET)
-	public String getCash(@ModelAttribute("prId") int prId, @RequestParam("redirectAddress") String redirectAddress, User user,
-			RedirectAttributes ra) {
+    @RequestMapping(value = "get-cash/{prId}", method = RequestMethod.GET)
+    public String getCash(@ModelAttribute("prId") int prId, @RequestParam("redirectAddress") String redirectAddress, User user,
+            RedirectAttributes ra) {
 
-        int userId = user.getId();
+        long userId = user.getId();
         long cash = 0;
 
         if (prId == 0) { // это сбор со всего имущества
@@ -316,7 +316,7 @@ public class PropertyController extends BaseController {
             Property prop = prRep.getSpecificProperty(userId, prId);
             // если получили null - значит это не имущество пользователя
             if (prop == null) {
-				return "redirect:/property/trade-property";
+                return "redirect:/property/trade-property";
             }
 
             // изымаем деньги
@@ -326,7 +326,7 @@ public class PropertyController extends BaseController {
             ra.addFlashAttribute("changeBal", "+" + cash); // передаем параметр
         }
 
-		return "redirect:/" + redirectAddress;
+        return "redirect:/" + redirectAddress;
     }
 
     /**
@@ -341,7 +341,7 @@ public class PropertyController extends BaseController {
             @RequestParam("propId") Integer propId, User user) {
         JSONObject resultJson = new JSONObject();
 
-        int userId = user.getId();
+        long userId = user.getId();
 
         Property prop = prRep.getSpecificProperty(userId, propId);
 
@@ -368,8 +368,7 @@ public class PropertyController extends BaseController {
 
             if (type.equals("repair")) {
                 if (userSolvency <= 0) {
-                    ResponseUtil.putErrorMsg(resultJson,
-                            "Ваша состоятельность не позволяет вам ремонтировать имущество!");
+                    ResponseUtil.putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
                 } else {
                     if (repairSum > 0) {
                         repair(resultJson, prop, newDeprPerc, newSellingPrice, userMoney, repairSum, userId);
@@ -378,12 +377,11 @@ public class PropertyController extends BaseController {
             } else if (type.equals("info")) {
                 if (userSolvency <= 0) {
                     resultJson.put("zeroSolvency", true);
-                    ResponseUtil.putErrorMsg(resultJson,
-                            "Ваша состоятельность не позволяет вам ремонтировать имущество!");
+                    ResponseUtil.putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам ремонтировать имущество!");
                 } else {
-                    ResponseUtil.putErrorMsg(resultJson, String.format(
-                            "Сумма ремонта:<b> %s&tridot;</b> <br/> Процент износа после ремонта: <b> %.2f%% </b>",
-                            repairSum, newDeprPerc));
+                    ResponseUtil.putErrorMsg(resultJson,
+                            String.format("Сумма ремонта:<b> %s&tridot;</b> <br/> Процент износа после ремонта: <b> %.2f%% </b>",
+                                    repairSum, newDeprPerc));
                 }
             }
         }
@@ -403,11 +401,11 @@ public class PropertyController extends BaseController {
             @RequestParam("action") String action, @RequestParam("obj") String obj, User user) {
 
         JSONObject resultJson = new JSONObject();
-        int userId = user.getId();
+        long userId = user.getId();
         Property prop = prRep.getSpecificProperty(userId, propId);
 
         if (prop == null) {
-			ResponseUtil.putErrorMsg(resultJson, "Произошла ошибка: Нет такого имущества!");
+            ResponseUtil.putErrorMsg(resultJson, "Произошла ошибка: Нет такого имущества!");
         } else {
             long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // состоятельность пользователя
 
@@ -436,12 +434,11 @@ public class PropertyController extends BaseController {
      * Повышение уровня кассы или имущества до максимально возможно и у нескольких имуществ одновременно (одним
      * запросом)
      */
-    @RequestMapping(value = "/multiple-level-up", method = RequestMethod.GET, produces = {
-            "application/json; charset=UTF-8" })
+    @RequestMapping(value = "/multiple-level-up", method = RequestMethod.GET, produces = { "application/json; charset=UTF-8" })
     public @ResponseBody ResponseEntity<String> multipleLevelUp(@RequestParam("propIds") String[] propIds,
             @RequestParam("obj") String obj, User user) {
 
-        int userId = user.getId();
+        long userId = user.getId();
         JSONObject resultJson = new JSONObject();
 
         long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId);
@@ -506,7 +503,7 @@ public class PropertyController extends BaseController {
             @RequestParam("action") String action, User user) {
 
         JSONObject resultJson = new JSONObject();
-        int userId = user.getId();
+        long userId = user.getId();
 
         for (String propId : propIds) {
             propId = propId.replace("[", "").replace("]", "").replace("\"", "");
@@ -529,7 +526,7 @@ public class PropertyController extends BaseController {
 
                     // сформировать новое предложение о покупке или удалить
                     if (property.isOnSale()) {
-						RealEstateProposal reProp = new RealEstateProposal(property);
+                        RealEstateProposal reProp = new RealEstateProposal(property);
                         realEstateProposalRep.addRealEstateProposal(reProp);
 
                         String dateVal = DateUtils.dateToString(reProp.getLossDate());
@@ -561,17 +558,17 @@ public class PropertyController extends BaseController {
      *            сумма ремонта
      */
     @SuppressWarnings("unchecked")
-    private void repair(JSONObject resultJson, Property prop, Double deprPercent, long sellPrice, long userMoney,
-            long repairSum, int userId) {
+    private void repair(JSONObject resultJson, Property prop, Double deprPercent, long sellPrice, long userMoney, long repairSum,
+            long userId) {
         prop.setDepreciationPercent(deprPercent);
         prop.setSellingPrice(sellPrice);
-		// если данное имущество НЕ valid на момент ремонта И новый процент износа < 100 - установить
+        // если данное имущество НЕ valid на момент ремонта И новый процент износа < 100 - установить
         // nextProfit = tomorrow
         // nextDepreciation = next week
-		if (!prop.isValid() && deprPercent < 100) {
+        if (!prop.isValid() && deprPercent < 100) {
             prop.setNextProfit(DateUtils.addDays(new Date(), 1));
             prop.setNextDepreciation(DateUtils.addDays(new Date(), 7));
-			prop.setValid(true);
+            prop.setValid(true);
         }
         prRep.updateProperty(prop);
 
@@ -596,13 +593,13 @@ public class PropertyController extends BaseController {
      */
     private long getCashFromProperty(Property prop) {
         if (prop.getCash() > 0) {
-            int uId = prop.getUserId();
+            long userId = prop.getUserId();
 
             String desc = "Сбор с имущества: " + prop.getName();
             Long cash = prop.getCash();
-            Long oldBalance = Long.parseLong(trRep.getUserBalance(uId));
+            Long oldBalance = Long.parseLong(trRep.getUserBalance(userId));
 
-            Transaction t = new Transaction(desc, new Date(), cash, TransferTypes.PROFIT, uId, oldBalance + cash,
+            Transaction t = new Transaction(desc, new Date(), cash, TransferTypes.PROFIT, userId, oldBalance + cash,
                     ArticleCashFlow.LEVY_ON_PROPERTY);
 
             trRep.addTransaction(t);
@@ -629,8 +626,8 @@ public class PropertyController extends BaseController {
      * @param obj
      *            объект - "cash"
      */
-	private void doActionsForCashLevelUp(JSONObject resultJson, Property prop, int nCashLevel, String action, long userSolvency,
-			int userId, String obj) {
+    private void doActionsForCashLevelUp(JSONObject resultJson, Property prop, int nCashLevel, String action, long userSolvency,
+            long userId, String obj) {
 
         // получить сумму повышения уровня
         long sum = getSumToCashLevelUp(prop, nCashLevel);
@@ -662,8 +659,8 @@ public class PropertyController extends BaseController {
      * @param obj
      *            объект - "prop"
      */
-    private void doActionsForPropLevelUp(JSONObject resultJson, Property prop, int nPropLevel, String action,
-            long userSolvency, int userId, String obj) {
+    private void doActionsForPropLevelUp(JSONObject resultJson, Property prop, int nPropLevel, String action, long userSolvency,
+            long userId, String obj) {
 
         // получить сумму повышения уровня
         long sum = getSumToPropLevelUp(prop, nPropLevel);
@@ -681,7 +678,7 @@ public class PropertyController extends BaseController {
      */
     private long getSumToPropLevelUp(Property prop, int propLevel) {
         // максимальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
-		long maxPrice = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal()).getPurchasePriceMax();
+        long maxPrice = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal()).getPurchasePriceMax();
         long sum = Math.round(maxPrice * Constants.UNIVERS_K[propLevel] / Constants.K_DECREASE_PROP_L);
         return sum;
     }
@@ -702,9 +699,9 @@ public class PropertyController extends BaseController {
      * повышает уровень кассы или имущества
      */
     @SuppressWarnings("unchecked")
-	private void upLevel(JSONObject resultJson, Property prop, long userSolvency, long sum, int nLevel, int userId, String obj) {
+    private void upLevel(JSONObject resultJson, Property prop, long userSolvency, long sum, int nLevel, long userId, String obj) {
         if (userSolvency >= sum) {
-			int domiAmount = 0;
+            int domiAmount = 0;
             if (obj.equals("cash")) {
                 upCashLevel(resultJson, prop, nLevel, userId, sum, true); // повысить уровень кассы
                 domiAmount = nLevel;
@@ -712,15 +709,15 @@ public class PropertyController extends BaseController {
                 upPropLevel(resultJson, prop, nLevel, userId, sum, true); // повысить уровень имущества
                 domiAmount = (int) Math.round(nLevel * Constants.K_PROP_LEVEL_DOMI);
             }
-			// Каждый тип имущества имеет свое граничное значение влияния на повышение доминантности при повышении уровня
-			// имущества или уровня кассы этого имущества.
-			// Если количество доминантности у пользователя меньше, чем граничное значение по данному типу имущества - тогда
-			// увеличить доминантность.
-			int currentUserDomi = userRep.find(userId).getDomi();
-			if (currentUserDomi < TradeBuildingsTableData.getBoundaryValueForDomiUp(prop.getTradeBuildingType())) {
-				MoneyController.upUserDomi(domiAmount, userId, userRep); // повышение доминантности
-			}
-			resultJson.put("newDomi", userRep.find(userId).getDomi()); // новая доминантность (или старая, если не было повышения)
+            // Каждый тип имущества имеет свое граничное значение влияния на повышение доминантности при повышении уровня
+            // имущества или уровня кассы этого имущества.
+            // Если количество доминантности у пользователя меньше, чем граничное значение по данному типу имущества - тогда
+            // увеличить доминантность.
+            int currentUserDomi = userRep.find(userId).getDomi();
+            if (currentUserDomi < TradeBuildingsTableData.getBoundaryValueForDomiUp(prop.getTradeBuildingType())) {
+                MoneyController.upUserDomi(domiAmount, userId, userRep); // повышение доминантности
+            }
+            resultJson.put("newDomi", userRep.find(userId).getDomi()); // новая доминантность (или старая, если не было повышения)
         } else { // состоятельность < суммы улучшения
             ResponseUtil.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + sum);
         }
@@ -739,10 +736,10 @@ public class PropertyController extends BaseController {
      *            это платное повышение или нет (бесплатное, если за лотерейные плюшки)
      */
     @SuppressWarnings("unchecked")
-	void upCashLevel(JSONObject resultJson, Property prop, int nCashLevel, int userId, long sum, boolean isPaidUp) {
+    void upCashLevel(JSONObject resultJson, Property prop, int nCashLevel, long userId, long sum, boolean isPaidUp) {
 
         // новая вместимость кассы
-		long nCashCapacity = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal()).getCashCapacity().get(nCashLevel);
+        long nCashCapacity = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal()).getCashCapacity().get(nCashLevel);
 
         prop.setCashLevel(nCashLevel);
         prop.setCashCapacity(nCashCapacity);
@@ -764,7 +761,7 @@ public class PropertyController extends BaseController {
             // //
 
             // получить сумму улучшения до след. уровня + 1
-			long nextSum = Math.round(prop.getInitialCost() * Constants.UNIVERS_K[nCashLevel + 1] / Constants.K_DECREASE_CASH_L);
+            long nextSum = Math.round(prop.getInitialCost() * Constants.UNIVERS_K[nCashLevel + 1] / Constants.K_DECREASE_CASH_L);
             long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
 
             if (nCashLevel == Constants.MAX_CASH_LEVEL) {
@@ -781,16 +778,16 @@ public class PropertyController extends BaseController {
     }
 
     /**
-	 * Если имущество продается, то повышении уровня имущества или уровня его кассы метод измененяет значения уровня
-	 * имущества или кассы имущества у соответствующего предложения на рынке торгового имущества
-	 * 
-	 * @param obj
-	 *            - признак того, уровень чего нужно изменить (prop, cash)
-	 * @param prop
-	 *            - имущество, у которого повысился уровень кассы или его уровень
-	 * @param levelVal
-	 *            - новое значение уровня
-	 */
+     * Если имущество продается, то повышении уровня имущества или уровня его кассы метод измененяет значения уровня
+     * имущества или кассы имущества у соответствующего предложения на рынке торгового имущества
+     * 
+     * @param obj
+     *            - признак того, уровень чего нужно изменить (prop, cash)
+     * @param prop
+     *            - имущество, у которого повысился уровень кассы или его уровень
+     * @param levelVal
+     *            - новое значение уровня
+     */
     private void changeReProposalLevels(String obj, Property prop, int levelVal) {
         if (prop.isOnSale()) {
             RealEstateProposal rePr = realEstateProposalRep.getProposalByUsedId(prop.getId());
@@ -804,12 +801,12 @@ public class PropertyController extends BaseController {
     }
 
     /**
-	 * Если имущество на продаже, тогда при его ремонте, у соответствующего предложения на рынке торгового имущества
-	 * меняются значения цены продажи и процента износа
-	 * 
-	 * @param prop
-	 *            - имущество, у которого производился ремонт
-	 */
+     * Если имущество на продаже, тогда при его ремонте, у соответствующего предложения на рынке торгового имущества
+     * меняются значения цены продажи и процента износа
+     * 
+     * @param prop
+     *            - имущество, у которого производился ремонт
+     */
     private void changeSellingPriceAndDeprecPercent(Property prop) {
         if (prop.isOnSale()) {
             RealEstateProposal rePr = realEstateProposalRep.getProposalByUsedId(prop.getId());
@@ -820,7 +817,7 @@ public class PropertyController extends BaseController {
     }
 
     @SuppressWarnings("unchecked")
-	void upPropLevel(JSONObject resultJson, Property prop, int nPropLevel, int userId, long sum, boolean isPaidUp) {
+    void upPropLevel(JSONObject resultJson, Property prop, int nPropLevel, long userId, long sum, boolean isPaidUp) {
         prop.setLevel(nPropLevel);
         prRep.updateProperty(prop);
 
@@ -839,13 +836,13 @@ public class PropertyController extends BaseController {
             // //
 
             // получить сумму улучшения до след. уровня + 1
-			long maxPrice = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal()).getPurchasePriceMax();
+            long maxPrice = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal()).getPurchasePriceMax();
             long nextSum = Math.round(maxPrice * Constants.UNIVERS_K[nPropLevel + 1] / Constants.K_DECREASE_PROP_L);
             long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
 
             resultJson.put("upped", true); // уровень был поднят
 
-			if (nPropLevel == Constants.MAX_PROP_LEVEL) {
+            if (nPropLevel == Constants.MAX_PROP_LEVEL) {
                 ResponseUtil.putErrorMsg(resultJson, "Достигнут последний уровень.");
             } else if (userSolvency < nextSum) {
                 ResponseUtil.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);

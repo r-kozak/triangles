@@ -15,9 +15,9 @@ public class CommonUtil {
     }
 
     public static double numberRound(double value, int places) {
-		if (places < 0) {
+        if (places < 0) {
             throw new IllegalArgumentException();
-		}
+        }
 
         long factor = (long) Math.pow(10, places);
         value = value * factor;
@@ -25,13 +25,13 @@ public class CommonUtil {
         return (double) tmp / factor;
     }
 
-	public static Long getSolvency(TransactionRep trRep, PropertyRep prRep, int userId) {
+    public static Long getSolvency(TransactionRep trRep, PropertyRep prRep, long userId) {
         long userMoney = Long.parseLong(trRep.getUserBalance(userId));
         long sellSum = prRep.getSellingSumAllPropByUser(userId) / 2;// (ост. стоим. всего имущества юзера / 2)
         return userMoney + sellSum;
     }
 
-    public static Long getSolvency(String userMoney, PropertyRep prRep, int userId) {
+    public static Long getSolvency(String userMoney, PropertyRep prRep, long userId) {
         long sellSum = prRep.getSellingSumAllPropByUser(userId) / 2;// (ост. стоим. всего имущества юзера / 2)
         return Long.valueOf(userMoney) + sellSum;
     }

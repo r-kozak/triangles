@@ -37,10 +37,10 @@ public class RealEstateProposalRep {
      * @return список с валидными предложениями на рынке недвижимости
      * @throws ParseException
      */
-    public List<Object> getREProposalsList(int page, RealEstateProposalsSearch reps, int userId) throws ParseException {
+    public List<Object> getREProposalsList(int page, RealEstateProposalsSearch reps, long userId) throws ParseException {
         String hql0 = "from re_proposal as rep where rep.valid = true";
         String hql1 = "";
-		String hql2 = " ORDER BY rep.tradeBuildingType";
+        String hql2 = " ORDER BY rep.tradeBuildingType";
 
         Map<String, Object> params = new HashMap<String, Object>();
 
@@ -74,7 +74,7 @@ public class RealEstateProposalRep {
         // types filter
         List<TradeBuildingsTypes> types = reps.getTypes(); // типы из формы
         if (types != null && !types.isEmpty()) {
-			hql1 += " and rep.tradeBuildingType IN (:types)";
+            hql1 += " and rep.tradeBuildingType IN (:types)";
             params.put("types", types);
         }
 
@@ -157,7 +157,7 @@ public class RealEstateProposalRep {
      *            - признак, получать все или только новые
      * @return
      */
-    public Long allPrCount(boolean countOfNew, int userId) {
+    public Long allPrCount(boolean countOfNew, long userId) {
         // параметры, которые потом установятся запросу
         Map<String, Object> params = new HashMap<String, Object>();
 
@@ -194,7 +194,7 @@ public class RealEstateProposalRep {
      * @param userId
      * @return
      */
-    public List<Object> getRangeValues(int userId) {
+    public List<Object> getRangeValues(long userId) {
         Map<String, Object> params = new HashMap<String, Object>();
 
         String suff = "FROM re_proposal as rep where valid = true";
@@ -231,12 +231,12 @@ public class RealEstateProposalRep {
         return result;
     }
 
-    public void removeReProposalByUsedId(int usedId) {
+    public void removeReProposalByUsedId(long usedId) {
         RealEstateProposal toRemove = this.getProposalByUsedId(usedId);
         this.em.remove(toRemove);
     }
 
-    public RealEstateProposal getProposalByUsedId(int usedId) {
+    public RealEstateProposal getProposalByUsedId(long usedId) {
         String hql = "from re_proposal as rep where usedId = :usedId";
         Query query = this.em.createQuery(hql).setParameter("usedId", usedId);
         return (RealEstateProposal) query.getSingleResult();
@@ -249,14 +249,14 @@ public class RealEstateProposalRep {
      * @param userId
      */
     @SuppressWarnings("unchecked")
-    public List<Integer> getPropertyIdsOnSale(int userId) {
+    public List<Integer> getPropertyIdsOnSale(long userId) {
         String hql = "Select id from Property as pr where pr.onSale = true and pr.userId = :userId";
         Query query = this.em.createQuery(hql).setParameter("userId", userId);
 
         return query.getResultList();
     }
 
-    public void removeReProposalById(Integer id) {
+    public void removeReProposalById(long id) {
         em.remove(em.find(RealEstateProposal.class, id));
     }
 }

@@ -26,8 +26,8 @@ import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.ResponseUtil;
 
 public abstract class BaseController {
-	// получить данные всех торговых строений
-	Map<Integer, TradeBuilding> tradeBuildingsData = TradeBuildingsTableData.getTradeBuildingsDataMap();
+    // получить данные всех торговых строений
+    Map<Integer, TradeBuilding> tradeBuildingsData = TradeBuildingsTableData.getTradeBuildingsDataMap();
 
     @Autowired
     protected UserRep userRep;
@@ -45,47 +45,47 @@ public abstract class BaseController {
     protected LotteryRep lotteryRep;
     @Autowired
     protected MessageRep msgRep;
-	@Autowired
-	protected LicenseMarketService licenseMarketService;
+    @Autowired
+    protected LicenseMarketService licenseMarketService;
 
-	protected Model addMoneyInfoToModel(Model model, User user) {
-		Integer userId = user.getId();
-		int userDomi = userRep.getUserDomi(userId);
-		String userBalance = trRep.getUserBalance(userId);
-		Long userSolvency = CommonUtil.getSolvency(userBalance, prRep, userId);
-		return ResponseUtil.addMoneyInfoToModel(model, userBalance, userSolvency, userDomi);
-	}
+    protected Model addMoneyInfoToModel(Model model, User user) {
+        Long userId = user.getId();
+        int userDomi = userRep.getUserDomi(userId);
+        String userBalance = trRep.getUserBalance(userId);
+        Long userSolvency = CommonUtil.getSolvency(userBalance, prRep, userId);
+        return ResponseUtil.addMoneyInfoToModel(model, userBalance, userSolvency, userDomi);
+    }
 
-	/**
-	 * @return переданную модель, но с информацией о количестве лицензий разных уровней
-	 */
-	protected Model addLicenseCountInfoToModel(Model model, int userId) {
-		long lic2Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_2);
-		model.addAttribute("lic2Count", lic2Count); // количество лицензий 2 ур
+    /**
+     * @return переданную модель, но с информацией о количестве лицензий разных уровней
+     */
+    protected Model addLicenseCountInfoToModel(Model model, long userId) {
+        long lic2Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_2);
+        model.addAttribute("lic2Count", lic2Count); // количество лицензий 2 ур
 
-		long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
-		model.addAttribute("lic3Count", lic3Count); // количество лицензий 3 ур
+        long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
+        model.addAttribute("lic3Count", lic3Count); // количество лицензий 3 ур
 
-		long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
-		model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
+        long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
+        model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
 
-		return model;
-	}
+        return model;
+    }
 
-	/**
-	 * @return последнюю дату начисленного кредита или депозита конкретному пользователю
-	 */
-	protected Date getLastCreditOrDepositDate(int userId) {
-		// получение транзакций пользователя для получения последней даты начисления
-		List<Transaction> userTransactionsCr = trRep.getUserTransactionsByType(userId, ArticleCashFlow.CREDIT);
-		List<Transaction> userTransactionsDep = trRep.getUserTransactionsByType(userId, ArticleCashFlow.DEPOSIT);
+    /**
+     * @return последнюю дату начисленного кредита или депозита конкретному пользователю
+     */
+    protected Date getLastCreditOrDepositDate(long userId) {
+        // получение транзакций пользователя для получения последней даты начисления
+        List<Transaction> userTransactionsCr = trRep.getUserTransactionsByType(userId, ArticleCashFlow.CREDIT);
+        List<Transaction> userTransactionsDep = trRep.getUserTransactionsByType(userId, ArticleCashFlow.DEPOSIT);
 
-		// получение дат кредита и депозита, после чего взятие последней
-		Date lastTransactionDateCr = userTransactionsCr.get(userTransactionsCr.size() - 1).getTransactDate();
-		Date lastTransactionDateDep = userTransactionsDep.get(userTransactionsDep.size() - 1).getTransactDate();
-		Date lastTransactionDate = (lastTransactionDateCr.after(lastTransactionDateDep)) ? lastTransactionDateCr
-				: lastTransactionDateDep;
+        // получение дат кредита и депозита, после чего взятие последней
+        Date lastTransactionDateCr = userTransactionsCr.get(userTransactionsCr.size() - 1).getTransactDate();
+        Date lastTransactionDateDep = userTransactionsDep.get(userTransactionsDep.size() - 1).getTransactDate();
+        Date lastTransactionDate = (lastTransactionDateCr.after(lastTransactionDateDep)) ? lastTransactionDateCr
+                : lastTransactionDateDep;
 
-		return lastTransactionDate;
-	}
+        return lastTransactionDate;
+    }
 }

@@ -20,8 +20,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
     HttpSession session;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         User user = (User) session.getAttribute("user");
         if (user == null || user.getLogin() == null) {
             String ul = Cooker.getCookieByName(request, "ul");

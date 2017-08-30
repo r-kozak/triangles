@@ -36,8 +36,7 @@ public class LoginValidator implements Validator {
         }
 
         if (!user.isAuthenticated()) {
-            errors.rejectValue("login", "authenticated.notCorrectLoginPassword",
-                    "Проверьте правильность ввода логина и пароля!");
+            errors.rejectValue("login", "authenticated.notCorrectLoginPassword", "Проверьте правильность ввода логина и пароля!");
         }
     }
 

@@ -53,7 +53,7 @@ public class PropertyRep {
      * @param userId
      *            id пользователя, данные которого нужно получить
      */
-    public long getSellingSumAllPropByUser(int userId) {
+    public long getSellingSumAllPropByUser(long userId) {
         String hql = "SELECT sum(sellingPrice) FROM Property as pr WHERE pr.userId = :userId";
         Query query = em.createQuery(hql).setParameter("userId", userId);
 
@@ -72,16 +72,16 @@ public class PropertyRep {
      *            - подсчет готовых к сбору дохода (касса > 0)
      * @return количество имущества пользователя
      */
-    public Long allPrCount(int userId, boolean ready, boolean needRepair) {
-        String hql = "SELECT count(id) FROM Property as pr WHERE pr.userId = :userId"
-                + (ready ? " and pr.cash > 0" : "") + (needRepair ? " and pr.depreciationPercent > 0" : "");
+    public Long allPrCount(long userId, boolean ready, boolean needRepair) {
+        String hql = "SELECT count(id) FROM Property as pr WHERE pr.userId = :userId" + (ready ? " and pr.cash > 0" : "")
+                + (needRepair ? " and pr.depreciationPercent > 0" : "");
 
         Query query = em.createQuery(hql).setParameter("userId", userId);
         return Long.valueOf(query.getSingleResult().toString());
     }
 
     @SuppressWarnings("unchecked")
-    public List<Property> getPropertyWithNotEmptyCash(int userId) {
+    public List<Property> getPropertyWithNotEmptyCash(long userId) {
         String hql = "FROM Property as pr WHERE pr.userId = :userId and pr.cash > 0";
         Query query = em.createQuery(hql).setParameter("userId", userId);
         return query.getResultList();
@@ -92,7 +92,7 @@ public class PropertyRep {
      * @param rowsOnPage
      * @return список имущества пользователя для отображения на странице имущества
      */
-    public List<Object> getPropertyList(int userId, TradePropertySearch tps, int rowsOnPage) {
+    public List<Object> getPropertyList(long userId, TradePropertySearch tps, int rowsOnPage) {
         String hql00 = "SELECT count(id) ";
         String hql0 = "FROM Property as pr WHERE pr.userId = :userId";
         String hql1 = "";
@@ -120,7 +120,7 @@ public class PropertyRep {
         // types filter
         List<TradeBuildingsTypes> types = tps.getTypes(); // типы из формы
         if (types != null && !types.isEmpty()) {
-			hql1 += " and pr.tradeBuildingType IN (:types)";
+            hql1 += " and pr.tradeBuildingType IN (:types)";
             params.put("types", types);
         }
 
@@ -184,7 +184,7 @@ public class PropertyRep {
      *            id имущества
      * @return конкретное имущество конкретного пользователя
      */
-    public Property getSpecificProperty(int userId, int id) {
+    public Property getSpecificProperty(long userId, int id) {
         String hql = "FROM Property as pr WHERE pr.userId = :userId and pr.id = :id";
         Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("id", id);
         Property result = null;
@@ -201,13 +201,13 @@ public class PropertyRep {
      * @return список валидного имущества пользователя, nextProfit которого <= тек. даты
      */
     @SuppressWarnings("unchecked")
-    public List<Property> getPropertyListForProfit(int userId, boolean isProfit) {
+    public List<Property> getPropertyListForProfit(long userId, boolean isProfit) {
         // это начисление прибыли или износа
         String field = (isProfit) ? "nextProfit" : "nextDepreciation";
-		String hql = "FROM Property as pr WHERE pr.valid = true and pr.userId = :userId and pr." + field + " <= :currDate";
+        String hql = "FROM Property as pr WHERE pr.valid = true and pr.userId = :userId and pr." + field + " <= :currDate";
 
-        Query query = em.createQuery(hql).setParameter("userId", userId)
-                .setParameter("currDate", new Date(), TemporalType.TIMESTAMP);
+        Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("currDate", new Date(),
+                TemporalType.TIMESTAMP);
 
         return query.getResultList();
     }
@@ -218,8 +218,8 @@ public class PropertyRep {
      * @param userId
      * @return дату прибыли
      */
-    public Date getMinNextProfit(int userId) {
-		String hql = "SELECT min(nextProfit) FROM Property as pr WHERE pr.userId = :userId and pr.valid = true";
+    public Date getMinNextProfit(long userId) {
+        String hql = "SELECT min(nextProfit) FROM Property as pr WHERE pr.userId = :userId and pr.valid = true";
         Query query = em.createQuery(hql).setParameter("userId", userId);
         return (Date) query.getSingleResult();
     }
@@ -230,7 +230,7 @@ public class PropertyRep {
      * @param userId
      * @return
      */
-    public List<Object> getRangeValues(int userId) {
+    public List<Object> getRangeValues(long userId) {
         List<Object> result = new ArrayList<Object>(4); // результат
 
         String suff = "FROM Property as pr WHERE pr.userId = ?0";
@@ -248,7 +248,7 @@ public class PropertyRep {
         return result;
     }
 
-    public Property getPropertyById(int id) {
+    public Property getPropertyById(long id) {
         return em.find(Property.class, id);
     }
 
@@ -259,7 +259,7 @@ public class PropertyRep {
      *         если его значение меньше, чем максимальная установленая планка
      */
     @SuppressWarnings("unchecked")
-    public List<Property> getToLevelUpForPljushki(String obj, int userId) {
+    public List<Property> getToLevelUpForPljushki(String obj, long userId) {
         String field = "";
         int maxLevel = 0;
         if (obj.equals("prop")) {
@@ -274,59 +274,59 @@ public class PropertyRep {
         return em.createQuery(hql).setParameter(0, userId).getResultList();
     }
 
-	/**
-	 * @param userId
-	 *            - id владельца имущества
-	 * @param type
-	 *            - тип имущества (Киоск, Сельский магазин, ...), может быть null, тогда этот параметр не учитывается
-	 * @param cityArea
-	 *            - район города
-	 * @param level
-	 *            - уровень имущества, может быть null, тогда этот параметр не учитывается
-	 * @param cashLevel
-	 *            - уровень кассы имущества, может быть null, тогда этот параметр не учитывается
-	 * @param active
-	 *            - активное имущество считается тогда, когда процент износа в нем меньше 100%
-	 * @return список имущества пользователя, учитывая указанные параметры
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Property> getPropertyListWithParams(Integer userId, TradeBuildingsTypes type, CityAreas cityArea, Integer level,
-			Integer cashLevel, boolean active) {
+    /**
+     * @param userId
+     *            - id владельца имущества
+     * @param type
+     *            - тип имущества (Киоск, Сельский магазин, ...), может быть null, тогда этот параметр не учитывается
+     * @param cityArea
+     *            - район города
+     * @param level
+     *            - уровень имущества, может быть null, тогда этот параметр не учитывается
+     * @param cashLevel
+     *            - уровень кассы имущества, может быть null, тогда этот параметр не учитывается
+     * @param active
+     *            - активное имущество считается тогда, когда процент износа в нем меньше 100%
+     * @return список имущества пользователя, учитывая указанные параметры
+     */
+    @SuppressWarnings("unchecked")
+    public List<Property> getPropertyListWithParams(long userId, TradeBuildingsTypes type, CityAreas cityArea, Integer level,
+            Integer cashLevel, boolean active) {
 
-		String hql = "from Property as pr WHERE userId = :userId";
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("userId", userId);
+        String hql = "from Property as pr WHERE userId = :userId";
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("userId", userId);
 
-		// установка параметра Типа
-		if (type != null) {
-			hql += " and pr.tradeBuildingType = :type";
-			params.put("type", type);
-		}
-		// установка параметра Района города
-		if (cityArea != null) {
-			hql += " and pr.cityArea = :cityArea";
-			params.put("cityArea", cityArea);
-		}
-		// установка параметра Уровня имущества
-		if (level != null) {
-			hql += " and pr.level = :level";
-			params.put("level", level);
-		}
-		// установка параметра Уровня кассы имущества
-		if (cashLevel != null) {
-			hql += " and pr.cashLevel = :cashLevel";
-			params.put("cashLevel", cashLevel);
-		}
-		// установка параметра процента износа (показатель активности имущества)
-		if (active) {
-			hql += " and pr.depreciationPercent < 100";
-		}
+        // установка параметра Типа
+        if (type != null) {
+            hql += " and pr.tradeBuildingType = :type";
+            params.put("type", type);
+        }
+        // установка параметра Района города
+        if (cityArea != null) {
+            hql += " and pr.cityArea = :cityArea";
+            params.put("cityArea", cityArea);
+        }
+        // установка параметра Уровня имущества
+        if (level != null) {
+            hql += " and pr.level = :level";
+            params.put("level", level);
+        }
+        // установка параметра Уровня кассы имущества
+        if (cashLevel != null) {
+            hql += " and pr.cashLevel = :cashLevel";
+            params.put("cashLevel", cashLevel);
+        }
+        // установка параметра процента износа (показатель активности имущества)
+        if (active) {
+            hql += " and pr.depreciationPercent < 100";
+        }
 
-		Query query = em.createQuery(hql);
-		// установка параметров
-		for (Map.Entry<String, Object> entry : params.entrySet()) {
-			query.setParameter(entry.getKey(), entry.getValue());
-		}
-		return query.getResultList();
-	}
+        Query query = em.createQuery(hql);
+        // установка параметров
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        return query.getResultList();
+    }
 }

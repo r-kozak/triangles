@@ -55,7 +55,7 @@ public class LotteryRep {
     /**
      * Проверяет, есть ли у пользователя выигранные, не просмотренные предсказания
      */
-    public boolean isUserHasPrediction(int userId) {
+    public boolean isUserHasPrediction(long userId) {
         long countOfPredictions = getPljushkiCountByArticle(userId, LotteryArticles.PREDICTION);
         return countOfPredictions > 0;
     }
@@ -80,7 +80,7 @@ public class LotteryRep {
      * 
      * @throws ParseException
      */
-    public List<Object> getLotteryStory(int userId, LotterySearch ls) throws ParseException {
+    public List<Object> getLotteryStory(long userId, LotterySearch ls) throws ParseException {
         String hql00 = "SELECT count(id) ";
         String hql0 = "FROM LotteryInfo WHERE userId = :userId";
         String hql1 = "";
@@ -138,7 +138,7 @@ public class LotteryRep {
      * @param article
      * @return
      */
-    public long getPljushkiCountByArticle(int userId, LotteryArticles article) {
+    public long getPljushkiCountByArticle(long userId, LotteryArticles article) {
         String hql = "SELECT sum(remainingAmount) from LotteryInfo WHERE userId = ?0 AND article = ?1 AND remainingAmount > 0";
         Query query = em.createQuery(hql);
         query.setParameter(0, userId);
@@ -157,7 +157,7 @@ public class LotteryRep {
      * @param userId
      * @return
      */
-    public LotteryInfo getUserPrediction(int userId) throws NoResultException {
+    public LotteryInfo getUserPrediction(long userId) throws NoResultException {
         LotteryInfo result = getLotteryInfoByArticle(userId, LotteryArticles.PREDICTION);
         if (result == null) {
             throw new NoResultException();
@@ -171,58 +171,58 @@ public class LotteryRep {
      * @param levelArticle
      *            - статья лицензии
      */
-    public LotteryInfo getUserLicenses(int userId, LotteryArticles levelArticle) {
+    public LotteryInfo getUserLicenses(long userId, LotteryArticles levelArticle) {
         return getLotteryInfoByArticle(userId, levelArticle);
     }
 
     /**
      * Получает запись с выигранными плюшками повышения уровня имущества.
      */
-    public LotteryInfo getUserUpPropLevel(int userId) {
+    public LotteryInfo getUserUpPropLevel(long userId) {
         return getLotteryInfoByArticle(userId, LotteryArticles.PROPERTY_UP);
     }
 
     /**
      * Получает запись с выигранными плюшками повышения уровня кассы имущества.
      */
-    public LotteryInfo getUserUpCashLevel(int userId) {
+    public LotteryInfo getUserUpCashLevel(long userId) {
         return getLotteryInfoByArticle(userId, LotteryArticles.CASH_UP);
     }
 
-	/**
-	 * @param userId
-	 * @param article
-	 * @return список выигранного в лотерею с определенной статьей. Например вернет все Лицензии 2-го уровня, где остаток > 0.
-	 */
-	@SuppressWarnings("unchecked")
-	public List<LotteryInfo> getLotteryInfoListByArticle(int userId, LotteryArticles article) {
-		Query query = createQueryForLotteryInfoByArticle(userId, article);
-		return query.getResultList();
-	}
+    /**
+     * @param userId
+     * @param article
+     * @return список выигранного в лотерею с определенной статьей. Например вернет все Лицензии 2-го уровня, где остаток > 0.
+     */
+    @SuppressWarnings("unchecked")
+    public List<LotteryInfo> getLotteryInfoListByArticle(long userId, LotteryArticles article) {
+        Query query = createQueryForLotteryInfoByArticle(userId, article);
+        return query.getResultList();
+    }
 
-	public int countOfPlaysToday(int userId) {
-		String hql = "SELECT sum(ticketCount) FROM LotteryInfo WHERE userId = ?0 AND date between ?1 and ?2";
+    public int countOfPlaysToday(long userId) {
+        String hql = "SELECT sum(ticketCount) FROM LotteryInfo WHERE userId = ?0 AND date between ?1 and ?2";
 
-		Query query = em.createQuery(hql);
-		query.setParameter(0, userId);
+        Query query = em.createQuery(hql);
+        query.setParameter(0, userId);
 
-		Date currDate = new Date();
-		query.setParameter(1, DateUtils.getStart(currDate));
-		query.setParameter(2, DateUtils.getEnd(currDate));
-		try {
-			Long result = (Long) query.getSingleResult();
-			if (result == null) {
-				return 0;
-			}
-			return new BigDecimal(result).intValueExact();
-		} catch (NoResultException e) {
-			return 0;
-		}
-	}
+        Date currDate = new Date();
+        query.setParameter(1, DateUtils.getStart(currDate));
+        query.setParameter(2, DateUtils.getEnd(currDate));
+        try {
+            Long result = (Long) query.getSingleResult();
+            if (result == null) {
+                return 0;
+            }
+            return new BigDecimal(result).intValueExact();
+        } catch (NoResultException e) {
+            return 0;
+        }
+    }
 
     @SuppressWarnings("unchecked")
-    private LotteryInfo getLotteryInfoByArticle(int userId, LotteryArticles article) {
-		Query query = createQueryForLotteryInfoByArticle(userId, article);
+    private LotteryInfo getLotteryInfoByArticle(long userId, LotteryArticles article) {
+        Query query = createQueryForLotteryInfoByArticle(userId, article);
         query.setMaxResults(1);
 
         List<LotteryInfo> result = query.getResultList();
@@ -233,20 +233,20 @@ public class LotteryRep {
         }
     }
 
-	/**
-	 * Создается запрос на выборку из базы данных списка остатков, выигранных в лото, где оставшееся количество > 0 и статья
-	 * выигрыша в лото соответствует переданному параметру.
-	 * 
-	 * @param userId
-	 * @param article
-	 *            статья выигрыша в лото
-	 * @return запрос
-	 */
-	private Query createQueryForLotteryInfoByArticle(int userId, LotteryArticles article) {
-		String hql = "from LotteryInfo WHERE userId = ?0 AND article = ?1 AND remainingAmount > 0 ORDER BY id ASC";
-		Query query = em.createQuery(hql);
-		query.setParameter(0, userId);
-		query.setParameter(1, article);
-		return query;
-	}
+    /**
+     * Создается запрос на выборку из базы данных списка остатков, выигранных в лото, где оставшееся количество > 0 и статья
+     * выигрыша в лото соответствует переданному параметру.
+     * 
+     * @param userId
+     * @param article
+     *            статья выигрыша в лото
+     * @return запрос
+     */
+    private Query createQueryForLotteryInfoByArticle(long userId, LotteryArticles article) {
+        String hql = "from LotteryInfo WHERE userId = ?0 AND article = ?1 AND remainingAmount > 0 ORDER BY id ASC";
+        Query query = em.createQuery(hql);
+        query.setParameter(0, userId);
+        query.setParameter(1, article);
+        return query;
+    }
 }

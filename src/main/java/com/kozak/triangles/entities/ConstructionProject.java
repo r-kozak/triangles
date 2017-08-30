@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,19 +22,15 @@ import com.kozak.triangles.utils.PropertyUtil;
  */
 @Entity(name = "ConstructionProject")
 @Table(name = "CONSTRUCTION_PROJECT")
-public class ConstructionProject {
-    @Id
-	@Column(name = "ID")
-    @GeneratedValue
-    private Integer id;
+public class ConstructionProject extends BaseEntity {
 
     // наименование имущества
     @Column(name = "NAME")
     private String name;
 
     // владелец имущества
-	@Column(name = "USER_ID")
-    private int userId;
+    @Column(name = "USER_ID")
+    private long userId;
 
     // тип - КИОСК, СЕЛЬСКИЙ МАГАЗИН ...
     @Column(name = "BUILDING_TYPE")
@@ -59,7 +53,7 @@ public class ConstructionProject {
     private CityAreas cityArea;
 
     // тип строителей
-	@Column(name = "BUILDERS_TYPE")
+    @Column(name = "BUILDERS_TYPE")
     private BuildersTypes buildersType;
 
     // процент завершенности строительства
@@ -69,24 +63,16 @@ public class ConstructionProject {
     public ConstructionProject() {
     }
 
-	public ConstructionProject(TradeBuildingsTypes tradeBuildingType, Date finishDate, CityAreas cityArea,
-            BuildersTypes buildersType, int userId) {
+    public ConstructionProject(TradeBuildingsTypes tradeBuildingType, Date finishDate, CityAreas cityArea,
+            BuildersTypes buildersType, long userId) {
         this.startDate = new Date();
-		this.name = PropertyUtil.generatePropertyName(tradeBuildingType, cityArea);
+        this.name = PropertyUtil.generatePropertyName(tradeBuildingType, cityArea);
 
-		this.buildingType = tradeBuildingType;
+        this.buildingType = tradeBuildingType;
         this.finishDate = finishDate;
         this.cityArea = cityArea;
         this.buildersType = buildersType;
         this.userId = userId;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public TradeBuildingsTypes getBuildingType() {
@@ -144,4 +130,13 @@ public class ConstructionProject {
     public void setBuildersType(BuildersTypes buildersType) {
         this.buildersType = buildersType;
     }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
 }

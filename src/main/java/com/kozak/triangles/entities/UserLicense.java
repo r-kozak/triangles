@@ -4,34 +4,21 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "UserLicense")
-public class UserLicense {
-    @Id
-    @GeneratedValue
-    private int id;
+public class UserLicense extends BaseEntity {
 
     // уровень лицензии
-	@Column(name = "LICENSE_LEVEL")
+    @Column(name = "LICENSE_LEVEL")
     private byte licenseLevel = 1;
 
     // дата окончания лицензии
-	@Column(name = "LOSS_DATE")
+    @Column(name = "LOSS_DATE")
     private Date lossDate = new Date();
 
     public UserLicense() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public byte getLicenseLevel() {

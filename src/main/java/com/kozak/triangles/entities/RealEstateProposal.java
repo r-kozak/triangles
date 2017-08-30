@@ -7,8 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,52 +25,48 @@ import com.kozak.triangles.utils.DateUtils;
  */
 @Entity(name = "re_proposal")
 @Table(name = "re_proposal")
-public class RealEstateProposal {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue
-    private Integer id;
+public class RealEstateProposal extends BaseEntity {
 
-	@Column(name = "BUILDING_TYPE")
+    @Column(name = "BUILDING_TYPE")
     @Enumerated(EnumType.STRING)
-	private TradeBuildingsTypes tradeBuildingType; // тип торгового здания (Киоск, Маркет, ...)
+    private TradeBuildingsTypes tradeBuildingType; // тип торгового здания (Киоск, Маркет, ...)
 
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "APPEAR_DATE")
-	private Date appearDate; // дата появления на рынке
+    @Column(name = "APPEAR_DATE")
+    private Date appearDate; // дата появления на рынке
 
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "LOSS_DATE")
-	private Date lossDate; // дата ухода с рынка
+    @Column(name = "LOSS_DATE")
+    private Date lossDate; // дата ухода с рынка
 
-	@Column(name = "PURCHASE_PRICE")
-	private long purchasePrice; // цена покупки
+    @Column(name = "PURCHASE_PRICE")
+    private long purchasePrice; // цена покупки
 
-	@Column(name = "CITY_AREA")
+    @Column(name = "CITY_AREA")
     @Enumerated(EnumType.STRING)
-	private CityAreas cityArea; // район здания
+    private CityAreas cityArea; // район здания
 
-	@Column(name = "VALID")
-	private boolean valid = true; // предложение еще действительно
+    @Column(name = "VALID")
+    private boolean valid = true; // предложение еще действительно
 
     // id имущества, которое продается (0, если новое)
-	@Column(name = "USED_ID")
-    private int usedId;
+    @Column(name = "USED_ID")
+    private long usedId;
 
     // уровень имущества (0, если новое)
-	@Column(name = "PROP_LEVEL")
+    @Column(name = "PROP_LEVEL")
     private int propLevel;
 
     // уровень кассы имущества (0, если новое)
-	@Column(name = "CASH_LEVEL")
+    @Column(name = "CASH_LEVEL")
     private int cashLevel;
 
     // процент износа имущества
-	@Column(name = "DEPRECIATION")
+    @Column(name = "DEPRECIATION")
     private double depreciation;
 
-	public RealEstateProposal(TradeBuildingsTypes tradeBuildingType, Date lossDate, long purchasePrice, CityAreas cityArea) {
-		this.tradeBuildingType = tradeBuildingType;
+    public RealEstateProposal(TradeBuildingsTypes tradeBuildingType, Date lossDate, long purchasePrice, CityAreas cityArea) {
+        this.tradeBuildingType = tradeBuildingType;
         this.appearDate = new Date();
         this.lossDate = lossDate;
         this.purchasePrice = purchasePrice;
@@ -82,13 +76,13 @@ public class RealEstateProposal {
     /**
      * конструктор вызывается при формировании предложения на рынке когда пользователь продает имущество
      */
-	public RealEstateProposal(Property property) {
-		// получить данные всех торговых строений
-		Map<Integer, TradeBuilding> tradeBuildingsData = TradeBuildingsTableData.getTradeBuildingsDataMap();
-		TradeBuilding propData = tradeBuildingsData.get(property.getTradeBuildingType().ordinal());
-		int countDaysOnMarket = Math.round((propData.getMarketTermMin() + propData.getMarketTermMax()) / 2);
+    public RealEstateProposal(Property property) {
+        // получить данные всех торговых строений
+        Map<Integer, TradeBuilding> tradeBuildingsData = TradeBuildingsTableData.getTradeBuildingsDataMap();
+        TradeBuilding propData = tradeBuildingsData.get(property.getTradeBuildingType().ordinal());
+        int countDaysOnMarket = Math.round((propData.getMarketTermMin() + propData.getMarketTermMax()) / 2);
 
-		this.tradeBuildingType = property.getTradeBuildingType();
+        this.tradeBuildingType = property.getTradeBuildingType();
         this.appearDate = new Date();
 
         this.lossDate = DateUtils.addDays(new Date(), countDaysOnMarket);
@@ -103,23 +97,15 @@ public class RealEstateProposal {
     public RealEstateProposal() {
     }
 
-    public Integer getId() {
-        return id;
+    public TradeBuildingsTypes getTradeBuildingType() {
+        return tradeBuildingType;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setTradeBuildingType(TradeBuildingsTypes tradeBuildingType) {
+        this.tradeBuildingType = tradeBuildingType;
     }
 
-	public TradeBuildingsTypes getTradeBuildingType() {
-		return tradeBuildingType;
-	}
-
-	public void setTradeBuildingType(TradeBuildingsTypes tradeBuildingType) {
-		this.tradeBuildingType = tradeBuildingType;
-	}
-
-	public Date getAppearDate() {
+    public Date getAppearDate() {
         return appearDate;
     }
 
@@ -159,7 +145,7 @@ public class RealEstateProposal {
         this.valid = valid;
     }
 
-    public int getUsedId() {
+    public long getUsedId() {
         return usedId;
     }
 

@@ -32,7 +32,7 @@ public class MessageController extends BaseController {
      */
     @RequestMapping(value = "/arbor", method = RequestMethod.GET)
     String arbor(User user, Model model) {
-		model = addMoneyInfoToModel(model, user);
+        model = addMoneyInfoToModel(model, user);
 
         List<Messages> messages = msgRep.getAllMsgs();
         model.addAttribute("messages", messages);
@@ -48,8 +48,8 @@ public class MessageController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/arbor", method = RequestMethod.POST)
-    String postMessage(@RequestParam("message") String message,
-            @RequestParam("g-recaptcha-response") String gRecapResp, User user, Model model) throws IOException {
+    String postMessage(@RequestParam("message") String message, @RequestParam("g-recaptcha-response") String gRecapResp,
+            User user, Model model) throws IOException {
 
         if (message == null || message.trim().isEmpty() || message.length() > Constants.MSG_LEN) {
             return "redirect:/arbor";

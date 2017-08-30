@@ -20,13 +20,13 @@ public enum LotteryArticles {
 	VILLAGE_SHOP, 
 	STATIONER_SHOP;
 
-	private static final String LICENSE_ARTICLE_PREFIX = "LICENSE_";
+    private static final String LICENSE_ARTICLE_PREFIX = "LICENSE_";
 
-	public static LotteryArticles getLicenseArticleByLevel(int licenseLevel) throws NoSuchLicenseLevelException {
-		LotteryArticles result = LotteryArticles.valueOf(LICENSE_ARTICLE_PREFIX + licenseLevel);
-		if (result == null) {
-			throw new NoSuchLicenseLevelException("Такого уровня лицензий не существует!");
-		}
-		return result;
-	}
+    public static LotteryArticles getLicenseArticleByLevel(int licenseLevel) throws NoSuchLicenseLevelException {
+        LotteryArticles result = LotteryArticles.valueOf(LICENSE_ARTICLE_PREFIX + licenseLevel);
+        if (result == null) {
+            throw new NoSuchLicenseLevelException("Такого уровня лицензий не существует!");
+        }
+        return result;
+    }
 }

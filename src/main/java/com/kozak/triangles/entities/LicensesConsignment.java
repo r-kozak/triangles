@@ -5,8 +5,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -20,79 +18,66 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "LicensesConsignment")
-public class LicensesConsignment {
+public class LicensesConsignment extends BaseEntity {
 
-	@Id
-	@GeneratedValue
-	@Column(name = "CONSIGNMENT_ID", unique = true, nullable = false)
-	private int id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MARKET_ID", nullable = false)
+    private LicenseMarket licenseMarket; // магазин лицензий
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MARKET_ID", nullable = false)
-	private LicenseMarket licenseMarket; // магазин лицензий
+    @Column(name = "LICENSE_LEVEL")
+    private byte licenseLevel; // тип, уровень лицензий (2-4)
 
-	@Column(name = "LICENSE_LEVEL")
-	private byte licenseLevel; // тип, уровень лицензий (2-4)
+    @Column(name = "COUNT_ON_SELL")
+    private int countOnSell; // количество на продаже
 
-	@Column(name = "COUNT_ON_SELL")
-	private int countOnSell; // количество на продаже
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "SELL_DATE")
+    private Date sellDate; // дата продажи партии лицензий
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "SELL_DATE")
-	private Date sellDate; // дата продажи партии лицензий
+    @Column(name = "PROFIT")
+    private long profit; // сумма прибыли от продажи лицензий
 
-	@Column(name = "PROFIT")
-	private long profit; // сумма прибыли от продажи лицензий
+    public LicensesConsignment() {
+    }
 
-	public LicensesConsignment() {
-	}
+    public LicenseMarket getLicenseMarket() {
+        return licenseMarket;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public void setLicenseMarket(LicenseMarket licenseMarket) {
+        this.licenseMarket = licenseMarket;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getCountOnSell() {
+        return countOnSell;
+    }
 
-	public LicenseMarket getLicenseMarket() {
-		return licenseMarket;
-	}
+    public void setCountOnSell(int countOnSell) {
+        this.countOnSell = countOnSell;
+    }
 
-	public void setLicenseMarket(LicenseMarket licenseMarket) {
-		this.licenseMarket = licenseMarket;
-	}
+    public long getProfit() {
+        return profit;
+    }
 
-	public int getCountOnSell() {
-		return countOnSell;
-	}
+    public void setProfit(long totalProfit) {
+        this.profit = totalProfit;
+    }
 
-	public void setCountOnSell(int countOnSell) {
-		this.countOnSell = countOnSell;
-	}
+    public byte getLicenseLevel() {
+        return licenseLevel;
+    }
 
-	public long getProfit() {
-		return profit;
-	}
+    public void setLicenseLevel(byte licenseLevel) {
+        this.licenseLevel = licenseLevel;
+    }
 
-	public void setProfit(long totalProfit) {
-		this.profit = totalProfit;
-	}
+    public Date getSellDate() {
+        return sellDate;
+    }
 
-	public byte getLicenseLevel() {
-		return licenseLevel;
-	}
-
-	public void setLicenseLevel(byte licenseLevel) {
-		this.licenseLevel = licenseLevel;
-	}
-
-	public Date getSellDate() {
-		return sellDate;
-	}
-
-	public void setSellDate(Date sellDate) {
-		this.sellDate = sellDate;
-	}
+    public void setSellDate(Date sellDate) {
+        this.sellDate = sellDate;
+    }
 
 }

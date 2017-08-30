@@ -5,8 +5,6 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -18,43 +16,39 @@ import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "User")
-public class User {
-    @Id
-	@Column(name = "ID")
-    @GeneratedValue
-    private Integer id;
+public class User extends BaseEntity {
 
-	@Column(name = "LOGIN", length = 20)
+    @Column(name = "LOGIN", length = 20)
     @Length(min = 4, max = 20, message = "Длина логина должна быть 4-20!")
     private String login;
 
-	@Column(name = "PASSWORD", length = 32)
+    @Column(name = "PASSWORD", length = 32)
     @Length(min = 4, max = 32, message = "Длина пароля должна быть 4-32!")
     private String password;
 
-	@Column(name = "EMAIL", length = 50)
+    @Column(name = "EMAIL", length = 50)
     @Email(message = "Это не e-mail!")
     private String email;
 
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "LAST_ENTER")
+    @Column(name = "LAST_ENTER")
     private Date lastEnter;
 
     // дата последнего бонуса
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "LAST_BONUS")
+    @Column(name = "LAST_BONUS")
     private Date lastBonus;
 
     // номер дня, за который был бонус
-	@Column(name = "DAY_NUMBER")
+    @Column(name = "DAY_NUMBER")
     private int dayNumber;
 
     // доминантность
-	@Column(name = "DOMI")
+    @Column(name = "DOMI")
     private int domi;
 
     // //////// зашифрованный логин
-	@Column(name = "ENCR_LOGIN")
+    @Column(name = "ENCR_LOGIN")
     private String encrLogin;
     // /////////////////
 
@@ -63,7 +57,7 @@ public class User {
     private UserLicense userLicense;
 
     // количество лотерейных билетов у пользователя
-	@Column(name = "LOTTERY_TICKETS")
+    @Column(name = "LOTTERY_TICKETS")
     private int lotteryTickets;
 
     @Transient
@@ -102,14 +96,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public boolean isAuthenticated() {

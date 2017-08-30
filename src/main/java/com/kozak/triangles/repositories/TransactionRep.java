@@ -41,13 +41,13 @@ public class TransactionRep {
      * @return all current user transactions where Article of cash flow = some_type
      */
     @SuppressWarnings("unchecked")
-    public List<Transaction> getUserTransactionsByType(int userId, ArticleCashFlow acf) {
+    public List<Transaction> getUserTransactionsByType(long userId, ArticleCashFlow acf) {
         String hql = "from Transac as tr where tr.userId = :userId and tr.articleCashFlow = :acf ORDER BY id";
         Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("acf", acf);
         return query.getResultList();
     }
 
-    public long getSumByAcf(int userId, ArticleCashFlow acf) {
+    public long getSumByAcf(long userId, ArticleCashFlow acf) {
         String hql = "SELECT sum(summa) from Transac as tr where tr.userId = :userId and tr.articleCashFlow = :acf";
         Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("acf", acf);
         Long result = (Long) query.getSingleResult();
@@ -58,16 +58,15 @@ public class TransactionRep {
         }
     }
 
-    public long getSumByTransfType(int userId, TransferTypes transfT) {
+    public long getSumByTransfType(long userId, TransferTypes transfT) {
         String hql = "SELECT sum(summa) from Transac as tr where tr.userId = :userId and tr.transferType = :trt";
         Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("trt", transfT);
         return Long.valueOf(query.getSingleResult().toString());
     }
 
-    public String getUserBalance(int userId) {
-        Query query = em.createQuery(
-                "Select balance from Transac as tr where tr.userId = :userId order by id DESC").setParameter(
-                "userId", userId);
+    public String getUserBalance(long userId) {
+        Query query = em.createQuery("Select balance from Transac as tr where tr.userId = :userId order by id DESC")
+                .setParameter("userId", userId);
         query.setMaxResults(1);
         return query.getSingleResult().toString();
     }
@@ -81,7 +80,7 @@ public class TransactionRep {
      * @return
      * @throws ParseException
      */
-    public List<Object> getTransactionsList(int userId, TransactSearch ts) throws ParseException {
+    public List<Object> getTransactionsList(long userId, TransactSearch ts) throws ParseException {
         String hql00 = "SELECT count(id) ";
         String hql01 = "SELECT sum(summa) ";
         String hql0 = "from Transac as tr where tr.userId = :userId";
@@ -91,11 +90,11 @@ public class TransactionRep {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
 
-		// description filter
-		if (!ts.getDescription().isEmpty()) {
-			hql1 += " and lower(tr.description) like :description";
-			params.put("description", "%" + ts.getDescription().toLowerCase() + "%");
-		}
+        // description filter
+        if (!ts.getDescription().isEmpty()) {
+            hql1 += " and lower(tr.description) like :description";
+            params.put("description", "%" + ts.getDescription().toLowerCase() + "%");
+        }
 
         // date filter
         hql1 += " and tr.transactDate between :dateFrom and :dateTo";
