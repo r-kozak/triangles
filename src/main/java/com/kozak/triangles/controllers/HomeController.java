@@ -117,6 +117,17 @@ public class HomeController extends BaseController {
                 model.addAttribute("toLicenseSell", licenseMarket.getLicensesConsignments().get(0).getSellDate());
             }
         }
+        
+        // информация по участкам земли в разных районах - сколько занято и сколько всего
+        model.addAttribute("landLotGhettoBusy", prRep.cityAreaProperties(userId, CityAreas.GHETTO).size()); // занятые участки
+        model.addAttribute("landLotOutskirtsBusy", prRep.cityAreaProperties(userId, CityAreas.OUTSKIRTS).size());
+        model.addAttribute("landLotChinatownBusy", prRep.cityAreaProperties(userId, CityAreas.CHINATOWN).size());
+        model.addAttribute("landLotCenterBusy", prRep.cityAreaProperties(userId, CityAreas.CENTER).size());
+        model.addAttribute("landLotGhettoTotal", landLotService.getCountOfLandLot(userId, CityAreas.GHETTO)); // сколько всего
+        model.addAttribute("landLotOutskirtsTotal", landLotService.getCountOfLandLot(userId, CityAreas.OUTSKIRTS));
+        model.addAttribute("landLotChinatownTotal", landLotService.getCountOfLandLot(userId, CityAreas.CHINATOWN));
+        model.addAttribute("landLotCenterTotal", landLotService.getCountOfLandLot(userId, CityAreas.CENTER));
+        
 
         // СТАТИСТИКА
         model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferTypes.PROFIT)); // прибыль всего
@@ -351,25 +362,32 @@ public class HomeController extends BaseController {
             user.setDayNumber(0);
             userRep.updateUser(user);
 
+            Long userId = user.getId();
+
             // transaction for DAILY_BONUS
             Transaction firstT = new Transaction("Начальный капитал", yest, Constants.GAME_START_BALANCE, TransferTypes.PROFIT,
-                    user.getId(), Constants.GAME_START_BALANCE, ArticleCashFlow.DAILY_BONUS);
+                    userId, Constants.GAME_START_BALANCE, ArticleCashFlow.DAILY_BONUS);
             trRep.addTransaction(firstT);
 
             // transaction for DEPOSIT
-            firstT = new Transaction("Начальный депозит", yest, 0, TransferTypes.PROFIT, user.getId(),
+            firstT = new Transaction("Начальный депозит", yest, 0, TransferTypes.PROFIT, userId,
                     Constants.GAME_START_BALANCE, ArticleCashFlow.DEPOSIT);
             trRep.addTransaction(firstT);
 
             // transaction for CREDIT
-            firstT = new Transaction("Начальный кредит", yest, 0, TransferTypes.SPEND, user.getId(), Constants.GAME_START_BALANCE,
+            firstT = new Transaction("Начальный кредит", yest, 0, TransferTypes.SPEND, userId, Constants.GAME_START_BALANCE,
                     ArticleCashFlow.CREDIT);
             trRep.addTransaction(firstT);
 
             // transaction for LEVY_ON_PROPERTY
-            firstT = new Transaction("Начальный сбор с имущества", yest, 0, TransferTypes.PROFIT, user.getId(),
+            firstT = new Transaction("Начальный сбор с имущества", yest, 0, TransferTypes.PROFIT, userId,
                     Constants.GAME_START_BALANCE, ArticleCashFlow.LEVY_ON_PROPERTY);
             trRep.addTransaction(firstT);
+
+            // дать участки пользователю
+            landLotService.addOneLandLot(userId, CityAreas.GHETTO);
+            landLotService.addOneLandLot(userId, CityAreas.GHETTO);
+            landLotService.addOneLandLot(userId, CityAreas.OUTSKIRTS);
         }
     }
 

@@ -375,7 +375,7 @@ public class LotteryController extends BaseController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/confirm-level-up", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
     public @ResponseBody ResponseEntity<String> confirmLevelUp(@RequestParam("obj") String obj,
-            @RequestParam("propId") int propId, User user) {
+            @RequestParam("propId") long propId, User user) {
 
         JSONObject resultJson = new JSONObject();
         long userId = user.getId();

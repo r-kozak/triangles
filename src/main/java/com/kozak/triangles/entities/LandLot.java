@@ -2,40 +2,62 @@ package com.kozak.triangles.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
+
+import com.kozak.triangles.enums.CityAreas;
 
 /**
  * Таблица для хранения информации об участках земли
  * 
  * @author Roman: 30 августа 2017 г.
  */
-@Entity(name = "LAND_LOT")
+@Entity
 @Table(name = "LAND_LOT")
 public class LandLot extends BaseEntity {
 
-    @Column(name = "NAME", length = 20)
-    private String name;
+    @Column(name = "USER_ID")
+    private long userId;
 
-    @Column(name = "VALUE")
-    private String value;
+    @Column(name = "CITY_AREA")
+    @Enumerated(EnumType.STRING)
+    private CityAreas cityArea; // район участка земли
+
+    @Column(name = "LOT_COUNT")
+    private int lotCount; // количество участков земли
 
     public LandLot() {
     }
 
-    public String getName() {
-        return name;
+    public LandLot(long userId, CityAreas cityArea, int lotCount) {
+        this.userId = userId;
+        this.cityArea = cityArea;
+        this.lotCount = lotCount;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public long getUserId() {
+        return userId;
     }
 
-    public String getValue() {
-        return value;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public CityAreas getCityArea() {
+        return cityArea;
+    }
+
+    public void setCityArea(CityAreas cityArea) {
+        this.cityArea = cityArea;
+    }
+
+    public int getLotCount() {
+        return lotCount;
+    }
+
+    public void setLotCount(int lotCount) {
+        this.lotCount = lotCount;
     }
 
 }

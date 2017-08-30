@@ -139,7 +139,7 @@
 				</table>
 			</div>
 
-			<div class="col-md-4 col-md-offset-2">
+			<div class="col-md-4">
 				<div class="block_title text-center">
 					<a href="${pageContext.request.contextPath}/building" class="btn"><span
 						class="glyphicon glyphicon-equalizer text-danger"> Стройка</span></a>
@@ -261,6 +261,31 @@
 					</c:choose>
 				</table>
 			</div>
+      
+            <div class="col-md-4">
+              <div class="block_title text-center">
+                <a href="${pageContext.request.contextPath}/property/trade-property" class="btn"><span
+                  class="glyphicon glyphicon-briefcase text-danger"> Участки</span></a>
+              </div>
+              <table class="table">
+                <tr>
+                  <td class="tableTd1">Гетто</td>
+                  <td class="tableTd2"><span class="label label-default">${landLotGhettoBusy}/${landLotGhettoTotal}</span></td>
+                </tr>
+                <tr>
+                  <td class="tableTd1">Окраина</td>
+                  <td class="tableTd2"><span class="label label-default">${landLotOutskirtsBusy}/${landLotOutskirtsTotal}</span></td>
+                </tr>
+                <tr>
+                  <td class="tableTd1">Чайнатаун</td>
+                  <td class="tableTd2"><span class="label label-default">${landLotChinatownBusy}/${landLotChinatownTotal}</span></td>
+                </tr>
+                <tr>
+                  <td class="tableTd1">Центр</td>
+                  <td class="tableTd2"><span class="label label-default">${landLotCenterBusy}/${landLotCenterTotal}</span></td>
+                </tr>                
+              </table>
+            </div>
 		</div>
 		
 		<div class="row">

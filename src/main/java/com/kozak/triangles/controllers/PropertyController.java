@@ -242,7 +242,7 @@ public class PropertyController extends BaseController {
      * получение страницы с конкретным экземпляром имущества
      */
     @RequestMapping(value = "/{prId}", method = RequestMethod.GET)
-    public String specificPropertyPage(@ModelAttribute("prId") int prId, User user, Model model) {
+    public String specificPropertyPage(@ModelAttribute("prId") long prId, User user, Model model) {
         long userId = user.getId();
         PropertyUtil.profitCalculation(userId, prRep); // начисление прибыли по имуществу пользователя
 
@@ -269,7 +269,7 @@ public class PropertyController extends BaseController {
      * операции с имуществом
      */
     @RequestMapping(value = "operations/{prId}", method = RequestMethod.POST)
-    public String propertyOperations(@ModelAttribute("prId") int prId, @ModelAttribute("action") String action,
+    public String propertyOperations(@ModelAttribute("prId") long prId, @ModelAttribute("action") String action,
             @ModelAttribute("newName") String newName, User user, Model model, RedirectAttributes ra) {
 
         long userId = user.getId();
@@ -298,7 +298,7 @@ public class PropertyController extends BaseController {
      * запрос на изьятие денег с кассы имущества
      */
     @RequestMapping(value = "get-cash/{prId}", method = RequestMethod.GET)
-    public String getCash(@ModelAttribute("prId") int prId, @RequestParam("redirectAddress") String redirectAddress, User user,
+    public String getCash(@ModelAttribute("prId") long prId, @RequestParam("redirectAddress") String redirectAddress, User user,
             RedirectAttributes ra) {
 
         long userId = user.getId();
@@ -338,7 +338,7 @@ public class PropertyController extends BaseController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "/repair", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
     public @ResponseBody ResponseEntity<String> repairRequest(@RequestParam("type") String type,
-            @RequestParam("propId") Integer propId, User user) {
+            @RequestParam("propId") long propId, User user) {
         JSONObject resultJson = new JSONObject();
 
         long userId = user.getId();
@@ -397,7 +397,7 @@ public class PropertyController extends BaseController {
      *            - объект [prop; cash] (само имущество или его касса)
      */
     @RequestMapping(value = "/level-up", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
-    public @ResponseBody ResponseEntity<String> levelUp(@RequestParam("propId") Integer propId,
+    public @ResponseBody ResponseEntity<String> levelUp(@RequestParam("propId") long propId,
             @RequestParam("action") String action, @RequestParam("obj") String obj, User user) {
 
         JSONObject resultJson = new JSONObject();
@@ -449,7 +449,7 @@ public class PropertyController extends BaseController {
             }
 
             propId = propId.replace("[", "").replace("]", "").replace("\"", "");
-            Property prop = prRep.getSpecificProperty(userId, Integer.parseInt(propId));
+            Property prop = prRep.getSpecificProperty(userId, Long.parseLong(propId));
 
             if (prop != null) {
                 if (obj.equals("cash")) { // если это повышение для кассы
@@ -507,7 +507,7 @@ public class PropertyController extends BaseController {
 
         for (String propId : propIds) {
             propId = propId.replace("[", "").replace("]", "").replace("\"", "");
-            Property property = prRep.getSpecificProperty(userId, Integer.parseInt(propId));
+            Property property = prRep.getSpecificProperty(userId, Long.parseLong(propId));
 
             if (property == null) {
                 ResponseUtil.putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");

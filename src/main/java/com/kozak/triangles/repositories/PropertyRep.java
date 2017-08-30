@@ -90,7 +90,7 @@ public class PropertyRep {
     /**
      * 
      * @param rowsOnPage
-     * @return список имущества пользователя для отображения на странице имущества
+     * @return список имущества пользователя
      */
     public List<Object> getPropertyList(long userId, TradePropertySearch tps, int rowsOnPage) {
         String hql00 = "SELECT count(id) ";
@@ -184,7 +184,7 @@ public class PropertyRep {
      *            id имущества
      * @return конкретное имущество конкретного пользователя
      */
-    public Property getSpecificProperty(long userId, int id) {
+    public Property getSpecificProperty(long userId, long id) {
         String hql = "FROM Property as pr WHERE pr.userId = :userId and pr.id = :id";
         Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("id", id);
         Property result = null;
@@ -327,6 +327,20 @@ public class PropertyRep {
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
+        return query.getResultList();
+    }
+
+    /**
+     * @param userId
+     *            - пользователь
+     * @param cityArea
+     *            - район города
+     * @return список имущества конкретного пользователя в конкретном районе города
+     */
+    @SuppressWarnings("unchecked")
+    public List<Property> cityAreaProperties(long userId, CityAreas cityArea) {
+        String hql = "FROM Property as pr WHERE pr.userId = :userId AND pr.cityArea = :cityArea";
+        Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("cityArea", cityArea);
         return query.getResultList();
     }
 }
