@@ -27,8 +27,8 @@ import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.search.RealEstateProposalsSearch;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.search.TradePropertySearch;
@@ -141,7 +141,7 @@ public class PropertyController extends BaseController {
                     Date purchDate = new Date();
                     long price = prop.getPurchasePrice();
 
-                    CityAreas cityArea = prop.getCityArea();
+                    CityArea cityArea = prop.getCityArea();
                     // новое имя имущества
                     String propName = PropertyUtil.generatePropertyName(buildData.getTradeBuildingType(), cityArea);
                     // если имущ. новое - добавить новое имущество пользователю, иначе - изменить владельца у б/у
@@ -164,7 +164,7 @@ public class PropertyController extends BaseController {
                     // rePrRep.updateREproposal(prop);
 
                     // снять деньги
-                    Transaction t = new Transaction("Покупка имущества: " + propName, purchDate, price, TransferTypes.SPEND,
+                    Transaction t = new Transaction("Покупка имущества: " + propName, purchDate, price, TransferType.SPEND,
                             userId, userMoney - price, ArticleCashFlow.BUY_PROPERTY);
                     trRep.addTransaction(t);
 
@@ -572,7 +572,7 @@ public class PropertyController extends BaseController {
         }
         prRep.updateProperty(prop);
 
-        Transaction t = new Transaction("Ремонт имущества: " + prop.getName(), new Date(), repairSum, TransferTypes.SPEND,
+        Transaction t = new Transaction("Ремонт имущества: " + prop.getName(), new Date(), repairSum, TransferType.SPEND,
                 prop.getUserId(), userMoney - repairSum, ArticleCashFlow.PROPERTY_REPAIR);
         trRep.addTransaction(t);
 
@@ -599,7 +599,7 @@ public class PropertyController extends BaseController {
             Long cash = prop.getCash();
             Long oldBalance = Long.parseLong(trRep.getUserBalance(userId));
 
-            Transaction t = new Transaction(desc, new Date(), cash, TransferTypes.PROFIT, userId, oldBalance + cash,
+            Transaction t = new Transaction(desc, new Date(), cash, TransferType.PROFIT, userId, oldBalance + cash,
                     ArticleCashFlow.LEVY_ON_PROPERTY);
 
             trRep.addTransaction(t);
@@ -755,7 +755,7 @@ public class PropertyController extends BaseController {
             // снять деньги
             String descr = String.format("Улучшение кассы до уровня: %s. Касса им-ва: %s", nCashLevel, prop.getName());
             long currBal = Long.parseLong(trRep.getUserBalance(userId));
-            Transaction tr = new Transaction(descr, new Date(), sum, TransferTypes.SPEND, userId, currBal - sum,
+            Transaction tr = new Transaction(descr, new Date(), sum, TransferType.SPEND, userId, currBal - sum,
                     ArticleCashFlow.UP_CASH_LEVEL);
             trRep.addTransaction(tr);
             // //
@@ -830,7 +830,7 @@ public class PropertyController extends BaseController {
             // снять деньги
             String descr = String.format("Улучшение им-ва: %s до уровня: %s", prop.getName(), nPropLevel);
             long currBal = Long.parseLong(trRep.getUserBalance(userId));
-            Transaction tr = new Transaction(descr, new Date(), sum, TransferTypes.SPEND, userId, currBal - sum,
+            Transaction tr = new Transaction(descr, new Date(), sum, TransferType.SPEND, userId, currBal - sum,
                     ArticleCashFlow.UP_PROP_LEVEL);
             trRep.addTransaction(tr);
             // //

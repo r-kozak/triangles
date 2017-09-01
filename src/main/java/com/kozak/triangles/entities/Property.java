@@ -13,8 +13,8 @@ import javax.persistence.TemporalType;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
 import com.kozak.triangles.utils.DateUtils;
 
 /**
@@ -47,7 +47,7 @@ public class Property extends BaseEntity implements JSONAware {
 
     @Column(name = "CITY_AREA")
     @Enumerated(EnumType.STRING)
-    private CityAreas cityArea;
+    private CityArea cityArea;
 
     @Column(name = "LEVEL")
     private int level;
@@ -82,7 +82,7 @@ public class Property extends BaseEntity implements JSONAware {
 
     @Column(name = "BUILD_TYPE")
     @Enumerated(EnumType.STRING)
-    private TradeBuildingsTypes tradeBuildingType;
+    private TradeBuildingType tradeBuildingType;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "NEXT_PROFIT")
@@ -101,7 +101,7 @@ public class Property extends BaseEntity implements JSONAware {
     public Property() {
     }
 
-    public Property(TradeBuilding data, long userId, CityAreas cityArea, Date purchaseDate, long initialCost, String name) {
+    public Property(TradeBuilding data, long userId, CityArea cityArea, Date purchaseDate, long initialCost, String name) {
 
         Date now = new Date();
 
@@ -131,11 +131,11 @@ public class Property extends BaseEntity implements JSONAware {
         this.userId = userId;
     }
 
-    public CityAreas getCityArea() {
+    public CityArea getCityArea() {
         return cityArea;
     }
 
-    public void setCityArea(CityAreas cityArea) {
+    public void setCityArea(CityArea cityArea) {
         this.cityArea = cityArea;
     }
 
@@ -203,11 +203,11 @@ public class Property extends BaseEntity implements JSONAware {
         this.name = name;
     }
 
-    public TradeBuildingsTypes getTradeBuildingType() {
+    public TradeBuildingType getTradeBuildingType() {
         return tradeBuildingType;
     }
 
-    public void setTradeBuildingType(TradeBuildingsTypes tradeBuildingType) {
+    public void setTradeBuildingType(TradeBuildingType tradeBuildingType) {
         this.tradeBuildingType = tradeBuildingType;
     }
 

@@ -6,7 +6,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-import com.kozak.triangles.enums.LotteryArticles;
+import com.kozak.triangles.enums.LotteryArticle;
 
 /**
  * Варианты выигрыша
@@ -22,7 +22,7 @@ public class WinningsData extends BaseEntity {
     // статья выигрыша (деньги, повышение уровня, предсказание, имущество...)
     @Column(name = "ARTICLE")
     @Enumerated(EnumType.STRING)
-    private LotteryArticles article;
+    private LotteryArticle article;
 
     // количество выигранного
     @Column(name = "COUNT")
@@ -39,11 +39,11 @@ public class WinningsData extends BaseEntity {
         this.randomNumFrom = randomNumFrom;
     }
 
-    public LotteryArticles getArticle() {
+    public LotteryArticle getArticle() {
         return article;
     }
 
-    public void setArticle(LotteryArticles article) {
+    public void setArticle(LotteryArticle article) {
         this.article = article;
     }
 

@@ -3,14 +3,14 @@ package com.kozak.triangles.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
 
 public class TradePropertySearch extends AbstractSearch {
     private String name = "";
     private int rowsOnPage;
-    private List<TradeBuildingsTypes> types = new ArrayList<TradeBuildingsTypes>();
-    private List<CityAreas> areas = new ArrayList<CityAreas>();
+    private List<TradeBuildingType> types = new ArrayList<TradeBuildingType>();
+    private List<CityArea> areas = new ArrayList<CityArea>();
     private String state = "all";
     private long sellPriceFrom;
     private long sellPriceTo;
@@ -25,8 +25,8 @@ public class TradePropertySearch extends AbstractSearch {
         super.clear();
         this.name = "";
         this.state = "all";
-        types = new ArrayList<TradeBuildingsTypes>();
-        areas = new ArrayList<CityAreas>();
+        types = new ArrayList<TradeBuildingType>();
+        areas = new ArrayList<CityArea>();
         this.sellPriceFrom = 0;
         this.sellPriceTo = 0;
         this.depreciationFrom = 0.0;
@@ -68,11 +68,11 @@ public class TradePropertySearch extends AbstractSearch {
         this.name = name;
     }
 
-    public List<TradeBuildingsTypes> getTypes() {
+    public List<TradeBuildingType> getTypes() {
         return types;
     }
 
-    public void setTypes(List<TradeBuildingsTypes> types) {
+    public void setTypes(List<TradeBuildingType> types) {
         this.types = types;
     }
 
@@ -140,11 +140,11 @@ public class TradePropertySearch extends AbstractSearch {
         this.depreciationMax = depreciationMax;
     }
 
-    public List<CityAreas> getAreas() {
+    public List<CityArea> getAreas() {
         return areas;
     }
 
-    public void setAreas(List<CityAreas> areas) {
+    public void setAreas(List<CityArea> areas) {
         this.areas = areas;
     }
 

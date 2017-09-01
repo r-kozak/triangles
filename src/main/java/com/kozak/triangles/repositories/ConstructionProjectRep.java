@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.ConstructionProject;
+import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.utils.DateUtils;
 
 @Repository
@@ -103,6 +104,18 @@ public class ConstructionProjectRep {
     public long getCountOfUserConstrProject(long userId) {
         String hql = "SELECT count(id) FROM ConstructionProject WHERE userId = ?0";
         Query query = em.createQuery(hql).setParameter(0, userId);
+        return (long) query.getSingleResult();
+    }
+
+    /**
+     * @param userId
+     * @param cityArea
+     *            район города
+     * @return общее количество строительных проектов пользователя в конкретном районе
+     */
+    public long getCountOfUserConstrProject(long userId, CityArea cityArea) {
+        String hql = "SELECT count(id) FROM ConstructionProject WHERE userId = ?0 AND cityArea = ?1";
+        Query query = em.createQuery(hql).setParameter(0, userId).setParameter(1, cityArea);
         return (long) query.getSingleResult();
     }
 

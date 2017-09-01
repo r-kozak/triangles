@@ -7,7 +7,7 @@ import com.kozak.triangles.exceptions.NoSuchLicenseLevelException;
  * строительство ур3, Лицензия на строительство ур4, Предсказание, Киоск, Сельский магазин, Магазин канцтоваров
  * 
  */
-public enum LotteryArticles {
+public enum LotteryArticle {
 
 	TRIANGLES, 
 	PROPERTY_UP, 
@@ -22,8 +22,8 @@ public enum LotteryArticles {
 
     private static final String LICENSE_ARTICLE_PREFIX = "LICENSE_";
 
-    public static LotteryArticles getLicenseArticleByLevel(int licenseLevel) throws NoSuchLicenseLevelException {
-        LotteryArticles result = LotteryArticles.valueOf(LICENSE_ARTICLE_PREFIX + licenseLevel);
+    public static LotteryArticle getLicenseArticleByLevel(int licenseLevel) throws NoSuchLicenseLevelException {
+        LotteryArticle result = LotteryArticle.valueOf(LICENSE_ARTICLE_PREFIX + licenseLevel);
         if (result == null) {
             throw new NoSuchLicenseLevelException("Такого уровня лицензий не существует!");
         }

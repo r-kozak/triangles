@@ -3,8 +3,8 @@ package com.kozak.triangles.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
 
 public class CityAreasTableData {
 
@@ -16,23 +16,23 @@ public class CityAreasTableData {
 
 	// процентные ставки, относящиеся к конкретному району города
 	@SuppressWarnings({ "unchecked", "serial", "rawtypes" })
-	private static Map<CityAreas, Integer> cityAreasPercents = new HashMap() {
+	private static Map<CityArea, Integer> cityAreasPercents = new HashMap() {
 		{
-			put(CityAreas.GHETTO, GHETTO_PERCENT);
-			put(CityAreas.OUTSKIRTS, OUTSKIRTS_PERCENT);
-			put(CityAreas.CHINATOWN, CHINATOWN_PERCENT);
-			put(CityAreas.CENTER, CENTER_PERCENT);
+			put(CityArea.GHETTO, GHETTO_PERCENT);
+			put(CityArea.OUTSKIRTS, OUTSKIRTS_PERCENT);
+			put(CityArea.CHINATOWN, CHINATOWN_PERCENT);
+			put(CityArea.CENTER, CENTER_PERCENT);
 		}
 	};
 
 	// короткие имена для районов города
 	@SuppressWarnings({ "rawtypes", "serial", "unchecked" })
-	private static Map<TradeBuildingsTypes, String> shortTradeBuildingsNames = new HashMap() {
+	private static Map<TradeBuildingType, String> shortTradeBuildingsNames = new HashMap() {
 		{
-			put(CityAreas.GHETTO, "GH");
-			put(CityAreas.OUTSKIRTS, "OT");
-			put(CityAreas.CHINATOWN, "CN");
-			put(CityAreas.CENTER, "CR");
+			put(CityArea.GHETTO, "GH");
+			put(CityArea.OUTSKIRTS, "OT");
+			put(CityArea.CHINATOWN, "CN");
+			put(CityArea.CENTER, "CR");
 		}
 	};
 
@@ -41,11 +41,11 @@ public class CityAreasTableData {
 	 *            - район города
 	 * @return процентную ставку района города
 	 */
-	public static int getCityAreaPercent(CityAreas cityArea) {
+	public static int getCityAreaPercent(CityArea cityArea) {
 		return cityAreasPercents.get(cityArea);
 	}
 
-	public static String getShortCityAreaName(CityAreas cityArea) {
+	public static String getShortCityAreaName(CityArea cityArea) {
 		return shortTradeBuildingsNames.get(cityArea);
 	}
 }

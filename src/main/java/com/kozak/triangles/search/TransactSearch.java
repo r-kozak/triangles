@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.TransferType;
 
 public class TransactSearch extends AbstractSearch {
 
     private String dateFrom = "";
     private String dateTo = "";
     private List<ArticleCashFlow> articles = new ArrayList<ArticleCashFlow>();
-    private TransferTypes transfer;
+    private TransferType transfer;
     private String description = "";
 
     @Override
@@ -48,11 +48,11 @@ public class TransactSearch extends AbstractSearch {
         this.articles = articles;
     }
 
-    public void setTransfer(TransferTypes transfer) {
+    public void setTransfer(TransferType transfer) {
         this.transfer = transfer;
     }
 
-    public TransferTypes getTransfer() {
+    public TransferType getTransfer() {
         return transfer;
     }
 

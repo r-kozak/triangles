@@ -24,8 +24,8 @@ import com.kozak.triangles.entities.User;
 import com.kozak.triangles.entities.UserLicense;
 import com.kozak.triangles.entities.Vmap;
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
@@ -119,18 +119,18 @@ public class HomeController extends BaseController {
         }
         
         // информация по участкам земли в разных районах - сколько занято и сколько всего
-        model.addAttribute("landLotGhettoBusy", prRep.cityAreaProperties(userId, CityAreas.GHETTO).size()); // занятые участки
-        model.addAttribute("landLotOutskirtsBusy", prRep.cityAreaProperties(userId, CityAreas.OUTSKIRTS).size());
-        model.addAttribute("landLotChinatownBusy", prRep.cityAreaProperties(userId, CityAreas.CHINATOWN).size());
-        model.addAttribute("landLotCenterBusy", prRep.cityAreaProperties(userId, CityAreas.CENTER).size());
-        model.addAttribute("landLotGhettoTotal", landLotService.getCountOfLandLot(userId, CityAreas.GHETTO)); // сколько всего
-        model.addAttribute("landLotOutskirtsTotal", landLotService.getCountOfLandLot(userId, CityAreas.OUTSKIRTS));
-        model.addAttribute("landLotChinatownTotal", landLotService.getCountOfLandLot(userId, CityAreas.CHINATOWN));
-        model.addAttribute("landLotCenterTotal", landLotService.getCountOfLandLot(userId, CityAreas.CENTER));
+        model.addAttribute("landLotGhettoBusy", landLotService.getBusyLandLotsCount(userId, CityArea.GHETTO)); // занятые участки
+        model.addAttribute("landLotOutskirtsBusy", landLotService.getBusyLandLotsCount(userId, CityArea.OUTSKIRTS));
+        model.addAttribute("landLotChinatownBusy", landLotService.getBusyLandLotsCount(userId, CityArea.CHINATOWN));
+        model.addAttribute("landLotCenterBusy", landLotService.getBusyLandLotsCount(userId, CityArea.CENTER));
+        model.addAttribute("landLotGhettoTotal", landLotService.getCountOfLandLot(userId, CityArea.GHETTO)); // сколько всего
+        model.addAttribute("landLotOutskirtsTotal", landLotService.getCountOfLandLot(userId, CityArea.OUTSKIRTS));
+        model.addAttribute("landLotChinatownTotal", landLotService.getCountOfLandLot(userId, CityArea.CHINATOWN));
+        model.addAttribute("landLotCenterTotal", landLotService.getCountOfLandLot(userId, CityArea.CENTER));
         
 
         // СТАТИСТИКА
-        model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferTypes.PROFIT)); // прибыль всего
+        model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferType.PROFIT)); // прибыль всего
         model.addAttribute("profitFromProp", trRep.getSumByAcf(userId, ArticleCashFlow.LEVY_ON_PROPERTY));
         model.addAttribute("profitFromPropSell", trRep.getSumByAcf(userId, ArticleCashFlow.SELL_PROPERTY));
         model.addAttribute("profitDB", trRep.getSumByAcf(userId, ArticleCashFlow.DAILY_BONUS));
@@ -139,7 +139,7 @@ public class HomeController extends BaseController {
         model.addAttribute("profitLoto", trRep.getSumByAcf(userId, ArticleCashFlow.LOTTERY_WINNINGS));
         model.addAttribute("profitFromLicensesSell", trRep.getSumByAcf(userId, ArticleCashFlow.SELL_LICENSE));
 
-        model.addAttribute("spendSum", trRep.getSumByTransfType(userId, TransferTypes.SPEND)); // расход всего
+        model.addAttribute("spendSum", trRep.getSumByTransfType(userId, TransferType.SPEND)); // расход всего
         model.addAttribute("spendCr", trRep.getSumByAcf(userId, ArticleCashFlow.CREDIT));
         model.addAttribute("spendBuyPr", trRep.getSumByAcf(userId, ArticleCashFlow.BUY_PROPERTY));
         model.addAttribute("spendRepair", trRep.getSumByAcf(userId, ArticleCashFlow.PROPERTY_REPAIR));
@@ -175,10 +175,10 @@ public class HomeController extends BaseController {
         model.addAttribute("frp_min", Constants.FREQ_RE_PROP_MIN);
         model.addAttribute("frp_max", Constants.FREQ_RE_PROP_MAX);
         // районы города
-        model.addAttribute("gp", CityAreasTableData.getCityAreaPercent(CityAreas.GHETTO));
-        model.addAttribute("op", CityAreasTableData.getCityAreaPercent(CityAreas.OUTSKIRTS));
-        model.addAttribute("chp", CityAreasTableData.getCityAreaPercent(CityAreas.CHINATOWN));
-        model.addAttribute("cep", CityAreasTableData.getCityAreaPercent(CityAreas.CENTER));
+        model.addAttribute("gp", CityAreasTableData.getCityAreaPercent(CityArea.GHETTO));
+        model.addAttribute("op", CityAreasTableData.getCityAreaPercent(CityArea.OUTSKIRTS));
+        model.addAttribute("chp", CityAreasTableData.getCityAreaPercent(CityArea.CHINATOWN));
+        model.addAttribute("cep", CityAreasTableData.getCityAreaPercent(CityArea.CENTER));
         // проценты типов строителей
         model.addAttribute("builders", Constants.BUILDERS_COEF);
         // цены и сроки лицензий на строительство
@@ -365,29 +365,29 @@ public class HomeController extends BaseController {
             Long userId = user.getId();
 
             // transaction for DAILY_BONUS
-            Transaction firstT = new Transaction("Начальный капитал", yest, Constants.GAME_START_BALANCE, TransferTypes.PROFIT,
+            Transaction firstT = new Transaction("Начальный капитал", yest, Constants.GAME_START_BALANCE, TransferType.PROFIT,
                     userId, Constants.GAME_START_BALANCE, ArticleCashFlow.DAILY_BONUS);
             trRep.addTransaction(firstT);
 
             // transaction for DEPOSIT
-            firstT = new Transaction("Начальный депозит", yest, 0, TransferTypes.PROFIT, userId,
+            firstT = new Transaction("Начальный депозит", yest, 0, TransferType.PROFIT, userId,
                     Constants.GAME_START_BALANCE, ArticleCashFlow.DEPOSIT);
             trRep.addTransaction(firstT);
 
             // transaction for CREDIT
-            firstT = new Transaction("Начальный кредит", yest, 0, TransferTypes.SPEND, userId, Constants.GAME_START_BALANCE,
+            firstT = new Transaction("Начальный кредит", yest, 0, TransferType.SPEND, userId, Constants.GAME_START_BALANCE,
                     ArticleCashFlow.CREDIT);
             trRep.addTransaction(firstT);
 
             // transaction for LEVY_ON_PROPERTY
-            firstT = new Transaction("Начальный сбор с имущества", yest, 0, TransferTypes.PROFIT, userId,
+            firstT = new Transaction("Начальный сбор с имущества", yest, 0, TransferType.PROFIT, userId,
                     Constants.GAME_START_BALANCE, ArticleCashFlow.LEVY_ON_PROPERTY);
             trRep.addTransaction(firstT);
 
             // дать участки пользователю
-            landLotService.addOneLandLot(userId, CityAreas.GHETTO);
-            landLotService.addOneLandLot(userId, CityAreas.GHETTO);
-            landLotService.addOneLandLot(userId, CityAreas.OUTSKIRTS);
+            landLotService.addOneLandLot(userId, CityArea.GHETTO);
+            landLotService.addOneLandLot(userId, CityArea.GHETTO);
+            landLotService.addOneLandLot(userId, CityArea.OUTSKIRTS);
         }
     }
 
@@ -419,7 +419,7 @@ public class HomeController extends BaseController {
             int bonusSum = Constants.DAILY_BONUS_SUM[dayNumber];
             String description = "Ежедневный бонус (день " + dayNumber + "-й)";
             long oldBalance = Long.parseLong(trRep.getUserBalance(user.getId()));
-            Transaction t = new Transaction(description, new Date(), bonusSum, TransferTypes.PROFIT, user.getId(),
+            Transaction t = new Transaction(description, new Date(), bonusSum, TransferType.PROFIT, user.getId(),
                     oldBalance + bonusSum, ArticleCashFlow.DAILY_BONUS);
             trRep.addTransaction(t);
 
@@ -455,7 +455,7 @@ public class HomeController extends BaseController {
             for (int i = 0; i < countI; i++) {
                 long userBalance = Long.parseLong(trRep.getUserBalance(currUserId));
                 double rate = (userBalance > 0 ? Constants.DEPOSIT_RATE : Constants.CREDIT_RATE);
-                TransferTypes transferType = (userBalance > 0 ? TransferTypes.PROFIT : TransferTypes.SPEND);
+                TransferType transferType = (userBalance > 0 ? TransferType.PROFIT : TransferType.SPEND);
                 ArticleCashFlow acf = (userBalance > 0 ? ArticleCashFlow.DEPOSIT : ArticleCashFlow.CREDIT);
                 long sum = Math.round(userBalance * rate);
                 long newBalance = userBalance + sum;

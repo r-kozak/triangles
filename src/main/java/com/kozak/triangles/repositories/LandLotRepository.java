@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.LandLot;
-import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.CityArea;
 
 @Repository
 @Transactional
@@ -28,7 +28,7 @@ public class LandLotRepository {
         return em.merge(landLot);
     }
 
-    public LandLot getLandLot(long userId, CityAreas cityArea) {
+    public LandLot getLandLot(long userId, CityArea cityArea) {
         String hql = "FROM LandLot WHERE userId = ?0 AND cityArea = ?1";
         Query query = em.createQuery(hql)
                 .setParameter(0, userId)

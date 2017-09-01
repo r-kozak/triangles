@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.RealEstateProposal;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
 import com.kozak.triangles.search.RealEstateProposalsSearch;
 import com.kozak.triangles.utils.DateUtils;
 
@@ -65,14 +65,14 @@ public class RealEstateProposalRep {
         params.put("lossDateTo", lossDateTo);
 
         // area filter
-        List<CityAreas> areas = reps.getAreas(); // типы из формы
+        List<CityArea> areas = reps.getAreas(); // типы из формы
         if (areas != null && !areas.isEmpty()) {
             hql1 += " and rep.cityArea IN (:areas)";
             params.put("areas", areas);
         }
 
         // types filter
-        List<TradeBuildingsTypes> types = reps.getTypes(); // типы из формы
+        List<TradeBuildingType> types = reps.getTypes(); // типы из формы
         if (types != null && !types.isEmpty()) {
             hql1 += " and rep.tradeBuildingType IN (:types)";
             params.put("types", types);

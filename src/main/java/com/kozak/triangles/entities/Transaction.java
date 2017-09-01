@@ -11,7 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.TransferType;
 
 /**
  * Транзакция. Отображает действия, которые приводят к изменению денежного баланса персонажа.
@@ -38,7 +38,7 @@ public class Transaction extends BaseEntity {
     // тип движения - приход или расход
     @Column(name = "TRANSFER_TYPE")
     @Enumerated(EnumType.STRING)
-    private TransferTypes transferType;
+    private TransferType transferType;
 
     // чьи деньги
     @Column(name = "USER_ID")
@@ -57,7 +57,7 @@ public class Transaction extends BaseEntity {
     public Transaction() {
     }
 
-    public Transaction(String description, Date transactDate, long sum, TransferTypes transferType, long userId, long newBalance,
+    public Transaction(String description, Date transactDate, long sum, TransferType transferType, long userId, long newBalance,
             ArticleCashFlow articleCashFlow) {
         this.description = description;
         this.transactDate = transactDate;
@@ -101,11 +101,11 @@ public class Transaction extends BaseEntity {
         this.summa = sum;
     }
 
-    public TransferTypes getTransferType() {
+    public TransferType getTransferType() {
         return transferType;
     }
 
-    public void setTransferType(TransferTypes transferType) {
+    public void setTransferType(TransferType transferType) {
         this.transferType = transferType;
     }
 

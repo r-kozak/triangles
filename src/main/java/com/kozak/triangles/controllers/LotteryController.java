@@ -30,9 +30,9 @@ import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.entities.WinningsData;
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.LotteryArticles;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.LotteryArticle;
+import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.exceptions.NoSuchLicenseLevelException;
 import com.kozak.triangles.repositories.LotteryRep;
 import com.kozak.triangles.search.LotterySearch;
@@ -107,7 +107,7 @@ public class LotteryController extends BaseController {
             } while (!allPredIDs.contains(predictionId));
 
             // добавить предсказание
-            LotteryInfo lInfo = new LotteryInfo(userId, "Ты получил мудрость от всезнающего. Вникай.", LotteryArticles.PREDICTION,
+            LotteryInfo lInfo = new LotteryInfo(userId, "Ты получил мудрость от всезнающего. Вникай.", LotteryArticle.PREDICTION,
                     predictionId, 1, 1, date);
             lotteryRep.addLotoInfo(lInfo);
         }
@@ -132,8 +132,8 @@ public class LotteryController extends BaseController {
             model.addAttribute("paginationTag", paginationTag);
         }
 
-        long upPropCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
-        long upCashCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.CASH_UP);
+        long upPropCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.PROPERTY_UP);
+        long upCashCount = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.CASH_UP);
 
         model = addMoneyInfoToModel(model, user);
         model = addLicenseCountInfoToModel(model, userId);
@@ -198,7 +198,7 @@ public class LotteryController extends BaseController {
                 String descr = String.format("Покупка лотерейных билетов, %s шт.", count);
                 long newBalance = userMoney - purchaseSum;
 
-                Transaction tr = new Transaction(descr, new Date(), purchaseSum, TransferTypes.SPEND, userId, newBalance,
+                Transaction tr = new Transaction(descr, new Date(), purchaseSum, TransferType.SPEND, userId, newBalance,
                         ArticleCashFlow.LOTTERY_TICKETS_BUY);
                 trRep.addTransaction(tr);
 
@@ -239,26 +239,26 @@ public class LotteryController extends BaseController {
             Date date = new Date(); // дата игры
 
             // сгруппированный результат игры на все билеты
-            HashMap<LotteryArticles, WinGroup> lotoResult = playLotoAndGetResult(gamesCount, userId);
+            HashMap<LotteryArticle, WinGroup> lotoResult = playLotoAndGetResult(gamesCount, userId);
 
             // взять сгруппированный результат и добавить выигранное пользователю
             // (сформировать транзакции, добавить имущество, предсказания и пр.)
-            for (Map.Entry<LotteryArticles, WinGroup> lotoRes : lotoResult.entrySet()) {
-                LotteryArticles article = lotoRes.getKey();
+            for (Map.Entry<LotteryArticle, WinGroup> lotoRes : lotoResult.entrySet()) {
+                LotteryArticle article = lotoRes.getKey();
                 WinGroup groupedRes = lotoRes.getValue();
 
-                if (article.equals(LotteryArticles.TRIANGLES)) {
+                if (article.equals(LotteryArticle.TRIANGLES)) {
                     giveMoneyToUser(groupedRes, userId, date); // начислить пользователю деньги, что он выиграл
-                } else if (article.equals(LotteryArticles.PROPERTY_UP) || article.equals(LotteryArticles.CASH_UP)
-                        || article.equals(LotteryArticles.LICENSE_2) || article.equals(LotteryArticles.LICENSE_3)
-                        || article.equals(LotteryArticles.LICENSE_4)) {
+                } else if (article.equals(LotteryArticle.PROPERTY_UP) || article.equals(LotteryArticle.CASH_UP)
+                        || article.equals(LotteryArticle.LICENSE_2) || article.equals(LotteryArticle.LICENSE_3)
+                        || article.equals(LotteryArticle.LICENSE_4)) {
 
                     handleCommonArticle(groupedRes, userId, article, date);
-                } else if (article.equals(LotteryArticles.STALL) || article.equals(LotteryArticles.VILLAGE_SHOP)
-                        || article.equals(LotteryArticles.STATIONER_SHOP)) {
+                } else if (article.equals(LotteryArticle.STALL) || article.equals(LotteryArticle.VILLAGE_SHOP)
+                        || article.equals(LotteryArticle.STATIONER_SHOP)) {
 
                     handlePropertyArticle(groupedRes, userId, article, date);
-                } else if (article.equals(LotteryArticles.PREDICTION)) {
+                } else if (article.equals(LotteryArticle.PREDICTION)) {
                     Omniscient.givePredictionToUser(userId, date, lotteryRep);
                 } else {
                     ResponseUtil.putErrorMsg(resultJson, "Возникла ошибка! Одна из статьей выигрыша не была обработана!");
@@ -311,7 +311,7 @@ public class LotteryController extends BaseController {
         try {
             long userId = user.getId();
 
-            LotteryArticles levelArticle = LotteryArticles.getLicenseArticleByLevel(licLevel);
+            LotteryArticle levelArticle = LotteryArticle.getLicenseArticleByLevel(licLevel);
             LotteryInfo licenses = lotteryRep.getUserLicenses(userId, levelArticle);
             if (licenses == null) {
                 ResponseUtil.putErrorMsg(resultJson,
@@ -433,10 +433,10 @@ public class LotteryController extends BaseController {
 
         // проверить остаток бесплатных плюшек повышения уровня
         if (obj.equals("prop")) {
-            result[0] = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.PROPERTY_UP);
+            result[0] = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.PROPERTY_UP);
             result[1] = "имущества";
         } else {
-            result[0] = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.CASH_UP);
+            result[0] = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.CASH_UP);
             result[1] = "кассы";
         }
         return result;
@@ -454,7 +454,7 @@ public class LotteryController extends BaseController {
      *            - статья выигрыша (STALL, VILLAGE_SHOP, ...)
      * @param date
      */
-    private void handlePropertyArticle(WinGroup groupedRes, long userId, LotteryArticles article, Date date) {
+    private void handlePropertyArticle(WinGroup groupedRes, long userId, LotteryArticle article, Date date) {
 
         // ввести в эксплуатацию все выигранное имущество
         int countOfProperties = groupedRes.entitiesCount;
@@ -463,10 +463,10 @@ public class LotteryController extends BaseController {
 
         for (int i = 0; i < countOfProperties; i++) {
             // генерация имя для нового имущества
-            String name = PropertyUtil.generatePropertyName(buildingData.getTradeBuildingType(), CityAreas.GHETTO);
+            String name = PropertyUtil.generatePropertyName(buildingData.getTradeBuildingType(), CityArea.GHETTO);
             long price = buildingData.getPurchasePriceMin(); // цена нового имущества (всегда минимальная)
 
-            Property prop = new Property(buildingData, userId, CityAreas.GHETTO, new Date(), price, name);
+            Property prop = new Property(buildingData, userId, CityArea.GHETTO, new Date(), price, name);
             prRep.addProperty(prop);
         }
 
@@ -489,15 +489,15 @@ public class LotteryController extends BaseController {
      *            - сама статья выигрыша
      * @param date
      */
-    private void handleCommonArticle(WinGroup groupedRes, long userId, LotteryArticles article, Date date) {
+    private void handleCommonArticle(WinGroup groupedRes, long userId, LotteryArticle article, Date date) {
         // внести информацию о выигрыше
         String descrPref = "";
-        if (article.equals(LotteryArticles.PROPERTY_UP)) {
+        if (article.equals(LotteryArticle.PROPERTY_UP)) {
             descrPref = "Повышение уровня имущества [Кол-во повышений ×";
-        } else if (article.equals(LotteryArticles.CASH_UP)) {
+        } else if (article.equals(LotteryArticle.CASH_UP)) {
             descrPref = "Повышение уровня кассы [Кол-во повышений ×";
-        } else if (article.equals(LotteryArticles.LICENSE_2) || article.equals(LotteryArticles.LICENSE_3)
-                || article.equals(LotteryArticles.LICENSE_4)) {
+        } else if (article.equals(LotteryArticle.LICENSE_2) || article.equals(LotteryArticle.LICENSE_3)
+                || article.equals(LotteryArticle.LICENSE_4)) {
 
             String artcNm = article.name();// название статьи выигрыша
             int artcNmL = artcNm.length(); // длина названия статьи выигрыша
@@ -523,14 +523,14 @@ public class LotteryController extends BaseController {
 
         String descr = String.format("Выигрыш в лотерею за %s бил.", groupedRes.ticketsCount);
         int sum = groupedRes.entitiesCount;
-        Transaction tr = new Transaction(descr, date, sum, TransferTypes.PROFIT, userId, userMoney + sum,
+        Transaction tr = new Transaction(descr, date, sum, TransferType.PROFIT, userId, userMoney + sum,
                 ArticleCashFlow.LOTTERY_WINNINGS);
         trRep.addTransaction(tr);
 
         // добавить информацию в таблицу с лотерейными выигрышами
         String mapDataStr = groupedRes.countMap.entrySet().toString().replace("=", "×");
         String description = "Деньги [&tridot; × Кол-во билетов]. " + mapDataStr;
-        LotteryInfo lInfo = new LotteryInfo(userId, description, LotteryArticles.TRIANGLES, sum, groupedRes.ticketsCount, 0,
+        LotteryInfo lInfo = new LotteryInfo(userId, description, LotteryArticle.TRIANGLES, sum, groupedRes.ticketsCount, 0,
                 date);
         lotteryRep.addLotoInfo(lInfo);
     }
@@ -569,9 +569,9 @@ public class LotteryController extends BaseController {
      * @param userId
      * @return сгруппированный результат розыгрышей
      */
-    private HashMap<LotteryArticles, WinGroup> playLotoAndGetResult(int ticketsCount, long userId) {
+    private HashMap<LotteryArticle, WinGroup> playLotoAndGetResult(int ticketsCount, long userId) {
         // сгруппированные по статье результаты игры в лото
-        HashMap<LotteryArticles, WinGroup> groupResult = new HashMap<LotteryArticles, LotteryController.WinGroup>();
+        HashMap<LotteryArticle, WinGroup> groupResult = new HashMap<LotteryArticle, LotteryController.WinGroup>();
 
         // получить данные со всеми возможными вариантами выигрышей
         TreeMap<Integer, WinningsData> winningsData = fillWinningsData();
@@ -588,7 +588,7 @@ public class LotteryController extends BaseController {
             tempWinData = winningsData.get(flKey); // данные о выигрыше
 
             // если выиграл предсказание
-            if (tempWinData.getArticle().equals(LotteryArticles.PREDICTION)) {
+            if (tempWinData.getArticle().equals(LotteryArticle.PREDICTION)) {
                 // если есть непросмотренные предсказания - не считать этот розыгрыш
                 if (userHasPrediction) {
                     i--;
@@ -612,9 +612,9 @@ public class LotteryController extends BaseController {
      * @param groupResult
      *            - сгруппированный результат, к которому будет добавлен текущий
      */
-    private void groupTicketResult(WinningsData ticketResultData, HashMap<LotteryArticles, WinGroup> groupResult) {
+    private void groupTicketResult(WinningsData ticketResultData, HashMap<LotteryArticle, WinGroup> groupResult) {
         // группировка данных и добавление в сгруппированный результат
-        LotteryArticles article = ticketResultData.getArticle(); // статья по текущему розыгрышу
+        LotteryArticle article = ticketResultData.getArticle(); // статья по текущему розыгрышу
         WinGroup wg = groupResult.get(article); // сгруппированные результаты по статье
         if (wg == null) {
             wg = new WinGroup();

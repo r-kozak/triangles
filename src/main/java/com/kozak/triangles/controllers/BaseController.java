@@ -12,7 +12,7 @@ import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.LotteryArticles;
+import com.kozak.triangles.enums.LotteryArticle;
 import com.kozak.triangles.repositories.ConstructionProjectRep;
 import com.kozak.triangles.repositories.LotteryRep;
 import com.kozak.triangles.repositories.MessageRep;
@@ -63,13 +63,13 @@ public abstract class BaseController {
      * @return переданную модель, но с информацией о количестве лицензий разных уровней
      */
     protected Model addLicenseCountInfoToModel(Model model, long userId) {
-        long lic2Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_2);
+        long lic2Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.LICENSE_2);
         model.addAttribute("lic2Count", lic2Count); // количество лицензий 2 ур
 
-        long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_3);
+        long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.LICENSE_3);
         model.addAttribute("lic3Count", lic3Count); // количество лицензий 3 ур
 
-        long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticles.LICENSE_4);
+        long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.LICENSE_4);
         model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
 
         return model;

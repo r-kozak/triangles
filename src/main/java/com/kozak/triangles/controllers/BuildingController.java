@@ -22,10 +22,10 @@ import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.entities.UserLicense;
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.BuildersTypes;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.BuildersType;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
+import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.repositories.ConstructionProjectRep;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.utils.CommonUtil;
@@ -150,17 +150,17 @@ public class BuildingController extends BaseController {
                             "Сегодня уже достигнута верхняя граница лимита на постройку зданий. Повторите попытку завтра.");
                 } else {
                     // проверка можно ли строить в районе, что выбрал пользователь
-                    boolean cityAreaError = userLicenseLevel - 1 < CityAreas.valueOf(cityArea).ordinal();
+                    boolean cityAreaError = userLicenseLevel - 1 < CityArea.valueOf(cityArea).ordinal();
                     if (cityAreaError) {
                         ResponseUtil.putErrorMsg(resultJson,
                                 "Ваша лицензия не позволяет строить в выбранном районе. Уровень лицензии: " + userLicenseLevel);
                     } else {
 
                         // создать модель имущества в процессе стройки
-                        TradeBuildingsTypes type = dataOfBuilding.getTradeBuildingType(); // тип постройки
-                        CityAreas cityAreaType = CityAreas.valueOf(cityArea); // район города
+                        TradeBuildingType type = dataOfBuilding.getTradeBuildingType(); // тип постройки
+                        CityArea cityAreaType = CityArea.valueOf(cityArea); // район города
                         byte indexBuildersType = generateIndexOfBuilders(); // тип строителей числовой
-                        BuildersTypes buildersType = BuildersTypes.values()[indexBuildersType];// тип строителей
+                        BuildersType buildersType = BuildersType.values()[indexBuildersType];// тип строителей
 
                         // часов на постройку = дней на постройку * 24 часа * коеф. типа строителей
                         int hoursToConstruct = Math
@@ -176,7 +176,7 @@ public class BuildingController extends BaseController {
                         String descr = String.format("Постройка имущества %s", constructionProject.getName());
                         long newBalance = userMoney - priceOfBuilt;
 
-                        Transaction tr = new Transaction(descr, new Date(), priceOfBuilt, TransferTypes.SPEND, userId, newBalance,
+                        Transaction tr = new Transaction(descr, new Date(), priceOfBuilt, TransferType.SPEND, userId, newBalance,
                                 ArticleCashFlow.CONSTRUCTION_PROPERTY);
                         trRep.addTransaction(tr);
 
@@ -301,7 +301,7 @@ public class BuildingController extends BaseController {
 
                 // снять деньги у пользователя
                 String descr = String.format("Покупка лицензии на строительство. Уровень: %s", level);
-                Transaction tr = new Transaction(descr, new Date(), licensePrice, TransferTypes.SPEND, userId,
+                Transaction tr = new Transaction(descr, new Date(), licensePrice, TransferType.SPEND, userId,
                         userMoney - licensePrice, ArticleCashFlow.BUY_LICENSE);
                 trRep.addTransaction(tr);
             }

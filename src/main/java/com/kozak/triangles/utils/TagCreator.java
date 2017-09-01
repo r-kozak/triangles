@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.search.SearchCollections;
 
 /**
@@ -24,7 +24,7 @@ public class TagCreator {
     public static String cityAreaTag(byte userLicenseLevel) {
         String result = "<select id=\"city_area\" class=\"form-control\">";
 
-        List<CityAreas> areas = SearchCollections.getCityAreas();
+        List<CityArea> areas = SearchCollections.getCityAreas();
         for (int i = 0; i < areas.size(); i++) {
             if (userLicenseLevel - 1 >= i) {
                 result += "<option selected=\"selected\">" + areas.get(i) + "</option>";

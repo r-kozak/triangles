@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.search.TransactSearch;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
@@ -58,7 +58,7 @@ public class TransactionRep {
         }
     }
 
-    public long getSumByTransfType(long userId, TransferTypes transfT) {
+    public long getSumByTransfType(long userId, TransferType transfT) {
         String hql = "SELECT sum(summa) from Transac as tr where tr.userId = :userId and tr.transferType = :trt";
         Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("trt", transfT);
         return Long.valueOf(query.getSingleResult().toString());
@@ -104,8 +104,8 @@ public class TransactionRep {
         params.put("dateTo", dateTo);
 
         // transfer type filter
-        TransferTypes trType = ts.getTransfer();
-        if (trType != null && trType != TransferTypes.NONE) {
+        TransferType trType = ts.getTransfer();
+        if (trType != null && trType != TransferType.NONE) {
             hql1 += " and tr.transferType = :trType";
             params.put("trType", trType);
         }

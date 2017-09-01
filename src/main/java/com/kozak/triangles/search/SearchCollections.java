@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.LotteryArticles;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.LotteryArticle;
+import com.kozak.triangles.enums.TradeBuildingType;
+import com.kozak.triangles.enums.TransferType;
 
 public class SearchCollections {
     // transaction search
@@ -20,35 +20,35 @@ public class SearchCollections {
         return articles;
     }
 
-    public static List<TransferTypes> getTransferTypes() {
-        List<TransferTypes> transfers = new ArrayList<TransferTypes>();
-        transfers.add(TransferTypes.PROFIT);
-        transfers.add(TransferTypes.SPEND);
+    public static List<TransferType> getTransferTypes() {
+        List<TransferType> transfers = new ArrayList<TransferType>();
+        transfers.add(TransferType.PROFIT);
+        transfers.add(TransferType.SPEND);
         return transfers;
     }
 
     // trade property search
-    public static List<TradeBuildingsTypes> getTradeBuildingsTypes() {
-        List<TradeBuildingsTypes> types = new ArrayList<>();
-        for (TradeBuildingsTypes a : TradeBuildingsTypes.values()) {
+    public static List<TradeBuildingType> getTradeBuildingsTypes() {
+        List<TradeBuildingType> types = new ArrayList<>();
+        for (TradeBuildingType a : TradeBuildingType.values()) {
             types.add(a);
         }
         return types;
     }
 
     // real estate market search
-    public static List<CityAreas> getCityAreas() {
-        List<CityAreas> types = new ArrayList<CityAreas>();
-        for (CityAreas a : CityAreas.values()) {
+    public static List<CityArea> getCityAreas() {
+        List<CityArea> types = new ArrayList<CityArea>();
+        for (CityArea a : CityArea.values()) {
             types.add(a);
         }
         return types;
     }
 
     // lottery search
-    public static List<LotteryArticles> getLotteryArticles() {
-        List<LotteryArticles> types = new ArrayList<LotteryArticles>();
-        for (LotteryArticles a : LotteryArticles.values()) {
+    public static List<LotteryArticle> getLotteryArticles() {
+        List<LotteryArticle> types = new ArrayList<LotteryArticle>();
+        for (LotteryArticle a : LotteryArticle.values()) {
             types.add(a);
         }
         return types;

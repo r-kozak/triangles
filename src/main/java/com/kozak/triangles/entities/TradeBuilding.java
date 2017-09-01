@@ -3,7 +3,7 @@ package com.kozak.triangles.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.TradeBuildingType;
 import com.kozak.triangles.utils.Constants;
 
 /**
@@ -29,11 +29,11 @@ public class TradeBuilding {
     private int marketTermMin; // срок, сколько предложение будет находиться на рынке min, в днях
     private int marketTermMax; // срок, сколько предложение будет находиться на рынке max, в днях
     private List<Long> cashCapacity; // вместимость кассы на разных уровнях, {на уровне 0, ..., на уровне n}
-    private TradeBuildingsTypes tradeBuildingType; // тип торгового имущества
+    private TradeBuildingType tradeBuildingType; // тип торгового имущества
     private int buildTime; // buildTime - время постройки (при скорости 100%), дней
 
     public TradeBuilding(int paybackPeriodMin, int paybackPeriodMax, long purchasePriceMin, long purchasePriceMax,
-            TradeBuildingsTypes tradeBuildingType, int buildTime, int marketTermMin, int marketTermMax) {
+            TradeBuildingType tradeBuildingType, int buildTime, int marketTermMin, int marketTermMax) {
 
         this.paybackPeriodMin = paybackPeriodMin;
         this.paybackPeriodMax = paybackPeriodMax;
@@ -136,11 +136,11 @@ public class TradeBuilding {
         this.cashCapacity = cashCapacity;
     }
 
-    public TradeBuildingsTypes getTradeBuildingType() {
+    public TradeBuildingType getTradeBuildingType() {
         return tradeBuildingType;
     }
 
-    public void setTradeBuildingType(TradeBuildingsTypes tradeBuildingType) {
+    public void setTradeBuildingType(TradeBuildingType tradeBuildingType) {
         this.tradeBuildingType = tradeBuildingType;
     }
 

@@ -11,9 +11,9 @@ import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
+import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
 
@@ -93,7 +93,7 @@ public class PropertyUtil {
                 long oldOwnerBal = Long.parseLong(trRep.getUserBalance(oldOwnerId));
                 long price = p.getSellingPrice();
                 // сформировать транзакцию продавца на получение денег
-                Transaction t = new Transaction("Продажа имущества: " + p.getName(), purchDate, price, TransferTypes.PROFIT,
+                Transaction t = new Transaction("Продажа имущества: " + p.getName(), purchDate, price, TransferType.PROFIT,
                         oldOwnerId, oldOwnerBal + price, ArticleCashFlow.SELL_PROPERTY);
                 trRep.addTransaction(t);
             }
@@ -121,7 +121,7 @@ public class PropertyUtil {
      *            - район
      * @return строку с именем
      */
-    public static String generatePropertyName(TradeBuildingsTypes tradeBuildingType, CityAreas cityArea) {
+    public static String generatePropertyName(TradeBuildingType tradeBuildingType, CityArea cityArea) {
         StringBuffer sb = new StringBuffer();
         sb.append(TradeBuildingsTableData.getShortTradeBuildingName(tradeBuildingType));
         sb.append("_");

@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.Property;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
 import com.kozak.triangles.search.TradePropertySearch;
 import com.kozak.triangles.utils.Constants;
 
@@ -118,14 +118,14 @@ public class PropertyRep {
         }
 
         // types filter
-        List<TradeBuildingsTypes> types = tps.getTypes(); // типы из формы
+        List<TradeBuildingType> types = tps.getTypes(); // типы из формы
         if (types != null && !types.isEmpty()) {
             hql1 += " and pr.tradeBuildingType IN (:types)";
             params.put("types", types);
         }
 
         // area filter
-        List<CityAreas> areas = tps.getAreas(); // типы из формы
+        List<CityArea> areas = tps.getAreas(); // типы из формы
         if (areas != null && !areas.isEmpty()) {
             hql1 += " and pr.cityArea IN (:areas)";
             params.put("areas", areas);
@@ -290,7 +290,7 @@ public class PropertyRep {
      * @return список имущества пользователя, учитывая указанные параметры
      */
     @SuppressWarnings("unchecked")
-    public List<Property> getPropertyListWithParams(long userId, TradeBuildingsTypes type, CityAreas cityArea, Integer level,
+    public List<Property> getPropertyListWithParams(long userId, TradeBuildingType type, CityArea cityArea, Integer level,
             Integer cashLevel, boolean active) {
 
         String hql = "from Property as pr WHERE userId = :userId";
@@ -338,7 +338,7 @@ public class PropertyRep {
      * @return список имущества конкретного пользователя в конкретном районе города
      */
     @SuppressWarnings("unchecked")
-    public List<Property> cityAreaProperties(long userId, CityAreas cityArea) {
+    public List<Property> cityAreaProperties(long userId, CityArea cityArea) {
         String hql = "FROM Property as pr WHERE pr.userId = :userId AND pr.cityArea = :cityArea";
         Query query = em.createQuery(hql).setParameter("userId", userId).setParameter("cityArea", cityArea);
         return query.getResultList();

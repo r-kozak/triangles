@@ -8,7 +8,7 @@ package com.kozak.triangles.enums;
  * 
  * @author Roman: 12 июня 2015 г. 22:39:16
  */
-public enum TradeBuildingsTypes {
+public enum TradeBuildingType {
 	STALL, 
 	VILLAGE_SHOP, 
 	STATIONER_SHOP, 

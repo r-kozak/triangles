@@ -17,10 +17,10 @@ import com.kozak.triangles.entities.LotteryInfo;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.LotteryArticles;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.LotteryArticle;
+import com.kozak.triangles.enums.TradeBuildingType;
+import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.exceptions.NoSuchLicenseLevelException;
 import com.kozak.triangles.models.Requirement;
 import com.kozak.triangles.repositories.LicenseMarketRepository;
@@ -164,7 +164,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
             String descr = "Постройка Магазина лицензий";
             long userMoney = Long.parseLong(transactionRep.getUserBalance(userId));
             long price = getPriceOfBuild();
-            Transaction tr = new Transaction(descr, new Date(), price, TransferTypes.SPEND, userId, userMoney - price,
+            Transaction tr = new Transaction(descr, new Date(), price, TransferType.SPEND, userId, userMoney - price,
                     ArticleCashFlow.CONSTRUCTION_PROPERTY);
             transactionRep.addTransaction(tr);
 
@@ -182,7 +182,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
             String descr = String.format("Продажа лицензий уровня %d, %d шт.", consignment.getLicenseLevel(),
                     consignment.getCountOnSell());
             long userMoney = Long.parseLong(transactionRep.getUserBalance(userId));
-            Transaction tr = new Transaction(descr, new Date(), consignment.getProfit(), TransferTypes.PROFIT, userId,
+            Transaction tr = new Transaction(descr, new Date(), consignment.getProfit(), TransferType.PROFIT, userId,
                     userMoney + consignment.getProfit(), ArticleCashFlow.SELL_LICENSE);
             transactionRep.addTransaction(tr);
 
@@ -196,7 +196,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
         LicenseMarket licenseMarket = getLicenseMarket(userId, false);
 
         try {
-            LotteryArticles licenseLevelArticle = LotteryArticles.getLicenseArticleByLevel(licensesLevel);
+            LotteryArticle licenseLevelArticle = LotteryArticle.getLicenseArticleByLevel(licensesLevel);
             long countOfLicenses = lotteryRep.getPljushkiCountByArticle(userId, licenseLevelArticle);
             if (countOfLicenses <= 0) {
                 // Требование №1 - это то, что лицензий должно быть больше 0
@@ -231,7 +231,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
         if (isMarketCanFunction(userId)) {
             try {
                 // получить количество лицензий определенного уровня на остатке
-                LotteryArticles licenseLevelArticle = LotteryArticles.getLicenseArticleByLevel(licensesLevel);
+                LotteryArticle licenseLevelArticle = LotteryArticle.getLicenseArticleByLevel(licensesLevel);
                 long countOfLicenses = lotteryRep.getPljushkiCountByArticle(userId, licenseLevelArticle);
 
                 if (countOfLicenses >= licensesCount) {
@@ -280,7 +280,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
             long upSum = getPriceOfLevelUp(targetLevel);
             String descr = "Повышение уровня Магазина лицензий до " + targetLevel;
             long userMoney = Long.parseLong(transactionRep.getUserBalance(userId));
-            Transaction tr = new Transaction(descr, new Date(), upSum, TransferTypes.SPEND, userId, userMoney - upSum,
+            Transaction tr = new Transaction(descr, new Date(), upSum, TransferType.SPEND, userId, userMoney - upSum,
                     ArticleCashFlow.UP_PROP_LEVEL);
             transactionRep.addTransaction(tr);
 
@@ -327,7 +327,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
      * @param requiredCount
      *            количество лицензий, которое нужно списать
      */
-    private void withdrawFromLotoInfo(long userId, LotteryArticles licenseLevelArticle, int requiredCount) {
+    private void withdrawFromLotoInfo(long userId, LotteryArticle licenseLevelArticle, int requiredCount) {
         List<LotteryInfo> lotteryInfos = lotteryRep.getLotteryInfoListByArticle(userId, licenseLevelArticle); // остатки
 
         int withdrawals = 0; // снято всего
@@ -365,8 +365,8 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
      * @return требование количества Магазинов канцтоваров у пользователя
      */
     private Requirement createStationerShopsRequirement(long userId, int countOfShops) {
-        List<Property> stationerShops = propertyRep.getPropertyListWithParams(userId, TradeBuildingsTypes.STATIONER_SHOP,
-                CityAreas.CENTER, LEVEL_OF_STATIONER_SHOP, null, true);
+        List<Property> stationerShops = propertyRep.getPropertyListWithParams(userId, TradeBuildingType.STATIONER_SHOP,
+                CityArea.CENTER, LEVEL_OF_STATIONER_SHOP, null, true);
         String shopsDescription = String.format("Необходимо %d шт. АКТИВНЫХ Магазинов канцтоваров (%d-го уровня, в центре)",
                 countOfShops, LEVEL_OF_STATIONER_SHOP);
         Requirement stationerShopRequirement = new Requirement(stationerShops.size() >= countOfShops, shopsDescription);

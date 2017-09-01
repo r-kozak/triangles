@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlow;
-import com.kozak.triangles.enums.TransferTypes;
+import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.search.SearchCollections;
 import com.kozak.triangles.search.TransactSearch;
@@ -76,7 +76,7 @@ public class MoneyController extends BaseController {
                     String desc = String.format("Обмен %s очков доминантности на %s&tridot;", needDomi, count);
                     long balance = Long.valueOf(trRep.getUserBalance(userId));
 
-                    Transaction t = new Transaction(desc, new Date(), count, TransferTypes.PROFIT, userId, balance + count,
+                    Transaction t = new Transaction(desc, new Date(), count, TransferType.PROFIT, userId, balance + count,
                             ArticleCashFlow.DOMINANT_TO_TRIAN);
                     trRep.addTransaction(t);
                 }
@@ -139,7 +139,7 @@ public class MoneyController extends BaseController {
             String desc = String.format("Вывод средств со счета");
             Date transactDate = new Date();
             ArticleCashFlow artCashFlowType = ArticleCashFlow.WITHDRAW;
-            Transaction t = new Transaction(desc, transactDate, count, TransferTypes.SPEND, userId, balance - count,
+            Transaction t = new Transaction(desc, transactDate, count, TransferType.SPEND, userId, balance - count,
                     artCashFlowType);
             trRep.addTransaction(t);
 

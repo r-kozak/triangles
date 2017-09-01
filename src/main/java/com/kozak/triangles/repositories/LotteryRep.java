@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kozak.triangles.entities.LotteryInfo;
 import com.kozak.triangles.entities.Predictions;
 import com.kozak.triangles.entities.WinningsData;
-import com.kozak.triangles.enums.LotteryArticles;
+import com.kozak.triangles.enums.LotteryArticle;
 import com.kozak.triangles.search.LotterySearch;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
@@ -56,7 +56,7 @@ public class LotteryRep {
      * Проверяет, есть ли у пользователя выигранные, не просмотренные предсказания
      */
     public boolean isUserHasPrediction(long userId) {
-        long countOfPredictions = getPljushkiCountByArticle(userId, LotteryArticles.PREDICTION);
+        long countOfPredictions = getPljushkiCountByArticle(userId, LotteryArticle.PREDICTION);
         return countOfPredictions > 0;
     }
 
@@ -97,7 +97,7 @@ public class LotteryRep {
         params.put("dateTo", dateTo);
 
         // lottery articles filter
-        List<LotteryArticles> articles = ls.getArticles(); // статьи из формы
+        List<LotteryArticle> articles = ls.getArticles(); // статьи из формы
         if (articles != null && !articles.isEmpty()) {
             hql1 += " and article IN (:la)";
             params.put("la", articles);
@@ -138,7 +138,7 @@ public class LotteryRep {
      * @param article
      * @return
      */
-    public long getPljushkiCountByArticle(long userId, LotteryArticles article) {
+    public long getPljushkiCountByArticle(long userId, LotteryArticle article) {
         String hql = "SELECT sum(remainingAmount) from LotteryInfo WHERE userId = ?0 AND article = ?1 AND remainingAmount > 0";
         Query query = em.createQuery(hql);
         query.setParameter(0, userId);
@@ -158,7 +158,7 @@ public class LotteryRep {
      * @return
      */
     public LotteryInfo getUserPrediction(long userId) throws NoResultException {
-        LotteryInfo result = getLotteryInfoByArticle(userId, LotteryArticles.PREDICTION);
+        LotteryInfo result = getLotteryInfoByArticle(userId, LotteryArticle.PREDICTION);
         if (result == null) {
             throw new NoResultException();
         }
@@ -171,7 +171,7 @@ public class LotteryRep {
      * @param levelArticle
      *            - статья лицензии
      */
-    public LotteryInfo getUserLicenses(long userId, LotteryArticles levelArticle) {
+    public LotteryInfo getUserLicenses(long userId, LotteryArticle levelArticle) {
         return getLotteryInfoByArticle(userId, levelArticle);
     }
 
@@ -179,14 +179,14 @@ public class LotteryRep {
      * Получает запись с выигранными плюшками повышения уровня имущества.
      */
     public LotteryInfo getUserUpPropLevel(long userId) {
-        return getLotteryInfoByArticle(userId, LotteryArticles.PROPERTY_UP);
+        return getLotteryInfoByArticle(userId, LotteryArticle.PROPERTY_UP);
     }
 
     /**
      * Получает запись с выигранными плюшками повышения уровня кассы имущества.
      */
     public LotteryInfo getUserUpCashLevel(long userId) {
-        return getLotteryInfoByArticle(userId, LotteryArticles.CASH_UP);
+        return getLotteryInfoByArticle(userId, LotteryArticle.CASH_UP);
     }
 
     /**
@@ -195,7 +195,7 @@ public class LotteryRep {
      * @return список выигранного в лотерею с определенной статьей. Например вернет все Лицензии 2-го уровня, где остаток > 0.
      */
     @SuppressWarnings("unchecked")
-    public List<LotteryInfo> getLotteryInfoListByArticle(long userId, LotteryArticles article) {
+    public List<LotteryInfo> getLotteryInfoListByArticle(long userId, LotteryArticle article) {
         Query query = createQueryForLotteryInfoByArticle(userId, article);
         return query.getResultList();
     }
@@ -221,7 +221,7 @@ public class LotteryRep {
     }
 
     @SuppressWarnings("unchecked")
-    private LotteryInfo getLotteryInfoByArticle(long userId, LotteryArticles article) {
+    private LotteryInfo getLotteryInfoByArticle(long userId, LotteryArticle article) {
         Query query = createQueryForLotteryInfoByArticle(userId, article);
         query.setMaxResults(1);
 
@@ -242,7 +242,7 @@ public class LotteryRep {
      *            статья выигрыша в лото
      * @return запрос
      */
-    private Query createQueryForLotteryInfoByArticle(long userId, LotteryArticles article) {
+    private Query createQueryForLotteryInfoByArticle(long userId, LotteryArticle article) {
         String hql = "from LotteryInfo WHERE userId = ?0 AND article = ?1 AND remainingAmount > 0 ORDER BY id ASC";
         Query query = em.createQuery(hql);
         query.setParameter(0, userId);

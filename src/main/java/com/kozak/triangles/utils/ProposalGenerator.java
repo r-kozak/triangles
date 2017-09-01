@@ -9,8 +9,8 @@ import com.kozak.triangles.data.CityAreasTableData;
 import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.RealEstateProposal;
 import com.kozak.triangles.entities.TradeBuilding;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
 
 /**
  * генератор предложений на рынке имущества (RealEstateProposal)
@@ -40,20 +40,20 @@ public class ProposalGenerator {
 
     // массив с наименованиями имущества на основании вероятность выпадения (описание выше)
     // 0-й и 1-й элемент никогда не должен заполняться т.к. не могут выпасти 2 кости с такой комбинацией
-	public static final TradeBuildingsTypes[] PROPERTY_PROBABILITY = { 
+	public static final TradeBuildingType[] PROPERTY_PROBABILITY = { 
 			null, /* 0 */
 			null, /* 1 */
-			TradeBuildingsTypes.MALL, /* 2 */
-			TradeBuildingsTypes.RESTAURANT, /* 3 */
-			TradeBuildingsTypes.MIDDLE_SUPERMARKET, /* 4 */
-			TradeBuildingsTypes.CANDY_SHOP, /* 5 */
-			TradeBuildingsTypes.VILLAGE_SHOP, /* 6 */
-			TradeBuildingsTypes.STALL, /* 7 */
-			TradeBuildingsTypes.STATIONER_SHOP, /* 8 */
-			TradeBuildingsTypes.BOOK_SHOP, /* 9 */
-			TradeBuildingsTypes.LITTLE_SUPERMARKET, /* 10 */
-			TradeBuildingsTypes.BIG_SUPERMARKET, /* 11 */
-			TradeBuildingsTypes.CINEMA /* 12 */
+			TradeBuildingType.MALL, /* 2 */
+			TradeBuildingType.RESTAURANT, /* 3 */
+			TradeBuildingType.MIDDLE_SUPERMARKET, /* 4 */
+			TradeBuildingType.CANDY_SHOP, /* 5 */
+			TradeBuildingType.VILLAGE_SHOP, /* 6 */
+			TradeBuildingType.STALL, /* 7 */
+			TradeBuildingType.STATIONER_SHOP, /* 8 */
+			TradeBuildingType.BOOK_SHOP, /* 9 */
+			TradeBuildingType.LITTLE_SUPERMARKET, /* 10 */
+			TradeBuildingType.BIG_SUPERMARKET, /* 11 */
+			TradeBuildingType.CINEMA /* 12 */
 		};
 
     /**
@@ -102,25 +102,25 @@ public class ProposalGenerator {
 
         // генерируем район города и увеличиваем цену в зависимости от района
 		int rd = Random.diceRoll();// бросок кости
-        CityAreas area = null;
+        CityArea area = null;
 
         switch (rd) {
         case 2:
         case 12:
-            area = CityAreas.CENTER;
+            area = CityArea.CENTER;
             break;
         case 3:
         case 4:
         case 11:
-            area = CityAreas.CHINATOWN;
+            area = CityArea.CHINATOWN;
             break;
         case 5:
         case 9:
         case 10:
-            area = CityAreas.OUTSKIRTS;
+            area = CityArea.OUTSKIRTS;
             break;
         default:
-            area = CityAreas.GHETTO;
+            area = CityArea.GHETTO;
             break;
         }
 		price += price * CityAreasTableData.getCityAreaPercent(area) / 100;

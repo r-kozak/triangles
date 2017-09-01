@@ -3,12 +3,12 @@ package com.kozak.triangles.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
 
 public class RealEstateProposalsSearch extends AbstractSearch {
-    private List<TradeBuildingsTypes> types = new ArrayList<TradeBuildingsTypes>();
-    private List<CityAreas> areas = new ArrayList<CityAreas>();
+    private List<TradeBuildingType> types = new ArrayList<TradeBuildingType>();
+    private List<CityArea> areas = new ArrayList<CityArea>();
     private long priceFrom;
     private long priceTo;
     private long priceMin;
@@ -22,8 +22,8 @@ public class RealEstateProposalsSearch extends AbstractSearch {
 
     public void clear() {
         super.clear();
-        types = new ArrayList<TradeBuildingsTypes>();
-        areas = new ArrayList<CityAreas>();
+        types = new ArrayList<TradeBuildingType>();
+        areas = new ArrayList<CityArea>();
         this.priceFrom = 0;
         this.priceTo = 0;
         this.appearDateFrom = "";
@@ -45,19 +45,19 @@ public class RealEstateProposalsSearch extends AbstractSearch {
     }
 
     // ////////////////////////////////////
-    public List<TradeBuildingsTypes> getTypes() {
+    public List<TradeBuildingType> getTypes() {
         return types;
     }
 
-    public void setTypes(List<TradeBuildingsTypes> types) {
+    public void setTypes(List<TradeBuildingType> types) {
         this.types = types;
     }
 
-    public List<CityAreas> getAreas() {
+    public List<CityArea> getAreas() {
         return areas;
     }
 
-    public void setAreas(List<CityAreas> areas) {
+    public void setAreas(List<CityArea> areas) {
         this.areas = areas;
     }
 

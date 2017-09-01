@@ -10,9 +10,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.kozak.triangles.enums.BuildersTypes;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.BuildersType;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
 import com.kozak.triangles.utils.PropertyUtil;
 
 /**
@@ -35,7 +35,7 @@ public class ConstructionProject extends BaseEntity {
     // тип - КИОСК, СЕЛЬСКИЙ МАГАЗИН ...
     @Column(name = "BUILDING_TYPE")
     @Enumerated(EnumType.STRING)
-    private TradeBuildingsTypes buildingType;
+    private TradeBuildingType buildingType;
 
     // дата начала стройки
     @Temporal(TemporalType.TIMESTAMP)
@@ -50,11 +50,11 @@ public class ConstructionProject extends BaseEntity {
     // район города
     @Column(name = "CITY_AREA")
     @Enumerated(EnumType.STRING)
-    private CityAreas cityArea;
+    private CityArea cityArea;
 
     // тип строителей
     @Column(name = "BUILDERS_TYPE")
-    private BuildersTypes buildersType;
+    private BuildersType buildersType;
 
     // процент завершенности строительства
     @Column(name = "COMPLETE_PERC")
@@ -63,8 +63,8 @@ public class ConstructionProject extends BaseEntity {
     public ConstructionProject() {
     }
 
-    public ConstructionProject(TradeBuildingsTypes tradeBuildingType, Date finishDate, CityAreas cityArea,
-            BuildersTypes buildersType, long userId) {
+    public ConstructionProject(TradeBuildingType tradeBuildingType, Date finishDate, CityArea cityArea,
+            BuildersType buildersType, long userId) {
         this.startDate = new Date();
         this.name = PropertyUtil.generatePropertyName(tradeBuildingType, cityArea);
 
@@ -75,11 +75,11 @@ public class ConstructionProject extends BaseEntity {
         this.userId = userId;
     }
 
-    public TradeBuildingsTypes getBuildingType() {
+    public TradeBuildingType getBuildingType() {
         return buildingType;
     }
 
-    public void setBuildingType(TradeBuildingsTypes buildingType) {
+    public void setBuildingType(TradeBuildingType buildingType) {
         this.buildingType = buildingType;
     }
 
@@ -99,11 +99,11 @@ public class ConstructionProject extends BaseEntity {
         this.finishDate = finishDate;
     }
 
-    public CityAreas getCityArea() {
+    public CityArea getCityArea() {
         return cityArea;
     }
 
-    public void setCityArea(CityAreas cityArea) {
+    public void setCityArea(CityArea cityArea) {
         this.cityArea = cityArea;
     }
 
@@ -123,11 +123,11 @@ public class ConstructionProject extends BaseEntity {
         this.name = name;
     }
 
-    public BuildersTypes getBuildersType() {
+    public BuildersType getBuildersType() {
         return buildersType;
     }
 
-    public void setBuildersType(BuildersTypes buildersType) {
+    public void setBuildersType(BuildersType buildersType) {
         this.buildersType = buildersType;
     }
 

@@ -6,7 +6,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-import com.kozak.triangles.enums.CityAreas;
+import com.kozak.triangles.enums.CityArea;
 
 /**
  * Таблица для хранения информации об участках земли
@@ -22,7 +22,7 @@ public class LandLot extends BaseEntity {
 
     @Column(name = "CITY_AREA")
     @Enumerated(EnumType.STRING)
-    private CityAreas cityArea; // район участка земли
+    private CityArea cityArea; // район участка земли
 
     @Column(name = "LOT_COUNT")
     private int lotCount; // количество участков земли
@@ -30,7 +30,7 @@ public class LandLot extends BaseEntity {
     public LandLot() {
     }
 
-    public LandLot(long userId, CityAreas cityArea, int lotCount) {
+    public LandLot(long userId, CityArea cityArea, int lotCount) {
         this.userId = userId;
         this.cityArea = cityArea;
         this.lotCount = lotCount;
@@ -44,11 +44,11 @@ public class LandLot extends BaseEntity {
         this.userId = userId;
     }
 
-    public CityAreas getCityArea() {
+    public CityArea getCityArea() {
         return cityArea;
     }
 
-    public void setCityArea(CityAreas cityArea) {
+    public void setCityArea(CityArea cityArea) {
         this.cityArea = cityArea;
     }
 

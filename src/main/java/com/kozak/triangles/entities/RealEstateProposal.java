@@ -12,8 +12,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.kozak.triangles.data.TradeBuildingsTableData;
-import com.kozak.triangles.enums.CityAreas;
-import com.kozak.triangles.enums.TradeBuildingsTypes;
+import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.enums.TradeBuildingType;
 import com.kozak.triangles.utils.DateUtils;
 
 /**
@@ -29,7 +29,7 @@ public class RealEstateProposal extends BaseEntity {
 
     @Column(name = "BUILDING_TYPE")
     @Enumerated(EnumType.STRING)
-    private TradeBuildingsTypes tradeBuildingType; // тип торгового здания (Киоск, Маркет, ...)
+    private TradeBuildingType tradeBuildingType; // тип торгового здания (Киоск, Маркет, ...)
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "APPEAR_DATE")
@@ -44,7 +44,7 @@ public class RealEstateProposal extends BaseEntity {
 
     @Column(name = "CITY_AREA")
     @Enumerated(EnumType.STRING)
-    private CityAreas cityArea; // район здания
+    private CityArea cityArea; // район здания
 
     @Column(name = "VALID")
     private boolean valid = true; // предложение еще действительно
@@ -65,7 +65,7 @@ public class RealEstateProposal extends BaseEntity {
     @Column(name = "DEPRECIATION")
     private double depreciation;
 
-    public RealEstateProposal(TradeBuildingsTypes tradeBuildingType, Date lossDate, long purchasePrice, CityAreas cityArea) {
+    public RealEstateProposal(TradeBuildingType tradeBuildingType, Date lossDate, long purchasePrice, CityArea cityArea) {
         this.tradeBuildingType = tradeBuildingType;
         this.appearDate = new Date();
         this.lossDate = lossDate;
@@ -97,11 +97,11 @@ public class RealEstateProposal extends BaseEntity {
     public RealEstateProposal() {
     }
 
-    public TradeBuildingsTypes getTradeBuildingType() {
+    public TradeBuildingType getTradeBuildingType() {
         return tradeBuildingType;
     }
 
-    public void setTradeBuildingType(TradeBuildingsTypes tradeBuildingType) {
+    public void setTradeBuildingType(TradeBuildingType tradeBuildingType) {
         this.tradeBuildingType = tradeBuildingType;
     }
 
@@ -129,11 +129,11 @@ public class RealEstateProposal extends BaseEntity {
         this.purchasePrice = purchasePrice;
     }
 
-    public CityAreas getCityArea() {
+    public CityArea getCityArea() {
         return cityArea;
     }
 
-    public void setCityArea(CityAreas cityArea) {
+    public void setCityArea(CityArea cityArea) {
         this.cityArea = cityArea;
     }
 
