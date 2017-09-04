@@ -57,7 +57,7 @@ public class ConstructionProjectRep {
      * @param userId
      *            - ID пользователя
      */
-    public ConstructionProject getUserConstrProjectById(int id, long userId) {
+    public ConstructionProject getUserConstrProjectById(long id, long userId) {
         String hql = "from ConstructionProject WHERE id = ?0 AND userId = ?1";
         Query query = em.createQuery(hql);
         query.setParameter(0, id);

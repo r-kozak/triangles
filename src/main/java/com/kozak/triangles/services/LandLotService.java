@@ -21,10 +21,19 @@ public interface LandLotService {
     void addOneLandLot(Long userId, CityArea cityArea);
 
     /**
+     * Занятым участок считается тогда, когда на нем уже есть имущество или имущество еще находится в процессе постройки
+     * 
      * @param userId
      * @param cityArea
      * @return количество ЗАНЯТЫХ участков земли пользователя в конкретном районе
      */
     long getBusyLandLotsCount(long userId, CityArea cityArea);
+
+    /**
+     * @param userId
+     * @param сityArea
+     * @return количество ДОСТУПНЫХ (не занятых) участков земли пользователя в конкретном районе
+     */
+    long getAvailableLandLotsCount(long userId, CityArea cityArea);
 
 }

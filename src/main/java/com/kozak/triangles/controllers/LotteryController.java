@@ -97,8 +97,8 @@ public class LotteryController extends BaseController {
          * Открыть пользователю мудрость или дать предсказание.
          */
         private static void givePredictionToUser(long userId, Date date, LotteryRep lotteryRep) {
-            List<Integer> allPredIDs = lotteryRep.getAllPredictionIDs(); // все ID предсказаний
-            int lastPredId = allPredIDs.get(allPredIDs.size() - 1); // последний ID из предсказаний
+            List<Long> allPredIDs = lotteryRep.getAllPredictionIDs(); // все ID предсказаний
+            Long lastPredId = allPredIDs.get(allPredIDs.size() - 1); // последний ID из предсказаний
 
             // cгенерить ID предсказания (мудрости), которое точно есть в базе
             Integer predictionId = null;

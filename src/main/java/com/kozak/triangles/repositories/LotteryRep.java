@@ -64,14 +64,14 @@ public class LotteryRep {
      * @return все ID c таблицы предсказаний
      */
     @SuppressWarnings("unchecked")
-    public List<Integer> getAllPredictionIDs() {
+    public List<Long> getAllPredictionIDs() {
         return em.createQuery("SELECT id FROM Predictions ORDER BY id ASC").getResultList();
     }
 
     /**
      * Получает предсказание по id
      */
-    public Predictions getPredictionById(int id) {
+    public Predictions getPredictionById(long id) {
         return em.find(Predictions.class, id);
     }
 

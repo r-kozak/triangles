@@ -12,6 +12,7 @@ import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlow;
+import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.enums.LotteryArticle;
 import com.kozak.triangles.repositories.ConstructionProjectRep;
 import com.kozak.triangles.repositories.LotteryRep;
@@ -71,6 +72,24 @@ public abstract class BaseController {
 
         long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.LICENSE_4);
         model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
+
+        return model;
+    }
+
+    /**
+     * @return переданную модель, но наполненную информацией по участкам земли (сколько занято и сколько всего) в разрезе
+     *         конкретного района
+     */
+    protected Model addLandLotsInfoToModel(Model model, long userId) {
+        // информация по участкам земли в разных районах - сколько занято и сколько всего
+        model.addAttribute("landLotGhettoBusy", landLotService.getBusyLandLotsCount(userId, CityArea.GHETTO)); // занятые участки
+        model.addAttribute("landLotOutskirtsBusy", landLotService.getBusyLandLotsCount(userId, CityArea.OUTSKIRTS));
+        model.addAttribute("landLotChinatownBusy", landLotService.getBusyLandLotsCount(userId, CityArea.CHINATOWN));
+        model.addAttribute("landLotCenterBusy", landLotService.getBusyLandLotsCount(userId, CityArea.CENTER));
+        model.addAttribute("landLotGhettoTotal", landLotService.getCountOfLandLot(userId, CityArea.GHETTO)); // сколько всего
+        model.addAttribute("landLotOutskirtsTotal", landLotService.getCountOfLandLot(userId, CityArea.OUTSKIRTS));
+        model.addAttribute("landLotChinatownTotal", landLotService.getCountOfLandLot(userId, CityArea.CHINATOWN));
+        model.addAttribute("landLotCenterTotal", landLotService.getCountOfLandLot(userId, CityArea.CENTER));
 
         return model;
     }

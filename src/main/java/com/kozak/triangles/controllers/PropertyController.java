@@ -108,17 +108,24 @@ public class PropertyController extends BaseController {
         long userId = user.getId();
         RealEstateProposal prop = realEstateProposalRep.getREProposalById(propId);
 
+        if (prop == null) {
+            ResponseUtil.putErrorMsg(resultJson, "Произошла ошибка: нет такого имущества)!");
+        }
+
+        CityArea propCityArea = prop.getCityArea();
+
         long userMoney = Long.parseLong(trRep.getUserBalance(userId));
         long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // состоятельность пользователя
+        long availableLandLots = landLotService.getAvailableLandLotsCount(userId, propCityArea);
 
-        if (prop == null) {
-            ResponseUtil.putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
-        } else if (!prop.isValid()) {
+        if (!prop.isValid()) {
             ResponseUtil.putErrorMsg(resultJson,
                     "Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
         } else if (userSolvency < prop.getPurchasePrice()) {
             ResponseUtil.putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам купить это имущество. "
                     + "Ваш максимум = <b>" + CommonUtil.moneyFormat(userSolvency) + "&tridot;</b>");
+        } else if (availableLandLots <= 0) {
+            ResponseUtil.putErrorMsg(resultJson, "Не хватает участков для покупки имущества в районе " + propCityArea);
         } else {
             long newBalance = userMoney - prop.getPurchasePrice(); // balance after purchase
 
@@ -141,12 +148,11 @@ public class PropertyController extends BaseController {
                     Date purchDate = new Date();
                     long price = prop.getPurchasePrice();
 
-                    CityArea cityArea = prop.getCityArea();
                     // новое имя имущества
-                    String propName = PropertyUtil.generatePropertyName(buildData.getTradeBuildingType(), cityArea);
+                    String propName = PropertyUtil.generatePropertyName(buildData.getTradeBuildingType(), propCityArea);
                     // если имущ. новое - добавить новое имущество пользователю, иначе - изменить владельца у б/у
                     if (prop.getUsedId() == 0) {
-                        Property newProp = new Property(buildData, userId, cityArea, purchDate, price, propName);
+                        Property newProp = new Property(buildData, userId, propCityArea, purchDate, price, propName);
                         prRep.addProperty(newProp);
 
                         MoneyController.upUserDomi(Constants.K_DOMI_BUY_PROP, userId, userRep); // повысить доминантность
@@ -228,6 +234,8 @@ public class PropertyController extends BaseController {
         model.addAttribute("userHaveProps", prRep.allPrCount(userId, false, false) > 0);
         model.addAttribute("ready", prRep.allPrCount(userId, true, false)); // колво готовых к сбору дохода
         model.addAttribute("rowsOnPage", SearchCollections.getRowCount());
+        // наполнить модель информацией по участках в каждом районе (занято и всего участков)
+        model = addLandLotsInfoToModel(model, userId);
 
         // если собирали наличку с кассы - для информационного popup окна
         String cash = (String) model.asMap().getOrDefault("changeBal", "");

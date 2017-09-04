@@ -118,16 +118,9 @@ public class HomeController extends BaseController {
             }
         }
         
-        // информация по участкам земли в разных районах - сколько занято и сколько всего
-        model.addAttribute("landLotGhettoBusy", landLotService.getBusyLandLotsCount(userId, CityArea.GHETTO)); // занятые участки
-        model.addAttribute("landLotOutskirtsBusy", landLotService.getBusyLandLotsCount(userId, CityArea.OUTSKIRTS));
-        model.addAttribute("landLotChinatownBusy", landLotService.getBusyLandLotsCount(userId, CityArea.CHINATOWN));
-        model.addAttribute("landLotCenterBusy", landLotService.getBusyLandLotsCount(userId, CityArea.CENTER));
-        model.addAttribute("landLotGhettoTotal", landLotService.getCountOfLandLot(userId, CityArea.GHETTO)); // сколько всего
-        model.addAttribute("landLotOutskirtsTotal", landLotService.getCountOfLandLot(userId, CityArea.OUTSKIRTS));
-        model.addAttribute("landLotChinatownTotal", landLotService.getCountOfLandLot(userId, CityArea.CHINATOWN));
-        model.addAttribute("landLotCenterTotal", landLotService.getCountOfLandLot(userId, CityArea.CENTER));
-        
+        // наполнить модель информацией по участках в каждом районе (занято и всего участков)
+        model = addLandLotsInfoToModel(model, userId);
+
 
         // СТАТИСТИКА
         model.addAttribute("profitSum", trRep.getSumByTransfType(userId, TransferType.PROFIT)); // прибыль всего

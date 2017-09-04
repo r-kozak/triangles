@@ -197,7 +197,7 @@ public class BuildingController extends BaseController {
      * @param user
      */
     @RequestMapping(value = "/from-construct", method = RequestMethod.POST, produces = { "application/json; charset=UTF-8" })
-    public @ResponseBody ResponseEntity<String> propertyFromConstruct(@RequestParam("constrId") int constrId, User user) {
+    public @ResponseBody ResponseEntity<String> propertyFromConstruct(@RequestParam("constrId") long constrId, User user) {
 
         JSONObject resultJson = new JSONObject();
         long userId = user.getId();
@@ -213,7 +213,7 @@ public class BuildingController extends BaseController {
     /**
      * принятие в эксплуатацию конкретного проекта
      */
-    private void singleProjectFromConstruct(JSONObject resultJson, int constrId, long userId, ConstructionProject constrProj) {
+    private void singleProjectFromConstruct(JSONObject resultJson, long constrId, long userId, ConstructionProject constrProj) {
 
         // если принимаем одно имущество, тогда проекта у нас нет, мы должны его получить
         // иначе проект у нас уже есть, т.к. мы его передали сюда из метода принятия всего имущества

@@ -40,4 +40,10 @@ public class LandLotServiceImpl implements LandLotService {
         return propertiesCount + constructProjectsCount;
     }
 
+    @Override
+    public long getAvailableLandLotsCount(long userId, CityArea cityArea) {
+        // количество участков всего - количество занятых участков
+        return getCountOfLandLot(userId, cityArea) - getBusyLandLotsCount(userId, cityArea);
+    }
+
 }

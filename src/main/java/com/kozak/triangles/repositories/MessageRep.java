@@ -27,7 +27,7 @@ public class MessageRep {
     /**
      * удаляет сообщение
      */
-    public void removeMsg(int id) {
+    public void removeMsg(long id) {
         em.remove(em.find(Messages.class, id));
     }
 
@@ -37,7 +37,7 @@ public class MessageRep {
         return query.getResultList();
     }
 
-    public Messages getMsgById(int id) {
+    public Messages getMsgById(long id) {
         return em.find(Messages.class, id);
     }
 }

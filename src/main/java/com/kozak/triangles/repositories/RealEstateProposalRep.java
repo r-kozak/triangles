@@ -38,27 +38,27 @@ public class RealEstateProposalRep {
      * @throws ParseException
      */
     public List<Object> getREProposalsList(int page, RealEstateProposalsSearch reps, long userId) throws ParseException {
-        String hql0 = "from re_proposal as rep where rep.valid = true";
+        String hql0 = "FROM re_proposal WHERE valid = true";
         String hql1 = "";
-        String hql2 = " ORDER BY rep.tradeBuildingType";
+        String hql2 = " ORDER BY tradeBuildingType";
 
         Map<String, Object> params = new HashMap<String, Object>();
 
         // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
-        List<Integer> propsOnSale = this.getPropertyIdsOnSale(userId);
+        List<Long> propsOnSale = getPropertyIdsOnSale(userId);
         if (!propsOnSale.isEmpty()) {
-            hql0 += " and rep.usedId not in (:propsOnSale)";
+            hql0 += " AND usedId NOT IN (:propsOnSale)";
             params.put("propsOnSale", propsOnSale);
         }
 
         // date filter
-        hql1 += " and rep.appearDate between :appearDateFrom and :appearDateTo";
+        hql1 += " AND appearDate BETWEEN :appearDateFrom AND :appearDateTo";
         Date appearDateFrom = DateUtils.getStartDateForQuery(reps.getAppearDateFrom());
         Date appearDateTo = DateUtils.getEndDateForQuery(reps.getAppearDateTo());
         params.put("appearDateFrom", appearDateFrom);
         params.put("appearDateTo", appearDateTo);
 
-        hql1 += " and rep.lossDate between :lossDateFrom and :lossDateTo";
+        hql1 += " AND lossDate BETWEEN :lossDateFrom AND :lossDateTo";
         Date lossDateFrom = DateUtils.getStartDateForQuery(reps.getLossDateFrom());
         Date lossDateTo = DateUtils.getEndDateForQuery(reps.getLossDateTo());
         params.put("lossDateFrom", lossDateFrom);
@@ -67,14 +67,14 @@ public class RealEstateProposalRep {
         // area filter
         List<CityArea> areas = reps.getAreas(); // типы из формы
         if (areas != null && !areas.isEmpty()) {
-            hql1 += " and rep.cityArea IN (:areas)";
+            hql1 += " AND cityArea IN (:areas)";
             params.put("areas", areas);
         }
 
         // types filter
         List<TradeBuildingType> types = reps.getTypes(); // типы из формы
         if (types != null && !types.isEmpty()) {
-            hql1 += " and rep.tradeBuildingType IN (:types)";
+            hql1 += " AND tradeBuildingType IN (:types)";
             params.put("types", types);
         }
 
@@ -82,7 +82,7 @@ public class RealEstateProposalRep {
         long priceFrom = reps.getPriceFrom();
         long priceTo = reps.getPriceTo();
         if (priceFrom > 0 && priceTo > 0) {
-            hql1 += " and rep.purchasePrice between :priceFrom AND :priceTo";
+            hql1 += " AND purchasePrice BETWEEN :priceFrom AND :priceTo";
             params.put("priceFrom", priceFrom);
             params.put("priceTo", priceTo);
         }
@@ -114,7 +114,7 @@ public class RealEstateProposalRep {
      */
     @SuppressWarnings("unchecked")
     public List<RealEstateProposal> getOutdatedProposals() {
-        String hql = "from re_proposal as rep where rep.valid = true and rep.lossDate < :now ";
+        String hql = "FROM re_proposal WHERE valid = true AND lossDate < :now ";
         Query query = em.createQuery(hql).setParameter("now", new Date());
 
         return query.getResultList();
@@ -146,7 +146,7 @@ public class RealEstateProposalRep {
      *            id предложения
      * @return предложение с указанным id
      */
-    public RealEstateProposal getREProposalById(int id) {
+    public RealEstateProposal getREProposalById(long id) {
         return em.find(RealEstateProposal.class, id);
     }
 
@@ -161,12 +161,12 @@ public class RealEstateProposalRep {
         // параметры, которые потом установятся запросу
         Map<String, Object> params = new HashMap<String, Object>();
 
-        String hql = "select count(id) FROM re_proposal as rep where rep.valid = true";
+        String hql = "SELECT count(id) FROM re_proposal WHERE valid = true";
 
         // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
-        List<Integer> propsOnSale = this.getPropertyIdsOnSale(userId);
+        List<Long> propsOnSale = getPropertyIdsOnSale(userId);
         if (!propsOnSale.isEmpty()) {
-            hql += " and rep.usedId not in (:propsOnSale)";
+            hql += " AND usedId NOT IN (:propsOnSale)";
             params.put("propsOnSale", propsOnSale);
         }
 
@@ -175,7 +175,7 @@ public class RealEstateProposalRep {
             yestC.add(Calendar.DATE, -1);
             Date yest = yestC.getTime();
 
-            hql += " and rep.appearDate > :yest";
+            hql += " AND appearDate > :yest";
             params.put("yest", yest);
         }
 
@@ -197,20 +197,20 @@ public class RealEstateProposalRep {
     public List<Object> getRangeValues(long userId) {
         Map<String, Object> params = new HashMap<String, Object>();
 
-        String suff = "FROM re_proposal as rep where valid = true";
+        String suff = "FROM re_proposal WHERE valid = true";
 
         // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
-        List<Integer> propsOnSale = this.getPropertyIdsOnSale(userId);
+        List<Long> propsOnSale = getPropertyIdsOnSale(userId);
         if (!propsOnSale.isEmpty()) {
-            suff += " and rep.usedId not in (:propsOnSale)";
+            suff += " AND usedId NOT IN (:propsOnSale)";
             params.put("propsOnSale", propsOnSale);
         }
 
         ArrayList<Object> result = new ArrayList<Object>(2);
 
         // строки запроса
-        String minPrHql = "Select min(purchasePrice)" + suff;
-        String maxPrHql = "Select max(purchasePrice)" + suff;
+        String minPrHql = "SELECT min(purchasePrice)" + suff;
+        String maxPrHql = "SELECT max(purchasePrice)" + suff;
 
         // запросы
         Query queryMin = em.createQuery(minPrHql);
@@ -232,13 +232,13 @@ public class RealEstateProposalRep {
     }
 
     public void removeReProposalByUsedId(long usedId) {
-        RealEstateProposal toRemove = this.getProposalByUsedId(usedId);
-        this.em.remove(toRemove);
+        RealEstateProposal toRemove = getProposalByUsedId(usedId);
+        em.remove(toRemove);
     }
 
     public RealEstateProposal getProposalByUsedId(long usedId) {
-        String hql = "from re_proposal as rep where usedId = :usedId";
-        Query query = this.em.createQuery(hql).setParameter("usedId", usedId);
+        String hql = "FROM re_proposal WHERE usedId = :usedId";
+        Query query = em.createQuery(hql).setParameter("usedId", usedId);
         return (RealEstateProposal) query.getSingleResult();
     }
 
@@ -249,10 +249,9 @@ public class RealEstateProposalRep {
      * @param userId
      */
     @SuppressWarnings("unchecked")
-    public List<Integer> getPropertyIdsOnSale(long userId) {
-        String hql = "Select id from Property as pr where pr.onSale = true and pr.userId = :userId";
-        Query query = this.em.createQuery(hql).setParameter("userId", userId);
-
+    public List<Long> getPropertyIdsOnSale(long userId) {
+        String hql = "SELECT id FROM Property WHERE onSale = true AND userId = :userId";
+        Query query = em.createQuery(hql).setParameter("userId", userId);
         return query.getResultList();
     }
 

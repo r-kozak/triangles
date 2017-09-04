@@ -149,7 +149,7 @@ public class RealEstateProposal extends BaseEntity {
         return usedId;
     }
 
-    public void setUsedId(int usedId) {
+    public void setUsedId(long usedId) {
         this.usedId = usedId;
     }
 
