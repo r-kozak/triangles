@@ -1,0 +1,31 @@
+.land_lots_block {
+	color: #4cae4c;
+	background-color: #dff0d8;
+	padding: 20 0;
+}
+
+.land_lot_block {
+	font-size: 15;
+	margin-top: 5;
+	padding: 10 10 0 10;
+	border: 2px solid rgb(55, 165, 10);
+	border-radius: 8px;
+}
+
+.land_lot_block a {
+	padding: 5;
+	margin: 15 0 5 0;
+	border: 2px solid rgba(111, 197, 76, 0.53);
+	border-radius: 8px;
+	display: block;
+	text-decoration: none;
+	color: #4cae4c;
+}
+
+.land_lot_block a:hover {
+	border: 2px solid rgb(55, 165, 10);
+	text-decoration: none;
+	color: #4cae4c;
+	font-weight: bold;
+	cursor: pointer;
+}

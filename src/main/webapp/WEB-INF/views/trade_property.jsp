@@ -43,6 +43,7 @@
 	</script>
 </head>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/trade_property.css" type="text/css" />
 <title>Торговое имущество</title>
 <t:template>
 <div class="container">
@@ -127,6 +128,48 @@
 
 		<div class="col-md-9">
 			<h3 class="page-header" align=center>Торговое имущество</h3>
+      
+            <h4 class="page-header" align=center>Участки</h4>
+      
+            <div class="col-md-12 text-center land_lots_block">
+              <div class="col-md-3">
+                <div id="land_lot_ghetto" class="land_lot_block">
+                  <div class="notSelectable">Гетто: ${landLotGhettoBusy}/${landLotGhettoTotal}
+                    <button id="info" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-info-sign"></span></button> 
+                  </div>
+                  <a id="buy" class="notSelectable">КУПИТЬ</a>
+                </div>
+              </div>
+              
+              <div class="col-md-3">
+                <div id="land_lot_outskirts" class="land_lot_block">
+                  <div class="notSelectable">Окраина: ${landLotOutskirtsBusy}/${landLotOutskirtsTotal}
+                     <button id="info" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-info-sign"></span></button> 
+                  </div>
+                  <a id="buy" class="notSelectable">КУПИТЬ</a>
+                </div>
+              </div>
+              
+              <div class="col-md-3">
+                <div id="land_lot_chinatown" class="land_lot_block">
+                  <div class="notSelectable">Чайнатаун: ${landLotChinatownBusy}/${landLotChinatownTotal}
+                    <button id="info" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-info-sign"></span></button> 
+                  </div>
+                  <a id="buy" class="notSelectable">КУПИТЬ</a>
+                </div>
+              </div>
+              
+              <div class="col-md-3">
+                <div id="land_lot_center" class="land_lot_block">
+                  <div class="notSelectable">Центр: ${landLotCenterBusy}/${landLotCenterTotal}
+                    <button id="info" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-info-sign"></span></button>
+                  </div>
+                  <a id="buy" class="notSelectable">КУПИТЬ</a>
+                </div>                
+              </div>
+            </div>
+            <div class="row"></div> <!-- разделитель -->
+      
 			<c:if test="${empty tradeProps && !userHaveProps}">
 				<div class = "noData">У вас нет имущества. Его можно купить на рынке или построить. 
 					<a href = "${pageContext.request.contextPath}/property/r-e-market">РЫНОК</a>
@@ -251,6 +294,7 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/buildings_types.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/city_areas_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/trade_property.js"></script>
 
 <script>
 $(document).ready(function(){
