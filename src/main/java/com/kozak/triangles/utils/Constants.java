@@ -35,8 +35,8 @@ public final class Constants {
     public static final int K_DECREASE_PROP_L = 8; // коэф. уменьшения суммы поднятия уровня имущества
 
     // максимальные уровни !!!!!!!!!!!!!! ПРИ - ↑ - ДОБАВИТЬ КОЕФ. В !!! UNIVERS_K !!!
-    public static final int MAX_CASH_LEVEL = 15; // кассы
-    public static final int MAX_PROP_LEVEL = 10; // имущества
+    public static final int MAX_CASH_LEVEL = 20; // кассы
+    public static final int MAX_PROP_LEVEL = 15; // имущества
 
     // коэфициенты доминантности
     public static final double K_PROP_LEVEL_DOMI = 1.5; // коэф. умножения уровня имущества при его повышении
