@@ -10,10 +10,13 @@ function getLandLotPrice() {
 		  dataType: "json",
 		  async:true
 	}).done(function(data) {
-		alert(data.price);
+		if (data.error) {
+			showErrorModal(data);
+		} else {
+			showBuyModal(data);
+		}
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 		alert(jqXHR.status + " " + jqXHR.statusText + " " + textStatus);
-		console.log(errorThrown);
 	});
 }
 
@@ -32,4 +35,30 @@ function getCityAreaName(landLotElement) {
 
 function getContextPath() {
    return window.location.pathname.substring(0, window.location.pathname.indexOf("/",2));
+}
+
+/**
+ * Открывает окно для отображения ошибок
+ */
+function showErrorModal(data) {
+	$('#modalErrorBody').html(data.message);
+	$('#modalError').modal();
+}
+
+/**
+ * Открывает окно для подтверждения покупки участка
+ */
+function showBuyModal(data) {
+	var info = '<b>Район</b>: <div id="city_area">' + getCityAreaName(data.cityArea) + '</div> </br>' + 
+	'<b>Цена участка</b>: ' + data.price; 
+	
+	$('#modalForInfoBody').html(info);
+	$('#modalForInfo').modal();
+}
+
+/**
+ * Подтверждает покупку участка
+ */
+function confirmLandLotBuying(area) {
+	
 }

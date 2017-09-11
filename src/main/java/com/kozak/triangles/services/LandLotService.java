@@ -36,4 +36,11 @@ public interface LandLotService {
      */
     long getAvailableLandLotsCount(long userId, CityArea cityArea);
 
+    /**
+     * @param userId
+     * @param cityArea
+     * @return цену следующего участка в конкретном районе и для конкретного пользователя
+     */
+    long getNextLandLotPrice(long userId, CityArea cityArea);
+
 }

@@ -391,4 +391,59 @@ $(document).ready(function(){
 });
 </script>
 
+<!-- модальное окно для отображения ошибки -->
+<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-danger" id="modalErrorTitle">Ошибка</h4>
+      </div>
+      
+    <div class="modal-body" id="modalErrorBody">Тело</div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ок</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- модальное окно для отображения информации о зданиях на участках -->
+<div class="modal fade" id="modalForInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalForInfoTitle">Купить участок</h4>
+      </div>
+      
+    <div class="modal-body" id="modalForInfoBody">Тело</div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Ок</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- модальное окно для покупки участка -->
+<div class="modal fade" id="modalForBuy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalForInfoTitle">Заголовок</h4>
+      </div>
+      
+    <div class="modal-body" id="modalForBuyBody">Тело</div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Отмена</button>
+        <button id="buy_l_lot_btn" type="button" class="btn btn-success">Купить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </t:template>
