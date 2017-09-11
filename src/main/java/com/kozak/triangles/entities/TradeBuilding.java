@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.kozak.triangles.enums.TradeBuildingType;
 import com.kozak.triangles.utils.Constants;
+import com.kozak.triangles.utils.Ksyusha;
 
 /**
  * Торговое строение
@@ -46,8 +47,8 @@ public class TradeBuilding {
         this.profitMax = (int) (purchasePriceMin / (paybackPeriodMin * 7));
 
         this.cashCapacity = new ArrayList<>();
-        for (int i = 0; i < Constants.UNIVERS_K.length; i++) {
-            this.cashCapacity.add(Math.round(profitMax * Constants.UNIVERS_K[i]));
+        for (int i = 1; i < Constants.MAX_CASH_LEVEL; i++) {
+            this.cashCapacity.add(Math.round(profitMax * Ksyusha.computeCoef(i)));
         }
 
         this.tradeBuildingType = tradeBuildingType;

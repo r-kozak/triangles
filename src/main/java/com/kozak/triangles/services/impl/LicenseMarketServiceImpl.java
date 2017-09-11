@@ -33,6 +33,7 @@ import com.kozak.triangles.services.LicenseMarketService;
 import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
+import com.kozak.triangles.utils.Ksyusha;
 import com.kozak.triangles.utils.ResponseUtil;
 
 @Service
@@ -408,7 +409,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
      * @return цену повышения уровня Магазина лицензий
      */
     private long getPriceOfLevelUp(int targetLevel) {
-        return (long) (LicenseMarket.BASE_PRICE * Constants.UNIVERS_K[targetLevel]);
+        return (long) (LicenseMarket.BASE_PRICE * Ksyusha.computeCoef(targetLevel));
     }
 
 }

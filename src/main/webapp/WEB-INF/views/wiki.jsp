@@ -570,8 +570,8 @@ p {
 				<p>Как и в торговом имуществе, Магазин лицензий можно улучшать, повышая уровень. Максимальный уровень Магазина 
 				лицензий = <b>${maxLicMarketLevel}</b>.
 				<p>Цена повышения уровня = <b>[уровень, к которому повышаем] * [универсальный коэф. соответствующего уровня]</b>.
-				<p>К примеру, если повышаем уровень к 2, то цена повышения будет: <b>${basePriceLicMarketBuild} * ${univCoef[2]} = 
-				${basePriceLicMarketBuild * univCoef[2]}</b>
+				<p>К примеру, если повышаем уровень к 2, то цена повышения будет: <b>${basePriceLicMarketBuild} * 1.1 = 
+				${basePriceLicMarketBuild * 1.1}</b>
 				<p>Для постройки и повышения уровня необходимо выполнять некоторые требования, а именно:
 				<ul>
 					<li>Иметь на счету некоторую сумму денег (читайте выше).</li>
@@ -863,34 +863,9 @@ p {
 					<li>повышении уровня имущества (расчет суммы);</li>
 					<li>повышении уровня кассы имущества (расчет суммы);</li>
 					<li>расчете вместимости кассы (в зависимости от уровня);</li>
+                    <li>расчете стоимости участка земли (в зависимости от количества участков);</li>
 			  	</ul>
-				<table border=1px solid
-					style="text-align: center; margin: auto; border-collapse: collapse;">
-					<tr>
-						<td><b>Уровень</b></td>
-						<td>0</td>
-						<td>1</td><td>2</td>			
-						<td>3</td><td>4</td>
-						<td>5</td><td>6</td>
-						<td>7</td><td>8</td>
-						<td>9</td><td>10</td>
-						<td>11</td><td>12</td>
-						<td>13</td><td>14</td>
-						<td>15</td><td>16</td>
-					</tr>
-					<tr>
-						<td><b>k</b></td>
-						<td>1</td>
-						<td>${univCoef[1]}</td> <td>${univCoef[2]}</td>
-						<td>${univCoef[3]}</td> <td>${univCoef[4]}</td>
-						<td>${univCoef[5]}</td> <td>${univCoef[6]}</td>
-						<td>${univCoef[7]}</td> <td>${univCoef[8]}</td>
-						<td>${univCoef[9]}</td> <td>${univCoef[10]}</td>
-						<td>${univCoef[11]}</td> <td>${univCoef[12]}</td>
-						<td>${univCoef[13]}</td> <td>${univCoef[14]}</td>
-						<td>${univCoef[15]}</td> <td>${univCoef[16]}</td>
-					</tr>
-				</table>
+             <p>Последовательность: 1, 1.1, 1.3, 1.6, 2.0, 2.5, 3.1, 3.8, ...
 			</div>
 				
 <!-- 			             THE END                      -->

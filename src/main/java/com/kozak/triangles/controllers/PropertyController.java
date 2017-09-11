@@ -35,6 +35,7 @@ import com.kozak.triangles.search.TradePropertySearch;
 import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
+import com.kozak.triangles.utils.Ksyusha;
 import com.kozak.triangles.utils.PropertyUtil;
 import com.kozak.triangles.utils.ResponseUtil;
 import com.kozak.triangles.utils.TagCreator;
@@ -653,7 +654,7 @@ public class PropertyController extends BaseController {
      */
     private long getSumToCashLevelUp(Property prop, int cashLevel) {
         // начальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
-        long sum = Math.round(prop.getInitialCost() * Constants.UNIVERS_K[cashLevel] / Constants.K_DECREASE_CASH_L);
+        long sum = Math.round(prop.getInitialCost() * Ksyusha.computeCoef(cashLevel) / Constants.K_DECREASE_CASH_L);
         return sum;
     }
 
@@ -687,7 +688,7 @@ public class PropertyController extends BaseController {
     private long getSumToPropLevelUp(Property prop, int propLevel) {
         // максимальная стоимость имущества * коэф. уровня к которому повышаем / коэф. снижения суммы
         long maxPrice = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal()).getPurchasePriceMax();
-        long sum = Math.round(maxPrice * Constants.UNIVERS_K[propLevel] / Constants.K_DECREASE_PROP_L);
+        long sum = Math.round(maxPrice * Ksyusha.computeCoef(propLevel) / Constants.K_DECREASE_PROP_L);
         return sum;
     }
 
@@ -769,7 +770,7 @@ public class PropertyController extends BaseController {
             // //
 
             // получить сумму улучшения до след. уровня + 1
-            long nextSum = Math.round(prop.getInitialCost() * Constants.UNIVERS_K[nCashLevel + 1] / Constants.K_DECREASE_CASH_L);
+            long nextSum = Math.round(prop.getInitialCost() * Ksyusha.computeCoef(nCashLevel + 1) / Constants.K_DECREASE_CASH_L);
             long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
 
             if (nCashLevel == Constants.MAX_CASH_LEVEL) {
@@ -845,7 +846,7 @@ public class PropertyController extends BaseController {
 
             // получить сумму улучшения до след. уровня + 1
             long maxPrice = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal()).getPurchasePriceMax();
-            long nextSum = Math.round(maxPrice * Constants.UNIVERS_K[nPropLevel + 1] / Constants.K_DECREASE_PROP_L);
+            long nextSum = Math.round(maxPrice * Ksyusha.computeCoef(nPropLevel + 1) / Constants.K_DECREASE_PROP_L);
             long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // получить состоятельность после снятия денег
 
             resultJson.put("upped", true); // уровень был поднят

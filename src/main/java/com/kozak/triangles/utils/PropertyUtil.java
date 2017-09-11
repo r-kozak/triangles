@@ -50,7 +50,7 @@ public class PropertyUtil {
 
             for (int i = 0; i < calcC; i++) {
                 // згенерить и приплюсовать к кассе значение прибыли !!! учитывая район и уровень имущества!!!
-                long gen = Math.round(Random.generateRandNum(pMin, pMax) * Constants.UNIVERS_K[pLevel]); // коэф. уровня
+                long gen = Math.round(Random.generateRandNum(pMin, pMax) * Ksyusha.computeCoef(pLevel)); // коэф. уровня
                 gen += Math.round(gen * CityAreasTableData.getCityAreaPercent(p.getCityArea()) / 100); // процент района
                 cash += gen;
             }

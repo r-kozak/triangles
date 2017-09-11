@@ -162,8 +162,6 @@ public class HomeController extends BaseController {
 
         // данные имущества
         model.addAttribute("tradeBuildingsData", TradeBuildingsTableData.getTradeBuildingsDataList());
-        // коэфициенты вместимости кассы
-        model.addAttribute("univCoef", Constants.UNIVERS_K);
         // мин и макс частота генерации предложений на рынке
         model.addAttribute("frp_min", Constants.FREQ_RE_PROP_MIN);
         model.addAttribute("frp_max", Constants.FREQ_RE_PROP_MAX);
