@@ -415,7 +415,7 @@ $(document).ready(function(){
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalForInfoTitle">Купить участок</h4>
+        <h4 class="modal-title" id="modalForInfoTitle">Имущество на участках</h4>
       </div>
       
     <div class="modal-body" id="modalForInfoBody">Тело</div>
@@ -433,7 +433,7 @@ $(document).ready(function(){
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalForInfoTitle">Заголовок</h4>
+        <h4 class="modal-title" id="modalForInfoTitle">Купить участок</h4>
       </div>
       
     <div class="modal-body" id="modalForBuyBody">Тело</div>

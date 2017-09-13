@@ -31,7 +31,6 @@ import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.services.LicenseMarketService;
 import com.kozak.triangles.utils.CommonUtil;
-import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.Ksyusha;
 import com.kozak.triangles.utils.ResponseUtil;

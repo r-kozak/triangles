@@ -2,7 +2,7 @@ $('.land_lot_block #buy').on('click', getLandLotPrice);
 $('.land_lot_block #info').on('click', landLotInfo);
 
 function getLandLotPrice() {
-	var cityArea = getCityAreaName(this);
+	var cityArea = extractCityAreaName(this);
 	var url = getContextPath() + "/land-lot/price?city_area=" + cityArea;
 	$.ajax({
 		  type: 'GET',
@@ -28,7 +28,7 @@ function landLotInfo() {
  * @param landLotElement - element (button, etc.) from land lot block
  * @returns city area enum name
  */
-function getCityAreaName(landLotElement) {
+function extractCityAreaName(landLotElement) {
 	var areaName = $(landLotElement).closest('.land_lot_block').attr('id').substring('land_lot_'.length);
 	return areaName.toUpperCase();
 }
@@ -49,16 +49,36 @@ function showErrorModal(data) {
  * Открывает окно для подтверждения покупки участка
  */
 function showBuyModal(data) {
-	var info = '<b>Район</b>: <div id="city_area">' + getCityAreaName(data.cityArea) + '</div> </br>' + 
-	'<b>Цена участка</b>: ' + data.price; 
+	var info = '<b>Район</b>: <span id="city_area">' + getCityAreaName(data.cityArea) + '</span> </br>' + 
+	'<b>Цена участка</b>: ' + data.price + ' ◬'; 
 	
-	$('#modalForInfoBody').html(info);
-	$('#modalForInfo').modal();
+	$("#buy_l_lot_btn").unbind('click'); // удалим все обработчики события 'click'
+	$("#buy_l_lot_btn").on('click', confirmLandLotBuying);
+	
+	$('#modalForBuyBody').html(info);
+	$('#modalForBuy').modal();
 }
 
 /**
  * Подтверждает покупку участка
  */
 function confirmLandLotBuying(area) {
-	
+	var cityArea = $('#buy_l_lot_btn').closest('.modal-content').find('#city_area').html();
+	var serverCityArea = transformCityAreaNameToServerValue(cityArea);
+
+	var url = getContextPath() + "/land-lot/buy?city_area=" + serverCityArea;
+	$.ajax({
+		  type: 'POST',
+		  url: url,
+		  dataType: "json",
+		  async:true
+	}).done(function(data) {
+		if (data.error) {
+			showErrorModal(data);
+		} else {
+			location = location; // refresh page
+		}
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		alert(jqXHR.status + " " + jqXHR.statusText + " " + textStatus);
+	});
 }

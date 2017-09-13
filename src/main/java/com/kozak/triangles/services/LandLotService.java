@@ -1,6 +1,7 @@
 package com.kozak.triangles.services;
 
 import com.kozak.triangles.enums.CityArea;
+import com.kozak.triangles.exceptions.MoneyNotEnoughException;
 
 public interface LandLotService {
 
@@ -13,7 +14,7 @@ public interface LandLotService {
     int getCountOfLandLot(long userId, CityArea cityArea);
 
     /**
-     * Добавляет пользователю участок в конкретном районе
+     * Добавляет БЕСПЛАТНО пользователю участок в конкретном районе
      * 
      * @param userId
      * @param cityArea
@@ -40,7 +41,17 @@ public interface LandLotService {
      * @param userId
      * @param cityArea
      * @return цену следующего участка в конкретном районе и для конкретного пользователя
+     * @throws MoneyNotEnoughException
+     *             - если цена участка больше, чем состоятельность пользователя
      */
-    long getNextLandLotPrice(long userId, CityArea cityArea);
+    long getNextLandLotPrice(long userId, CityArea cityArea) throws MoneyNotEnoughException;
+
+    /**
+     * Покупка пользователем одного участка в конкретном районе
+     * 
+     * @throws MoneyNotEnoughException
+     *             - если цена участка больше, чем состоятельность пользователя
+     */
+    void buyOneLandLot(Long userId, CityArea cityArea) throws MoneyNotEnoughException;
 
 }
