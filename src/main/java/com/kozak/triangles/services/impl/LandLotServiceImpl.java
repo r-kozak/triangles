@@ -1,17 +1,22 @@
 package com.kozak.triangles.services.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kozak.triangles.data.CityAreasTableData;
+import com.kozak.triangles.entities.ConstructionProject;
 import com.kozak.triangles.entities.LandLot;
+import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.exceptions.MoneyNotEnoughException;
+import com.kozak.triangles.models.LandLotsInfo;
 import com.kozak.triangles.repositories.ConstructionProjectRep;
 import com.kozak.triangles.repositories.LandLotRepository;
 import com.kozak.triangles.repositories.PropertyRep;
@@ -33,6 +38,8 @@ public class LandLotServiceImpl implements LandLotService {
     private TransactionRep transactionRep;
     @Autowired
     private PropertyRep prRep;
+    @Autowired
+    private ConstructionProjectRep constrRep;
 
     private static final String MONEY_NOT_ENOUGH_TO_BUY_LAND_LOT = "Не хватает денег на покупку нового участка. Цена участка = %d";
     private static final long BASE_LAND_LOT_PRICE = 1000;
@@ -53,7 +60,7 @@ public class LandLotServiceImpl implements LandLotService {
 
     @Override
     public long getBusyLandLotsCount(long userId, CityArea cityArea) {
-        int propertiesCount = propertyRepository.cityAreaProperties(userId, CityArea.OUTSKIRTS).size();
+        int propertiesCount = propertyRepository.cityAreaProperties(userId, cityArea).size();
         long constructProjectsCount = constructionProjectRep.getCountOfUserConstrProject(userId, cityArea);
         return propertiesCount + constructProjectsCount;
     }
@@ -102,6 +109,21 @@ public class LandLotServiceImpl implements LandLotService {
 
         // добавить пользователю участок в конкретном районе
         addOneLandLot(userId, cityArea);
+    }
+
+    @Override
+    public List<LandLotsInfo> getLandLotInfo(Long userId, CityArea cityArea) {
+        List<LandLotsInfo> result = new ArrayList<>();
+
+        // добавить информацию об имущества
+        for (Property property : propertyRepository.cityAreaProperties(userId, cityArea)) {
+            result.add(new LandLotsInfo(property.getId(), property.getName()));
+        }
+        // добавить информацию об объектах строительства
+        for (ConstructionProject project : constrRep.getCityAreaUserConstrProject(userId, cityArea)) {
+            result.add(new LandLotsInfo(project.getId(), project.getCompletePerc()));
+        }
+        return result;
     }
 
 }

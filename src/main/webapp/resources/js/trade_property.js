@@ -21,7 +21,26 @@ function getLandLotPrice() {
 }
 
 function landLotInfo() {
-
+	var cityArea = extractCityAreaName(this);
+	var url = getContextPath() + "/land-lot/price?city_area=" + cityArea;
+	$('#modalForInfoTitle').html("Имущество на участках. Район: " + getCityAreaName(cityArea));
+	
+	var url = getContextPath() + "/land-lot/info?city_area=" + cityArea;
+	$.ajax({
+		  type: 'GET',
+		  url: url,
+		  dataType: "json",
+		  async:true
+	}).done(function(data) {
+		var infoHtml = data.info;
+		console.log(infoHtml);
+		
+		$('#modalForInfoBody').html(infoHtml);
+		$('#modalForInfo').modal();
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		alert(jqXHR.status + " " + jqXHR.statusText + " " + textStatus);
+	});
+	
 }
 
 /**

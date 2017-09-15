@@ -121,6 +121,19 @@ public class ConstructionProjectRep {
 
     /**
      * @param userId
+     * @param cityArea
+     *            район города
+     * @return строительные проекты пользователя в конкретном районе
+     */
+    @SuppressWarnings("unchecked")
+    public List<ConstructionProject> getCityAreaUserConstrProject(long userId, CityArea cityArea) {
+        String hql = "FROM ConstructionProject WHERE userId = ?0 AND cityArea = ?1";
+        Query query = em.createQuery(hql).setParameter(0, userId).setParameter(1, cityArea);
+        return query.getResultList();
+    }
+
+    /**
+     * @param userId
      * @return количество завершенных строительных проектов пользователя
      */
     public long getCountOfUserCompletedConstrProject(long userId) {

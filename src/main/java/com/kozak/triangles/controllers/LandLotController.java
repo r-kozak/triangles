@@ -1,5 +1,7 @@
 package com.kozak.triangles.controllers;
 
+import java.util.List;
+
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,22 +14,25 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.exceptions.MoneyNotEnoughException;
+import com.kozak.triangles.models.LandLotsInfo;
 import com.kozak.triangles.utils.ResponseUtil;
 
 @SessionAttributes("user")
 @Controller
+@RequestMapping("/land-lot")
 public class LandLotController extends BaseController {
 
+    /**
+     * @return цену на следующий участок земли в конкретном районе для конкретного пользователя
+     */
     @SuppressWarnings("unchecked")
-    @RequestMapping(value = "/land-lot/price", method = RequestMethod.GET)
+    @RequestMapping(value = "/price", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<String> getLandLotPrice(User user, @RequestParam("city_area") CityArea cityArea) {
         JSONObject resultJson = new JSONObject();
 
-        Long userId = user.getId();
-        
         try {
             // получить цену на следующий участок в конкретном районе
-            long nextLandLotPrice = landLotService.getNextLandLotPrice(userId, cityArea);
+            long nextLandLotPrice = landLotService.getNextLandLotPrice(user.getId(), cityArea);
 
             resultJson.put("price", nextLandLotPrice);
             resultJson.put("cityArea", cityArea.toString());
@@ -37,17 +42,34 @@ public class LandLotController extends BaseController {
         return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 
-    @RequestMapping(value = "/land-lot/buy", method = RequestMethod.POST)
+    /**
+     * Позволяет купить участок земли в конкретном районе для конкретного пользователя.
+     * 
+     * @throws MoneyNotEnoughException
+     *             если у пользователя недостаточно денег
+     */
+    @RequestMapping(value = "/buy", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<String> buyLandLot(User user, @RequestParam("city_area") CityArea cityArea) {
         JSONObject resultJson = new JSONObject();
 
-        Long userId = user.getId();
-
         try {
-            landLotService.buyOneLandLot(userId, cityArea);
+            landLotService.buyOneLandLot(user.getId(), cityArea);
         } catch (MoneyNotEnoughException e) {
             ResponseUtil.putErrorMsg(resultJson, e.getMessage()); // не хватает денег на покупку участка
         }
+        return ResponseUtil.createTypicalResponseEntity(resultJson);
+    }
+
+    /**
+     * @return каким построенным имуществом или объектами строительства заняты участки в конкретном районе
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<String> getLandLotInfo(User user, @RequestParam("city_area") CityArea cityArea) {
+        JSONObject resultJson = new JSONObject();
+
+        List<LandLotsInfo> info = landLotService.getLandLotInfo(user.getId(), cityArea);
+        resultJson.put("info", info);
         return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
 }
