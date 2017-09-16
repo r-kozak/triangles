@@ -1,5 +1,7 @@
 $('.land_lot_block #buy').on('click', getLandLotPrice);
 $('.land_lot_block #info').on('click', landLotInfo);
+$('body').on('click', '.lot_sell_property_btn', sellPropertyOrCancel);
+$('body').on('click', '.to_exploitation_btn', constrProjectToExploitation);
 
 function getLandLotPrice() {
 	var cityArea = extractCityAreaName(this);
@@ -20,6 +22,9 @@ function getLandLotPrice() {
 	});
 }
 
+/**
+ * Открывает окно с информацией, чем заняты участки в конкретном районе (каким имуществом или объектами строительства)
+ */
 function landLotInfo() {
 	var cityArea = extractCityAreaName(this);
 	var url = getContextPath() + "/land-lot/price?city_area=" + cityArea;
@@ -32,11 +37,39 @@ function landLotInfo() {
 		  dataType: "json",
 		  async:true
 	}).done(function(data) {
-		var infoHtml = data.info;
-		console.log(infoHtml);
+		var infoHtml = '<table class="table"><tr class="tableTitleTr"><td>Номер</td><td>Имя</td><td>Продажа</td></tr>';
 		
+		$(data.info).each(function(index, infoElement) {
+			infoHtml += '<tr><td>'+ (index + 1) +'</td>';
+			if (infoElement.isFunctioningProperty) {
+				// если это уже функционирующее имущество
+				infoHtml += '<td>'+ infoElement.propertyName +'</td>';
+				infoHtml += '<td><a class="btn btn-danger btn-sm lot_sell_property_btn" id="property_' + infoElement.id + '"';
+				if (infoElement.isOnSale) {
+					infoHtml += ' title="Отмена продажи" data-toggle="tooltip"><span class="glyphicon glyphicon-remove-circle"></span>';
+				} else {
+					infoHtml += ' title="Продажа" data-toggle="tooltip"><span class="glyphicon glyphicon-briefcase"></span>';
+				}
+				infoHtml += '</a></td>';
+			} else {
+				// имущество находится на стадии строительства
+				if (infoElement.completedPercent < 100) {
+					infoHtml += '<td>Строится...</td>';
+					infoHtml += '<td>'+ infoElement.completedPercent +'%</td>';
+				} else {
+					infoHtml += '<td>Готово!</td>';
+					infoHtml += '<td><a title="Принять в эксплуатацию" class="btn btn-danger btn-sm to_exploitation_btn" id="constr_project_' + 
+						+ infoElement.id + '"><span class="glyphicon glyphicon-ok"></span></a></td>';
+				}
+			}
+			infoHtml += '</tr>';
+		});
+		
+		infoHtml += '</table>';
 		$('#modalForInfoBody').html(infoHtml);
 		$('#modalForInfo').modal();
+		
+		$('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 		alert(jqXHR.status + " " + jqXHR.statusText + " " + textStatus);
 	});
@@ -99,5 +132,62 @@ function confirmLandLotBuying(area) {
 		}
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 		alert(jqXHR.status + " " + jqXHR.statusText + " " + textStatus);
+	});
+}
+
+/**
+ * Выставляет имущество на продажу или снимает с продажи
+ */
+function sellPropertyOrCancel() {
+	var btn = this;
+	var propId = $(btn).attr("id").substring("property_".length);
+
+	$.ajax({
+	  type: 'POST',
+	  url: getContextPath() + "/property/sell",
+	  data:  { propIds: JSON.stringify(propId), action: "sell" },
+	  dataType: "json",
+	  async:false
+	}).done(function(data) {
+	  if (!data.error) {
+		if (data.onSale) {
+		  $(btn).html('<span class="glyphicon glyphicon-remove-circle"></span>');
+		  $(btn).attr("data-original-title", 'Отмена продажи');
+	 	} else {
+		  $(btn).html('<span class="glyphicon glyphicon-briefcase"></span>');
+		  $(btn).attr("data-original-title", 'Продать');
+	  	}
+		$('#'+$(btn).attr('aria-describedby')).remove(); // удаление подсказки
+	  } else {
+		  $('#modalErrorBody').html('Ошибка! Нельзя отменить. Возможно имущество уже купили. Проверьте ' + 
+				  '<a href="' + getContextPath() + '/transactions" target="_blank">транзакции.</a>' + 
+				  'Или сразу идите <a href="' + getContextPath() + '/home">домой</a>, потому что сдесь уже делать нечего...');
+		  $('#modalError').modal();
+	  }
+  	});
+}
+
+/**
+ * принимает объект строительства в эксплуатацию
+ */
+function constrProjectToExploitation() {
+	var projectId = $(this).attr("id").substring("constr_project_".length); 
+		
+	$.ajax({
+	  type: 'POST',
+	  url: getContextPath() + "/building/from-construct",
+	  data:  { constrId: projectId },
+	  dataType: "json",
+	  async:false
+	}).done(function(data) {
+		if (data.error) {
+			// показать сообщение с ошибкой
+			$('#modalErrorBody').html(data.message);
+			$('#modalError').modal();
+		} else {
+			location = location;
+		}
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		alert(jqXHR.status + " " + jqXHR.statusText);
 	});
 }

@@ -519,7 +519,7 @@ public class PropertyController extends BaseController {
             Property property = prRep.getSpecificProperty(userId, Long.parseLong(propId));
 
             if (property == null) {
-                ResponseUtil.putErrorMsg(resultJson, "Произошла ошибка (код: 1 - нет такого имущества)!");
+                ResponseUtil.putErrorMsg(resultJson, "Произошла ошибка: нет такого имущества!");
             } else {
                 if (action.equals("info")) {
                     resultJson.put("onSale", property.isOnSale());

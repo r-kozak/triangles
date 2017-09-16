@@ -18,6 +18,11 @@ public class LandLotsInfo implements JSONAware {
     private String propertyName;
 
     /**
+     * Имущество на продаже
+     */
+    private boolean isOnSale;
+
+    /**
      * ID имущества или объекта строительства
      */
     private Long id;
@@ -35,10 +40,11 @@ public class LandLotsInfo implements JSONAware {
      * @param propertyName
      *            имя имущества
      */
-    public LandLotsInfo(Long id, String propertyName) {
+    public LandLotsInfo(Long id, String propertyName, boolean isOnSale) {
         isFunctioningProperty = true;
         this.id = id;
         this.propertyName = propertyName;
+        this.isOnSale = isOnSale;
     }
 
     /**
@@ -95,6 +101,7 @@ public class LandLotsInfo implements JSONAware {
         obj.put("isFunctioningProperty", isFunctioningProperty);
         obj.put("propertyName", propertyName);
         obj.put("id", id);
+        obj.put("isOnSale", isOnSale);
         obj.put("completedPercent", completedPercent);
         return obj.toString();
     }

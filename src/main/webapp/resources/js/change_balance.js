@@ -52,10 +52,14 @@ function sendSellPost(ids, url, isNeedData) {
 			sellProperty(data);		  
 		  } else {
 			  $('#modalErrorBody').html('Ошибка! Нельзя отменить. Возможно имущество уже купили. Проверьте ' + 
-					  '<a href="${pageContext.request.contextPath}/transactions" target="_blank">транзакции.</a>' + 
-					  'Или сразу идите <a href="${pageContext.request.contextPath}/home">домой</a>, потому что сдесь уже делать нечего...');
+					  '<a href="' + getContextPath() + '/transactions" target="_blank">транзакции.</a>' + 
+					  'Или сразу идите <a href="' + getContextPath() + '/home">домой</a>, потому что сдесь уже делать нечего...');
 			  $('#modalError').modal();
 		  }
 		}
   	});
+}
+
+function getContextPath() {
+   return window.location.pathname.substring(0, window.location.pathname.indexOf("/",2));
 }
