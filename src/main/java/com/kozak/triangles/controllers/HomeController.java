@@ -376,9 +376,8 @@ public class HomeController extends BaseController {
             trRep.addTransaction(firstT);
 
             // дать участки пользователю
-            landLotService.addOneLandLot(userId, CityArea.GHETTO);
-            landLotService.addOneLandLot(userId, CityArea.GHETTO);
-            landLotService.addOneLandLot(userId, CityArea.OUTSKIRTS);
+            landLotService.addLandLots(userId, CityArea.GHETTO, 2);
+            landLotService.addLandLots(userId, CityArea.OUTSKIRTS, 1);
         }
     }
 

@@ -101,14 +101,14 @@ public class LotteryController extends BaseController {
             Long lastPredId = allPredIDs.get(allPredIDs.size() - 1); // последний ID из предсказаний
 
             // cгенерить ID предсказания (мудрости), которое точно есть в базе
-            Integer predictionId = null;
+            Long predictionId = null;
             do {
-                predictionId = (int) Random.generateRandNum(1, lastPredId);
+                predictionId = Random.generateRandNum(1, lastPredId);
             } while (!allPredIDs.contains(predictionId));
 
             // добавить предсказание
             LotteryInfo lInfo = new LotteryInfo(userId, "Ты получил мудрость от всезнающего. Вникай.", LotteryArticle.PREDICTION,
-                    predictionId, 1, 1, date);
+                    predictionId.intValue(), 1, 1, date);
             lotteryRep.addLotoInfo(lInfo);
         }
     }
@@ -238,7 +238,7 @@ public class LotteryController extends BaseController {
             int gamesCount = computeGamesCount(userTickets, count, userId); // вычислить количество игр
             Date date = new Date(); // дата игры
 
-            // сгруппированный результат игры на все билеты
+            // сыграть в игру на все билеты и сгруппировать результат по лотерейной статье (LotteryArticle)
             HashMap<LotteryArticle, WinGroup> lotoResult = playLotoAndGetResult(gamesCount, userId);
 
             // взять сгруппированный результат и добавить выигранное пользователю
@@ -260,15 +260,19 @@ public class LotteryController extends BaseController {
                     handlePropertyArticle(groupedRes, userId, article, date);
                 } else if (article.equals(LotteryArticle.PREDICTION)) {
                     Omniscient.givePredictionToUser(userId, date, lotteryRep);
+                } else if (article.equals(LotteryArticle.LAND_LOT_GHETTO) || article.equals(LotteryArticle.LAND_LOT_OUTSKIRTS)
+                        || article.equals(LotteryArticle.LAND_LOT_CHINATOWN) || article.equals(LotteryArticle.LAND_LOT_CENTER)) {
+
+                    handleLandLotArticle(groupedRes, userId, article, date);
                 } else {
-                    ResponseUtil.putErrorMsg(resultJson, "Возникла ошибка! Одна из статьей выигрыша не была обработана!");
+                    ResponseUtil.putErrorMsg(resultJson,
+                            String.format("Возникла ошибка! Статья выигрыша %s не была обработана!", article));
+                    break;
                 }
             }
             // снять билеты пользователя
-            // user = userRep.find(userId);
             user.setLotteryTickets(userTickets - gamesCount);
             userRep.updateUser(user);
-
         }
         return ResponseUtil.createTypicalResponseEntity(resultJson);
     }
@@ -511,6 +515,30 @@ public class LotteryController extends BaseController {
     }
 
     /**
+     * Обрабатывает статью выигрыша земельного участка. Добавляет конкретному пользователю выигранное количество участков в
+     * конкретном районе, взависимости от лотерейной статьи.
+     * 
+     * @param groupedRes
+     *            - сгруппированный результат по статье
+     * @param userId
+     * @param article
+     *            - сама статья выигрыша
+     * @param date
+     */
+    private void handleLandLotArticle(WinGroup groupedRes, long userId, LotteryArticle article, Date date) {
+        // получить количество выигранных участков и начислить их пользователю
+        int landLotsCount = groupedRes.entitiesCount;
+        landLotService.addLandLots(userId, extractCityAreaFromArticle(article), landLotsCount);
+
+        // создать информацию об игре в лото
+        String mapDataStr = groupedRes.countMap.entrySet().toString().replace("=", "×");
+        String description = "Земельные участки, [Кол-во участков × Кол-во билетов]. " + mapDataStr;
+        LotteryInfo lInfo = new LotteryInfo(userId, description, article, groupedRes.entitiesCount, groupedRes.ticketsCount,
+                0, date);
+        lotteryRep.addLotoInfo(lInfo);
+    }
+
+    /**
      * Начислить пользователю деньги на счет, а также добавить информацию о выигрыше в таблицу с информацией о лотерее.
      * 
      * @param groupedRes
@@ -577,6 +605,8 @@ public class LotteryController extends BaseController {
         TreeMap<Integer, WinningsData> winningsData = fillWinningsData();
 
         boolean userHasPrediction = lotteryRep.isUserHasPrediction(userId); // есть непросмотренные предсказания
+        // имущество можно выиграть только в районе Гетто. Взять количество доступных участков
+        long availableLandLotsCount = landLotService.getAvailableLandLotsCount(userId, CityArea.GHETTO);
 
         WinningsData tempWinData = null; // временные данные результата одного розыгрыша
         // цикл - это розыгрыш одного билета
@@ -587,8 +617,10 @@ public class LotteryController extends BaseController {
             int flKey = winningsData.floorKey(ticRes); // ближайший нижный ключ в дереве
             tempWinData = winningsData.get(flKey); // данные о выигрыше
 
+            LotteryArticle article = tempWinData.getArticle();
+            
             // если выиграл предсказание
-            if (tempWinData.getArticle().equals(LotteryArticle.PREDICTION)) {
+            if (article.equals(LotteryArticle.PREDICTION)) {
                 // если есть непросмотренные предсказания - не считать этот розыгрыш
                 if (userHasPrediction) {
                     i--;
@@ -598,6 +630,30 @@ public class LotteryController extends BaseController {
                     userHasPrediction = true;
                 }
             }
+            // если выиграл имущество - проверить, есть ли для него участок
+            if (article.equals(LotteryArticle.STALL) || article.equals(LotteryArticle.VILLAGE_SHOP)
+                    || article.equals(LotteryArticle.STATIONER_SHOP)) {
+                
+                if (availableLandLotsCount <= 0) {
+                    // участков не осталось совсем
+                    i--;
+                    continue;
+                } else {
+                    int wonPropertyCount = tempWinData.getCount(); // кол-во выигранного имущества
+                    if (availableLandLotsCount < wonPropertyCount) {
+                        // участков меньше, чем выиграно имущества
+                        wonPropertyCount = (int) availableLandLotsCount;
+                        tempWinData.setCount((int) availableLandLotsCount);
+                    }
+                    availableLandLotsCount -= wonPropertyCount; // уменьшить кол-во доступных участков
+                }
+            }
+            // увеличить кол-во доступных участков, если выиграл участок
+            // имущество можно выигрывать только в районе Гетто, значит брать во внимание только такие участки
+            if (article.equals(LotteryArticle.LAND_LOT_GHETTO)) {
+                availableLandLotsCount += tempWinData.getCount();
+            }
+            
             // сгруппировать данный результат розыгрыша
             groupTicketResult(tempWinData, groupResult);
         }
@@ -641,5 +697,16 @@ public class LotteryController extends BaseController {
             }
         }
         return winningsData;
+    }
+
+    /**
+     * @param article
+     *            - статья, которая заканчивается на "_CITY_AREA_NAME", например: "LAND_LOT_CENTER"
+     * @return район города
+     */
+    private CityArea extractCityAreaFromArticle(LotteryArticle article) {
+        String articleName = article.name(); // название статьи выигрыша
+        String cityAreaName = articleName.substring(articleName.lastIndexOf("_") + 1);
+        return CityArea.valueOf(cityAreaName);
     }
 }

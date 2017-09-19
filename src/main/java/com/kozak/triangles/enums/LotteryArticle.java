@@ -4,7 +4,8 @@ import com.kozak.triangles.exceptions.NoSuchLicenseLevelException;
 
 /**
  * Деньги, Повышение уровня имущества, Повышение уровня кассы имущества, Лицензия на строительство ур2, Лицензия на
- * строительство ур3, Лицензия на строительство ур4, Предсказание, Киоск, Сельский магазин, Магазин канцтоваров
+ * строительство ур3, Лицензия на строительство ур4, Предсказание, Киоск, Сельский магазин, Магазин канцтоваров, Земельные участки
+ * в разных районах
  * 
  */
 public enum LotteryArticle {
@@ -18,7 +19,11 @@ public enum LotteryArticle {
 	PREDICTION, 
 	STALL, 
 	VILLAGE_SHOP, 
-	STATIONER_SHOP;
+	STATIONER_SHOP,
+    LAND_LOT_GHETTO,
+    LAND_LOT_OUTSKIRTS,
+    LAND_LOT_CHINATOWN,
+    LAND_LOT_CENTER;
 
     private static final String LICENSE_ARTICLE_PREFIX = "LICENSE_";
 

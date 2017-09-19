@@ -51,9 +51,9 @@ public class LandLotServiceImpl implements LandLotService {
     }
 
     @Override
-    public void addOneLandLot(Long userId, CityArea cityArea) {
+    public void addLandLots(Long userId, CityArea cityArea, int count) {
         LandLot landLot = landLotRepository.getLandLot(userId, cityArea);
-        int newLotCount = landLot.getLotCount() + 1;
+        int newLotCount = landLot.getLotCount() + count;
         landLot.setLotCount(newLotCount);
         landLotRepository.addUpdateLandLot(landLot);
     }
@@ -108,7 +108,7 @@ public class LandLotServiceImpl implements LandLotService {
         transactionRep.addTransaction(tr);
 
         // добавить пользователю участок в конкретном районе
-        addOneLandLot(userId, cityArea);
+        addLandLots(userId, cityArea, 1);
     }
 
     @Override

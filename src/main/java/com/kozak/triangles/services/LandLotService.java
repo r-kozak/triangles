@@ -17,12 +17,14 @@ public interface LandLotService {
     int getCountOfLandLot(long userId, CityArea cityArea);
 
     /**
-     * Добавляет БЕСПЛАТНО пользователю участок в конкретном районе
+     * Добавляет БЕСПЛАТНО пользователю участки в конкретном районе
      * 
      * @param userId
      * @param cityArea
+     * @param count
+     *            - количество участков, что нужно добавить
      */
-    void addOneLandLot(Long userId, CityArea cityArea);
+    void addLandLots(Long userId, CityArea cityArea, int count);
 
     /**
      * Занятым участок считается тогда, когда на нем уже есть имущество или имущество еще находится в процессе постройки

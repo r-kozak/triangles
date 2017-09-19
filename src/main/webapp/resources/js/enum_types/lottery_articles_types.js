@@ -13,6 +13,10 @@ var lotteryArticles = {
 	"STALL" : "Киоск",
 	"VILLAGE_SHOP" : "Сельский магазин",
 	"STATIONER_SHOP" : "Магазин Канцтоваров",
+	"LAND_LOT_GHETTO" : "Участок в гетто",
+	"LAND_LOT_OUTSKIRTS" : "Участок на окраине",
+	"LAND_LOT_CHINATOWN" : "Участок в чайнатауне",
+	"LAND_LOT_CENTER" : "Участок в центре"
 }
 
 function getLotteryArticleName(articleName) {
