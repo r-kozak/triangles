@@ -132,10 +132,21 @@ public class BuildingController extends BaseController {
 
         TradeBuilding dataOfBuilding = tradeBuildingsData.get(buildingType); // данные конкретного типа имущества (здания)
 
+        // проверка можно ли строить в районе, что выбрал пользователь
+        boolean cityAreaError = userLicenseLevel - 1 < CityArea.valueOf(cityArea).ordinal();
+        
         if (dataOfBuilding == null) { // проверка на тип имущества
             ResponseUtil.putErrorMsg(resultJson, "Нет такого типа имущества.");
+        } else if (cityAreaError) {
+            ResponseUtil.putErrorMsg(resultJson,
+                    "Ваша лицензия не позволяет строить в выбранном районе. Уровень лицензии: " + userLicenseLevel);
         } else {
             long priceOfBuilt = dataOfBuilding.getPurchasePriceMin(); // цена постройки = минимальная цена покупки
+
+            // доступно земельных участков перед началом стройки
+            long availableLandLots = landLotService.getAvailableLandLotsCount(userId, CityArea.valueOf(cityArea));
+            // доступно для постройки сегодня
+            long availableForBuildToday = availableForBuildToday(userId);
 
             for (int i = 0; i < count; i++) {
                 long userMoney = Long.parseLong(trRep.getUserBalance(userId));
@@ -145,44 +156,44 @@ public class BuildingController extends BaseController {
                     ResponseUtil.putErrorMsg(resultJson, "Не хватает денег на постройку. Ваш максимум: <b>"
                             + CommonUtil.moneyFormat(userSolvency) + "&tridot;</b>");
                     break;
-                } else if (availableForBuildToday(userId) <= 0) {
+                } else if (availableLandLots <= 0) {
+                    ResponseUtil.putErrorMsg(resultJson,
+                            String.format("Нет свободных участков. Было построено %d из %d", i, count));
+                    break;
+                } else if (availableForBuildToday <= 0) {
                     ResponseUtil.putErrorMsg(resultJson,
                             "Сегодня уже достигнута верхняя граница лимита на постройку зданий. Повторите попытку завтра.");
+                    break;
                 } else {
-                    // проверка можно ли строить в районе, что выбрал пользователь
-                    boolean cityAreaError = userLicenseLevel - 1 < CityArea.valueOf(cityArea).ordinal();
-                    if (cityAreaError) {
-                        ResponseUtil.putErrorMsg(resultJson,
-                                "Ваша лицензия не позволяет строить в выбранном районе. Уровень лицензии: " + userLicenseLevel);
-                    } else {
+                    // создать модель имущества в процессе стройки
+                    TradeBuildingType type = dataOfBuilding.getTradeBuildingType(); // тип постройки
+                    CityArea cityAreaType = CityArea.valueOf(cityArea); // район города
+                    byte indexBuildersType = generateIndexOfBuilders(); // тип строителей числовой
+                    BuildersType buildersType = BuildersType.values()[indexBuildersType];// тип строителей
 
-                        // создать модель имущества в процессе стройки
-                        TradeBuildingType type = dataOfBuilding.getTradeBuildingType(); // тип постройки
-                        CityArea cityAreaType = CityArea.valueOf(cityArea); // район города
-                        byte indexBuildersType = generateIndexOfBuilders(); // тип строителей числовой
-                        BuildersType buildersType = BuildersType.values()[indexBuildersType];// тип строителей
+                    // часов на постройку = дней на постройку * 24 часа * коеф. типа строителей
+                    int hoursToConstruct = Math
+                            .round((dataOfBuilding.getBuildTime() * 24) / Constants.BUILDERS_COEF[indexBuildersType]);
 
-                        // часов на постройку = дней на постройку * 24 часа * коеф. типа строителей
-                        int hoursToConstruct = Math
-                                .round((dataOfBuilding.getBuildTime() * 24) / Constants.BUILDERS_COEF[indexBuildersType]);
+                    Date finishDate = DateUtils.addHours(hoursToConstruct); // дата окончания стройки
 
-                        Date finishDate = DateUtils.addHours(hoursToConstruct); // дата окончания стройки
+                    ConstructionProject constructionProject = new ConstructionProject(type, finishDate, cityAreaType,
+                            buildersType, userId);
+                    consProjectRep.addConstructionProject(constructionProject);
 
-                        ConstructionProject constructionProject = new ConstructionProject(type, finishDate, cityAreaType,
-                                buildersType, userId);
-                        consProjectRep.addConstructionProject(constructionProject);
+                    availableLandLots--; // уменьшить кол-во доступных участков
+                    availableForBuildToday--; // уменьшить кол-во зданий, доступных для постройки СЕГОДНЯ
 
-                        // снять деньги у юзера
-                        String descr = String.format("Постройка имущества %s", constructionProject.getName());
-                        long newBalance = userMoney - priceOfBuilt;
+                    // снять деньги у юзера
+                    String descr = String.format("Постройка имущества %s", constructionProject.getName());
+                    long newBalance = userMoney - priceOfBuilt;
 
-                        Transaction tr = new Transaction(descr, new Date(), priceOfBuilt, TransferType.SPEND, userId, newBalance,
-                                ArticleCashFlow.CONSTRUCTION_PROPERTY);
-                        trRep.addTransaction(tr);
+                    Transaction tr = new Transaction(descr, new Date(), priceOfBuilt, TransferType.SPEND, userId, newBalance,
+                            ArticleCashFlow.CONSTRUCTION_PROPERTY);
+                    trRep.addTransaction(tr);
 
-                        int domiCount = type.ordinal() * Constants.K_ADD_DOMI_FOR_BUILDING;
-                        MoneyController.upUserDomi(domiCount, userId, userRep); // повысить доминантность
-                    }
+                    int domiCount = type.ordinal() * Constants.K_ADD_DOMI_FOR_BUILDING;
+                    MoneyController.upUserDomi(domiCount, userId, userRep); // повысить доминантность
                 }
             }
         }
