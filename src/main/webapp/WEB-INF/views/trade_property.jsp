@@ -129,7 +129,7 @@
 		<div class="col-md-9">
 			<h3 class="page-header" align=center>Торговое имущество</h3>
       
-            <h4 class="page-header" align=center>Участки</h4>
+            <h4 class="page-header" align=center>Земельные участки</h4>
       
             <div class="col-md-12 text-center land_lots_block">
               <div class="col-md-3">

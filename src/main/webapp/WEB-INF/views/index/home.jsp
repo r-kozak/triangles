@@ -265,24 +265,32 @@
             <div class="col-md-4">
               <div class="block_title text-center">
                 <a href="${pageContext.request.contextPath}/property/trade-property" class="btn"><span
-                  class="glyphicon glyphicon-briefcase text-danger"> Участки</span></a>
+                  class="glyphicon glyphicon-briefcase text-danger"> Земельные участки</span></a>
               </div>
               <table class="table">
                 <tr>
                   <td class="tableTd1">Гетто</td>
-                  <td class="tableTd2"><span class="label label-default">${landLotGhettoBusy}/${landLotGhettoTotal}</span></td>
+                  <td class="tableTd2">
+                    <span class="label label-<c:out value="${landLotGhettoBusy >= landLotGhettoTotal ? 'danger' : 'default'}"/>">${landLotGhettoBusy}/${landLotGhettoTotal}</span>
+                  </td>
                 </tr>
                 <tr>
                   <td class="tableTd1">Окраина</td>
-                  <td class="tableTd2"><span class="label label-default">${landLotOutskirtsBusy}/${landLotOutskirtsTotal}</span></td>
+                  <td class="tableTd2">
+                    <span class="label label-<c:out value="${landLotOutskirtsBusy >= landLotOutskirtsTotal ? 'danger' : 'default'}"/>">${landLotOutskirtsBusy}/${landLotOutskirtsTotal}</span>
+                  </td>
                 </tr>
                 <tr>
                   <td class="tableTd1">Чайнатаун</td>
-                  <td class="tableTd2"><span class="label label-default">${landLotChinatownBusy}/${landLotChinatownTotal}</span></td>
+                  <td class="tableTd2">
+                    <span class="label label-<c:out value="${landLotChinatownBusy >= landLotChinatownTotal ? 'danger' : 'default'}"/>">${landLotChinatownBusy}/${landLotChinatownTotal}</span>
+                  </td>
                 </tr>
                 <tr>
                   <td class="tableTd1">Центр</td>
-                  <td class="tableTd2"><span class="label label-default">${landLotCenterBusy}/${landLotCenterTotal}</span></td>
+                  <td class="tableTd2">
+                    <span class="label label-<c:out value="${landLotCenterBusy >= landLotCenterTotal ? 'danger' : 'default'}"/>">${landLotCenterBusy}/${landLotCenterTotal}</span>
+                  </td>
                 </tr>                
               </table>
             </div>

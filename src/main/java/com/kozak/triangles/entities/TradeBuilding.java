@@ -47,7 +47,7 @@ public class TradeBuilding {
         this.profitMax = (int) (purchasePriceMin / (paybackPeriodMin * 7));
 
         this.cashCapacity = new ArrayList<>();
-        for (int i = 1; i < Constants.MAX_CASH_LEVEL; i++) {
+        for (int i = 1; i < Constants.MAX_CASH_LEVEL + 2; i++) {
             this.cashCapacity.add(Math.round(profitMax * Ksyusha.computeCoef(i)));
         }
 
