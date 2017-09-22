@@ -4,6 +4,8 @@
 <head>
 <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/ico.ico" type="image/x-icon">
 
+<script>var CTX_PATH = "${pageContext.request.contextPath}"</script>
+
 <script src="${pageContext.request.contextPath}/resources/js/jquery-2.1.4.js"></script>
 
 <link rel='stylesheet' href='${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/css/bootstrap.min.css'>
@@ -23,8 +25,6 @@
 <script src="${pageContext.request.contextPath}/resources/js/jquery.countdown-ru.js"></script>
 <title>no title</title>
 </head>
-<style>
-</style>
 <body>
 	<div id="header" class="header">
 		<div class="logo">

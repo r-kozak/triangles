@@ -265,7 +265,7 @@
             <div class="col-md-4">
               <div class="block_title text-center">
                 <a href="${pageContext.request.contextPath}/property/trade-property" class="btn"><span
-                  class="glyphicon glyphicon-briefcase text-danger"> Земельные участки</span></a>
+                  class="glyphicon glyphicon-th text-danger"> Земельные участки</span></a>
               </div>
               <table class="table">
                 <tr>

@@ -5,7 +5,7 @@ $('body').on('click', '.to_exploitation_btn', constrProjectToExploitation);
 
 function getLandLotPrice() {
 	var cityArea = extractCityAreaName(this);
-	var url = getContextPath() + "/land-lot/price?city_area=" + cityArea;
+	var url = CTX_PATH + "/land-lot/price?city_area=" + cityArea;
 	$.ajax({
 		  type: 'GET',
 		  url: url,
@@ -27,10 +27,10 @@ function getLandLotPrice() {
  */
 function landLotInfo() {
 	var cityArea = extractCityAreaName(this);
-	var url = getContextPath() + "/land-lot/price?city_area=" + cityArea;
+	var url = CTX_PATH + "/land-lot/price?city_area=" + cityArea;
 	$('#modalForInfoTitle').html("Имущество на участках. Район: " + getCityAreaName(cityArea));
 	
-	var url = getContextPath() + "/land-lot/info?city_area=" + cityArea;
+	var url = CTX_PATH + "/land-lot/info?city_area=" + cityArea;
 	$.ajax({
 		  type: 'GET',
 		  url: url,
@@ -58,7 +58,7 @@ function landLotInfo() {
 					infoHtml += '<td>'+ infoElement.completedPercent +'%</td>';
 				} else {
 					infoHtml += '<td>Готово!</td>';
-					infoHtml += '<td><a title="Принять в эксплуатацию" class="btn btn-danger btn-sm to_exploitation_btn" id="constr_project_' + 
+					infoHtml += '<td><a title="Принять в эксплуатацию" class="btn btn-success btn-sm to_exploitation_btn" id="constr_project_' + 
 						+ infoElement.id + '"><span class="glyphicon glyphicon-ok"></span></a></td>';
 				}
 			}
@@ -83,10 +83,6 @@ function landLotInfo() {
 function extractCityAreaName(landLotElement) {
 	var areaName = $(landLotElement).closest('.land_lot_block').attr('id').substring('land_lot_'.length);
 	return areaName.toUpperCase();
-}
-
-function getContextPath() {
-   return window.location.pathname.substring(0, window.location.pathname.indexOf("/",2));
 }
 
 /**
@@ -118,7 +114,7 @@ function confirmLandLotBuying(area) {
 	var cityArea = $('#buy_l_lot_btn').closest('.modal-content').find('#city_area').html();
 	var serverCityArea = transformCityAreaNameToServerValue(cityArea);
 
-	var url = getContextPath() + "/land-lot/buy?city_area=" + serverCityArea;
+	var url = CTX_PATH + "/land-lot/buy?city_area=" + serverCityArea;
 	$.ajax({
 		  type: 'POST',
 		  url: url,
@@ -144,7 +140,7 @@ function sellPropertyOrCancel() {
 
 	$.ajax({
 	  type: 'POST',
-	  url: getContextPath() + "/property/sell",
+	  url: CTX_PATH + "/property/sell",
 	  data:  { propIds: JSON.stringify(propId), action: "sell" },
 	  dataType: "json",
 	  async:false
@@ -160,8 +156,8 @@ function sellPropertyOrCancel() {
 		$('#'+$(btn).attr('aria-describedby')).remove(); // удаление подсказки
 	  } else {
 		  $('#modalErrorBody').html('Ошибка! Нельзя отменить. Возможно имущество уже купили. Проверьте ' + 
-				  '<a href="' + getContextPath() + '/transactions" target="_blank">транзакции.</a>' + 
-				  'Или сразу идите <a href="' + getContextPath() + '/home">домой</a>, потому что сдесь уже делать нечего...');
+				  '<a href="' + CTX_PATH + '/transactions" target="_blank">транзакции.</a>' + 
+				  'Или сразу идите <a href="' + CTX_PATH + '/home">домой</a>, потому что сдесь уже делать нечего...');
 		  $('#modalError').modal();
 	  }
   	});
@@ -175,7 +171,7 @@ function constrProjectToExploitation() {
 		
 	$.ajax({
 	  type: 'POST',
-	  url: getContextPath() + "/building/from-construct",
+	  url: CTX_PATH + "/building/from-construct",
 	  data:  { constrId: projectId },
 	  dataType: "json",
 	  async:false
