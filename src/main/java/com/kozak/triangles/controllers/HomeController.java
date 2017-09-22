@@ -440,38 +440,39 @@ public class HomeController extends BaseController {
         Date lastTransactionDate = getLastCreditOrDepositDate(currUserId);
 
         int daysBetween = DateUtils.daysBetween(lastTransactionDate, new Date());
-        if (daysBetween > 0) {
-            int countI = daysBetween / 30;
-            for (int i = 0; i < countI; i++) {
-                long userBalance = Long.parseLong(trRep.getUserBalance(currUserId));
-                double rate = (userBalance > 0 ? Constants.DEPOSIT_RATE : Constants.CREDIT_RATE);
-                TransferType transferType = (userBalance > 0 ? TransferType.PROFIT : TransferType.SPEND);
-                ArticleCashFlow acf = (userBalance > 0 ? ArticleCashFlow.DEPOSIT : ArticleCashFlow.CREDIT);
-                long sum = Math.round(userBalance * rate);
-                long newBalance = userBalance + sum;
+        if (daysBetween >= 30) {
+            long userBalance = Long.parseLong(trRep.getUserBalance(currUserId));
+            double rate = (userBalance > 0 ? Constants.DEPOSIT_RATE : Constants.CREDIT_RATE);
+            TransferType transferType = (userBalance > 0 ? TransferType.PROFIT : TransferType.SPEND);
+            ArticleCashFlow acf = (userBalance > 0 ? ArticleCashFlow.DEPOSIT : ArticleCashFlow.CREDIT);
 
+            int iCount = daysBetween / 30;
+            for (int i = 0; i < iCount; i++) {
                 // date for description
                 Calendar c1 = Calendar.getInstance();
                 // отнимаем необходимое количество дней, например с последнего начисления прошло 64 дня
                 // начисляем за 2 месяца
                 // итерация 1: тек дата - ((2 - 0) * 30) + 4 = 64. дата с 13.04.15 по 12.05.15
                 // итерация 2: тек дата - ((2 - 1) * 30) + 4 = 34. дата с 12.05.15 по 11.06.15
-                c1.add(Calendar.DATE, -((countI - i) * 30 + daysBetween % 30));
-                Date dateFrom = c1.getTime();
+                c1.add(Calendar.DATE, -((iCount - i) * 30 + daysBetween % 30));
 
                 Calendar c2 = Calendar.getInstance();
                 c2 = c1;
+                Calendar cTemp = (Calendar) c1.clone(); // для описания
                 c2.add(Calendar.DATE, 30);
-                Date dateTo = c2.getTime();
                 // //
 
                 String description = (userBalance > 0 ? "Начислено депозит за: %td.%tm.%ty - %td.%tm.%ty"
                         : "Начислено кредит за: %td.%tm.%ty - %td.%tm.%ty");
+                cTemp.add(Calendar.DATE, 1);
+                Date dateFrom = cTemp.getTime();
+                Date dateTo = c2.getTime();
                 description = String.format(description, dateFrom, dateFrom, dateFrom, dateTo, dateTo, dateTo);
 
-                Transaction cdTr = new Transaction(description, new Date(), Math.abs(sum), transferType, currUserId, newBalance,
-                        acf);
-                trRep.addTransaction(cdTr);
+                long sum = Math.round(userBalance * rate);
+                userBalance += sum; // добавляет или отнимает, если сумма отрицательная
+                Transaction tr = new Transaction(description, dateTo, Math.abs(sum), transferType, currUserId, userBalance, acf);
+                trRep.addTransaction(tr);
             }
         }
     }
