@@ -8,7 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-import com.kozak.triangles.enums.LotteryArticle;
+import com.kozak.triangles.enums.WinArticle;
 
 /**
  * Статья с информацией о выигрыше в разрезе по всем статьям выигрыша
@@ -34,7 +34,7 @@ public class LotteryInfo extends BaseEntity {
     // статья выигрыша (деньги, повышение уровня, предсказание, имущество...)
     @Column(name = "ARTICLE")
     @Enumerated(EnumType.STRING)
-    private LotteryArticle article;
+    private WinArticle article;
 
     // количество выигранного ИЛИ id предсказания (мудрости)
     @Column(name = "COUNT")
@@ -44,22 +44,15 @@ public class LotteryInfo extends BaseEntity {
     @Column(name = "TICKET_COUNT")
     private int ticketCount;
 
-    // количество, которое осталось от выигрыша к получению (еще можно взять)
-    @Column(name = "REMAINING_AMOUNT")
-    private int remainingAmount;
-
     public LotteryInfo() {
     }
 
-    public LotteryInfo(long userId, String description, LotteryArticle article, int count, int ticketCount, int remainingAmount,
-            Date date) {
-
+    public LotteryInfo(long userId, String description, WinArticle article, int count, int ticketCount, Date date) {
         this.userId = userId;
         this.description = description;
         this.article = article;
         this.count = count;
         this.ticketCount = ticketCount;
-        this.remainingAmount = remainingAmount;
         this.date = date;
     }
 
@@ -87,11 +80,11 @@ public class LotteryInfo extends BaseEntity {
         this.date = date;
     }
 
-    public LotteryArticle getArticle() {
+    public WinArticle getArticle() {
         return article;
     }
 
-    public void setArticle(LotteryArticle article) {
+    public void setArticle(WinArticle article) {
         this.article = article;
     }
 
@@ -109,14 +102,6 @@ public class LotteryInfo extends BaseEntity {
 
     public void setTicketCount(int ticketCount) {
         this.ticketCount = ticketCount;
-    }
-
-    public int getRemainingAmount() {
-        return remainingAmount;
-    }
-
-    public void setRemainingAmount(int remainingAmount) {
-        this.remainingAmount = remainingAmount;
     }
 
 }

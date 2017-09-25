@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 
 import com.kozak.triangles.data.TradeBuildingsTableData;
-import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.CityArea;
-import com.kozak.triangles.enums.LotteryArticle;
+import com.kozak.triangles.enums.WinArticle;
+import com.kozak.triangles.models.TradeBuilding;
 import com.kozak.triangles.repositories.ConstructionProjectRep;
 import com.kozak.triangles.repositories.LotteryRep;
 import com.kozak.triangles.repositories.MessageRep;
@@ -24,6 +24,7 @@ import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.repositories.VmapRep;
 import com.kozak.triangles.services.LandLotService;
 import com.kozak.triangles.services.LicenseMarketService;
+import com.kozak.triangles.services.WinService;
 import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.ResponseUtil;
 
@@ -51,6 +52,8 @@ public abstract class BaseController {
     protected LicenseMarketService licenseMarketService;
     @Autowired
     protected LandLotService landLotService;
+    @Autowired
+    protected WinService winService;
 
     protected Model addMoneyInfoToModel(Model model, User user) {
         Long userId = user.getId();
@@ -64,13 +67,13 @@ public abstract class BaseController {
      * @return переданную модель, но с информацией о количестве лицензий разных уровней
      */
     protected Model addLicenseCountInfoToModel(Model model, long userId) {
-        long lic2Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.LICENSE_2);
+        long lic2Count = winService.getRemainingAmount(userId, WinArticle.LICENSE_2);
         model.addAttribute("lic2Count", lic2Count); // количество лицензий 2 ур
 
-        long lic3Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.LICENSE_3);
+        long lic3Count = winService.getRemainingAmount(userId, WinArticle.LICENSE_3);
         model.addAttribute("lic3Count", lic3Count); // количество лицензий 3 ур
 
-        long lic4Count = lotteryRep.getPljushkiCountByArticle(userId, LotteryArticle.LICENSE_4);
+        long lic4Count = winService.getRemainingAmount(userId, WinArticle.LICENSE_4);
         model.addAttribute("lic4Count", lic4Count);// количество лицензий 4 ур
 
         return model;

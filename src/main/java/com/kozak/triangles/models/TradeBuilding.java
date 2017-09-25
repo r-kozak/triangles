@@ -1,4 +1,4 @@
-package com.kozak.triangles.entities;
+package com.kozak.triangles.models;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,6 +15,7 @@ import com.kozak.triangles.entities.User;
 import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.exceptions.MoneyNotEnoughException;
 import com.kozak.triangles.models.LandLotsInfo;
+import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.ResponseUtil;
 
 @SessionAttributes("user")
@@ -34,7 +35,7 @@ public class LandLotController extends BaseController {
             // получить цену на следующий участок в конкретном районе
             long nextLandLotPrice = landLotService.getNextLandLotPrice(user.getId(), cityArea);
 
-            resultJson.put("price", nextLandLotPrice);
+            resultJson.put("price", CommonUtil.moneyFormat(nextLandLotPrice));
             resultJson.put("cityArea", cityArea.toString());
         } catch (MoneyNotEnoughException e) {
             ResponseUtil.putErrorMsg(resultJson, e.getMessage()); // не хватает денег на покупку участка

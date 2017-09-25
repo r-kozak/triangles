@@ -41,7 +41,7 @@ public class LandLotServiceImpl implements LandLotService {
     @Autowired
     private ConstructionProjectRep constrRep;
 
-    private static final String MONEY_NOT_ENOUGH_TO_BUY_LAND_LOT = "Не хватает денег на покупку нового участка. Цена участка = %d";
+    private static final String MONEY_NOT_ENOUGH_TO_BUY_LAND_LOT = "Не хватает денег на покупку нового участка. Цена участка = %s";
     private static final long BASE_LAND_LOT_PRICE = 1000;
     private static final int PRICE_COEF = 300;
 
@@ -86,7 +86,8 @@ public class LandLotServiceImpl implements LandLotService {
 
         long userSolvency = CommonUtil.getSolvency(transactionRep, prRep, userId); // состоятельность пользователя
         if (price > userSolvency) {
-            throw new MoneyNotEnoughException(String.format(MONEY_NOT_ENOUGH_TO_BUY_LAND_LOT, price));
+            String priceFormatted = CommonUtil.moneyFormat(price) + " &tridot;";
+            throw new MoneyNotEnoughException(String.format(MONEY_NOT_ENOUGH_TO_BUY_LAND_LOT, priceFormatted));
         }
         return price;
     }
@@ -97,7 +98,8 @@ public class LandLotServiceImpl implements LandLotService {
         long price = getNextLandLotPrice(userId, cityArea); // получить цену на следующий участок в конкретном районе
         long userSolvency = CommonUtil.getSolvency(transactionRep, prRep, userId); // состоятельность пользователя
         if (price > userSolvency) {
-            throw new MoneyNotEnoughException(String.format(MONEY_NOT_ENOUGH_TO_BUY_LAND_LOT, price));
+            String priceFormatted = CommonUtil.moneyFormat(price) + " &tridot;";
+            throw new MoneyNotEnoughException(String.format(MONEY_NOT_ENOUGH_TO_BUY_LAND_LOT, priceFormatted));
         }
 
         // снять деньги

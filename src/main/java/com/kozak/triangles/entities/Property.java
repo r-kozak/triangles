@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 
 import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.enums.TradeBuildingType;
+import com.kozak.triangles.models.TradeBuilding;
 import com.kozak.triangles.utils.DateUtils;
 
 /**

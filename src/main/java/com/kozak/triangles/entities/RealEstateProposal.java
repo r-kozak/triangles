@@ -14,6 +14,7 @@ import javax.persistence.TemporalType;
 import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.enums.TradeBuildingType;
+import com.kozak.triangles.models.TradeBuilding;
 import com.kozak.triangles.utils.DateUtils;
 
 /**

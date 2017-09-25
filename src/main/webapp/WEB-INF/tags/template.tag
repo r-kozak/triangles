@@ -53,7 +53,10 @@
 				</tr>
 			</tbody>
 		</table>
-	</div>	
+	</div>
+    <div id="bonus_btn">
+      <img src="${pageContext.request.contextPath}/resources/img/bonus_btn.png" align="middle">
+    </div>
 	<jsp:doBody/>
 </body>
 

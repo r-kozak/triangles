@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.enums.TradeBuildingType;
+import com.kozak.triangles.models.TradeBuilding;
 
 public class TradeBuildingsTableData {
 

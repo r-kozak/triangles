@@ -184,3 +184,13 @@ body {
 .label {
 	font-size: 85%;
 }
+
+#bonus_btn {
+	position: fixed;
+	top: 90px;
+	left: 75%;
+	border-radius: 30px;
+	//display: none;
+	cursor: pointer;
+	z-index: 50;
+}

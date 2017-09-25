@@ -10,7 +10,7 @@ public class LicensesTableData {
 	 * Ключ - уровень лицензии, значение - количество часов. 
 	 */
 	@SuppressWarnings("serial")
-	private static Map<Integer, Integer> hoursToSell = new HashMap<Integer, Integer>() {
+    private static Map<Integer, Integer> hoursToSell = new HashMap<Integer, Integer>() {
 		{
 			put(2, 1);
 			put(3, 2);

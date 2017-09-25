@@ -3,19 +3,19 @@ package com.kozak.triangles.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kozak.triangles.enums.LotteryArticle;
+import com.kozak.triangles.enums.WinArticle;
 
 public class LotterySearch extends AbstractSearch {
 
     private String dateFrom = "";
     private String dateTo = "";
-    private List<LotteryArticle> articles = new ArrayList<LotteryArticle>();
+    private List<WinArticle> articles = new ArrayList<WinArticle>();
 
     public void clear() {
         super.clear();
         this.dateFrom = "";
         this.dateTo = "";
-        articles = new ArrayList<LotteryArticle>();
+        articles = new ArrayList<WinArticle>();
     }
 
     public String getDateFrom() {
@@ -34,11 +34,11 @@ public class LotterySearch extends AbstractSearch {
         this.dateTo = dateTo;
     }
 
-    public List<LotteryArticle> getArticles() {
+    public List<WinArticle> getArticles() {
         return articles;
     }
 
-    public void setArticles(List<LotteryArticle> articles) {
+    public void setArticles(List<WinArticle> articles) {
         this.articles = articles;
     }
 }

@@ -8,9 +8,9 @@ import java.util.Map;
 import com.kozak.triangles.data.CityAreasTableData;
 import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.RealEstateProposal;
-import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.enums.TradeBuildingType;
+import com.kozak.triangles.models.TradeBuilding;
 
 /**
  * генератор предложений на рынке имущества (RealEstateProposal)

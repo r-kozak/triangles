@@ -59,3 +59,37 @@ function sendSellPost(ids, url, isNeedData) {
 		}
   	});
 }
+
+//////////////////// BONUS
+
+window.onload = function(){ 
+	$('#bonus_btn').on('click', takeBonus);
+	flashBonusBtn();
+	checkBonusAvailability();
+}
+
+function flashBonusBtn() {
+	$('#bonus_btn img').animate({ width: "90%" }, 500, function() {
+		$('#bonus_btn img').animate({ width: "100%" }, 500, flashBonusBtn())
+	} );
+}
+
+function takeBonus() {
+	$('#bonus_btn').hide();
+}
+
+function checkBonusAvailability() {
+	setTimeout(function() {
+		$.ajax({
+			type : 'GET',
+			url : CTX_PATH + "/bonus/available",
+		}).done(function(data) {
+			if (data.available) {
+				$('#bonus_btn').show();
+			}
+			checkBonusAvailability();
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			console.log(jqXHR.status + " " + jqXHR.statusText);
+		});
+	}, 30000); // every 30 seconds check whether bonus is available or not
+}

@@ -17,9 +17,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kozak.triangles.entities.LotteryInfo;
-import com.kozak.triangles.entities.Predictions;
-import com.kozak.triangles.entities.WinningsData;
-import com.kozak.triangles.enums.LotteryArticle;
+import com.kozak.triangles.enums.WinArticle;
 import com.kozak.triangles.search.LotterySearch;
 import com.kozak.triangles.utils.Constants;
 import com.kozak.triangles.utils.DateUtils;
@@ -38,41 +36,6 @@ public class LotteryRep {
      */
     public void addLotoInfo(LotteryInfo lInfo) {
         em.persist(lInfo);
-    }
-
-    public void updateLotoInfo(LotteryInfo lInfo) {
-        em.merge(lInfo);
-    }
-
-    /**
-     * @return данные о всех вариантах выигрыша в лотерею
-     */
-    @SuppressWarnings("unchecked")
-    public List<WinningsData> getWinnignsData() {
-        return em.createQuery("from WinningsData").getResultList();
-    }
-
-    /**
-     * Проверяет, есть ли у пользователя выигранные, не просмотренные предсказания
-     */
-    public boolean isUserHasPrediction(long userId) {
-        long countOfPredictions = getPljushkiCountByArticle(userId, LotteryArticle.PREDICTION);
-        return countOfPredictions > 0;
-    }
-
-    /**
-     * @return все ID c таблицы предсказаний
-     */
-    @SuppressWarnings("unchecked")
-    public List<Long> getAllPredictionIDs() {
-        return em.createQuery("SELECT id FROM Predictions ORDER BY id ASC").getResultList();
-    }
-
-    /**
-     * Получает предсказание по id
-     */
-    public Predictions getPredictionById(long id) {
-        return em.find(Predictions.class, id);
     }
 
     /**
@@ -97,7 +60,7 @@ public class LotteryRep {
         params.put("dateTo", dateTo);
 
         // lottery articles filter
-        List<LotteryArticle> articles = ls.getArticles(); // статьи из формы
+        List<WinArticle> articles = ls.getArticles(); // статьи из формы
         if (articles != null && !articles.isEmpty()) {
             hql1 += " and article IN (:la)";
             params.put("la", articles);
@@ -131,75 +94,6 @@ public class LotteryRep {
         return result;
     }
 
-    /**
-     * Получает количество неиспользованных плюшек в разрезе статьи (Повышение уровня, Лицензии на строительство)
-     * 
-     * @param userId
-     * @param article
-     * @return
-     */
-    public long getPljushkiCountByArticle(long userId, LotteryArticle article) {
-        String hql = "SELECT sum(remainingAmount) from LotteryInfo WHERE userId = ?0 AND article = ?1 AND remainingAmount > 0";
-        Query query = em.createQuery(hql);
-        query.setParameter(0, userId);
-        query.setParameter(1, article);
-
-        try {
-            return (long) query.getSingleResult();
-        } catch (NullPointerException e) {
-            return 0;
-        }
-    }
-
-    /**
-     * Получает предсказание пользователя, если оно у него есть
-     * 
-     * @param userId
-     * @return
-     */
-    public LotteryInfo getUserPrediction(long userId) throws NoResultException {
-        LotteryInfo result = getLotteryInfoByArticle(userId, LotteryArticle.PREDICTION);
-        if (result == null) {
-            throw new NoResultException();
-        }
-        return result;
-    }
-
-    /**
-     * Получает последнюю запись с выигранными лицензиями учитывая уровень лицензии.
-     * 
-     * @param levelArticle
-     *            - статья лицензии
-     */
-    public LotteryInfo getUserLicenses(long userId, LotteryArticle levelArticle) {
-        return getLotteryInfoByArticle(userId, levelArticle);
-    }
-
-    /**
-     * Получает запись с выигранными плюшками повышения уровня имущества.
-     */
-    public LotteryInfo getUserUpPropLevel(long userId) {
-        return getLotteryInfoByArticle(userId, LotteryArticle.PROPERTY_UP);
-    }
-
-    /**
-     * Получает запись с выигранными плюшками повышения уровня кассы имущества.
-     */
-    public LotteryInfo getUserUpCashLevel(long userId) {
-        return getLotteryInfoByArticle(userId, LotteryArticle.CASH_UP);
-    }
-
-    /**
-     * @param userId
-     * @param article
-     * @return список выигранного в лотерею с определенной статьей. Например вернет все Лицензии 2-го уровня, где остаток > 0.
-     */
-    @SuppressWarnings("unchecked")
-    public List<LotteryInfo> getLotteryInfoListByArticle(long userId, LotteryArticle article) {
-        Query query = createQueryForLotteryInfoByArticle(userId, article);
-        return query.getResultList();
-    }
-
     public int countOfPlaysToday(long userId) {
         String hql = "SELECT sum(ticketCount) FROM LotteryInfo WHERE userId = ?0 AND date between ?1 and ?2";
 
@@ -220,33 +114,4 @@ public class LotteryRep {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private LotteryInfo getLotteryInfoByArticle(long userId, LotteryArticle article) {
-        Query query = createQueryForLotteryInfoByArticle(userId, article);
-        query.setMaxResults(1);
-
-        List<LotteryInfo> result = query.getResultList();
-        if (result.isEmpty()) {
-            return null;
-        } else {
-            return result.get(0);
-        }
-    }
-
-    /**
-     * Создается запрос на выборку из базы данных списка остатков, выигранных в лото, где оставшееся количество > 0 и статья
-     * выигрыша в лото соответствует переданному параметру.
-     * 
-     * @param userId
-     * @param article
-     *            статья выигрыша в лото
-     * @return запрос
-     */
-    private Query createQueryForLotteryInfoByArticle(long userId, LotteryArticle article) {
-        String hql = "from LotteryInfo WHERE userId = ?0 AND article = ?1 AND remainingAmount > 0 ORDER BY id ASC";
-        Query query = em.createQuery(hql);
-        query.setParameter(0, userId);
-        query.setParameter(1, article);
-        return query;
-    }
 }

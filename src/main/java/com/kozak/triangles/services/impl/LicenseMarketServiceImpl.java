@@ -13,23 +13,22 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kozak.triangles.data.LicensesTableData;
 import com.kozak.triangles.entities.LicenseMarket;
 import com.kozak.triangles.entities.LicensesConsignment;
-import com.kozak.triangles.entities.LotteryInfo;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.CityArea;
-import com.kozak.triangles.enums.LotteryArticle;
 import com.kozak.triangles.enums.TradeBuildingType;
 import com.kozak.triangles.enums.TransferType;
+import com.kozak.triangles.enums.WinArticle;
 import com.kozak.triangles.exceptions.NoSuchLicenseLevelException;
 import com.kozak.triangles.models.Requirement;
 import com.kozak.triangles.repositories.LicenseMarketRepository;
 import com.kozak.triangles.repositories.LicensesConsignmentRepository;
-import com.kozak.triangles.repositories.LotteryRep;
 import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
 import com.kozak.triangles.repositories.UserRep;
 import com.kozak.triangles.services.LicenseMarketService;
+import com.kozak.triangles.services.WinService;
 import com.kozak.triangles.utils.CommonUtil;
 import com.kozak.triangles.utils.DateUtils;
 import com.kozak.triangles.utils.Ksyusha;
@@ -61,7 +60,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
     @Autowired
     private UserRep userRep;
     @Autowired
-    private LotteryRep lotteryRep;
+    private WinService winService;
 
     @Override
     public boolean isMarketBuilt(long userId) {
@@ -196,8 +195,8 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
         LicenseMarket licenseMarket = getLicenseMarket(userId, false);
 
         try {
-            LotteryArticle licenseLevelArticle = LotteryArticle.getLicenseArticleByLevel(licensesLevel);
-            long countOfLicenses = lotteryRep.getPljushkiCountByArticle(userId, licenseLevelArticle);
+            WinArticle licenseArticle = WinArticle.getLicenseArticleByLevel(licensesLevel);
+            long countOfLicenses = winService.getRemainingAmount(userId, licenseArticle);
             if (countOfLicenses <= 0) {
                 // Требование №1 - это то, что лицензий должно быть больше 0
                 String description1 = MessageFormat.format("У вас нет лицензий уровня <b>{0}</b>.", licensesLevel);
@@ -231,16 +230,16 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
         if (isMarketCanFunction(userId)) {
             try {
                 // получить количество лицензий определенного уровня на остатке
-                LotteryArticle licenseLevelArticle = LotteryArticle.getLicenseArticleByLevel(licensesLevel);
-                long countOfLicenses = lotteryRep.getPljushkiCountByArticle(userId, licenseLevelArticle);
+                WinArticle licenseLevelArticle = WinArticle.getLicenseArticleByLevel(licensesLevel);
+                long countOfLicenses = winService.getRemainingAmount(userId, licenseLevelArticle);
 
                 if (countOfLicenses >= licensesCount) {
-                    // если лицензий определенного уровня достаточно на остатках, что были выиграны в лото
+                    // если лицензий определенного уровня достаточно на остатках, что были выиграны или получены, как бонус
                     // создать партию лицензий на продаже
                     createLicensesConsignment(userId, licensesCount, licensesLevel);
 
-                    // списать с остатков выиграных лицензий в лото
-                    withdrawFromLotoInfo(userId, licenseLevelArticle, licensesCount);
+                    // списать с остатков выиграных лицензий в лото или полученных в качестве бонуса
+                    winService.takeAmount(userId, licenseLevelArticle, licensesCount);
                 } else {
                     // иначе вернуть ошибку, что лицензий НЕ достаточно
                     ResponseUtil.putErrorMsg(resultJson, LICENSES_NOT_ENOUGH);
@@ -317,40 +316,6 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
         consignment.setProfit(totalProfit);
 
         consignment = licensesConsignmentRepository.addLicenseConsignment(consignment); // сохранить новую партию
-    }
-
-    /**
-     * Списывает с остатков нужное количество лицензий определенного уровня
-     * 
-     * @param licensesLevel
-     *            уровень лицензий
-     * @param requiredCount
-     *            количество лицензий, которое нужно списать
-     */
-    private void withdrawFromLotoInfo(long userId, LotteryArticle licenseLevelArticle, int requiredCount) {
-        List<LotteryInfo> lotteryInfos = lotteryRep.getLotteryInfoListByArticle(userId, licenseLevelArticle); // остатки
-
-        int withdrawals = 0; // снято всего
-        int leftToWithDraw = requiredCount; // осталось снять
-        int i = 0;
-        while (withdrawals < requiredCount) {
-            LotteryInfo lotteryInfo = lotteryInfos.get(i);
-            int countOfRemains = lotteryInfo.getRemainingAmount(); // количество в сущности LotteryInfo
-            if (countOfRemains >= leftToWithDraw) {
-                // если в сущности на остатке >= чем нужно снять, то снять только нужное количество
-                lotteryInfo.setRemainingAmount(countOfRemains - leftToWithDraw); // установить новое значение
-                withdrawals += leftToWithDraw; // потребности в количестве удовлетворены
-                lotteryRep.updateLotoInfo(lotteryInfo);
-                break;
-            } else {
-                // в сущности на остатке < чем нужно
-                lotteryInfo.setRemainingAmount(0); // забрать из остатков все
-                withdrawals += countOfRemains;
-                lotteryRep.updateLotoInfo(lotteryInfo);
-            }
-            leftToWithDraw = requiredCount - withdrawals;
-            i++;
-        }
     }
 
     /**

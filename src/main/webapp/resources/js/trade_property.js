@@ -27,7 +27,6 @@ function getLandLotPrice() {
  */
 function landLotInfo() {
 	var cityArea = extractCityAreaName(this);
-	var url = CTX_PATH + "/land-lot/price?city_area=" + cityArea;
 	$('#modalForInfoTitle').html("Имущество на участках. Район: " + getCityAreaName(cityArea));
 	
 	var url = CTX_PATH + "/land-lot/info?city_area=" + cityArea;

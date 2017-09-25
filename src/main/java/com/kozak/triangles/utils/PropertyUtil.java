@@ -8,12 +8,12 @@ import com.kozak.triangles.data.CityAreasTableData;
 import com.kozak.triangles.data.TradeBuildingsTableData;
 import com.kozak.triangles.entities.Property;
 import com.kozak.triangles.entities.RealEstateProposal;
-import com.kozak.triangles.entities.TradeBuilding;
 import com.kozak.triangles.entities.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.enums.TradeBuildingType;
 import com.kozak.triangles.enums.TransferType;
+import com.kozak.triangles.models.TradeBuilding;
 import com.kozak.triangles.repositories.PropertyRep;
 import com.kozak.triangles.repositories.TransactionRep;
 
