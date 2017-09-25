@@ -407,7 +407,7 @@ public class HomeController extends BaseController {
 
             // добавляем транзакцию
             int bonusSum = Constants.DAILY_BONUS_SUM[dayNumber];
-            String description = "Ежедневный бонус (день " + dayNumber + "-й)";
+            String description = "День " + dayNumber + "-й";
             long oldBalance = Long.parseLong(trRep.getUserBalance(user.getId()));
             Transaction t = new Transaction(description, new Date(), bonusSum, TransferType.PROFIT, user.getId(),
                     oldBalance + bonusSum, ArticleCashFlow.DAILY_BONUS);

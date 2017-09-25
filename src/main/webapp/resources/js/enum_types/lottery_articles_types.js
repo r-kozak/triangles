@@ -16,7 +16,8 @@ var lotteryArticles = {
 	"LAND_LOT_GHETTO" : "Участок в гетто",
 	"LAND_LOT_OUTSKIRTS" : "Участок на окраине",
 	"LAND_LOT_CHINATOWN" : "Участок в чайнатауне",
-	"LAND_LOT_CENTER" : "Участок в центре"
+	"LAND_LOT_CENTER" : "Участок в центре",
+	"LOTTERY_TICKET" : "Лотерейные билеты"
 }
 
 function getLotteryArticleName(articleName) {

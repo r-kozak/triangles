@@ -604,7 +604,7 @@ public class PropertyController extends BaseController {
         if (prop.getCash() > 0) {
             long userId = prop.getUserId();
 
-            String desc = "Сбор с имущества: " + prop.getName();
+            String desc = "Им-во: " + prop.getName();
             Long cash = prop.getCash();
             Long oldBalance = Long.parseLong(trRep.getUserBalance(userId));
 
@@ -762,7 +762,7 @@ public class PropertyController extends BaseController {
         // если это платное повышение, а не за лотерейные плюшки
         if (isPaidUp) {
             // снять деньги
-            String descr = String.format("Улучшение кассы до уровня: %s. Касса им-ва: %s", nCashLevel, prop.getName());
+            String descr = String.format("До уровня: %s. Им-во: %s", nCashLevel, prop.getName());
             long currBal = Long.parseLong(trRep.getUserBalance(userId));
             Transaction tr = new Transaction(descr, new Date(), sum, TransferType.SPEND, userId, currBal - sum,
                     ArticleCashFlow.UP_CASH_LEVEL);
@@ -837,7 +837,7 @@ public class PropertyController extends BaseController {
 
         if (isPaidUp) {
             // снять деньги
-            String descr = String.format("Улучшение им-ва: %s до уровня: %s", prop.getName(), nPropLevel);
+            String descr = String.format("До уровня: %s. Им-во: %s.", nPropLevel, prop.getName());
             long currBal = Long.parseLong(trRep.getUserBalance(userId));
             Transaction tr = new Transaction(descr, new Date(), sum, TransferType.SPEND, userId, currBal - sum,
                     ArticleCashFlow.UP_PROP_LEVEL);

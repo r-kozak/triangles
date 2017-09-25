@@ -198,7 +198,7 @@ public class LotteryController extends BaseController {
                 userRep.updateUser(user);
 
                 // снятие денег со счета
-                String descr = String.format("Покупка лотерейных билетов, %s шт.", count);
+                String descr = String.format("%s шт.", count);
                 long newBalance = userMoney - purchaseSum;
 
                 Transaction tr = new Transaction(descr, new Date(), purchaseSum, TransferType.SPEND, userId, newBalance,
@@ -545,7 +545,7 @@ public class LotteryController extends BaseController {
         // добавить транзакцию
         long userMoney = Long.parseLong(trRep.getUserBalance(userId));
 
-        String descr = String.format("Выигрыш в лотерею за %s бил.", groupedRes.ticketsCount);
+        String descr = String.format("За %s бил.", groupedRes.ticketsCount);
         int sum = groupedRes.entitiesCount;
         Transaction tr = new Transaction(descr, date, sum, TransferType.PROFIT, userId, userMoney + sum,
                 ArticleCashFlow.LOTTERY_WINNINGS);
