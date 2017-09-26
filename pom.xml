@@ -207,10 +207,10 @@
 			<artifactId>datatables-plugins</artifactId>
 			<version>1.10.7</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
+		<finalName>ROOT</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
