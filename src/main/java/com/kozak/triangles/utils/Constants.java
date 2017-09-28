@@ -49,10 +49,6 @@ public final class Constants {
     // цены на лотерейные билеты, в зависимости от покупаемого количества
     public static final int[] LOTTERY_TICKETS_PRICE = { 500, 475, 450 };
 
-    // нижняя и верхняя граница рандомного числа при генерации лотерейного розыгрыша
-    public static final int LOWER_LOTTERY_BOUND = 0;
-    public static final int UPPER_LOTTERY_BOUND = 100_000;
-
     // WORK WITH RECAPTHA
     public static final String RECAPTHA_URL = "https://www.google.com/recaptcha/api/siteverify";
     public static final String RECAPTCHA_SECRET = "6LeKaQ8TAAAAAO9mHKXwvoVVor232VnhAaUXlzmy";

@@ -46,7 +46,7 @@ public class SearchCollections {
     }
 
     // lottery search
-    public static List<WinArticle> getLotteryArticles() {
+    public static List<WinArticle> getWinArticles() {
         List<WinArticle> types = new ArrayList<WinArticle>();
         for (WinArticle a : WinArticle.values()) {
             types.add(a);

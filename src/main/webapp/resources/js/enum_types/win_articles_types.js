@@ -2,7 +2,7 @@
  * Позволяет заменять наименования статтей выигрыша в лотерею, что описаны в java перечислениях на нормальные наименования.
  */
 
-var lotteryArticles = {
+var winArticles = {
 	"TRIANGLES" : "Деньги",
 	"PROPERTY_UP" : "Повышение имущества",
 	"CASH_UP" : "Повышение кассы имущества",
@@ -20,18 +20,18 @@ var lotteryArticles = {
 	"LOTTERY_TICKET" : "Лотерейные билеты"
 }
 
-function getLotteryArticleName(articleName) {
-	return lotteryArticles[articleName];
+function getWinArticleName(articleName) {
+	return winArticles[articleName];
 } 
 
 // функция заменяет 'TRIANGLES' на 'Деньги' и др. статьи
-function replaceAllLotteryArticlesNames() {
-	$.each([ $('.lottery_article_name'), $('.lottery_articles label') ], function(index, array) {
+function replaceAllWinArticlesNames() {
+	$.each([ $('.win_article_name'), $('.win_articles label') ], function(index, array) {
 		$.each(array, function(index, element) {
-			var newArticleName = getLotteryArticleName($(element).text());
+			var newArticleName = getWinArticleName($(element).text());
 			$(element).html(newArticleName);
 		});
 	});
 };
 
-replaceAllLotteryArticlesNames();
+replaceAllWinArticlesNames();

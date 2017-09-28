@@ -183,7 +183,7 @@
 		
 					<fieldset id="searchBlock">
 					<legend>Статья удачи</legend>
-						<div id="searchEl" class="lottery_articles">
+						<div id="searchEl" class="win_articles">
 							<form:checkboxes path="articles" items="${articles}"/>      
 						</div>
 					</fieldset>
@@ -211,7 +211,7 @@
 			<c:forEach items="${lotteryStory}" var="lotterySt">
 				<tr>
 					<td><fmt:formatDate value="${lotterySt.date}" pattern="dd-MM-yyyy HH:mm"/></td>
-					<td class="lottery_article_name">${lotterySt.article}</td>
+					<td class="win_article_name">${lotterySt.article}</td>
 					<td style="text-align:left!important">${lotterySt.description}</td>
 					<c:choose>
 						<c:when test="${lotterySt.article == 'PREDICTION'}">
@@ -235,7 +235,7 @@
 </div> <!-- container -->
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/lottery_articles_types.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/win_articles_types.js"></script>
 
 <script>
 $(document).ready(function(){

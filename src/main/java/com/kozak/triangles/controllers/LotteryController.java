@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
@@ -140,7 +139,7 @@ public class LotteryController extends BaseController {
 
         model = addMoneyInfoToModel(model, user);
         model = addLicenseCountInfoToModel(model, userId);
-        model.addAttribute("articles", SearchCollections.getLotteryArticles()); // статьи выигрыша
+        model.addAttribute("articles", SearchCollections.getWinArticles()); // статьи выигрыша
         model.addAttribute("ticketsCount", user.getLotteryTickets()); // количество лотерейных билетов
         model.addAttribute("lotteryStory", fromDB.get(1)); // информация о розыгрышах
         model.addAttribute("upPropCount", upPropCount); // количество доступных повышений имуществ
@@ -241,7 +240,7 @@ public class LotteryController extends BaseController {
             int gamesCount = computeGamesCount(userTickets, count, userId); // вычислить количество игр
             Date date = new Date(); // дата игры
 
-            // сыграть в игру на все билеты и сгруппировать результат по лотерейной статье (LotteryArticle)
+            // сыграть в игру на все билеты и сгруппировать результат по статье выигрыша (WinArticle)
             HashMap<WinArticle, WinGroup> lotoResult = playLotoAndGetResult(gamesCount, userId);
 
             // взять сгруппированный результат и добавить выигранное пользователю
@@ -596,23 +595,15 @@ public class LotteryController extends BaseController {
         // сгруппированные по статье результаты игры в лото
         HashMap<WinArticle, WinGroup> groupResult = new HashMap<WinArticle, LotteryController.WinGroup>();
 
-        // получить данные со всеми возможными вариантами выигрышей
-        TreeMap<Integer, WinDataModel> winningsData = winService.getWinningsData();
-
         boolean userHasPrediction = winService.isUserHasPrediction(userId); // есть непросмотренные предсказания
         // имущество можно выиграть только в районе Гетто. Взять количество доступных участков
         long availableLandLotsCount = landLotService.getAvailableLandLotsCount(userId, CityArea.GHETTO);
 
-        WinDataModel tempWinData = null; // временные данные результата одного розыгрыша
+        WinDataModel winDataModel = null; // временные данные результата одного розыгрыша
         // цикл - это розыгрыш одного билета
         for (int i = 0; i < ticketsCount; i++) {
-            // результат розыгрыша одного билета
-            int ticRes = (int) Random.generateRandNum(Constants.LOWER_LOTTERY_BOUND, Constants.UPPER_LOTTERY_BOUND);
-
-            int flKey = winningsData.floorKey(ticRes); // ближайший нижный ключ в дереве
-            tempWinData = winningsData.get(flKey); // данные о выигрыше
-
-            WinArticle article = tempWinData.getArticle();
+            winDataModel = winService.generateRandomWinData();// winningsData.get(flKey); // данные о выигрыше
+            WinArticle article = winDataModel.getArticle();
             
             // если выиграл предсказание
             if (article.equals(WinArticle.PREDICTION)) {
@@ -634,11 +625,11 @@ public class LotteryController extends BaseController {
                     i--;
                     continue;
                 } else {
-                    int wonPropertyCount = tempWinData.getCount(); // кол-во выигранного имущества
+                    int wonPropertyCount = winDataModel.getCount(); // кол-во выигранного имущества
                     if (availableLandLotsCount < wonPropertyCount) {
                         // участков меньше, чем выиграно имущества
                         wonPropertyCount = (int) availableLandLotsCount;
-                        tempWinData.setCount((int) availableLandLotsCount);
+                        winDataModel.setCount((int) availableLandLotsCount);
                     }
                     availableLandLotsCount -= wonPropertyCount; // уменьшить кол-во доступных участков
                 }
@@ -646,11 +637,11 @@ public class LotteryController extends BaseController {
             // увеличить кол-во доступных участков, если выиграл участок
             // имущество можно выигрывать только в районе Гетто, значит брать во внимание только такие участки
             if (article.equals(WinArticle.LAND_LOT_GHETTO)) {
-                availableLandLotsCount += tempWinData.getCount();
+                availableLandLotsCount += winDataModel.getCount();
             }
             
             // сгруппировать данный результат розыгрыша
-            groupTicketResult(tempWinData, groupResult);
+            groupTicketResult(winDataModel, groupResult);
         }
         return groupResult;
     }
