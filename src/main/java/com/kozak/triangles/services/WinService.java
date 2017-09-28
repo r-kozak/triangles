@@ -1,7 +1,5 @@
 package com.kozak.triangles.services;
 
-import java.util.TreeMap;
-
 import com.kozak.triangles.enums.WinArticle;
 import com.kozak.triangles.exceptions.NoPredictionException;
 import com.kozak.triangles.models.WinDataModel;
@@ -58,11 +56,6 @@ public interface WinService {
     long getRemainingAmount(long userId, WinArticle propertyUp);
 
     /**
-     * @return возвращает данные с возможными выигрышами
-     */
-    TreeMap<Integer, WinDataModel> getWinningsData();
-
-    /**
      * Списывает количество с остатков по статье выигрыша
      * 
      * @param userId
@@ -70,5 +63,11 @@ public interface WinService {
      * @param amount
      */
     void takeAmount(long userId, WinArticle article, int amount);
+
+    /**
+     * @return модель с рандомным выигрышем. При этом, выиграть можно все, что перечисленно в
+     *         {@link com.kozak.triangles.enums.WinArticle}
+     */
+    WinDataModel generateRandomWinData();
 
 }

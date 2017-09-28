@@ -13,9 +13,14 @@ import com.kozak.triangles.exceptions.NoPredictionException;
 import com.kozak.triangles.models.WinDataModel;
 import com.kozak.triangles.repositories.WinRepository;
 import com.kozak.triangles.services.WinService;
+import com.kozak.triangles.utils.Random;
 
 @Service
 public class WinServiceImpl implements WinService {
+
+    // нижняя и верхняя граница рандомного числа при генерации модели выигрыша
+    public static final int LOWER_WIN_BOUND = 0;
+    public static final int UPPER_WIN_BOUND = 100_000;
 
     private static TreeMap<Integer, WinDataModel> winningsData = null;
 
@@ -23,13 +28,12 @@ public class WinServiceImpl implements WinService {
     private WinRepository winRepository;
 
     /**
-     * получает данные с базы данных информацию о всех вариантах выигрыша и заполняет ними дерево, которое потом может
-     * использоваться для получение данных о выигрыше или бонусе.
+     * получает информацию о всех вариантах выигрыша и заполняет ними дерево, которое потом может использоваться для получение
+     * данных о выигрыше или бонусе.
      * 
-     * @return - дерево с данными.
+     * @return - дерево с данными - все возможные выигрышы
      */
-    @Override
-    public TreeMap<Integer, WinDataModel> getWinningsData() {
+    private TreeMap<Integer, WinDataModel> getWinningsData() {
         if (winningsData == null) {
             winningsData = new TreeMap<Integer, WinDataModel>();
 
@@ -86,5 +90,12 @@ public class WinServiceImpl implements WinService {
         WinInfo info = winRepository.getWinInfoByIdAndArticle(userId, article);
         info.setRemainingAmount(info.getRemainingAmount() - amount);
         winRepository.addUpdateWinInfo(info);
+    }
+
+    @Override
+    public WinDataModel generateRandomWinData() {
+        int random = (int) Random.generateRandNum(LOWER_WIN_BOUND, UPPER_WIN_BOUND);
+        int flKey = winningsData.floorKey(random); // ближайший нижный ключ в дереве
+        return getWinningsData().get(flKey);
     }
 }

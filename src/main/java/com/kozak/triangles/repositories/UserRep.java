@@ -32,26 +32,36 @@ public class UserRep {
 
     @SuppressWarnings("unchecked")
     public List<User> getAllUsers() {
-        String hql = "from User";
+        String hql = "FROM User";
         Query query = em.createQuery(hql);
         return query.getResultList();
     }
 
     public User getCurrentUserByLogin(String userLogin) {
-        String hql = "from User as user where lower(login) like :userLogin";
+        String hql = "FROM User WHERE lower(login) like :userLogin";
         Query query = em.createQuery(hql).setParameter("userLogin", userLogin.toLowerCase());
         return (User) query.getSingleResult();
     }
 
     public int countActiveUsers() {
-        String hql = "select count(id) FROM User as u where u.lastEnter >= :twoWeeksAgo";
+        String hql = "SELECT count(id) FROM User WHERE lastEnter >= :twoWeeksAgo";
 
         Calendar twa = Calendar.getInstance();
         twa.add(Calendar.DATE, -14);
-
         Query query = em.createQuery(hql).setParameter("twoWeeksAgo", twa, TemporalType.DATE);
 
         return Integer.valueOf(query.getSingleResult().toString());
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Integer> getActiveUsersIds() {
+        String hql = "SELECT id FROM User WHERE lastEnter >= :twoWeeksAgo";
+
+        Calendar twa = Calendar.getInstance();
+        twa.add(Calendar.DATE, -14);
+        Query query = em.createQuery(hql).setParameter("twoWeeksAgo", twa, TemporalType.DATE);
+
+        return query.getResultList();
     }
 
     /**
@@ -64,7 +74,7 @@ public class UserRep {
      * @return юзер
      */
     public User getUserByEncrLoginAndPassword(String ul, String up) {
-        String hql = "from User as u where u.encrLogin like :ul and u.password like :up";
+        String hql = "FROM User where encrLogin like :ul and password like :up";
         Query query = em.createQuery(hql).setParameter("ul", ul).setParameter("up", up);
         try {
             return (User) query.getSingleResult();
