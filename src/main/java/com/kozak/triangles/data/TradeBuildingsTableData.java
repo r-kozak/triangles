@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.kozak.triangles.enums.TradeBuildingType;
-import com.kozak.triangles.models.TradeBuilding;
+import com.kozak.triangles.model.TradeBuilding;
 
 public class TradeBuildingsTableData {
 
