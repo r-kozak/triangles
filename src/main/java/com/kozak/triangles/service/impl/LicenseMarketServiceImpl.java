@@ -49,6 +49,9 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
     private static final String MARKET_CANNOT_FUNCTION = "Магазин лицензий не может функционировать!";
     private static final int PREMIUM_PERCENT_FOR_ONE_LEVEL = 10;
 
+    // район, в котором должны быть размещены магазины
+    private static final CityArea CITY_AREA = CityArea.GHETTO;
+
     @Autowired
     private LicenseMarketRepository licenseMarketRepository;
     @Autowired
@@ -108,7 +111,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
         result.add(domiRequirement);
 
         // требование, что у пользователя достаточно Магазинов канцтоваров для функционирования
-        // Для функционирования нужно иметь [уровень магазина лицензий] АКТИВНЫХ Магазинов канцтоваров, 10-го уровня, в центре
+        // Для функционирования нужно иметь [уровень магазина лицензий] АКТИВНЫХ Магазинов канцтоваров, 10-го уровня, в ГЕТТО
         Requirement stationerShopRequirement = createStationerShopsRequirement(userId, licenseMarket.getLevel());
         result.add(stationerShopRequirement);
 
@@ -130,7 +133,7 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
         resultRequirements.add(domiRequirement);
 
         // требование, что у пользователя достаточно Магазинов канцтоваров для повышения уровня
-        // Для функционирования нужно иметь [целевой уровень] АКТИВНЫХ Магазинов канцтоваров, 10-го уровня, в центре
+        // Для функционирования нужно иметь [целевой уровень] АКТИВНЫХ Магазинов канцтоваров, 10-го уровня, в ГЕТТО
         Requirement stationerShopRequirement = createStationerShopsRequirement(userId, targetLevel);
         resultRequirements.add(stationerShopRequirement);
 
@@ -331,8 +334,8 @@ public class LicenseMarketServiceImpl implements LicenseMarketService {
      */
     private Requirement createStationerShopsRequirement(long userId, int countOfShops) {
         List<Property> stationerShops = propertyRep.getPropertyListWithParams(userId, TradeBuildingType.STATIONER_SHOP,
-                CityArea.CENTER, LEVEL_OF_STATIONER_SHOP, null, true);
-        String shopsDescription = String.format("Необходимо %d шт. АКТИВНЫХ Магазинов канцтоваров (%d-го уровня, в центре)",
+                CITY_AREA, LEVEL_OF_STATIONER_SHOP, null, true);
+        String shopsDescription = String.format("Необходимо %d шт. АКТИВНЫХ Магазинов канцтоваров (%d-го уровня, в гетто)",
                 countOfShops, LEVEL_OF_STATIONER_SHOP);
         Requirement stationerShopRequirement = new Requirement(stationerShops.size() >= countOfShops, shopsDescription);
         return stationerShopRequirement;
