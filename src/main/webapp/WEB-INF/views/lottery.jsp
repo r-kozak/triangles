@@ -50,6 +50,8 @@
 		if (${ls.page > 1}) {
 			$('body, html').scrollTop($(document).height());
 		} 
+		
+		replaceAllWinArticlesNames();
 	}
 
 	//функция для анимирования символа "Мудрость всезнающего"
