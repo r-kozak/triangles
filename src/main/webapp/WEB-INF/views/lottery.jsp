@@ -234,9 +234,6 @@
 	<t:footer></t:footer>
 </div> <!-- container -->
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/win_articles_types.js"></script>
-
 <script>
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); // для отображения подсказок

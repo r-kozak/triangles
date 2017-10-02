@@ -19,7 +19,8 @@ var transactionArticles = {
 	"LOTTERY_TICKETS_BUY" : "Покупка лотерейных билетов",
 	"LOTTERY_WINNINGS" : "Выигрыш в лотерею",
 	"WITHDRAW" : "Вывод средств",
-	"LAND_LOTS_BUY" : "Покупка участков"
+	"LAND_LOTS_BUY" : "Покупка участков",
+	"BONUS" : "Бонус",
 }
 
 function getTransactionArticleName(articleName) {

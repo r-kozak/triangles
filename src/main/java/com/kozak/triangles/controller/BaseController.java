@@ -26,6 +26,7 @@ import com.kozak.triangles.service.LandLotService;
 import com.kozak.triangles.service.LicenseMarketService;
 import com.kozak.triangles.util.CommonUtil;
 import com.kozak.triangles.util.ResponseUtil;
+import com.kozak.triangles.win_service.BonusService;
 import com.kozak.triangles.win_service.LotteryService;
 import com.kozak.triangles.win_service.WinService;
 
@@ -57,6 +58,8 @@ public abstract class BaseController {
     protected WinService winService;
     @Autowired
     protected LotteryService lotteryService;
+    @Autowired
+    protected BonusService bonusService;
 
     protected Model addMoneyInfoToModel(Model model, User user) {
         Long userId = user.getId();

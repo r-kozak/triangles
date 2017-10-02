@@ -18,6 +18,8 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/search.css" type="text/css" />
 
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/enum_types/win_articles_types.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/change_balance.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/date_functions.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/jquery.plugin.js"></script>
@@ -56,6 +58,24 @@
 	</div>
     <div id="bonus_btn">
       <img src="${pageContext.request.contextPath}/resources/img/bonus_btn.png" align="middle">
+    </div>
+    
+    <!-- модальное окно для отображения бонусов -->
+    <div class="modal fade" id="bonus_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title text-danger" id="bonus_modal_title">Ваш бонус</h4>
+          </div>
+          
+        <div class="modal-body" id="bonus_modal_body">Тело</div>
+        
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Ок :)</button>
+          </div>
+        </div>
+      </div>
     </div>
 	<jsp:doBody/>
 </body>

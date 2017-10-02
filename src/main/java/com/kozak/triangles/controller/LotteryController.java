@@ -134,7 +134,7 @@ public class LotteryController extends BaseController {
                 trRep.addTransaction(tr);
 
                 // добавить информацию о новом значении баланса, состоятельности, количества билетов
-                ResponseUtil.addBalanceData(resultJson, purchaseSum, userMoney, userId, prRep);
+                ResponseUtil.addBalanceData(resultJson, purchaseSum, userMoney, userId, prRep, TransferType.SPEND);
                 resultJson.put("ticketsValue", user.getLotteryTickets());
             }
         }

@@ -175,7 +175,8 @@ public class PropertyController extends BaseController {
                             userId, userMoney - price, ArticleCashFlow.BUY_PROPERTY);
                     trRep.addTransaction(t);
 
-                    ResponseUtil.addBalanceData(resultJson, prop.getPurchasePrice(), userMoney, userId, prRep);
+                    ResponseUtil.addBalanceData(resultJson, prop.getPurchasePrice(), userMoney, userId, prRep,
+                            TransferType.SPEND);
                     resultJson.put("newDomi", userRep.getUserDomi(userId)); // информация для обновления значения домин.
                 }
             }
@@ -591,7 +592,7 @@ public class PropertyController extends BaseController {
         resultJson.put("error", false);
         resultJson.put("percAfterRepair", deprPercent);
         resultJson.put("propSellingPrice", CommonUtil.moneyFormat(sellPrice));
-        ResponseUtil.addBalanceData(resultJson, repairSum, userMoney, userId, prRep);
+        ResponseUtil.addBalanceData(resultJson, repairSum, userMoney, userId, prRep, TransferType.SPEND);
     }
 
     /**
@@ -779,7 +780,7 @@ public class PropertyController extends BaseController {
                 ResponseUtil.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
             }
 
-            ResponseUtil.addBalanceData(resultJson, sum, currBal, userId, prRep);
+            ResponseUtil.addBalanceData(resultJson, sum, currBal, userId, prRep, TransferType.SPEND);
             resultJson.put("nextSum", nextSum); // сумма след. повышения
             resultJson.put("cashCap", nCashCapacity); // new cash capacity для отображения
             resultJson.put("upped", true); // уровень был поднят
@@ -857,7 +858,7 @@ public class PropertyController extends BaseController {
                 ResponseUtil.putErrorMsg(resultJson, "Не хватает денег. Нужно: " + nextSum);
             }
 
-            ResponseUtil.addBalanceData(resultJson, sum, currBal, userId, prRep);
+            ResponseUtil.addBalanceData(resultJson, sum, currBal, userId, prRep, TransferType.SPEND);
             resultJson.put("nextSum", nextSum); // сумма след. повышения
         }
     }

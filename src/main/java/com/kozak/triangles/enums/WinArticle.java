@@ -19,9 +19,9 @@ public enum WinArticle {
 	LICENSE_3, 
 	LICENSE_4, 
 	PREDICTION, 
-	STALL, 
-	VILLAGE_SHOP, 
-	STATIONER_SHOP,
+    STALL, // не переименовывать, связанно с TradeBuildingType.STALL
+    VILLAGE_SHOP, // не переименовывать, связанно с TradeBuildingType.VILLAGE_SHOP
+    STATIONER_SHOP, // не переименовывать, связанно с TradeBuildingType.STATIONER_SHOP
     LAND_LOT_GHETTO,
     LAND_LOT_OUTSKIRTS,
     LAND_LOT_CHINATOWN,

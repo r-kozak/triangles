@@ -1,6 +1,8 @@
 package com.kozak.triangles.win_service;
 
 import com.kozak.triangles.exceptions.BonusIsNotAvailableException;
+import com.kozak.triangles.exceptions.WinHandlingException;
+import com.kozak.triangles.model.WinDataModel;
 
 public interface BonusService {
 
@@ -16,6 +18,7 @@ public interface BonusService {
      * @param userId
      * @throws BonusIsNotAvailableException
      *             - если у пользователя нет доступных бонусов
+     * @throws WinHandlingException
      */
-    void takeBonus(long userId) throws BonusIsNotAvailableException;
+    WinDataModel takeBonus(long userId) throws BonusIsNotAvailableException, WinHandlingException;
 }

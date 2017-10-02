@@ -190,7 +190,7 @@ body {
 	top: 90px;
 	left: 75%;
 	border-radius: 30px;
-	//display: none;
+	display: none;
 	cursor: pointer;
 	z-index: 50;
 }

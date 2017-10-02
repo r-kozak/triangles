@@ -144,7 +144,7 @@ public class MoneyController extends BaseController {
             trRep.addTransaction(t);
 
             // сформировать json ответ
-            ResponseUtil.addBalanceData(resultJson, count, balance, userId, prRep);
+            ResponseUtil.addBalanceData(resultJson, count, balance, userId, prRep, TransferType.SPEND);
             resultJson.put("transactDate", DateUtils.dateToString(transactDate));
             resultJson.put("description", desc);
         } else {

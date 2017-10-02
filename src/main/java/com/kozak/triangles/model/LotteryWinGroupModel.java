@@ -5,7 +5,7 @@ package com.kozak.triangles.model;
  * 
  * @author Roman: 14 вер. 2015 21:49:39
  */
-public class WinGroupModel {
+public class LotteryWinGroupModel {
 
     /**
      * общее количество билетов - например, 8 билетов.

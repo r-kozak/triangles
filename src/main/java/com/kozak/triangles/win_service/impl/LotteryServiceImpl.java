@@ -57,7 +57,7 @@ public class LotteryServiceImpl implements LotteryService {
             winHandler.handle(lotoResult, userId);
 
             // снять билеты у пользователя
-            user = userRep.find(userId);
+            user = userRep.find(userId); // снова получить пользователя, т.к. в процессе игры его данные могут измениться
             user.setLotteryTickets(user.getLotteryTickets() - gamesCount);
             userRep.updateUser(user);
         }

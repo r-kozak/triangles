@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 
+import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.repository.PropertyRep;
 
 public class ResponseUtil {
@@ -32,11 +33,22 @@ public class ResponseUtil {
      * 
      * @param sum
      *            - сумма операции
+     * @param userMoney
+     *            - баланс перед операцией
      */
     @SuppressWarnings("unchecked")
-    public static void addBalanceData(JSONObject resultJson, long sum, long userMoney, long userId, PropertyRep prRep) {
-        resultJson.put("changeBal", "-" + sum);
-        resultJson.put("newBalance", CommonUtil.moneyFormat(userMoney - sum));
+    public static void addBalanceData(JSONObject resultJson, long sum, long userMoney, long userId, PropertyRep prRep,
+            TransferType transferType) {
+
+        String newBalance = String.valueOf(userMoney);
+        if (transferType == TransferType.PROFIT) {
+            newBalance = CommonUtil.moneyFormat(userMoney + sum);
+        } else if (transferType == TransferType.SPEND) {
+            newBalance = CommonUtil.moneyFormat(userMoney - sum);
+        }
+
+        resultJson.put("changeBal", transferType.getSign() + sum);
+        resultJson.put("newBalance", newBalance);
         resultJson.put("newSolvency",
                 CommonUtil.moneyFormat(CommonUtil.getSolvency(String.valueOf(userMoney - sum), prRep, userId)));
     }

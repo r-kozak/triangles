@@ -17,7 +17,7 @@ function popUp(a, bloc) {
 		"opacity" : "0"
 	}, 700);
 	$(bloc).css({
-		"z-index" : "18"
+		"z-index" : "1051"
 	});
 };
 
@@ -25,6 +25,10 @@ function popUp(a, bloc) {
 // данные приходят при отправке запросов на сервер
 // данные в формате JSON
 function changeBal(data) {
+	if (data.changeBal == null) {
+		return;
+	}
+	
     $('#balChan').html(data.changeBal + "&tridot;"); //блок с балансом для движения вверх
     popUp(data.changeBal, "#balChan"); //движение вверх блока с балансом
     $('#balanceVal').html(data.newBalance); //новое значение баланса
@@ -62,11 +66,11 @@ function sendSellPost(ids, url, isNeedData) {
 
 //////////////////// BONUS
 
-window.onload = function(){ 
+$(document).ready(function(){
 	$('#bonus_btn').on('click', takeBonus);
 	flashBonusBtn();
 	checkBonusAvailability();
-}
+});
 
 function flashBonusBtn() {
 	$('#bonus_btn img').animate({ width: "90%" }, 500, function() {
@@ -75,21 +79,44 @@ function flashBonusBtn() {
 }
 
 function takeBonus() {
-	$('#bonus_btn').hide();
+	  $.ajax({
+		  type: 'GET',
+		  url: CTX_PATH + "/bonus/take",
+		  async:false
+		}).done(function(data) {
+          $('#bonus_btn').hide();
+          
+          var msg = '';
+		  if (!data.error) {
+			  msg = 'Вы получили бонус: <b>' + getWinArticleName(data.bonus.article) + '</b>. </br>' +
+			  		'Количество: <b>' + data.bonus.count + '</b>';
+		  } else {
+			  msg = data.message;
+		  }
+		  $('#bonus_modal_body').html(msg);
+		  $('#bonus_modal').modal();
+		  
+		  changeBal(data); // показать изменения баланса, если он изменился 
+	  	}).fail(function(jqXHR, textStatus, errorThrown) {
+			console.log(jqXHR.status + " " + jqXHR.statusText);
+		});
+	  
 }
 
 function checkBonusAvailability() {
-	setTimeout(function() {
-		$.ajax({
-			type : 'GET',
-			url : CTX_PATH + "/bonus/available",
-		}).done(function(data) {
-			if (data.available) {
-				$('#bonus_btn').show();
-			}
+	$.ajax({
+		type : 'GET',
+		url : CTX_PATH + "/bonus/available"
+	}).done(function(data) {
+		if (data.available) {
+			$('#bonus_btn').show();
+		} else {
+			$('#bonus_btn').hide();
+		}
+		setTimeout(function() {
 			checkBonusAvailability();
-		}).fail(function(jqXHR, textStatus, errorThrown) {
-			console.log(jqXHR.status + " " + jqXHR.statusText);
-		});
-	}, 30000); // every 30 seconds check whether bonus is available or not
+		}, 30000); // every 30 seconds check whether bonus is available or not
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		console.log(jqXHR.status + " " + jqXHR.statusText);
+	});
 }

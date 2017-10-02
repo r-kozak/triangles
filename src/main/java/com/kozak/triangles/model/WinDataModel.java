@@ -1,8 +1,11 @@
 package com.kozak.triangles.model;
 
+import org.json.simple.JSONAware;
+import org.json.simple.JSONObject;
+
 import com.kozak.triangles.enums.WinArticle;
 
-public class WinDataModel {
+public class WinDataModel implements JSONAware {
 
     // рандомный номер, который выпал - С
     private int randomNumFrom;
@@ -41,5 +44,14 @@ public class WinDataModel {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public String toJSONString() {
+        JSONObject obj = new JSONObject();
+        obj.put("article", article.toString());
+        obj.put("count", count);
+        return obj.toString();
     }
 }
