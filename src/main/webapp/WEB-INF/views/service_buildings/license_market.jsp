@@ -201,7 +201,6 @@
 	</div>
 	
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/license_market.css" type="text/css" />
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/lottery_market.js"></script>
 	
 <script>

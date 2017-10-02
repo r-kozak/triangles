@@ -291,7 +291,6 @@
 	</c:choose>
 </div>
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/buildings_types.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/enum_types/city_areas_types.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/trade_property.js"></script>
