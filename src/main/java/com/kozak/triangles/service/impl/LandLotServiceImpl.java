@@ -103,7 +103,7 @@ public class LandLotServiceImpl implements LandLotService {
         }
 
         // снять деньги
-        String descr = "Покупка участка в районе: " + cityArea;
+        String descr = "Район: " + cityArea;
         long userMoney = Long.parseLong(transactionRep.getUserBalance(userId));
         Transaction tr = new Transaction(descr, new Date(), price, TransferType.SPEND, userId, userMoney - price,
                 ArticleCashFlow.LAND_LOTS_BUY);
