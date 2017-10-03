@@ -41,16 +41,18 @@ public class ResponseUtil {
             TransferType transferType) {
 
         String newBalance = String.valueOf(userMoney);
+        Long newSolvency = null;
         if (transferType == TransferType.PROFIT) {
             newBalance = CommonUtil.moneyFormat(userMoney + sum);
+            newSolvency = CommonUtil.getSolvency(String.valueOf(userMoney + sum), prRep, userId);
         } else if (transferType == TransferType.SPEND) {
             newBalance = CommonUtil.moneyFormat(userMoney - sum);
+            newSolvency = CommonUtil.getSolvency(String.valueOf(userMoney + sum), prRep, userId);
         }
 
         resultJson.put("changeBal", transferType.getSign() + sum);
         resultJson.put("newBalance", newBalance);
-        resultJson.put("newSolvency",
-                CommonUtil.moneyFormat(CommonUtil.getSolvency(String.valueOf(userMoney - sum), prRep, userId)));
+        resultJson.put("newSolvency", CommonUtil.moneyFormat(newSolvency));
     }
 
     public static Model addMoneyInfoToModel(Model model, String userBalance, Long userSolvency, int userDomi) {

@@ -21,6 +21,7 @@
 <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/enum_types/win_articles_types.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/change_balance.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/bonus.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/date_functions.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/jquery.plugin.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/jquery.countdown.js"></script>
