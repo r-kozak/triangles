@@ -51,7 +51,7 @@ public final class Constants {
 
     // WORK WITH RECAPTHA
     public static final String RECAPTHA_URL = "https://www.google.com/recaptcha/api/siteverify";
-    public static final String RECAPTCHA_SECRET = "6LeKaQ8TAAAAAO9mHKXwvoVVor232VnhAaUXlzmy";
+    public static final String RECAPTCHA_SECRET = "6Ldw3yUTAAAAAFW2H4BLqrA2wuMPNNDNj3LEQuye";
 
     // длина сообщения из беседки с погрешностью на пробелы и др. знаки
     public static final int MSG_LEN = 600;

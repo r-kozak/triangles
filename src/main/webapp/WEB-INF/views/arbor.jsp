@@ -84,7 +84,7 @@
 					<div id="error_alert" style="height:76; display:inline-block; float:right; margin-right:30"></div>
 					
 					<div style="display:inline-block;">
-						<div class="g-recaptcha" data-sitekey="6LeKaQ8TAAAAAH3_1Vu7lf1bNk49UCUtHPRis9Tw"></div>
+						<div class="g-recaptcha" data-sitekey="6Ldw3yUTAAAAALvCg4EcqXzNwYHev3rlFuIvLUOW"></div>
 					</div>
 				</form>
 				
