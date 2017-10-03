@@ -131,6 +131,7 @@ public class HomeController extends BaseController {
         model.addAttribute("profitDomi", trRep.getSumByAcf(userId, ArticleCashFlow.DOMINANT_TO_TRIAN));
         model.addAttribute("profitLoto", trRep.getSumByAcf(userId, ArticleCashFlow.LOTTERY_WINNINGS));
         model.addAttribute("profitFromLicensesSell", trRep.getSumByAcf(userId, ArticleCashFlow.SELL_LICENSE));
+        model.addAttribute("profitBonus", trRep.getSumByAcf(userId, ArticleCashFlow.BONUS));
 
         model.addAttribute("spendSum", trRep.getSumByTransfType(userId, TransferType.SPEND)); // расход всего
         model.addAttribute("spendCr", trRep.getSumByAcf(userId, ArticleCashFlow.CREDIT));
@@ -142,6 +143,7 @@ public class HomeController extends BaseController {
         model.addAttribute("spendLicenseBuy", trRep.getSumByAcf(userId, ArticleCashFlow.BUY_LICENSE));
         model.addAttribute("spendConstructProperty", trRep.getSumByAcf(userId, ArticleCashFlow.CONSTRUCTION_PROPERTY));
         model.addAttribute("spendWithdraw", trRep.getSumByAcf(userId, ArticleCashFlow.WITHDRAW));
+        model.addAttribute("spendLandLots", trRep.getSumByAcf(userId, ArticleCashFlow.LAND_LOTS_BUY));
         return "index/home";
     }
 

@@ -335,6 +335,10 @@
 					<td class="tableTd1">Продажа лицензий, &tridot;</td>
 					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitFromLicensesSell}" /></td>
 				</tr>
+                <tr>
+                  <td class="tableTd1">Бонусы, &tridot;</td>
+                  <td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${profitBonus}" /></td>
+                </tr>
 			</table>
 		</div>
 		<div class="col-md-6">
@@ -382,6 +386,10 @@
 					<td class="tableTd1">Выведено средств, &tridot;</td>
 					<td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendWithdraw}" /></td>
 				</tr>
+                <tr>
+                  <td class="tableTd1">Покупка земельных участков, &tridot;</td>
+                  <td class="tableTd2"><fmt:formatNumber type="number" maxFractionDigits="3" value="${spendLandLots}" /></td>
+                </tr>
 			</table>
 		</div>
 	</div>
