@@ -35,13 +35,20 @@ function takeBonus() {
 		  $('#bonus_modal_body').html(msg);
 		  $('#bonus_modal').modal();
 	  }
-	  checkBonusAvailability();
+	  _checkBonusAvailability();
   	}).fail(function(jqXHR, textStatus, errorThrown) {
 		console.log(jqXHR.status + " " + jqXHR.statusText);
 	});
 }
 
 function checkBonusAvailability() {
+	_checkBonusAvailabilityRequest();
+	setTimeout(function() {
+		checkBonusAvailability();
+	}, 30000); // every 30 seconds check whether bonus is available or not
+}
+
+function _checkBonusAvailabilityRequest() {
 	$.ajax({
 		type : 'GET',
 		url : CTX_PATH + "/bonus/available"
@@ -53,9 +60,6 @@ function checkBonusAvailability() {
 			$('#bonus_btn').hide();
 			tooglePageTitle(false);
 		}
-		setTimeout(function() {
-			checkBonusAvailability();
-		}, 30000); // every 30 seconds check whether bonus is available or not
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 		console.log(jqXHR.status + " " + jqXHR.statusText);
 	});
