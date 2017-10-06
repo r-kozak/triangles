@@ -219,14 +219,14 @@ public class HomeController extends BaseController {
         ArrayList<Property> properties = (ArrayList<Property>) prRep.getPropertyListForProfit(userId, false);
 
         // для каждого имущества
-        for (Property p : properties) {
-            TradeBuilding data = tradeBuildingsData.get(p.getTradeBuildingType().ordinal());
+        for (Property property : properties) {
+            TradeBuilding data = tradeBuildingsData.get(property.getTradeBuildingType().ordinal());
 
             int deprSum = 0;
             double deprPerc = 0;
 
             // расчитать, за сколько недель нужно насчитать прибыль
-            Date d1 = p.getNextDepreciation();
+            Date d1 = property.getNextDepreciation();
             Date d2 = new Date();
             int dayBetw = DateUtils.daysBetween(d1, d2) + 1;
             int calcC = (dayBetw / 7) + 1; // количество начислений
@@ -249,32 +249,32 @@ public class HomeController extends BaseController {
                 }
 
                 // вычислить недельную сумму износа
-                deprSum += p.getInitialCost() * mainPerc / 100;
+                deprSum += property.getInitialCost() * mainPerc / 100;
                 deprPerc += mainPerc;
             }
 
             // вычислить новую цену продажи
-            long newSellingPrice = p.getSellingPrice() - deprSum;
+            long newSellingPrice = property.getSellingPrice() - deprSum;
             newSellingPrice = newSellingPrice < 0 ? 0 : newSellingPrice; // нельзя, чтобы цена продажи была меньше 0
 
             // вычислить новый процент износа
-            double newDepreciationPercent = CommonUtil.numberRound(p.getDepreciationPercent() + deprPerc, 2);
+            double newDepreciationPercent = CommonUtil.numberRound(property.getDepreciationPercent() + deprPerc, 2);
             newDepreciationPercent = newDepreciationPercent > 100 ? 100 : newDepreciationPercent; // не больше 100
 
             // установить новые значения
-            p.setNextDepreciation(DateUtils.addDays(new Date(), 7 - (dayBetw % 7)));
-            p.setSellingPrice(newSellingPrice);
-            p.setDepreciationPercent(newDepreciationPercent);
+            property.setNextDepreciation(DateUtils.addDays(new Date(), 7 - (dayBetw % 7)));
+            property.setSellingPrice(newSellingPrice);
+            property.setDepreciationPercent(newDepreciationPercent);
             if (newDepreciationPercent >= 100) {
-                p.setValid(false);
+                property.setValid(false);
             }
-            prRep.updateProperty(p);
+            prRep.updateProperty(property);
 
             // если имущество на продаже - изменить цену в предложении
-            if (p.isOnSale()) {
+            if (property.isOnSale()) {
                 // получить предложение с этим имуществом на рынке и установить новую цену
-                RealEstateProposal rePr = realEstateProposalRep.getProposalByUsedId(p.getId());
-                rePr.setPurchasePrice(p.getSellingPrice());
+                RealEstateProposal rePr = realEstateProposalRep.getProposalByUsedId(property.getId());
+                rePr.setPurchasePrice(property.getSellingPrice());
                 realEstateProposalRep.updateREproposal(rePr);
             }
         }

@@ -107,78 +107,67 @@ public class PropertyController extends BaseController {
 
         JSONObject resultJson = new JSONObject();
         long userId = user.getId();
-        RealEstateProposal prop = realEstateProposalRep.getREProposalById(propId);
+        RealEstateProposal proposal = realEstateProposalRep.getREProposalById(propId);
 
-        if (prop == null) {
-            ResponseUtil.putErrorMsg(resultJson, "Произошла ошибка: нет такого имущества)!");
+        if (proposal == null) {
+            ResponseUtil.putErrorMsg(resultJson,  "Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
         }
 
-        CityArea propCityArea = prop.getCityArea();
+        CityArea propCityArea = proposal.getCityArea();
 
         long userMoney = Long.parseLong(trRep.getUserBalance(userId));
         long userSolvency = CommonUtil.getSolvency(trRep, prRep, userId); // состоятельность пользователя
         long availableLandLots = landLotService.getAvailableLandLotsCount(userId, propCityArea);
 
-        if (!prop.isValid()) {
-            ResponseUtil.putErrorMsg(resultJson,
-                    "Вы не успели. Имущество уже было куплено кем-то. Попробуйте купить что-нибудь другое.");
-        } else if (userSolvency < prop.getPurchasePrice()) {
+        if (userSolvency < proposal.getPurchasePrice()) {
             ResponseUtil.putErrorMsg(resultJson, "Ваша состоятельность не позволяет вам купить это имущество. "
                     + "Ваш максимум = <b>" + CommonUtil.moneyFormat(userSolvency) + "&tridot;</b>");
         } else if (availableLandLots <= 0) {
             ResponseUtil.putErrorMsg(resultJson, "Не хватает участков для покупки имущества в районе " + propCityArea);
         } else {
-            long newBalance = userMoney - prop.getPurchasePrice(); // balance after purchase
+            long price = proposal.getPurchasePrice();
+            long newBalance = userMoney - price; // balance after purchase
 
             // данные конкретного имущества
-            TradeBuilding buildData = tradeBuildingsData.get(prop.getTradeBuildingType().ordinal());
+            TradeBuilding buildData = tradeBuildingsData.get(proposal.getTradeBuildingType().ordinal());
 
             if (action.equals("info")) { // получение информации
-                String usedText = (prop.getUsedId() != 0) ? "<b>(Б/У)</b>" : "<b>(НОВОЕ)</b>";
-                if (userMoney >= prop.getPurchasePrice()) { // хватает денег
+                String usedText = (proposal.getUsedId() != 0) ? "<b>(Б/У)</b>" : "<b>(НОВОЕ)</b>";
+                if (userMoney >= price) { // хватает денег
                     resultJson.put("title", "Обычная покупка " + usedText);
-                } else if (userSolvency >= prop.getPurchasePrice()) { // покупка в кредит
+                } else if (userSolvency >= price) { // покупка в кредит
                     resultJson.put("title", "Покупка в кредит " + usedText);
                 }
                 resultJson.put("buildType", buildData.getTradeBuildingType().toString()); // тип недвиги
                 resultJson.put("newBalance", newBalance); // balance after purchase
-                putMainInfoAboutPurchase(resultJson, prop); // вставка основной информации о покупке
+                putMainInfoAboutPurchase(resultJson, proposal); // вставка основной информации о покупке
             } else if (action.equals("confirm")) { // подтверждение покупки
-                if (userMoney >= prop.getPurchasePrice() || userSolvency >= prop.getPurchasePrice()) {
-                    // данные операции
-                    Date purchDate = new Date();
-                    long price = prop.getPurchasePrice();
+                // данные операции
+                Date purchDate = new Date();
 
-                    // новое имя имущества
-                    String propName = PropertyUtil.generatePropertyName(buildData.getTradeBuildingType(), propCityArea);
-                    // если имущ. новое - добавить новое имущество пользователю, иначе - изменить владельца у б/у
-                    if (prop.getUsedId() == 0) {
-                        Property newProp = new Property(buildData, userId, propCityArea, purchDate, price, propName);
-                        prRep.addProperty(newProp);
+                // новое имя имущества
+                String propName = PropertyUtil.generatePropertyName(buildData.getTradeBuildingType(), propCityArea);
+                // если имущ. новое - добавить новое имущество пользователю, иначе - изменить владельца у б/у
+                if (proposal.getUsedId() == 0) {
+                    Property newProp = new Property(buildData, userId, propCityArea, purchDate, price, propName);
+                    prRep.addProperty(newProp);
 
-                        MoneyController.upUserDomi(Constants.K_DOMI_BUY_PROP, userId, userRep); // повысить доминантность
-                    } else {
-                        // покупка б/у имущества
-                        propName = PropertyUtil.buyUsedProperty(prop, purchDate, userId, prRep, trRep);
-                        prop.setUsedId(0);
-                    }
-
-                    // удалить предложение с рынка
-                    realEstateProposalRep.removeReProposalById(prop.getId());
-
-                    // предложение на рынке теперь не валидное
-                    // prop.setValid(false);
-                    // rePrRep.updateREproposal(prop);
-
-                    // снять деньги
-                    Transaction t = new Transaction("Покупка имущества: " + propName, purchDate, price, TransferType.SPEND,
-                            userId, userMoney - price, ArticleCashFlow.BUY_PROPERTY);
-                    trRep.addTransaction(t);
-
-                    ResponseUtil.addBalanceData(resultJson, prop.getPurchasePrice(), userMoney, userId, prRep,
-                            TransferType.SPEND);
-                    resultJson.put("newDomi", userRep.getUserDomi(userId)); // информация для обновления значения домин.
+                    MoneyController.upUserDomi(Constants.K_DOMI_BUY_PROP, userId, userRep); // повысить доминантность
+                } else {
+                    // покупка б/у имущества
+                    propName = PropertyUtil.buyUsedProperty(proposal, purchDate, userId, prRep, trRep);
+                    proposal.setUsedId(0);
                 }
+                // удалить предложение с рынка
+                realEstateProposalRep.removeReProposalById(proposal.getId());
+
+                // снять деньги
+                Transaction t = new Transaction(propName, purchDate, price, TransferType.SPEND, userId, newBalance,
+                        ArticleCashFlow.BUY_PROPERTY);
+                trRep.addTransaction(t);
+
+                ResponseUtil.addBalanceData(resultJson, price, userMoney, userId, prRep, TransferType.SPEND);
+                resultJson.put("newDomi", userRep.getUserDomi(userId)); // информация для обновления значения домин.
             }
         }
         return ResponseUtil.createTypicalResponseEntity(resultJson);
@@ -556,7 +545,7 @@ public class PropertyController extends BaseController {
      * функция ремонта недвижимости
      * 
      * @param resultJson
-     * @param prop
+     * @param property
      *            имущество
      * @param deprPercent
      *            процент износа
@@ -568,26 +557,26 @@ public class PropertyController extends BaseController {
      *            сумма ремонта
      */
     @SuppressWarnings("unchecked")
-    private void repair(JSONObject resultJson, Property prop, Double deprPercent, long sellPrice, long userMoney, long repairSum,
+    private void repair(JSONObject resultJson, Property property, Double deprPercent, long sellPrice, long userMoney, long repairSum,
             long userId) {
-        prop.setDepreciationPercent(deprPercent);
-        prop.setSellingPrice(sellPrice);
+        property.setDepreciationPercent(deprPercent);
+        property.setSellingPrice(sellPrice);
         // если данное имущество НЕ valid на момент ремонта И новый процент износа < 100 - установить
         // nextProfit = tomorrow
         // nextDepreciation = next week
-        if (!prop.isValid() && deprPercent < 100) {
-            prop.setNextProfit(DateUtils.addDays(new Date(), 1));
-            prop.setNextDepreciation(DateUtils.addDays(new Date(), 7));
-            prop.setValid(true);
+        if (!property.isValid() && deprPercent < 100) {
+            property.setNextProfit(DateUtils.addDays(new Date(), 1));
+            property.setNextDepreciation(DateUtils.addDays(new Date(), 7));
+            property.setValid(true);
         }
-        prRep.updateProperty(prop);
+        prRep.updateProperty(property);
 
-        Transaction t = new Transaction("Ремонт имущества: " + prop.getName(), new Date(), repairSum, TransferType.SPEND,
-                prop.getUserId(), userMoney - repairSum, ArticleCashFlow.PROPERTY_REPAIR);
+        Transaction t = new Transaction("Ремонт имущества: " + property.getName(), new Date(), repairSum, TransferType.SPEND,
+                property.getUserId(), userMoney - repairSum, ArticleCashFlow.PROPERTY_REPAIR);
         trRep.addTransaction(t);
 
         // изменить значения цены продажи и процента износа у предложения на рынке, если имущество на продаже
-        changeSellingPriceAndDeprecPercent(prop);
+        changeSellingPriceAndDeprecPercent(property);
 
         resultJson.put("error", false);
         resultJson.put("percAfterRepair", deprPercent);

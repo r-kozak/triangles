@@ -47,9 +47,6 @@ public class RealEstateProposal extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CityArea cityArea; // район здания
 
-    @Column(name = "VALID")
-    private boolean valid = true; // предложение еще действительно
-
     // id имущества, которое продается (0, если новое)
     @Column(name = "USED_ID")
     private long usedId;
@@ -136,14 +133,6 @@ public class RealEstateProposal extends BaseEntity {
 
     public void setCityArea(CityArea cityArea) {
         this.cityArea = cityArea;
-    }
-
-    public boolean isValid() {
-        return valid;
-    }
-
-    public void setValid(boolean valid) {
-        this.valid = valid;
     }
 
     public long getUsedId() {

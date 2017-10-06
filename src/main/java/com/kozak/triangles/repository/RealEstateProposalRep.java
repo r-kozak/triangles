@@ -34,25 +34,18 @@ public class RealEstateProposalRep {
 
     /**
      * 
-     * @return список с валидными предложениями на рынке недвижимости
+     * @return список с предложениями на рынке недвижимости
      * @throws ParseException
      */
     public List<Object> getREProposalsList(int page, RealEstateProposalsSearch reps, long userId) throws ParseException {
-        String hql0 = "FROM re_proposal WHERE valid = true";
+        String hql0 = "FROM re_proposal WHERE";
         String hql1 = "";
         String hql2 = " ORDER BY tradeBuildingType";
 
         Map<String, Object> params = new HashMap<String, Object>();
 
-        // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
-        List<Long> propsOnSale = getPropertyIdsOnSale(userId);
-        if (!propsOnSale.isEmpty()) {
-            hql0 += " AND usedId NOT IN (:propsOnSale)";
-            params.put("propsOnSale", propsOnSale);
-        }
-
         // date filter
-        hql1 += " AND appearDate BETWEEN :appearDateFrom AND :appearDateTo";
+        hql1 += " appearDate BETWEEN :appearDateFrom AND :appearDateTo";
         Date appearDateFrom = DateUtils.getStartDateForQuery(reps.getAppearDateFrom());
         Date appearDateTo = DateUtils.getEndDateForQuery(reps.getAppearDateTo());
         params.put("appearDateFrom", appearDateFrom);
@@ -63,6 +56,13 @@ public class RealEstateProposalRep {
         Date lossDateTo = DateUtils.getEndDateForQuery(reps.getLossDateTo());
         params.put("lossDateFrom", lossDateFrom);
         params.put("lossDateTo", lossDateTo);
+
+        // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
+        List<Long> propsOnSale = getPropertyIdsOnSale(userId);
+        if (!propsOnSale.isEmpty()) {
+            hql0 += " AND usedId NOT IN (:propsOnSale)";
+            params.put("propsOnSale", propsOnSale);
+        }
 
         // area filter
         List<CityArea> areas = reps.getAreas(); // типы из формы
@@ -108,13 +108,13 @@ public class RealEstateProposalRep {
     }
 
     /**
-     * устаревшими считаются все валидные предложения, lossDate (дата ухода) которых меньше текущей
+     * устаревшими считаются все предложения, lossDate (дата ухода) которых меньше текущей
      * 
      * @return список с устаревшими предложениями на рынке недвижимости
      */
     @SuppressWarnings("unchecked")
     public List<RealEstateProposal> getOutdatedProposals() {
-        String hql = "FROM re_proposal WHERE valid = true AND lossDate < :now ";
+        String hql = "FROM re_proposal WHERE lossDate < :now ";
         Query query = em.createQuery(hql).setParameter("now", new Date());
 
         return query.getResultList();
@@ -151,7 +151,7 @@ public class RealEstateProposalRep {
     }
 
     /**
-     * получает количество всех валидных предложений на рынке имущества или только количество новых предложений
+     * получает количество всех предложений на рынке имущества или только количество новых предложений
      * 
      * @param countOfNew
      *            - признак, получать все или только новые
@@ -161,7 +161,7 @@ public class RealEstateProposalRep {
         // параметры, которые потом установятся запросу
         Map<String, Object> params = new HashMap<String, Object>();
 
-        String hql = "SELECT count(id) FROM re_proposal WHERE valid = true";
+        String hql = "SELECT count(id) FROM re_proposal WHERE id > 0";
 
         // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
         List<Long> propsOnSale = getPropertyIdsOnSale(userId);
@@ -197,7 +197,7 @@ public class RealEstateProposalRep {
     public List<Object> getRangeValues(long userId) {
         Map<String, Object> params = new HashMap<String, Object>();
 
-        String suff = "FROM re_proposal WHERE valid = true";
+        String suff = "FROM re_proposal WHERE id>0";
 
         // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
         List<Long> propsOnSale = getPropertyIdsOnSale(userId);

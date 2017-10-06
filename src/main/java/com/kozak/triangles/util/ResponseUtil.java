@@ -47,7 +47,7 @@ public class ResponseUtil {
             newSolvency = CommonUtil.getSolvency(String.valueOf(userMoney + sum), prRep, userId);
         } else if (transferType == TransferType.SPEND) {
             newBalance = CommonUtil.moneyFormat(userMoney - sum);
-            newSolvency = CommonUtil.getSolvency(String.valueOf(userMoney + sum), prRep, userId);
+            newSolvency = CommonUtil.getSolvency(String.valueOf(userMoney - sum), prRep, userId);
         }
 
         resultJson.put("changeBal", transferType.getSign() + sum);
