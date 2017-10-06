@@ -18,24 +18,22 @@ function takeBonus() {
 	  url: CTX_PATH + "/bonus/take",
 	  async:false
 	}).done(function(data) {
-      //$('#bonus_btn').hide();
-
-	  // показать информационное окно для всех статтей, кроме выигрыша денег
-	  if (data.bonus.article == 'TRIANGLES') {
-		  changeBal(data); // показать изменения баланса, если он изменился 
-	  } else {
-		  // сформировать сообщение и показать его
-          var msg = '';
-		  if (!data.error) {
-			  msg = 'Вы получили бонус: <b>' + getWinArticleName(data.bonus.article) + '</b>. </br>' +
-			  		'Количество: <b>' + data.bonus.count + '</b>';
-		  } else {
-			  msg = data.message;
-		  }
-		  $('#bonus_modal_body').html(msg);
-		  $('#bonus_modal').modal();
-	  }
-	  _checkBonusAvailability();
+		// показать информационное окно для всех статтей, кроме выигрыша денег
+		if (data.bonus != null && data.bonus.article == 'TRIANGLES') {
+			changeBal(data); // показать изменения баланса, если он изменился 
+		} else {
+			// сформировать сообщение
+			var msg = '';
+			if (!data.error) {
+				msg = 'Вы получили бонус: <b>' + getWinArticleName(data.bonus.article) + '</b>. </br>' +
+				  		'Количество: <b>' + data.bonus.count + '</b>';
+			} else {
+				msg = data.message;
+			}
+			$('#bonus_modal_body').html(msg);
+			$('#bonus_modal').modal();
+		}
+		_checkBonusAvailabilityRequest();
   	}).fail(function(jqXHR, textStatus, errorThrown) {
 		console.log(jqXHR.status + " " + jqXHR.statusText);
 	});
