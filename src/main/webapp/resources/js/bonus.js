@@ -43,7 +43,7 @@ function checkBonusAvailability() {
 	_checkBonusAvailabilityRequest();
 	setTimeout(function() {
 		checkBonusAvailability();
-	}, 30000); // every 30 seconds check whether bonus is available or not
+	}, 5000); // every 30 seconds check whether bonus is available or not
 }
 
 function _checkBonusAvailabilityRequest() {
