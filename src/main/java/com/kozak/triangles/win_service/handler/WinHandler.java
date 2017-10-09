@@ -2,7 +2,7 @@ package com.kozak.triangles.win_service.handler;
 
 import java.util.List;
 
-import com.kozak.triangles.exceptions.WinHandlingException;
+import com.kozak.triangles.exception.WinHandlingException;
 import com.kozak.triangles.model.WinDataModel;
 
 public interface WinHandler {

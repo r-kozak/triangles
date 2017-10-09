@@ -206,7 +206,6 @@
 			<tr class="tableTitleTr">
 				<td>Дата</td>
 				<td>Статья выигрыша</td>
-				<td>Описание</td>
 				<td>Кол-во выиграно</td>
 				<td>Билетов потрачено</td>
 			</tr>
@@ -214,7 +213,6 @@
 				<tr>
 					<td><fmt:formatDate value="${lotterySt.date}" pattern="dd-MM-yyyy HH:mm"/></td>
 					<td class="win_article_name">${lotterySt.article}</td>
-					<td style="text-align:left!important">${lotterySt.description}</td>
 					<c:choose>
 						<c:when test="${lotterySt.article == 'PREDICTION'}">
 							<td>1</td>					

@@ -20,7 +20,7 @@ import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.enums.TradeBuildingType;
 import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.enums.WinArticle;
-import com.kozak.triangles.exceptions.NoSuchLicenseLevelException;
+import com.kozak.triangles.exception.NoSuchLicenseLevelException;
 import com.kozak.triangles.model.Requirement;
 import com.kozak.triangles.repository.LicenseMarketRepository;
 import com.kozak.triangles.repository.LicensesConsignmentRepository;

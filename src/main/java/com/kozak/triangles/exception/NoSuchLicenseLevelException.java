@@ -1,4 +1,4 @@
-package com.kozak.triangles.exceptions;
+package com.kozak.triangles.exception;
 
 @SuppressWarnings("serial")
 public class NoSuchLicenseLevelException extends Exception {

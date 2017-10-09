@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entity.User;
 import com.kozak.triangles.enums.CityArea;
-import com.kozak.triangles.exceptions.MoneyNotEnoughException;
+import com.kozak.triangles.exception.MoneyNotEnoughException;
 import com.kozak.triangles.model.LandLotsInfo;
 import com.kozak.triangles.util.CommonUtil;
 import com.kozak.triangles.util.ResponseUtil;

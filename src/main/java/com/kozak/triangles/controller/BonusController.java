@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kozak.triangles.entity.User;
 import com.kozak.triangles.enums.TransferType;
-import com.kozak.triangles.exceptions.BonusIsNotAvailableException;
-import com.kozak.triangles.exceptions.WinHandlingException;
+import com.kozak.triangles.exception.BonusIsNotAvailableException;
+import com.kozak.triangles.exception.WinHandlingException;
 import com.kozak.triangles.util.ResponseUtil;
 
 @SessionAttributes("user")

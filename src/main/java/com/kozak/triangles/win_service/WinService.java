@@ -1,7 +1,7 @@
 package com.kozak.triangles.win_service;
 
 import com.kozak.triangles.enums.WinArticle;
-import com.kozak.triangles.exceptions.NoPredictionException;
+import com.kozak.triangles.exception.NoPredictionException;
 import com.kozak.triangles.model.WinDataModel;
 
 /**

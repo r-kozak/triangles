@@ -12,8 +12,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.kozak.triangles.exceptions.BonusIsNotAvailableException;
-import com.kozak.triangles.exceptions.WinHandlingException;
+import com.kozak.triangles.exception.BonusIsNotAvailableException;
+import com.kozak.triangles.exception.WinHandlingException;
 import com.kozak.triangles.model.WinDataModel;
 import com.kozak.triangles.repository.UserRep;
 import com.kozak.triangles.util.Random;
@@ -58,7 +58,7 @@ public class BonusServiceImpl implements BonusService {
      * Каждые 2 минуты есть шанс в 40% на генерацию бонуса для пользователя.
      * Генерирует бонус для всех активных пользователей, если у них еще нет доступного бонуса.
      */
-    @Scheduled(fixedDelay = 2 * 60 * 1000) // 2 минуты
+    @Scheduled(fixedDelay = 2 * 1000) // 2 минуты
     private void generateBonus() {
         List<Long> activeUsersIds = userRep.getActiveUsersIds(); // получить активных пользователей
         

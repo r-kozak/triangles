@@ -1,7 +1,7 @@
 package com.kozak.triangles.win_service;
 
-import com.kozak.triangles.exceptions.LotteryPlayException;
-import com.kozak.triangles.exceptions.WinHandlingException;
+import com.kozak.triangles.exception.LotteryPlayException;
+import com.kozak.triangles.exception.WinHandlingException;
 
 public interface LotteryService {
 

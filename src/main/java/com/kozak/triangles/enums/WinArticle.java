@@ -1,6 +1,6 @@
 package com.kozak.triangles.enums;
 
-import com.kozak.triangles.exceptions.NoSuchLicenseLevelException;
+import com.kozak.triangles.exception.NoSuchLicenseLevelException;
 
 /**
  * Статьи выигрыша, которые используются при игре в лотерею или при начислении бонуса

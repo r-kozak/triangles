@@ -13,7 +13,7 @@ import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.enums.TransferType;
 import com.kozak.triangles.enums.WinArticle;
-import com.kozak.triangles.exceptions.WinHandlingException;
+import com.kozak.triangles.exception.WinHandlingException;
 import com.kozak.triangles.model.TradeBuilding;
 import com.kozak.triangles.repository.PropertyRep;
 import com.kozak.triangles.repository.TransactionRep;

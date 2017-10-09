@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.WinArticle;
-import com.kozak.triangles.exceptions.WinHandlingException;
+import com.kozak.triangles.exception.WinHandlingException;
 import com.kozak.triangles.model.WinDataModel;
 import com.kozak.triangles.win_service.WinService;
 

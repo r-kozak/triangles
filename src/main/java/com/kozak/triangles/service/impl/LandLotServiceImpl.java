@@ -15,7 +15,7 @@ import com.kozak.triangles.entity.Transaction;
 import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.CityArea;
 import com.kozak.triangles.enums.TransferType;
-import com.kozak.triangles.exceptions.MoneyNotEnoughException;
+import com.kozak.triangles.exception.MoneyNotEnoughException;
 import com.kozak.triangles.model.LandLotsInfo;
 import com.kozak.triangles.repository.ConstructionProjectRep;
 import com.kozak.triangles.repository.LandLotRepository;

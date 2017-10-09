@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.kozak.triangles.entity.LotteryInfo;
 import com.kozak.triangles.enums.ArticleCashFlow;
 import com.kozak.triangles.enums.WinArticle;
-import com.kozak.triangles.exceptions.WinHandlingException;
+import com.kozak.triangles.exception.WinHandlingException;
 import com.kozak.triangles.model.LotteryWinGroupModel;
 import com.kozak.triangles.model.WinDataModel;
 import com.kozak.triangles.repository.LotteryRep;
@@ -111,9 +111,7 @@ public class LotteryWinHandler extends AbstractWinHandler implements WinHandler 
         createWonProperties(article, propertiesCount, userId);
 
         // внести информацию о выигрыше
-        String description = "[Имущество × Билеты] - " + groupModel.toString();
-        int ticketsCount = groupModel.getTicketsCount();
-        LotteryInfo lInfo = new LotteryInfo(userId, description, article, propertiesCount, ticketsCount, date);
+        LotteryInfo lInfo = new LotteryInfo(userId, article, propertiesCount, groupModel.getTicketsCount(), date);
         lotteryRep.addLotoInfo(lInfo);
     }
 
@@ -130,15 +128,8 @@ public class LotteryWinHandler extends AbstractWinHandler implements WinHandler 
      */
     private void handleCommonArticle(LotteryWinGroupModel groupModel, long userId, WinArticle article) {
         // внести информацию о выигрыше
-        String description = "";
-        if (article.equals(WinArticle.PROPERTY_UP) || article.equals(WinArticle.CASH_UP)) {
-            description = "[Повышения × Билеты] - " + groupModel.toString();
-        } else if (article.equals(WinArticle.LICENSE_2) || article.equals(WinArticle.LICENSE_3)
-                || article.equals(WinArticle.LICENSE_4)) {
-            description = "[Лицензии × Билеты] - " + groupModel.toString();
-        }
         int winAmount = groupModel.getEntitiesCount();
-        LotteryInfo lInfo = new LotteryInfo(userId, description, article, winAmount, groupModel.getTicketsCount(), date);
+        LotteryInfo lInfo = new LotteryInfo(userId, article, winAmount, groupModel.getTicketsCount(), date);
         lotteryRep.addLotoInfo(lInfo);
         winService.addAmountOfWin(userId, article, winAmount); // добавить на остатки
     }
@@ -160,8 +151,7 @@ public class LotteryWinHandler extends AbstractWinHandler implements WinHandler 
         giveUserLandLots(userId, article, landLotsCount);
 
         // создать информацию об игре в лото
-        String description = "[Участки × Билеты] - " + groupModel.toString();
-        LotteryInfo lInfo = new LotteryInfo(userId, description, article, landLotsCount, groupModel.getTicketsCount(), date);
+        LotteryInfo lInfo = new LotteryInfo(userId, article, landLotsCount, groupModel.getTicketsCount(), date);
         lotteryRep.addLotoInfo(lInfo);
     }
 
@@ -180,8 +170,7 @@ public class LotteryWinHandler extends AbstractWinHandler implements WinHandler 
         createTransaction(userId, descr, date, sum, ArticleCashFlow.LOTTERY_WINNINGS);
 
         // добавить информацию в таблицу с лотерейными выигрышами
-        String description = "[&tridot; × Билеты] - " + groupModel.toString();
-        LotteryInfo lInfo = new LotteryInfo(userId, description, WinArticle.TRIANGLES, sum, ticketsCount, date);
+        LotteryInfo lInfo = new LotteryInfo(userId, WinArticle.TRIANGLES, sum, ticketsCount, date);
         lotteryRep.addLotoInfo(lInfo);
     }
 
@@ -193,8 +182,7 @@ public class LotteryWinHandler extends AbstractWinHandler implements WinHandler 
     private void handlePredictionArticle(long userId) {
         omniscient.generatePredictionToUser(userId); // начислить предсказание пользователю
         // добавить предсказание
-        String descr = "Ты получил мудрость от всезнающего. Вникай.";
-        LotteryInfo lInfo = new LotteryInfo(userId, descr, WinArticle.PREDICTION, 1, 1, date);
+        LotteryInfo lInfo = new LotteryInfo(userId, WinArticle.PREDICTION, 1, 1, date);
         lotteryRep.addLotoInfo(lInfo);
     }
 
@@ -209,9 +197,7 @@ public class LotteryWinHandler extends AbstractWinHandler implements WinHandler 
         giveUserTickets(userId, wonCount); // начислить пользователю билеты
 
         // внести информацию о выигрыше
-        String description = "[Выиграно бил. × Потрачено бил.] - " + groupModel.toString();
-        int ticketsCount = groupModel.getTicketsCount();
-        LotteryInfo lInfo = new LotteryInfo(userId, description, WinArticle.LOTTERY_TICKET, wonCount, ticketsCount, date);
+        LotteryInfo lInfo = new LotteryInfo(userId, WinArticle.LOTTERY_TICKET, wonCount, groupModel.getTicketsCount(), date);
         lotteryRep.addLotoInfo(lInfo);
     }
 

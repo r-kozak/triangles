@@ -1,4 +1,4 @@
-package com.kozak.triangles.exceptions;
+package com.kozak.triangles.exception;
 
 public class BonusIsNotAvailableException extends Exception {
 

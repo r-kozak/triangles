@@ -3,7 +3,7 @@ package com.kozak.triangles.service;
 import java.util.List;
 
 import com.kozak.triangles.enums.CityArea;
-import com.kozak.triangles.exceptions.MoneyNotEnoughException;
+import com.kozak.triangles.exception.MoneyNotEnoughException;
 import com.kozak.triangles.model.LandLotsInfo;
 
 public interface LandLotService {

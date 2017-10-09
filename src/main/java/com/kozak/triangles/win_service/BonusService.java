@@ -1,7 +1,7 @@
 package com.kozak.triangles.win_service;
 
-import com.kozak.triangles.exceptions.BonusIsNotAvailableException;
-import com.kozak.triangles.exceptions.WinHandlingException;
+import com.kozak.triangles.exception.BonusIsNotAvailableException;
+import com.kozak.triangles.exception.WinHandlingException;
 import com.kozak.triangles.model.WinDataModel;
 
 public interface BonusService {

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kozak.triangles.data.WinsTableData;
 import com.kozak.triangles.entity.WinInfo;
 import com.kozak.triangles.enums.WinArticle;
-import com.kozak.triangles.exceptions.NoPredictionException;
+import com.kozak.triangles.exception.NoPredictionException;
 import com.kozak.triangles.model.WinDataModel;
 import com.kozak.triangles.repository.WinRepository;
 import com.kozak.triangles.util.Random;

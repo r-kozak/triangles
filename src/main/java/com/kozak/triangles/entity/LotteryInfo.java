@@ -23,10 +23,6 @@ public class LotteryInfo extends BaseEntity {
     @Column(name = "USER_ID")
     private long userId;
 
-    // описание выигрыша
-    @Column(name = "DESCRIPTION")
-    private String description;
-
     // дата операции
     @Column(name = "DATE")
     private Date date;
@@ -47,9 +43,8 @@ public class LotteryInfo extends BaseEntity {
     public LotteryInfo() {
     }
 
-    public LotteryInfo(long userId, String description, WinArticle article, int count, int ticketCount, Date date) {
+    public LotteryInfo(long userId, WinArticle article, int count, int ticketCount, Date date) {
         this.userId = userId;
-        this.description = description;
         this.article = article;
         this.count = count;
         this.ticketCount = ticketCount;
@@ -62,14 +57,6 @@ public class LotteryInfo extends BaseEntity {
 
     public void setUserId(long userId) {
         this.userId = userId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Date getDate() {
