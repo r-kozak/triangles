@@ -58,7 +58,7 @@ public class BonusServiceImpl implements BonusService {
      * Каждые 2 минуты есть шанс в 40% на генерацию бонуса для пользователя.
      * Генерирует бонус для всех активных пользователей, если у них еще нет доступного бонуса.
      */
-    @Scheduled(fixedDelay = 2 * 1000) // 2 минуты
+    @Scheduled(fixedDelay = 2 * 60 * 1000) // 2 минуты
     private void generateBonus() {
         List<Long> activeUsersIds = userRep.getActiveUsersIds(); // получить активных пользователей
         

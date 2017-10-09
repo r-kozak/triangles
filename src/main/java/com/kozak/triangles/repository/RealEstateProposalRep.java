@@ -60,7 +60,7 @@ public class RealEstateProposalRep {
         // получить ID имущества пользователя, которые он выставил на продажу, чтобы не учитывать их
         List<Long> propsOnSale = getPropertyIdsOnSale(userId);
         if (!propsOnSale.isEmpty()) {
-            hql0 += " AND usedId NOT IN (:propsOnSale)";
+            hql1 += " AND usedId NOT IN (:propsOnSale)";
             params.put("propsOnSale", propsOnSale);
         }
 
