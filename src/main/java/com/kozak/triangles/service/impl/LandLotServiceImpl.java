@@ -43,7 +43,7 @@ public class LandLotServiceImpl implements LandLotService {
 
     private static final String MONEY_NOT_ENOUGH_TO_BUY_LAND_LOT = "Не хватает денег на покупку нового участка. Цена участка = %s";
     private static final long BASE_LAND_LOT_PRICE = 1000;
-    private static final int PRICE_COEF = 300;
+    private static final int PRICE_COEF = 100;
 
     @Override
     public int getCountOfLandLot(long userId, CityArea cityArea) {
