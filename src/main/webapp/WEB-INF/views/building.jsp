@@ -91,15 +91,15 @@
 				<div class="col-md-2 text-center license-btn-block">
 					<div>
 						<button id="buy_2" class="btn btn-success btn-lg btn-license_up" title="Купить лицензию уровня 2" data-toggle="tooltip">
-										<span class="glyphicon glyphicon-arrow-up">2</span></button>
+										<span class="glyphicon glyphicon-circle-arrow-up"></span>2</button>
 					</div>
 					<div>
 						<button id="buy_3" class="btn btn-success btn-lg btn-license_up" title="Купить лицензию уровня 3" data-toggle="tooltip">
-										<span class="glyphicon glyphicon-arrow-up">3</span></button>
+										<span class="glyphicon glyphicon-circle-arrow-up"></span>3</button>
 					</div>
 					<div>
 						<button id="buy_4" class="btn btn-success btn-lg btn-license_up" title="Купить лицензию уровня 4" data-toggle="tooltip">
-										<span class="glyphicon glyphicon-arrow-up">4</span></button>
+										<span class="glyphicon glyphicon-circle-arrow-up"></span>4</button>
 					</div>
 				</div>
 				

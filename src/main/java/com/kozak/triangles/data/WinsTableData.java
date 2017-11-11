@@ -52,10 +52,10 @@ public class WinsTableData {
             add(new WinDataModel(96001, WinArticle.LICENSE_3, 1));
             add(new WinDataModel(96501, WinArticle.LOTTERY_TICKET, 3));
             add(new WinDataModel(96601, WinArticle.LAND_LOT_GHETTO, 1));
-            add(new WinDataModel(96676, WinArticle.LAND_LOT_OUTSKIRTS, 1));
-            add(new WinDataModel(96726, WinArticle.LAND_LOT_CHINATOWN, 1));
-            add(new WinDataModel(96751, WinArticle.LAND_LOT_CENTER, 1));
-            add(new WinDataModel(96766, WinArticle.TRIANGLES, 500));
+            add(new WinDataModel(96611, WinArticle.LAND_LOT_OUTSKIRTS, 1));
+            add(new WinDataModel(96621, WinArticle.LAND_LOT_CHINATOWN, 1));
+            add(new WinDataModel(96625, WinArticle.LAND_LOT_CENTER, 1));
+            add(new WinDataModel(96628, WinArticle.TRIANGLES, 500));
         }
     };
 

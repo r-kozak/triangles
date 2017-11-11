@@ -40,7 +40,7 @@
 				$('#error_alert').html(
 						'<div class="alert alert-danger" style="height:76; padding-top:25">' + 'Подтвердите, что вы не робот' + '</div'
 					);
-				$('#error_alert').animate({"opacity" : "0"}, 1200);
+				$('#error_alert').stop().animate({"opacity" : "0"}, 1200);
 			}
 			
 			$('.removeMsg').on('click', function() {
