@@ -124,7 +124,7 @@ public class LandLotServiceImpl implements LandLotService {
         // добавить информацию об объектах строительства
         for (ConstructionProject project : constrRep.getCityAreaUserConstrProject(userId, cityArea)) {
             double completePercent = CommonUtil.numberRound(project.getCompletePerc(), 2);
-            result.add(new LandLotsInfo(project.getId(), completePercent));
+            result.add(new LandLotsInfo(project.getId(), project.getName(), completePercent));
         }
         return result;
     }

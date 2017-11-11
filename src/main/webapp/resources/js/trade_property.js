@@ -43,17 +43,18 @@ function landLotInfo() {
 			if (infoElement.isFunctioningProperty) {
 				// если это уже функционирующее имущество
 				infoHtml += '<td>'+ infoElement.propertyName +'</td>';
-				infoHtml += '<td><a class="btn btn-danger btn-sm lot_sell_property_btn" id="property_' + infoElement.id + '"';
 				if (infoElement.isOnSale) {
-					infoHtml += ' title="Отмена продажи" data-toggle="tooltip"><span class="glyphicon glyphicon-remove-circle"></span>';
+					infoHtml += '<td><a class="btn btn-success btn-sm lot_sell_property_btn" id="property_' + infoElement.id + '"'
+							+ ' title="Отмена продажи" data-toggle="tooltip"><span class="glyphicon glyphicon-remove-circle"></span>';
 				} else {
-					infoHtml += ' title="Продажа" data-toggle="tooltip"><span class="glyphicon glyphicon-briefcase"></span>';
+					infoHtml += '<td><a class="btn btn-danger btn-sm lot_sell_property_btn" id="property_' + infoElement.id + '"'
+							+ ' title="Продажа" data-toggle="tooltip"><span class="glyphicon glyphicon-briefcase"></span>';
 				}
 				infoHtml += '</a></td>';
 			} else {
 				// имущество находится на стадии строительства
 				if (infoElement.completedPercent < 100) {
-					infoHtml += '<td>Строится...</td>';
+					infoHtml += '<td>Строится [ ' + infoElement.propertyName + ' ]</td>';
 					infoHtml += '<td>'+ infoElement.completedPercent +'%</td>';
 				} else {
 					infoHtml += '<td>Готово!</td>';
@@ -148,9 +149,11 @@ function sellPropertyOrCancel() {
 		if (data.onSale) {
 		  $(btn).html('<span class="glyphicon glyphicon-remove-circle"></span>');
 		  $(btn).attr("data-original-title", 'Отмена продажи');
+		  $(btn).addClass('btn-success').removeClass('btn-danger');
 	 	} else {
 		  $(btn).html('<span class="glyphicon glyphicon-briefcase"></span>');
 		  $(btn).attr("data-original-title", 'Продать');
+		  $(btn).addClass('btn-danger').removeClass('btn-success');
 	  	}
 		$('#'+$(btn).attr('aria-describedby')).remove(); // удаление подсказки
 	  } else {

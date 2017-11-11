@@ -33,17 +33,31 @@ public class LandLotsInfo implements JSONAware {
     private double completedPercent;
 
     /**
-     * Конструктор для функционирующего имущества
+     * Общий конструктор
      * 
      * @param id
      *            ID уже функционирующего имущества
      * @param propertyName
      *            имя имущества
      */
-    public LandLotsInfo(Long id, String propertyName, boolean isOnSale) {
-        isFunctioningProperty = true;
+    private LandLotsInfo(Long id, String propertyName) {
         this.id = id;
         this.propertyName = propertyName;
+    }
+
+    /**
+     * Конструктор для функционирующего имущества
+     * 
+     * @param id
+     *            ID уже функционирующего имущества
+     * @param propertyName
+     *            имя имущества
+     * @param isOnSale
+     *            находится ли имущество на продаже
+     */
+    public LandLotsInfo(Long id, String propertyName, boolean isOnSale) {
+        this(id, propertyName);
+        this.isFunctioningProperty = true;
         this.isOnSale = isOnSale;
     }
 
@@ -54,10 +68,12 @@ public class LandLotsInfo implements JSONAware {
      *            ID объекта строительства
      * @param completedPercent
      *            процент постройки
+     * @param propertyName
+     *            имя имущества, что находится на стадии постройки
      */
-    public LandLotsInfo(Long id, double completedPercent) {
-        isFunctioningProperty = false;
-        this.id = id;
+    public LandLotsInfo(Long id, String propertyName, double completedPercent) {
+        this(id, propertyName);
+        this.isFunctioningProperty = false;
         this.completedPercent = completedPercent;
     }
 
